@@ -9,7 +9,7 @@
     guia: ['Aquí Veta te enseña lo que llega a la oficina y nadie ha contestado.', 'Tú abres cada grupo y repartes lo que no tiene dueño.', 'Así ningún contacto nuevo se enfría esperando.'],
     pinta: () => {
       const sin = X.sinResponder().length, sd = X.sinDueno().length;
-      return `<p class="intro" data-i="0">Lo que ha entrado por los canales de la oficina y sigue sin respuesta.</p>` +
+      return `` +
         `<div class="d-entra" data-i="1">${[
           ['Contactos sin responder', sin, 'contactos', 'entra'],
           ['Escriben dos veces o más sin respuesta', D.entra.dosVeces.length, 'dos', 'chat'],

@@ -2,9 +2,9 @@
    - E2 · Entrar · #/entrar (completa, sin cabecera)
    La entrada son tres pasos antes de la app: 1 · la marca y el idioma (E1, portada.js) → 2 y 3, aquí.
    Un acceso = una cuenta, y cada papel tiene su propio acceso. Aquí:
-   paso 0 · el lema («Tú trabajas. Veta aprende. Después lo hace por ti.»), qué hace Veta y «¿Qué papel tienes en tu oficina?»:
-            «Soy agente» o «Soy de dirección». Mismo fondo y luz que la portada (VETA.fondoMarca). La veta de oro
-            de antes se quitó: cruzaba el lema y las opciones. A 375×667 se quita la línea de qué hace Veta (nunca el lema ni las opciones).
+   paso 0 · «Entrar» y las dos cuentas: «Agente» o «Dirección». Mismo fondo que la portada (VETA.fondoMarca).
+            ronda 7: es una pantalla de acceso, no una presentación: fuera el lema, la frase de qué hace Veta y las notas.
+            Quien quiera la historia tiene «Ver cómo es el primer día».
    paso 1 · correo y contraseña, ya rellenos con la cuenta de ejemplo de ese papel (Laura Martí; Montse Ribas, que además lleva clientes).
    paso 2 · solo dirección: el código de 6 números del móvil.
    No hay cambio de perfil dentro de la app: se cambia de persona con Cuenta › «Cerrar sesión», que vuelve al paso 0.
@@ -16,27 +16,24 @@
   const CU = () => VETA.datos.c.cuentas;
   const quien = c => Object.keys(CU()).find(k => CU()[k] === String(c || '').trim().toLowerCase());
   const PAPELES = [
-    {id: 'laura', titulo: 'Soy agente', sub: 'Llevo mis clientes. Veta me prepara el día.', icono: 'clientes', entras: 'Entras como agente'},
-    {id: 'montse', titulo: 'Soy de dirección', sub: 'Llevo la oficina. Veo cada operación y a cada persona, el trabajo que Veta le quita al equipo y lo que tengo que decidir.', icono: 'equipo', entras: 'Entras como dirección · también llevas tus clientes'}
+    {id: 'laura', titulo: 'Agente', sub: 'Tus clientes y tu día', icono: 'clientes', entras: 'Entras como agente'},
+    {id: 'montse', titulo: 'Dirección', sub: 'Tu oficina y tu equipo', icono: 'equipo', entras: 'Entras como dirección'}
   ];
   const aviso = `<p class="port-aviso">Ejemplo con datos inventados. No sale ningún mensaje.</p>`;
   const marca = `<div class="port-marca" data-i="0"><img src="assets/veta-symbol-gold.png" alt="" width="30" height="24"><b>VETA</b></div>`;
-  const cambiar = UI.boton({tipo: 'texto', texto: 'Cambiar de papel', accion: 'otra'});
+  const cambiar = UI.boton({tipo: 'texto', texto: 'Cambiar de cuenta', accion: 'otra'});
 
   VETA.pantalla('E2', {
     titulo: 'Entrar', completa: true, sinCabecera: true, area: 'marca',
-    guia: ['Aquí Veta dice qué hace y tú eliges tu papel en la oficina; luego entras con tu correo.', 'Tú tocas «Soy agente» o «Soy de dirección» y luego «Entrar».', 'Así se ve que agente y dirección son papeles distintos, cada uno con su propio acceso, y que lo que ves lo decide tu cuenta.'],
+    guia: ['Aquí eliges con qué cuenta entras; luego pones tu correo.', 'Tú tocas «Agente» o «Dirección» y luego «Entrar».', 'Así se ve que cada cuenta tiene su propio acceso y que lo que ves lo decide tu cuenta.'],
     pinta: () => {
       if (paso === 0) {
-        return `<div class="portada c-entrar c-lema">${VETA.fondoMarca()}${marca}<div class="c-entrar-c">` +
-          `<h1 class="port-h" data-i="1"><span>Tú trabajas.</span><span class="oro">Veta aprende.</span><span class="oro">Después lo hace por ti.</span></h1>` +
-          `<p class="port-que" data-i="1">Veta lee tus chats de trabajo, te deja listo lo que toca y aprende a hacerlo sola.</p>` +
-          `<h2 class="c-papel-h" data-i="2">¿Qué papel tienes en tu oficina?</h2>` +
+        return `<div class="portada c-entrar c-acceso">${VETA.fondoMarca()}${marca}<div class="c-entrar-c">` +
+          `<h1 class="c-entrar-h" data-i="1">Entrar</h1><p class="port-dice" data-i="1">Elige con qué cuenta entras.</p>` +
           `<div class="c-entrar-cuentas" data-i="2">${PAPELES.map(p =>
             `<button type="button" class="c-cuenta c-papel" data-accion="papel" data-de="${p.id}"><span class="c-papel-ic">${VETA.ic(p.icono, 24)}</span>` +
             `<span class="c-cuenta-t"><span class="c-papel-t">${esc(p.titulo)}</span><span class="c-papel-s">${esc(p.sub)}</span></span><span class="c-papel-chev">${VETA.ic('chev', 16)}</span></button>`).join('')}</div>` +
-          `<p class="c-papel-nota" data-i="3">Cada papel tiene su propio acceso. Lo da quien administra la oficina.</p>` +
-          `<div class="c-primer" data-i="4">${UI.boton({tipo: 'texto', texto: 'Ver cómo es el primer día', ir: 'primer-dia/0'})}</div>` +
+          `<div class="c-primer" data-i="3">${UI.boton({tipo: 'texto', texto: 'Ver cómo es el primer día', ir: 'primer-dia/0'})}</div>` +
           `</div>${aviso}</div>`;
       }
       if (paso === 2) {

@@ -31,7 +31,7 @@
     guia: ['Aquí está lo que depende de otros o tiene fecha, por orden.', 'Tú preparas el recordatorio cuando toca, o lo das por cumplido.', 'Así nada de lo que te prometen se queda olvidado.'],
     pinta: () => {
       const q = VETA.A.q(), pend = VETA.A.esperaPend(q);
-      let h = `<p class="a-cuantas" data-i="0">Lo que vigilo por ti · ${pend.length === 1 ? '1 cosa' : pend.length + ' cosas'}</p>`;
+      let h = '';
       const u = M.ultima(q);
       if (u && u.tipo === 'espera' && u.orden === VETA.A.seq()) {
         h += `<div class="a-sitio" data-i="1">${UI.lineaCosa(u)}` +

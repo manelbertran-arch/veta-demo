@@ -29,6 +29,7 @@
   }
 
   VETA.pantalla('A3', {
+    titulo: p => ({acta: 'Contar la visita', orden: 'Enseñar a Veta'})[p.guion] || 'Dictar',
     guia: ['Aquí hablas como se lo contarías a un compañero.', 'Tú dices cómo ha ido, qué hay que hacer o qué quieres que aprenda.', 'Así Veta lo ordena: una nota de la visita, una tarea, una nota o un trabajo.'],
     pinta: p => {
       const g = guionDe(p), ctx = (DA().contexto || {})[g];

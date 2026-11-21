@@ -48,7 +48,16 @@
           {id: 'preocupa', titulo: 'Lo que le preocupa', texto: 'El ruido de la calle por la noche. Que no haya ascensor: es un tercero.'},
           {id: 'siguiente', titulo: 'Siguiente paso', texto: 'Segunda visita el sábado por la tarde, con su pareja, para oír la calle.'}],
         tarea: 'Llamar a Elena el jueves 26 para confirmar la visita del sábado', tareaPie: 'La pongo en tu calendario.',
-        lineaTarea: 'He apuntado: llamar a Elena el jueves 26', propietario: 'pere'}
+        lineaTarea: 'He apuntado: llamar a Elena el jueves 26', propietario: 'pere', docSub: 'Verdi 42 · hoy, 9:00'}
+    },
+
+    // A4 · ronda 7 · el informe de la visita para el propietario del piso: mismas tres cosas del acta, con las fotos y el mensaje ya escrito
+    // (los rótulos cambian porque lo lee el propietario; el texto de cada bloque es el del acta, también si se corrige a mano)
+    informeVisita: {
+      elena: {para: 'pere', piso: 'verdi', titulo: 'Visita de hoy a tu piso de Gràcia', cuando: 'Lunes 23 de noviembre, 9:00 · Elena Vives',
+        rotulos: {gusto: 'Lo que le ha gustado', preocupa: 'Lo que le frena', siguiente: 'Qué pasa ahora'},
+        firma: 'Preparado por Laura Martí',
+        mensaje: 'Hola, Pere. Hoy ha venido Elena Vives a ver el piso. Le ha gustado la luz del salón, la terraza y la cocina. Le frena el ruido de la calle por la noche y que no haya ascensor. Quiere volver el sábado por la tarde con su pareja. Te paso el informe con las fotos.'}
     },
 
     // A4b · tarea o nota (textos del plan)

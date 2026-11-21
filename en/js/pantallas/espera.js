@@ -31,7 +31,7 @@
     guia: ['Here\'s what depends on others or has a date, in order.', 'You prepare the reminder when it\'s time, or mark it as kept.', 'That way nothing you\'re promised gets forgotten.'],
     pinta: () => {
       const q = VETA.A.q(), pend = VETA.A.esperaPend(q);
-      let h = `<p class="a-cuantas" data-i="0">What I'm watching for you · ${pend.length === 1 ? '1 thing' : pend.length + ' things'}</p>`;
+      let h = '';
       const u = M.ultima(q);
       if (u && u.tipo === 'espera' && u.orden === VETA.A.seq()) {
         h += `<div class="a-sitio" data-i="1">${UI.lineaCosa(u)}` +

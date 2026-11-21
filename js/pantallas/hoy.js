@@ -64,7 +64,7 @@
   // vuelve a Hoy: atrás si Hoy es la anterior; si no, como pestaña
   A.aHoy = () => {
     const p = VETA.pila();
-    if (p.length > 1 && p[p.length - 2].ruta === 'hoy') VETA.atras(); else VETA.ir('hoy', {pestana: true});
+    if (p.length > 1 && ['hoy', 'hoy/cola'].includes(p[p.length - 2].ruta)) VETA.atras(); else VETA.ir('hoy', {pestana: true});
   };
 
   // ---- ronda 6 · lo que Veta aprende y hace sola (datos en VETA.datos.r6.dia; claves propias «a.r6.») ----
@@ -121,19 +121,6 @@
     (o.sub ? `<span class="a-r6-f-s">${esc(o.sub)}</span>` : '') + (o.enlace ? `<span class="a-r6-f-e">${esc(o.enlace)} ›</span>` : '') + '</span>' +
     (o.boton || '') + ((o.ir || o.hoja) && !o.enlace ? `<span class="a-r6-f-ch">${ic('chev', 16)}</span>` : '') + `</${o.ir || o.hoja ? 'button' : 'div'}>`;
 
-  // arriba: la cuenta, a tamaño de título, y en oro lo que Veta ha cerrado sola. La cifra es VETA.r6.tocan: la misma de la tarjeta y de la pestaña.
-  function arriba(q) {
-    const d = R6(), t = VETA.r6.tocan(q), n = t.total, k = t.quedan, ab = E('abiertas', []);
-    const cerr = (d.cerradas || []).filter(x => !ab.includes(x.id));
-    const c = (a, clave, de) => vivo.cuenta({de, a, clave: 'a-r6-' + clave});
-    const hoy = () => c(n, 'hoy' + (ab.length ? n : ''), ab.length ? n - 1 : d.haceUnMes) + (n === 1 ? ' cosa.' : ' cosas.');
-    const frase = k === 0 ? `Hoy te ${n === 1 ? 'tocaba' : 'tocaban'} ${hoy()}` : k < n ? `Te ${k === 1 ? 'queda' : 'quedan'} ${c(k, 'q' + k + 'de' + n, k + 1)} de ${n}.` : `Hoy te ${n === 1 ? 'toca' : 'tocan'} ${hoy()}`;
-    return `<button type="button" class="a-r6-hoy" data-ir="antes-ahora" data-i="0" data-g="Antes y ahora|Tu lista del primer día al lado de la de hoy.">` +
-      `<span class="a-r6-hoy-t">${frase} <span class="a-r6-hoy-a">Hace un mes eran ${d.haceUnMes}.</span></span><span class="a-r6-ch">${ic('chev', 16)}</span></button>` +
-      (cerr.length ? `<button type="button" class="a-r6-tira" data-accion="r6-cerradas" data-i="0">${ic('check', 18)}<span class="a-r6-tira-t"><span>Ya he cerrado <b>${cerr.length}</b> ${cerr.length === 1 ? 'cosa' : 'cosas'} por ti:</span> <span>${esc(cerr.map(x => x.corto).join(' y '))}</span></span>` +
-        `<span class="a-r6-ch">${ic('chev', 16)}</span></button>` : '');
-  }
-
   // lo que Veta cerró y Laura ha vuelto a abrir con «Deshacer»: otra vez en su lista (y en la cuenta), con un botón para que Veta lo cierre de nuevo
   function reabiertas() {
     const ab = E('abiertas', []), l = (R6().cerradas || []).filter(x => ab.includes(x.id)); if (!l.length) return '';
@@ -164,45 +151,53 @@
       UI.botones([{texto: 'Solo con ' + (c.corto || c.titulo), accion: 'r6-aprende', datos: {ambito: 'cliente'}}, {texto: 'Solo esta vez', accion: 'r6-aprende', datos: {ambito: 'vez'}}]) + '</section>';
   }
 
-  // los tres bloques de Veta, debajo de «Hoy te toca»
-  function bloques(q) {
-    const d = R6(), vis = E('visitasVista', 'propuesta'), dv = d.visitas || {};
-    // Esto lo hago yo
+  // ronda 7 · lo que Veta ha hecho sola (hoy/veta): lo leído, lo que vigila y lo que ha cerrado, con su «Deshacer».
+  // Lo aprendido y lo que propone viven en la pestaña Veta: aquí no se repiten.
+  function hechoPorVeta(q) {
+    const d = R6(), yo = q === 'laura', vis = r6.reglaVisitas(), dv = d.visitas || {};
     const esp = A.esperaPend(q), cuenta = {};
     esp.forEach(x => { const t = (d.vigilo || {})[x.id] || 'respuestas'; cuenta[t] = (cuenta[t] || 0) + 1; });
     const uno = {promesas: 'promesa', papeles: 'papel', fechas: 'fecha', llamadas: 'llamada', respuestas: 'respuesta'};
     const porTipo = ['promesas', 'papeles', 'fechas', 'llamadas', 'respuestas'].filter(t => cuenta[t]).map(t => cuenta[t] + ' ' + (cuenta[t] === 1 ? uno[t] : t)).join(' · ');
     const ab = E('abiertas', []), leidos = ((VETA.datos.lectura || {}).hoy || {}).chats || 8;
-    let yo = fila6({icono: 'chat', titulo: 'Desde ayer he leído ' + leidos + ' chats', sub: 'Te he dejado ' + plural(M.cola(q).length, 'cosa lista', 'cosas listas') + ' y he cerrado ' + ((d.cerradas || []).length - ab.length) + '.', hoja: 'h04'});
-    yo += fila6({icono: 'reloj', titulo: 'Vigilo ' + plural(esp.length, 'cosa', 'cosas') + ' por ti', sub: porTipo, ir: 'espera'});
-    if (vis === 'sola') yo += fila6({oro: true, vt: 'a-r6-visitas', icono: 'check', titulo: dv.solaT, sub: dv.sola, ir: dv.ir});
-    (d.cerradas || []).forEach(x => {
-      const abierta = false; if (ab.includes(x.id)) return;   // lo abierto otra vez está arriba, en lo tuyo
-      yo += fila6({oro: true, cerrada: true, vt: 'a-r6-' + x.id, lead: x.cliente ? VETA.av(x.cliente, 40) : null, icono: x.icono, titulo: x.titulo, sub: abierta ? x.abierta : x.texto,
-        boton: abierta ? '' : UI.boton({tipo: 'texto', texto: 'Deshacer', accion: 'r6-reabre', de: x.id, ancho: false})});
+    const cerr = yo ? (d.cerradas || []).filter(x => !ab.includes(x.id)) : [];
+    let yoH = fila6({icono: 'chat', titulo: 'Desde ayer he leído ' + leidos + ' chats', sub: 'Te he dejado ' + plural(M.cola(q).length, 'cosa lista', 'cosas listas') + (yo ? ' y he cerrado ' + cerr.length + '.' : '.'), hoja: 'h04'});
+    yoH += fila6({icono: 'reloj', titulo: 'Vigilo ' + plural(esp.length, 'cosa', 'cosas') + ' por ti', sub: porTipo, ir: 'espera'});
+    if (yo && vis === 'sola') yoH += fila6({oro: true, icono: 'check', titulo: dv.solaT, sub: dv.sola, ir: dv.ir});
+    cerr.forEach(x => {
+      yoH += fila6({oro: true, cerrada: true, vt: 'a-r6-' + x.id, lead: x.cliente ? VETA.av(x.cliente, 40) : null, icono: x.icono, titulo: x.titulo, sub: x.texto,
+        boton: UI.boton({tipo: 'texto', texto: 'Deshacer', accion: 'r6-reabre', de: x.id, ancho: false})});
     });
-    const pregs = r6.preguntas(q), quien = ((VETA.datos.personas || {}).montse || {}).corto || 'Dirección';
-    let h = pregs.length ? UI.bloque({titulo: 'Te pregunta ' + quien, i: 3, html: `<div class="a-r6-lista">${pregs.map(x => fila6({lead: VETA.av('montse', 40), titulo: x.texto,
-      sub: 'Sobre ' + x.nombre + ' · hoy, ' + x.hora, ir: VETA.datos.clientes[x.op] ? 'cliente/' + x.op : null})).join('')}</div>`}) : '';
-    h += UI.bloque({titulo: 'Esto lo hago yo', i: 3, html: `<div class="a-r6-lista">${yo}</div><button type="button" class="enlace a-r6-en" data-ir="que-hace">Qué hace Veta ›</button>`});
-    // Lo que he aprendido de ti
-    const s = r6.siempre(), solo = E('solo'), ap = d.aprendido; let apr = '';
-    if (s) apr += fila6({oro: true, vt: 'a-r6-siempre', icono: 'estrella', tituloHtml: vivo.oro(s.regla, {clave: 'a-r6-s'}), sub: 'Me lo has enseñado hoy a las ' + (s.cuando || VETA.ahora()), ir: 'aprendido'});
-    if (solo) apr += fila6({oro: true, icono: 'estrella', titulo: 'Con ' + solo.corto + ': ' + solo.regla.charAt(0).toLowerCase() + solo.regla.slice(1), sub: 'Me lo has enseñado hoy a las ' + solo.cuando, ir: 'aprendido'});
-    if (ap) apr += fila6({lead: vivo.anillo({van: ap.hechas - ap.cambiadas, de: ap.hechas, tam: 's'}), titulo: ap.titulo,
-      sub: ap.origen + ' · Lo he hecho ' + plural(ap.hechas, 'vez', 'veces') + ' · Me corregiste ' + ap.cambiadas, ir: ap.ir});
-    h += UI.bloque({titulo: 'Lo que he aprendido de ti', i: 4, html: `<div class="a-r6-lista">${apr}</div><button type="button" class="enlace a-r6-en" data-ir="aprendido">Ver todo lo que he aprendido ›</button>`});
-    // ¿Lo hago yo?
-    let pro = '';
-    (d.loHagoYo || []).forEach(x => {
-      if (x.id === 'visitas' && vis === 'sola') return;
-      if (x.regla) { const r = M.regla(x.regla); if (!r || r.estado !== 'propuesta') return; }
-      const prueba = x.id === 'visitas' && vis === 'prueba';
-      pro += fila6({vt: x.id === 'visitas' ? 'a-r6-visitas' : null, lead: vivo.anillo({veces: x.veces, tam: 's'}), titulo: x.titulo,
-        sub: prueba ? dv.prueba : 'Esto lo has hecho ' + x.veces + ' veces. ¿Lo hago yo?', enlace: 'Enséñame los casos', ir: x.ir});
-    });
-    if (pro) h += UI.bloque({titulo: '¿Lo hago yo?', i: 4, html: `<div class="a-r6-lista">${pro}</div>`});
-    return h;
+    return (yo ? reabiertas() : '') + `<div class="a-r6-lista" data-i="1">${yoH}</div>` +
+      `<button type="button" class="enlace a-r6-en" data-ir="${VETA.yo().papel === 'direccion' ? 'oficina-que-hace' : 'que-hace'}" data-i="2">Todo lo que hace Veta ›</button>`;
+  }
+
+  // ronda 7 · las puertas de Hoy: lo que puedes hacer al entrar, con su número. Nada desplegado.
+  function puertas(q) {
+    const yo = q === 'laura', d = R6(), cola = M.cola(q), pend = cola.filter(c => PEND.includes(c.estado));
+    const t = VETA.r6.tocan(q), ab = E('abiertas', []), Pu = [];
+    // lo que dirección pregunta por una operación llega aquí, lo primero
+    const quien = ((VETA.datos.personas || {}).montse || {}).corto || 'Dirección';
+    r6.preguntas(q).forEach(x => Pu.push({av: 'montse', titulo: 'Te pregunta ' + quien, sub: x.texto + ' · ' + x.nombre, ir: VETA.datos.clientes[x.op] ? 'cliente/' + x.op : 'hoy/cola'}));
+    if (t.quedan) {
+      const caras = pend.map(c => c.av || c.cliente).filter(Boolean);
+      Pu.push({principal: true, caras, icono: 'hoy', titulo: 'Atender lo de hoy', sub: pend[0] ? 'Empieza por ' + pend[0].titulo + '. Ya está escrito.' : 'Lo que Veta cerró y has vuelto a abrir.', n: t.quedan, ir: 'hoy/cola',
+        g: 'Atender lo de hoy|Una cosa cada vez, con el mensaje ya escrito.'});
+    } else {
+      Pu.push({principal: true, icono: 'check', titulo: 'Todo hecho por hoy', sub: VETA.est.lee('a.cerrado', null) ? 'Día cerrado. Cola nueva mañana a las 8:00.' : 'Mira lo hecho y cierra el día.', ir: 'hoy/cola'});
+    }
+    // la visita de hoy: al salir se cuenta, y salen el acta y el informe con fotos (solo quien lleva la visita)
+    const v = cola.find(c => c.tipo === 'visita');
+    if (v) {
+      const hecha = v.estado === 'hecha';
+      Pu.push({foto: v.piso, clase: hecha ? 'puerta-hecha' : '', titulo: hecha ? 'Visita con ' + (v.corto || v.titulo) + ', contada' : 'Contar una visita',
+        sub: hecha ? 'El acta y el informe con fotos están hechos.' : v.momento.replace(/^Visita con /, '') + '. Sale el acta y el informe con fotos.', ir: hecha ? 'acta/' + v.cliente : 'dictar/acta',
+        g: 'Contar una visita|Hablas un minuto al salir y Veta deja el acta y el informe para el propietario.'});
+    }
+    Pu.push({icono: 'mic', titulo: 'Enseñar algo a Veta', sub: 'Se lo dices hablando. Te lo propone y tú decides.', ir: 'dictar/orden', g: 'Enseñar algo a Veta|Una orden dicha con tu voz se convierte en un trabajo suyo.'});
+    const esp = A.esperaPend(q).length, cerr = yo ? (d.cerradas || []).filter(x => !ab.includes(x.id)).length : 0;
+    Pu.push({icono: 'check', clase: 'puerta-hecha', titulo: 'Ver lo hecho por Veta', sub: (yo ? plural(cerr, 'cosa cerrada', 'cosas cerradas') + ' y ' : '') + plural(esp, 'vigilada', 'vigiladas') + '.', n: cerr + esp, ir: 'hoy/veta'});
+    return UI.puertas(Pu, {i: 1, panel: 'hoy/cola'});
   }
 
   function lineaEnSitio(q) {
@@ -241,18 +236,39 @@
         `<span class="a-dia-h">${esc(x.hora || '')}</span><span class="a-dia-t">${esc(x.texto)}</span></div>`).join('')}</div>` +
         `<button type="button" class="enlace" data-hoja="h05">Ver las ${hechas.length} ›</button>`});
     }
-    return h + (q === 'laura' ? bloques(q) : UI.lista([{titulo: 'Lo que vigilo por ti', sub: plural(A.esperaPend(q).length, 'cosa', 'cosas'), icono: 'reloj', ir: 'espera'}], {i: 3}));
+    return h;
   }
 
+  // ---- A1 · Hoy: pocas puertas. Cada una dice lo que puedes hacer y cuántas cosas hay detrás ----
   VETA.pantalla('A1', {
+    guia: ['Aquí ves, en pocas puertas, lo que puedes hacer hoy.', 'Tú tocas una: atender lo que te toca, contar una visita, enseñar algo a Veta o ver lo que ha hecho sola.', 'Así no hay nada que leer ni recordar: se entra a lo que quieres hacer.'],
+    pinta: () => medias() + puertas(A.q()),
+    acciones: {
+      'borrar-dictado'() { VETA.est.pon('a.dictado', null); VETA.repinta(); }
+    }
+  });
+
+  // ---- A1v · Lo que Veta ha hecho sola ----
+  VETA.pantalla('A1v', {
+    guia: ['Aquí está lo que Veta ha hecho sin que se lo pidas: lo que ha leído, lo que vigila y lo que ha cerrado.', 'Tú deshaces lo que no esté bien.', 'Así sabes qué hace sola y lo corriges con un toque.'],
+    pinta: () => hechoPorVeta(A.q()),
+    acciones: {
+      'r6-reabre'(ev, el) {
+        const id = el.dataset.de, ab = E('abiertas', []); if (!ab.includes(id)) ab.push(id);
+        P('abiertas', ab); VETA.repinta({paso: true}); VETA.aviso('Vale. No lo cierro sin preguntarte. Vuelve a estar en lo de hoy.');
+      },
+      'r6-recierra'(ev, el) { P('abiertas', E('abiertas', []).filter(x => x !== el.dataset.de)); VETA.repinta({paso: true}); VETA.aviso('Hecho. Lo cierro yo.'); }
+    }
+  });
+
+  // ---- A1c · Lo de hoy: la cola, una cosa cada vez ----
+  VETA.pantalla('A1c', {
     guia: ['Aquí Veta te deja el día en orden: lo primero, arriba.', 'Tú envías, dictas o lo dejas para luego. Si cambias algo, Veta te pregunta si lo hace siempre así.', 'Así cada semana te tocan menos cosas, y las que deja de hacer las has decidido tú.'],
     pinta: () => {
       const q = A.q(), cola = M.cola(q), yo = q === 'laura';
       const pend = cola.filter(c => PEND.includes(c.estado));
-      const fecha = (VETA.datos.fecha || {}).hoyTexto || 'lunes 23 de noviembre';
-      let h = yo ? arriba(q) : `<button type="button" class="a-leido" data-hoja="h04" data-i="0" data-g="Lo que he leído|Qué canales he mirado y qué he encontrado hoy.">` +
-        `<span>${esc(fecha)} · Leído hasta las ${esc(VETA.ahora(-3))}</span><span class="a-leido-c">${ic('chev', 16)}</span></button>`;
-      if (!pend.length) return h + vacia(q, cola);
+      let h = '';
+      if (!pend.length) return vacia(q, cola);
       const prisa = pend.filter(c => !c.sinPrisa), calma = pend.filter(c => c.sinPrisa);
       const abierta = prisa[0] || calma[0];
       const resto = prisa.slice(1), sinPrisa = prisa.length ? calma : calma.slice(1);
@@ -266,9 +282,9 @@
         const s = sinPrisa[0];
         filas.push({titulo: 'Y ' + sinPrisa.length + ' más, sin prisa', sub: sinPrisa.map(x => x.titulo).join(' · '), av: s.cliente, ir: 'cliente/' + s.cliente, vt: 'cola-' + s.id, focoFoto: true});
       }
-      // Laura: lo que espera turno va recogido en una línea, para que «Esto lo hago yo» asome sin desplazar
-      const mas = resto.concat(sinPrisa), abre = !yo || E('resto', false);
-      if (yo && mas.length) h += `<button type="button" class="a-r6-mas" data-accion="r6-resto" aria-expanded="${abre ? 'true' : 'false'}" data-i="2">` +
+      // lo que espera turno va recogido en una línea con sus caras: se abre al tocarla
+      const mas = resto.concat(sinPrisa), abre = E('resto', false);
+      if (mas.length) h += `<button type="button" class="a-r6-mas" data-accion="r6-resto" aria-expanded="${abre ? 'true' : 'false'}" data-i="2">` +
         `<span class="a-r6-mas-av">${mas.slice(0, 3).map(x => VETA.av(x.av || x.cliente, 32)).join('')}</span>` +
         `<span class="a-r6-mas-t">Y ${mas.length} más</span><span class="chev-gira">${ic('chev', 16)}</span></button>`;
       if (abre && resto.length) h += `<div class="a-filas" data-i="2">${UI.lista(resto.map(c => (c.extra || {}).r6 ? UI.fila({titulo: c.fila || c.titulo, sub: 'Ya cambiado con lo que me has enseñado', av: c.cliente, ir: 'cliente/' + c.cliente, vt: 'cola-' + c.id, focoFoto: true}) : UI.filaCosa(c)))}</div>`;
@@ -276,9 +292,7 @@
       const pies = abre ? filas : [];
       const hechas = A.hechas(q), enSitio = (lineaEnSitio(q).match(/class="hecho"/g) || []).length, nMan = M.manana(q).length;
       if (hechas.length > enSitio || nMan) pies.push({titulo: plural(hechas.length, 'hecha hoy', 'hechas hoy'), sub: nMan ? manana(nMan) : null, icono: 'check', hoja: 'h05'});
-      if (!yo) pies.push({titulo: 'Lo que vigilo por ti', sub: plural(A.esperaPend(q).length, 'cosa', 'cosas'), icono: 'reloj', ir: 'espera'});
       if (pies.length) h += UI.lista(pies, {i: 3, clase: 'a-pies'});
-      if (yo) h += bloques(q);
       return h;
     },
     botonFijo: () => {
@@ -292,12 +306,7 @@
       if (A.q() === 'laura') {
         const k = E('cambio');
         if (!r6.siempre()) { let toca = A.r6.limpia(); if (k && k.resuelto === 'siempre') { P('cambio', null); toca = true; } if (toca) { VETA.repinta(); return; } }
-        const real = r6.reglaVisitas();
-        if (real !== E('visitasVista', 'propuesta')) setTimeout(() => {
-          if (!el.isConnected) return; P('visitasVista', real);
-          const f = el.querySelector('[data-vt="a-r6-visitas"]'); if (f && f.scrollIntoView) f.scrollIntoView({block: 'center'});
-          VETA.repinta({paso: true});
-        }, 500);
+        P('visitasVista', r6.reglaVisitas());
       }
       // si el botón de la tarjeta abierta queda bajo la barra, la lista sube lo justo para que se vea (sin que lo hagas tú)
       const d = el.closest('.desplaza'), b = el.querySelector('.a-abierta .btn-principal'); if (!d || !b) return;
@@ -347,9 +356,7 @@
         setTimeout(() => { const d = document.querySelector('.col.activa .desplaza'); if (d) d.scrollTo({top: 0, behavior: calmo() ? 'auto' : 'smooth'}); }, 350);
       },
       // «Ciérralo tú»: Laura se lo devuelve a Veta
-      'r6-recierra'(ev, el) { P('abiertas', E('abiertas', []).filter(x => x !== el.dataset.de)); VETA.repinta({paso: true}); VETA.aviso('Hecho. Lo cierro yo.'); },
-      // la tira dorada lleva a lo que Veta ha cerrado, más abajo en «Esto lo hago yo»
-      'r6-cerradas'() { const f = document.querySelector('.col.activa .a-r6-cerrada'); if (f) f.scrollIntoView({block: 'center', behavior: calmo() ? 'auto' : 'smooth'}); }
+      'r6-recierra'(ev, el) { P('abiertas', E('abiertas', []).filter(x => x !== el.dataset.de)); VETA.repinta({paso: true}); VETA.aviso('Hecho. Lo cierro yo.'); }
     }
   });
 })();

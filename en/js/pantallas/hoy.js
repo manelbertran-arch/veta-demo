@@ -1,6 +1,6 @@
 /* Veta demo · pantallas · hoy.js · paquete A (El día)
    A1 · Hoy · #/hoy. Además, VETA.A: lo que comparten las pantallas y hojas del paquete A
-   (tareas y notas guardadas desde lo dictado, la línea “en el sitio”, el dictado a medias y el “principal” con el 409 de Jordi). */
+   (tareas y notas guardadas desde lo dictado, la línea «en el sitio», el dictado a medias y el «principal» con el 409 de Jordi). */
 (function () {
   'use strict';
   const UI = VETA.UI, M = VETA.modelo, esc = VETA.esc, ic = VETA.ic;
@@ -8,11 +8,11 @@
   const HECHAS = ['enviada', 'hecha', 'quitada'];
   const DA = () => VETA.datos.diaA || {};
 
-  // ---- VETA.A: estado propio del paquete (prefijo “a.”) ----
+  // ---- VETA.A: estado propio del paquete (prefijo «a.») ----
   const A = VETA.A = {};
   A.q = () => VETA.yo().id;
   A.seq = () => VETA.est.lee('seq', 0);
-  // cuenta como “acción siguiente” para la línea en el sitio (comparte el contador del modelo)
+  // cuenta como «acción siguiente» para la línea en el sitio (comparte el contador del modelo)
   A.sube = () => { const s = A.seq() + 1; VETA.est.pon('seq', s); return s; };
   // tareas, notas y recordatorios guardados en esta demo por el paquete A
   A.locales = () => VETA.est.lee('a.locales', []);
@@ -32,7 +32,7 @@
   };
   A.esperaPend = q => A.espera(q).filter(x => PEND.includes(x.estado));
 
-  // texto de lo hecho, con el nombre entero (H05 y “Hecho hoy”)
+  // texto de lo hecho, con el nombre entero (H05 y «Hecho hoy»)
   A.textoHecho = c => {
     const x = c.extra || {};
     if (x.linea) return x.linea;
@@ -47,7 +47,7 @@
     return m.concat(l).sort((a, b) => a.orden - b.orden);
   };
 
-  // “principal” de una tarjeta: Jordi trae el 409 (el mensaje cambia una vez); lo demás, como el núcleo
+  // «principal» de una tarjeta: Jordi trae el 409 (el mensaje cambia una vez); lo demás, como el núcleo
   A.principal = (el, id) => {
     const c = M.cosa(id || el.dataset.de); if (!c) return;
     if (c.cambio && !(c.extra || {}).cambiado) {
@@ -64,10 +64,10 @@
   // vuelve a Hoy: atrás si Hoy es la anterior; si no, como pestaña
   A.aHoy = () => {
     const p = VETA.pila();
-    if (p.length > 1 && p[p.length - 2].ruta === 'hoy') VETA.atras(); else VETA.ir('hoy', {pestana: true});
+    if (p.length > 1 && ['hoy', 'hoy/cola'].includes(p[p.length - 2].ruta)) VETA.atras(); else VETA.ir('hoy', {pestana: true});
   };
 
-  // ---- ronda 6 · lo que Veta aprende y hace sola (datos en VETA.datos.r6.dia; claves propias “a.r6.”) ----
+  // ---- ronda 6 · lo que Veta aprende y hace sola (datos en VETA.datos.r6.dia; claves propias «a.r6.») ----
   const R6 = () => (VETA.datos.r6 || {}).dia || {};
   const vivo = VETA.vivo, r6 = VETA.r6;
   const E = (k, d) => VETA.est.lee('a.r6.' + k, d === undefined ? null : d), P = (k, v) => VETA.est.pon('a.r6.' + k, v);
@@ -100,7 +100,7 @@
       antes: lado('-', t => `<s class="a-r6-quita">${esc(t)}</s>`), ahora: lado('+', t => vivo.oro(t)),
       antesTxt: pre.concat(ma, post).join(' '), ahoraTxt: pre.concat(mb, post).join(' ')};
   };
-  // qué ha enseñado: si ahora hay dos horas donde había una (o ninguna), es “dar dos horas”; si no, “escribir así”
+  // qué ha enseñado: si ahora hay dos horas donde había una (o ninguna), es «dar dos horas»; si no, «escribir así»
   A.tipoCambio = (antes, ahora) => {
     const horas = t => (String(t).match(/\b\d{1,2}[:.]\d{2}\b/g) || []).length;
     if (horas(ahora) >= 2 && horas(antes) < 2) return {tipo: 'dos-horas', regla: R6().reglaDosHoras, si: 'Yes, whenever I suggest a viewing'};
@@ -121,27 +121,14 @@
     (o.sub ? `<span class="a-r6-f-s">${esc(o.sub)}</span>` : '') + (o.enlace ? `<span class="a-r6-f-e">${esc(o.enlace)} ›</span>` : '') + '</span>' +
     (o.boton || '') + ((o.ir || o.hoja) && !o.enlace ? `<span class="a-r6-f-ch">${ic('chev', 16)}</span>` : '') + `</${o.ir || o.hoja ? 'button' : 'div'}>`;
 
-  // arriba: la cuenta, a tamaño de título, y en oro lo que Veta ha cerrado sola. La cifra es VETA.r6.tocan: la misma de la tarjeta y de la pestaña.
-  function arriba(q) {
-    const d = R6(), t = VETA.r6.tocan(q), n = t.total, k = t.quedan, ab = E('abiertas', []);
-    const cerr = (d.cerradas || []).filter(x => !ab.includes(x.id));
-    const c = (a, clave, de) => vivo.cuenta({de, a, clave: 'a-r6-' + clave});
-    const hoy = () => c(n, 'hoy' + (ab.length ? n : ''), ab.length ? n - 1 : d.haceUnMes) + (n === 1 ? ' thing.' : ' things.');
-    const frase = k === 0 ? `Today you ${n === 1 ? 'had' : 'had'} ${hoy()}` : k < n ? `You have ${c(k, 'q' + k + 'of' + n, k + 1)} of ${n} ${k === 1 ? 'left' : 'left'}.` : `Today you ${n === 1 ? 'have' : 'have'} ${hoy()}`;
-    return `<button type="button" class="a-r6-hoy" data-ir="antes-ahora" data-i="0" data-g="Antes y ahora|Tu lista del primer día al lado de la de hoy.">` +
-      `<span class="a-r6-hoy-t">${frase} <span class="a-r6-hoy-a">A month ago it was ${d.haceUnMes}.</span></span><span class="a-r6-ch">${ic('chev', 16)}</span></button>` +
-      (cerr.length ? `<button type="button" class="a-r6-tira" data-accion="r6-cerradas" data-i="0">${ic('check', 18)}<span class="a-r6-tira-t"><span>I have already closed <b>${cerr.length}</b> ${cerr.length === 1 ? 'thing' : 'things'} for you:</span> <span>${esc(cerr.map(x => x.corto).join(' and '))}</span></span>` +
-        `<span class="a-r6-ch">${ic('chev', 16)}</span></button>` : '');
-  }
-
-  // lo que Veta cerró y Laura ha vuelto a abrir con “Deshacer”: otra vez en su lista (y en la cuenta), con un botón para que Veta lo cierre de nuevo
+  // lo que Veta cerró y Laura ha vuelto a abrir con «Deshacer»: otra vez en su lista (y en la cuenta), con un botón para que Veta lo cierre de nuevo
   function reabiertas() {
     const ab = E('abiertas', []), l = (R6().cerradas || []).filter(x => ab.includes(x.id)); if (!l.length) return '';
     return `<div class="a-r6-lista a-r6-tuyas" data-i="2">${l.map(x => fila6({vt: 'a-r6-' + x.id, lead: x.cliente ? VETA.av(x.cliente, 40) : null, icono: x.icono, titulo: x.tuya || x.titulo, sub: x.abierta,
       boton: UI.boton({tipo: 'texto', texto: 'Close it yourself', accion: 'r6-recierra', de: x.id, ancho: false})})).join('')}</div>`;
   }
 
-  // “¿Lo hago siempre así?”: sale una vez, cuando el mensaje cambiado ya se ha enviado
+  // «¿Lo hago siempre así?»: sale una vez, cuando el mensaje cambiado ya se ha enviado
   function aprender() {
     const k = E('cambio'), c = k && M.cosa(k.id); if (!c || c.estado !== 'enviada') return '';
     const d = A.dif(k.antes, k.ahora), t = A.tipoCambio(k.antes, k.ahora), ap = R6().aplica;
@@ -164,45 +151,53 @@
       UI.botones([{texto: 'Only with ' + (c.corto || c.titulo), accion: 'r6-aprende', datos: {ambito: 'cliente'}}, {texto: 'Only this time', accion: 'r6-aprende', datos: {ambito: 'vez'}}]) + '</section>';
   }
 
-  // los tres bloques de Veta, debajo de “Hoy te toca”
-  function bloques(q) {
-    const d = R6(), vis = E('visitasVista', 'propuesta'), dv = d.visitas || {};
-    // Esto lo hago yo
+  // ronda 7 · lo que Veta ha hecho sola (hoy/veta): lo leído, lo que vigila y lo que ha cerrado, con su «Deshacer».
+  // Lo aprendido y lo que propone viven en la pestaña Veta: aquí no se repiten.
+  function hechoPorVeta(q) {
+    const d = R6(), yo = q === 'laura', vis = r6.reglaVisitas(), dv = d.visitas || {};
     const esp = A.esperaPend(q), cuenta = {};
     esp.forEach(x => { const t = (d.vigilo || {})[x.id] || 'respuestas'; cuenta[t] = (cuenta[t] || 0) + 1; });
     const uno = {promesas: 'promise', papeles: 'document', fechas: 'date', llamadas: 'call', respuestas: 'reply'}, varios = {promesas: 'promises', papeles: 'documents', fechas: 'dates', llamadas: 'calls', respuestas: 'replies'};
     const porTipo = ['promesas', 'papeles', 'fechas', 'llamadas', 'respuestas'].filter(t => cuenta[t]).map(t => cuenta[t] + ' ' + (cuenta[t] === 1 ? uno[t] : varios[t])).join(' · ');
     const ab = E('abiertas', []), leidos = ((VETA.datos.lectura || {}).hoy || {}).chats || 8;
-    let yo = fila6({icono: 'chat', titulo: 'Since yesterday I have read ' + leidos + ' chats', sub: 'I have left you ' + plural(M.cola(q).length, 'thing ready', 'things ready') + ' and I have closed ' + ((d.cerradas || []).length - ab.length) + '.', hoja: 'h04'});
-    yo += fila6({icono: 'reloj', titulo: 'I\'m watching ' + plural(esp.length, 'thing', 'things') + ' for you', sub: porTipo, ir: 'espera'});
-    if (vis === 'sola') yo += fila6({oro: true, vt: 'a-r6-visitas', icono: 'check', titulo: dv.solaT, sub: dv.sola, ir: dv.ir});
-    (d.cerradas || []).forEach(x => {
-      const abierta = false; if (ab.includes(x.id)) return;   // lo abierto otra vez está arriba, en lo tuyo
-      yo += fila6({oro: true, cerrada: true, vt: 'a-r6-' + x.id, lead: x.cliente ? VETA.av(x.cliente, 40) : null, icono: x.icono, titulo: x.titulo, sub: abierta ? x.abierta : x.texto,
-        boton: abierta ? '' : UI.boton({tipo: 'texto', texto: 'Undo', accion: 'r6-reabre', de: x.id, ancho: false})});
+    const cerr = yo ? (d.cerradas || []).filter(x => !ab.includes(x.id)) : [];
+    let yoH = fila6({icono: 'chat', titulo: 'Since yesterday I have read ' + leidos + ' chats', sub: 'I have left you ' + plural(M.cola(q).length, 'thing ready', 'things ready') + (yo ? ' and I have closed ' + cerr.length + '.' : '.'), hoja: 'h04'});
+    yoH += fila6({icono: 'reloj', titulo: 'I\'m watching ' + plural(esp.length, 'thing', 'things') + ' for you', sub: porTipo, ir: 'espera'});
+    if (yo && vis === 'sola') yoH += fila6({oro: true, icono: 'check', titulo: dv.solaT, sub: dv.sola, ir: dv.ir});
+    cerr.forEach(x => {
+      yoH += fila6({oro: true, cerrada: true, vt: 'a-r6-' + x.id, lead: x.cliente ? VETA.av(x.cliente, 40) : null, icono: x.icono, titulo: x.titulo, sub: x.texto,
+        boton: UI.boton({tipo: 'texto', texto: 'Undo', accion: 'r6-reabre', de: x.id, ancho: false})});
     });
-    const pregs = r6.preguntas(q), quien = ((VETA.datos.personas || {}).montse || {}).corto || 'Management';
-    let h = pregs.length ? UI.bloque({titulo: 'Question from ' + quien, i: 3, html: `<div class="a-r6-lista">${pregs.map(x => fila6({lead: VETA.av('montse', 40), titulo: x.texto,
-      sub: 'About ' + x.nombre + ' · today, ' + x.hora, ir: VETA.datos.clientes[x.op] ? 'cliente/' + x.op : null})).join('')}</div>`}) : '';
-    h += UI.bloque({titulo: 'I do this', i: 3, html: `<div class="a-r6-lista">${yo}</div><button type="button" class="enlace a-r6-en" data-ir="que-hace">What I do ›</button>`});
-    // Lo que he aprendido de ti
-    const s = r6.siempre(), solo = E('solo'), ap = d.aprendido; let apr = '';
-    if (s) apr += fila6({oro: true, vt: 'a-r6-siempre', icono: 'estrella', tituloHtml: vivo.oro(s.regla, {clave: 'a-r6-s'}), sub: 'You showed me this today at ' + (s.cuando || VETA.ahora()), ir: 'aprendido'});
-    if (solo) apr += fila6({oro: true, icono: 'estrella', titulo: 'With ' + solo.corto + ': ' + solo.regla.charAt(0).toLowerCase() + solo.regla.slice(1), sub: 'You showed me this today at ' + solo.cuando, ir: 'aprendido'});
-    if (ap) apr += fila6({lead: vivo.anillo({van: ap.hechas - ap.cambiadas, de: ap.hechas, tam: 's'}), titulo: ap.titulo,
-      sub: ap.origen + ' · I have done it ' + plural(ap.hechas, 'time', 'times') + ' · Times you corrected me: ' + ap.cambiadas, ir: ap.ir});
-    h += UI.bloque({titulo: 'What I\'ve learned from you', i: 4, html: `<div class="a-r6-lista">${apr}</div><button type="button" class="enlace a-r6-en" data-ir="aprendido">See everything I've learned ›</button>`});
-    // ¿Lo hago yo?
-    let pro = '';
-    (d.loHagoYo || []).forEach(x => {
-      if (x.id === 'visitas' && vis === 'sola') return;
-      if (x.regla) { const r = M.regla(x.regla); if (!r || r.estado !== 'propuesta') return; }
-      const prueba = x.id === 'visitas' && vis === 'prueba';
-      pro += fila6({vt: x.id === 'visitas' ? 'a-r6-visitas' : null, lead: vivo.anillo({veces: x.veces, tam: 's'}), titulo: x.titulo,
-        sub: prueba ? dv.prueba : 'You have done this ' + x.veces + ' times. Shall I do it?', enlace: 'Show me the cases', ir: x.ir});
-    });
-    if (pro) h += UI.bloque({titulo: 'Shall I do it?', i: 4, html: `<div class="a-r6-lista">${pro}</div>`});
-    return h;
+    return (yo ? reabiertas() : '') + `<div class="a-r6-lista" data-i="1">${yoH}</div>` +
+      `<button type="button" class="enlace a-r6-en" data-ir="${VETA.yo().papel === 'direccion' ? 'oficina-que-hace' : 'que-hace'}" data-i="2">Everything Veta does ›</button>`;
+  }
+
+  // ronda 7 · las puertas de Hoy: lo que puedes hacer al entrar, con su número. Nada desplegado.
+  function puertas(q) {
+    const yo = q === 'laura', d = R6(), cola = M.cola(q), pend = cola.filter(c => PEND.includes(c.estado));
+    const t = VETA.r6.tocan(q), ab = E('abiertas', []), Pu = [];
+    // lo que dirección pregunta por una operación llega aquí, lo primero
+    const quien = ((VETA.datos.personas || {}).montse || {}).corto || 'Management';
+    r6.preguntas(q).forEach(x => Pu.push({av: 'montse', titulo: 'Question from ' + quien, sub: x.texto + ' · ' + x.nombre, ir: VETA.datos.clientes[x.op] ? 'cliente/' + x.op : 'hoy/cola'}));
+    if (t.quedan) {
+      const caras = pend.map(c => c.av || c.cliente).filter(Boolean);
+      Pu.push({principal: true, caras, icono: 'hoy', titulo: 'Handle today\'s list', sub: pend[0] ? 'Start with ' + pend[0].titulo + '. It is already written.' : 'What Veta closed and you reopened.', n: t.quedan, ir: 'hoy/cola',
+        g: 'Handle today\'s list|One thing at a time, with the message already written.'});
+    } else {
+      Pu.push({principal: true, icono: 'check', titulo: 'All done for today', sub: VETA.est.lee('a.cerrado', null) ? 'Day closed. New queue tomorrow at 8:00.' : 'Look at what is done and close the day.', ir: 'hoy/cola'});
+    }
+    // la visita de hoy: al salir se cuenta, y salen el acta y el informe con fotos (solo quien lleva la visita)
+    const v = cola.find(c => c.tipo === 'visita');
+    if (v) {
+      const hecha = v.estado === 'hecha';
+      Pu.push({foto: v.piso, clase: hecha ? 'puerta-hecha' : '', titulo: hecha ? 'Viewing with ' + (v.corto || v.titulo) + ', written up' : 'Describe a viewing',
+        sub: hecha ? 'The notes and the report with photos are done.' : v.momento.replace(/^Viewing with /, '') + '. You get notes and a photo report.', ir: hecha ? 'acta/' + v.cliente : 'dictar/acta',
+        g: 'Describe a viewing|You talk for a minute when you leave and Veta writes the notes and the report for the owner.'});
+    }
+    Pu.push({icono: 'mic', titulo: 'Teach Veta something', sub: 'You say it out loud. Veta makes a proposal and you decide.', ir: 'dictar/orden', g: 'Teach Veta something|An instruction spoken in your voice becomes one of its jobs.'});
+    const esp = A.esperaPend(q).length, cerr = yo ? (d.cerradas || []).filter(x => !ab.includes(x.id)).length : 0;
+    Pu.push({icono: 'check', clase: 'puerta-hecha', titulo: 'See what Veta did', sub: (yo ? plural(cerr, 'thing closed', 'things closed') + ' and ' : '') + plural(esp, 'watched', 'watched') + '.', n: cerr + esp, ir: 'hoy/veta'});
+    return UI.puertas(Pu, {i: 1, panel: 'hoy/cola'});
   }
 
   function lineaEnSitio(q) {
@@ -241,18 +236,39 @@
         `<span class="a-dia-h">${esc(x.hora || '')}</span><span class="a-dia-t">${esc(x.texto)}</span></div>`).join('')}</div>` +
         `<button type="button" class="enlace" data-hoja="h05">See the ${hechas.length} ›</button>`});
     }
-    return h + (q === 'laura' ? bloques(q) : UI.lista([{titulo: 'What I\'m watching for you', sub: plural(A.esperaPend(q).length, 'thing', 'things'), icono: 'reloj', ir: 'espera'}], {i: 3}));
+    return h;
   }
 
+  // ---- A1 · Hoy: pocas puertas. Cada una dice lo que puedes hacer y cuántas cosas hay detrás ----
   VETA.pantalla('A1', {
+    guia: ['Here you see, in a few doors, what you can do today.', 'You tap one: handle what is yours to do, describe a viewing, teach Veta something or see what it did on its own.', 'This way there is nothing to read or remember: you go straight into what you want to do.'],
+    pinta: () => medias() + puertas(A.q()),
+    acciones: {
+      'borrar-dictado'() { VETA.est.pon('a.dictado', null); VETA.repinta(); }
+    }
+  });
+
+  // ---- A1v · Lo que Veta ha hecho sola ----
+  VETA.pantalla('A1v', {
+    guia: ['Here is what Veta has done without being asked: what it has read, what it is watching and what it has closed.', 'You undo anything that is not right.', 'This way you know what it does on its own and you correct it with one tap.'],
+    pinta: () => hechoPorVeta(A.q()),
+    acciones: {
+      'r6-reabre'(ev, el) {
+        const id = el.dataset.de, ab = E('abiertas', []); if (!ab.includes(id)) ab.push(id);
+        P('abiertas', ab); VETA.repinta({paso: true}); VETA.aviso('OK. I won\'t close it without asking you. It is back in today\'s list.');
+      },
+      'r6-recierra'(ev, el) { P('abiertas', E('abiertas', []).filter(x => x !== el.dataset.de)); VETA.repinta({paso: true}); VETA.aviso('Done. I will close it myself.'); }
+    }
+  });
+
+  // ---- A1c · Lo de hoy: la cola, una cosa cada vez ----
+  VETA.pantalla('A1c', {
     guia: ['Here Veta leaves your day in order: first things at the top.', 'You send, dictate or leave it for later. If you change something, I will ask if I should always do it like that.', 'This way you get fewer things to do each week, and you decide which ones I stop doing.'],
     pinta: () => {
       const q = A.q(), cola = M.cola(q), yo = q === 'laura';
       const pend = cola.filter(c => PEND.includes(c.estado));
-      const fecha = (VETA.datos.fecha || {}).hoyTexto || 'Monday 23 November';
-      let h = yo ? arriba(q) : `<button type="button" class="a-leido" data-hoja="h04" data-i="0" data-g="Lo que he leído|Qué canales he mirado y qué he encontrado hoy.">` +
-        `<span>${esc(fecha)} · Read up to ${esc(VETA.ahora(-3))}</span><span class="a-leido-c">${ic('chev', 16)}</span></button>`;
-      if (!pend.length) return h + vacia(q, cola);
+      let h = '';
+      if (!pend.length) return vacia(q, cola);
       const prisa = pend.filter(c => !c.sinPrisa), calma = pend.filter(c => c.sinPrisa);
       const abierta = prisa[0] || calma[0];
       const resto = prisa.slice(1), sinPrisa = prisa.length ? calma : calma.slice(1);
@@ -266,9 +282,9 @@
         const s = sinPrisa[0];
         filas.push({titulo: 'And ' + sinPrisa.length + ' more, no rush', sub: sinPrisa.map(x => x.titulo).join(' · '), av: s.cliente, ir: 'cliente/' + s.cliente, vt: 'cola-' + s.id, focoFoto: true});
       }
-      // Laura: lo que espera turno va recogido en una línea, para que “Esto lo hago yo” asome sin desplazar
-      const mas = resto.concat(sinPrisa), abre = !yo || E('resto', false);
-      if (yo && mas.length) h += `<button type="button" class="a-r6-mas" data-accion="r6-resto" aria-expanded="${abre ? 'true' : 'false'}" data-i="2">` +
+      // lo que espera turno va recogido en una línea con sus caras: se abre al tocarla
+      const mas = resto.concat(sinPrisa), abre = E('resto', false);
+      if (mas.length) h += `<button type="button" class="a-r6-mas" data-accion="r6-resto" aria-expanded="${abre ? 'true' : 'false'}" data-i="2">` +
         `<span class="a-r6-mas-av">${mas.slice(0, 3).map(x => VETA.av(x.av || x.cliente, 32)).join('')}</span>` +
         `<span class="a-r6-mas-t">And ${mas.length} more</span><span class="chev-gira">${ic('chev', 16)}</span></button>`;
       if (abre && resto.length) h += `<div class="a-filas" data-i="2">${UI.lista(resto.map(c => (c.extra || {}).r6 ? UI.fila({titulo: c.fila || c.titulo, sub: 'Already changed with what you showed me', av: c.cliente, ir: 'cliente/' + c.cliente, vt: 'cola-' + c.id, focoFoto: true}) : UI.filaCosa(c)))}</div>`;
@@ -276,9 +292,7 @@
       const pies = abre ? filas : [];
       const hechas = A.hechas(q), enSitio = (lineaEnSitio(q).match(/class="hecho"/g) || []).length, nMan = M.manana(q).length;
       if (hechas.length > enSitio || nMan) pies.push({titulo: plural(hechas.length, 'done today', 'done today'), sub: nMan ? manana(nMan) : null, icono: 'check', hoja: 'h05'});
-      if (!yo) pies.push({titulo: 'What I\'m watching for you', sub: plural(A.esperaPend(q).length, 'thing', 'things'), icono: 'reloj', ir: 'espera'});
       if (pies.length) h += UI.lista(pies, {i: 3, clase: 'a-pies'});
-      if (yo) h += bloques(q);
       return h;
     },
     botonFijo: () => {
@@ -292,12 +306,7 @@
       if (A.q() === 'laura') {
         const k = E('cambio');
         if (!r6.siempre()) { let toca = A.r6.limpia(); if (k && k.resuelto === 'siempre') { P('cambio', null); toca = true; } if (toca) { VETA.repinta(); return; } }
-        const real = r6.reglaVisitas();
-        if (real !== E('visitasVista', 'propuesta')) setTimeout(() => {
-          if (!el.isConnected) return; P('visitasVista', real);
-          const f = el.querySelector('[data-vt="a-r6-visitas"]'); if (f && f.scrollIntoView) f.scrollIntoView({block: 'center'});
-          VETA.repinta({paso: true});
-        }, 500);
+        P('visitasVista', r6.reglaVisitas());
       }
       // si el botón de la tarjeta abierta queda bajo la barra, la lista sube lo justo para que se vea (sin que lo hagas tú)
       const d = el.closest('.desplaza'), b = el.querySelector('.a-abierta .btn-principal'); if (!d || !b) return;
@@ -320,7 +329,7 @@
       'cerrar-dia'() { VETA.est.pon('a.cerrado', VETA.ahora()); VETA.repinta(); VETA.hoja('h06'); },
       'abrir-dia'() { VETA.est.pon('a.cerrado', null); VETA.repinta(); },
       'r6-resto'() { P('resto', !E('resto', false)); VETA.repinta(); },
-      // “Sí, siempre” · “Solo con Marta” · “Solo esta vez”
+      // «Sí, siempre» · «Solo con Marta» · «Solo esta vez»
       'r6-aprende'(ev, el) {
         const k = E('cambio'), c = k && M.cosa(k.id); if (!c) return;
         const amb = el.dataset.ambito;
@@ -339,17 +348,15 @@
         if (k.resuelto === 'siempre') { r6.olvida(); A.r6.limpia(); } else P('solo', null);
         delete k.resuelto; delete k.seq; P('cambio', k); VETA.repinta({paso: true});
       },
-      // lo que Veta cerró sola: “Deshacer” lo abre otra vez y Veta dice lo que ha entendido
+      // lo que Veta cerró sola: «Deshacer» lo abre otra vez y Veta dice lo que ha entendido
       'r6-reabre'(ev, el) {
         const id = el.dataset.de, ab = E('abiertas', []); if (!ab.includes(id)) ab.push(id);
         P('abiertas', ab); VETA.repinta({paso: true}); VETA.aviso('OK. I won\'t close it without asking you.');
         // vuelve a su lista: se sube para verlo arriba, con la cifra ya cambiada
         setTimeout(() => { const d = document.querySelector('.col.activa .desplaza'); if (d) d.scrollTo({top: 0, behavior: calmo() ? 'auto' : 'smooth'}); }, 350);
       },
-      // “Ciérralo tú”: Laura se lo devuelve a Veta
-      'r6-recierra'(ev, el) { P('abiertas', E('abiertas', []).filter(x => x !== el.dataset.de)); VETA.repinta({paso: true}); VETA.aviso('Done. I will close it myself.'); },
-      // la tira dorada lleva a lo que Veta ha cerrado, más abajo en “Esto lo hago yo”
-      'r6-cerradas'() { const f = document.querySelector('.col.activa .a-r6-cerrada'); if (f) f.scrollIntoView({block: 'center', behavior: calmo() ? 'auto' : 'smooth'}); }
+      // «Ciérralo tú»: Laura se lo devuelve a Veta
+      'r6-recierra'(ev, el) { P('abiertas', E('abiertas', []).filter(x => x !== el.dataset.de)); VETA.repinta({paso: true}); VETA.aviso('Done. I will close it myself.'); }
     }
   });
 })();

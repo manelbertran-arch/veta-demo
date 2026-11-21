@@ -31,7 +31,7 @@
         otroDia: 'Hi Pere. Last week: 3 viewings. All 3 think the price is high. Toni Ribas will come back with his architect. Shall we talk about the price on Friday?'}
     },
 
-    // A12 · informe al propietario (el mensaje es el texto del plan; “texto” de la tarjeta con foto, inventado por el paquete A)
+    // A12 · informe al propietario (el mensaje es el texto del plan; «texto» de la tarjeta con foto, inventado por el paquete A)
     informe: {
       pere: {cosa: 'c-pere', para: 'For Pere Soler · week of 16 to 22 November', piso: 'verdi', titulo: 'How your Gràcia flat is doing', visitas: 3,
         texto: '3 people came to see it. All 3 like the light and all 3 think the price is high. Toni Ribas will come back with his architect.',
@@ -48,7 +48,16 @@
           {id: 'preocupa', titulo: 'What worries her', texto: 'Street noise at night. That there\'s no lift: it\'s a third floor.'},
           {id: 'siguiente', titulo: 'Next step', texto: 'Second viewing on Saturday afternoon, with her partner, to hear the street.'}],
         tarea: 'Call Elena on Thursday 26 to confirm Saturday\'s viewing', tareaPie: 'I\'ll put it in your calendar.',
-        lineaTarea: 'Noted: call Elena on Thursday 26', propietario: 'pere'}
+        lineaTarea: 'Noted: call Elena on Thursday 26', propietario: 'pere', docSub: 'Verdi 42 · today, 9:00'}
+    },
+
+    // A4 · ronda 7 · el informe de la visita para el propietario del piso: mismas tres cosas del acta, con las fotos y el mensaje ya escrito
+    // (los rótulos cambian porque lo lee el propietario; el texto de cada bloque es el del acta, también si se corrige a mano)
+    informeVisita: {
+      elena: {para: 'pere', piso: 'verdi', titulo: 'Today\'s viewing of your Gràcia flat', cuando: 'Monday 23 November, 9:00 · Elena Vives',
+        rotulos: {gusto: 'What she liked', preocupa: 'What holds her back', siguiente: 'What happens next'},
+        firma: 'Prepared by Laura Martí',
+        mensaje: 'Hi Pere. Elena Vives came to see the flat today. She liked the light in the living room, the terrace and the kitchen. What holds her back is the street noise at night and that there is no lift. She wants to come back on Saturday afternoon with her partner. Here is the report with the photos.'}
     },
 
     // A4b · tarea o nota (textos del plan)
@@ -62,17 +71,17 @@
         pie: 'It stays in his History.', boton: 'Save the note', linea: 'Saved · Note on Pere\'s profile'}
     },
 
-    // A3 · contexto de cada guion y H08 · “¿Qué puedo decir?”
+    // A3 · contexto de cada guion y H08 · «¿Qué puedo decir?»
     contexto: {acta: 'After the viewing with Elena Vives', nota: 'A note for Pere Soler\'s profile'},
     queDecir: [
       {guion: 'acta', texto: 'How a viewing went'}, {guion: 'tarea', texto: 'A task'},
       {guion: 'orden', texto: 'An instruction for Veta'},
       {guion: 'aviso', texto: 'An alert', papel: 'direccion'}, {guion: 'operacion', texto: 'A question about a deal', papel: 'direccion'},
       {guion: 'queja', texto: 'A client complaint', papel: 'direccion'}, {guion: 'mejorar', texto: 'What to improve', papel: 'direccion'}],
-    // duración por defecto de “Lo que dijiste” si se entra sin dictar (segundos)
+    // duración por defecto de «Lo que dijiste» si se entra sin dictar (segundos)
     duracion: {acta: 72, tarea: 4, nota: 5, orden: 6, pregunta: 2},
 
-    // H09 · “No es eso”
+    // H09 · «No es eso»
     noEsEso: [
       {guion: 'acta', texto: 'A viewing note'}, {guion: 'tarea', texto: 'A task'}, {guion: 'nota', texto: 'A note'},
       {guion: 'orden', texto: 'An instruction for Veta'}, {guion: 'pregunta', texto: 'A question'}],
@@ -81,7 +90,7 @@
     detectado: ['Marta Puig wants to see the flat', 'The Sant Antoni flat fits Núria Camps'],
     yaNo: {cosa: 'c-sergi', texto: 'Sergi Mas: Anna replied to him on Friday'},
 
-    // A1 vacía · “¿Me enseñas esto?”
+    // A1 vacía · «¿Me enseñas esto?»
     ensenas: {regla: 'r-valoraciones', titulo: 'Will you show me this?', texto: 'I saw that when someone asks for a valuation, you send the flat report the next day. Shall I prepare it?', ir: 'regla/r-valoraciones'},
 
     // A7 · pie

@@ -35,7 +35,7 @@
     botonFijo: p => {
       const r = M.regla(ID), hecha = !noEntendida(p) && r && r.estado !== 'nueva';
       const sec = UI.botones([{texto: 'Decirlo de otra forma', ir: 'dictar/orden'}, escribe || hecha ? null : {texto: 'Escribirlo yo', accion: 'escribir'}]);
-      if (hecha) return UI.boton({tipo: 'secundario', texto: 'Volver a Veta', ir: 'veta'});
+      if (hecha) return UI.boton({tipo: 'secundario', texto: 'Volver', atras: true});
       if (noEntendida(p)) return escribe ? UI.boton({texto: 'Guardar y probarlo', accion: 'guardar'}) + sec : sec;
       return UI.boton({texto: escribe ? 'Guardar y probarlo' : 'Pruébalo', accion: escribe ? 'guardar' : 'prueba'}) + sec;
     },

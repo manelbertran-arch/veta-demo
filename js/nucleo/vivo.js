@@ -95,7 +95,7 @@
   };
 
   // ---- 7 · escena «Veta lee» ----
-  // VETA.vivo.escena() (Marta, con datos del modelo) · VETA.vivo.escena({cosa: 'c-pere', ir: 'hoy', boton: 'Verla en Hoy', clave: 'que-hace'})
+  // VETA.vivo.escena() (Marta, con datos del modelo) · VETA.vivo.escena({cosa: 'c-pere', ir: 'hoy', boton: 'Verla en lo de hoy', clave: 'que-hace'})
   // o a mano: {mensajes: [{quien, texto, clave: true}], frase, tarjeta: {av, nombre, quienEs, origen, hecho}}
   V.escena = o => {
     o = o || {};
@@ -117,7 +117,7 @@
       `<div class="v-es-fin tarjeta"><div class="v-es-quien">${t.av ? VETA.av(t.av, 40) : ''}<span><b>${esc(t.nombre)}</b><span>${esc(t.quienEs || '')}</span></span></div>` +
       `<p class="v-es-cita"><span class="v-es-frase">«<span class="v-oro">${esc(frase)}</span>»</span></p>` +
       `<div class="v-es-prueba">${t.origen ? V.pastilla(t.origen, 'chat') : ''}<p class="v-es-hecho">${ic('check', 18)}<span>${esc(t.hecho)}</span></p>` +
-      `${o.ir || o.accion || o.hoja ? UI.boton({tipo: 'secundario', texto: o.boton || 'Verla en Hoy', ir: o.ir, accion: o.accion, hoja: o.hoja, de: o.de}) : ''}</div></div></div></div>`;
+      `${o.ir || o.accion || o.hoja ? UI.boton({tipo: 'secundario', texto: o.boton || 'Verla en lo de hoy', ir: o.ir, accion: o.accion, hoja: o.hoja, de: o.de}) : ''}</div></div></div></div>`;
   };
   const FASES = [[80, 'f1'], [950, 'f2'], [1800, 'f3'], [3000, 'lee'], [4500, 'carta'], [6000, 'prueba'], [6900, 'fin']];
   const pulsoDe = el => $('.v-pulso', el);

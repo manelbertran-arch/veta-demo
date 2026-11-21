@@ -22,7 +22,7 @@
     VETA.repinta({hecho: 'c-regla'});
   };
 
-  // ---- ronda 6 · “¿Quién lo hace?”: de “Lo haces tú” a “Lo hago yo”, con la pregunta para subir un paso ----
+  // ---- ronda 6 · «¿Quién lo hace?»: de «Lo haces tú» a «Lo hago yo», con la pregunta para subir un paso ----
   const NV = () => D().niveles;
   const subeDe = id => {
     if (id === 'r-visitas') { const v = C.visitas(), s = C.r6().visitas.sube[v.estado]; return s ? Object.assign({accion: 'subir', de: id}, s) : null; }   // solo pregunta mientras es una propuesta
@@ -39,7 +39,7 @@
     VETA.vivo.escalera({nivel: C.paso(id), desde: (C.lee('nivelLinea', null) || {}).id === id ? 'today' : desde, sube: subeDe(id), nota: notaDe(id)}) + `</section>`;
   // el nombre del trabajo (el mismo que en la lista, en Hoy y en la pestaña Veta) y debajo, qué es
   const cabeza = (id, frase, apagada) => `<h2 class="c-frase c-frase-g${apagada ? ' c-apagada' : ''}" data-i="1">${esc(C.nombre(id))}</h2><p class="c-regla-que${apagada ? ' c-apagada' : ''}" data-i="1">${esc(frase)}</p>`;
-  // la línea en el sitio al subir un paso, con “Deshacer”
+  // la línea en el sitio al subir un paso, con «Deshacer»
   const lineaPaso = id => {
     const l = id === 'r-visitas' ? C.lee('visLinea', null) : C.lee('nivelLinea', null);
     if (!l || (id !== 'r-visitas' && l.id !== id) || (id === 'r-visitas' && l.estado !== VETA.r6.reglaVisitas())) return '';
@@ -84,7 +84,7 @@
       const abierto = C.lee('distintoAbierto', true);
       return `<section class="bloque" data-i="2"><h2 class="bloque-t">The ${n + m} times you did it yourself</h2>` +
         `<div class="c-partes" style="--a:${n};--b:${m}">` +
-          `<button type="button" class="c-parte c-parte-a" data-hoja="h19" data-regla="${esc(id)}" data-g="${n} igual|Las veces que al día siguiente enviaste el informe del piso."><b>${n}</b><span>same ›</span></button>` +
+          `<button type="button" class="c-parte c-parte-a" data-hoja="h19" data-regla="${esc(id)}" data-g="${n} same|The times you sent the flat report the next day."><b>${n}</b><span>same ›</span></button>` +
           `<button type="button" class="c-parte c-parte-b" data-accion="distinto" aria-expanded="${abierto}" aria-controls="c-distinto"><b>${m}</b><span>different</span><i class="chev-gira">${VETA.ic('abajo', 16)}</i></button>` +
         `</div>` +
         `<div id="c-distinto" class="c-distinto"${abierto ? '' : ' hidden'}>${UI.lista(r.casos.distinto.map(c => ({
@@ -117,7 +117,7 @@
     pinta: p => {
       if (p.id === 'r-visitas') return visitas();
       const r = M.regla(p.id);
-      if (!r) return UI.vacio({titulo: 'This job is no longer here', texto: 'Go back to “The jobs, one by one” to see the ones there are.', icono: 'info', boton: {texto: 'See the jobs', ir: 'reglas'}});
+      if (!r) return UI.vacio({titulo: 'This job is no longer here', texto: 'Go back to “Proposals and jobs” to see the ones there are.', icono: 'info', boton: {texto: 'See the jobs', ir: 'reglas'}});
       const info = C.info(p.id), e = C.estadoRegla(r), l = linea(p.id);
       const desc = r.estado === 'descartada';
       const top = l || desc
@@ -134,8 +134,8 @@
       const r = M.regla(p.id); if (!r) return '';
       const otra = {texto: 'Something else…', tipo: 'texto', hoja: 'h20', de: p.id};
       if (r.estado === 'propuesta' || r.estado === 'nueva') return UI.boton({texto: 'Try it for two weeks', accion: 'prueba', g: 'Try it for two weeks|Two weeks in which I show you what I would do, without sending anything.'}) + UI.boton(otra);
-      // a prueba: no se empuja a saltarse la prueba; “Activarla ya” queda en “Otra cosa…”
-      if (r.estado === 'a-prueba') return UI.boton({texto: 'Back to Veta', ir: 'veta'}) + UI.boton(otra);
+      // a prueba: no se empuja a saltarse la prueba; «Activarla ya» queda en «Otra cosa…»
+      if (r.estado === 'a-prueba') return UI.boton({texto: 'Back', atras: true}) + UI.boton(otra);
       if (r.estado === 'activa') return UI.boton(otra);
       return '';
     },

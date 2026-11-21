@@ -94,6 +94,28 @@
   };
   UI.lista = (filas, o) => { o = o || {}; return `<div class="lista${o.clase ? ' ' + o.clase : ''}"${o.i != null ? ` data-i="${o.i}"` : ''}>${(filas || []).filter(Boolean).map(f => typeof f === 'string' ? f : UI.fila(f)).join('')}</div>`; };
 
+  // ---- ronda 7 · puertas: lo que puedes hacer en una pantalla principal. Caras o icono, un verbo, una línea y su número ----
+  // o: {titulo, sub, n, caras: [ids], av, foto, icono, principal (la primera: fondo oscuro), ir | hoja | accion}
+  // tres caras montadas si las tres tienen foto; si alguna va con iniciales, dos sueltas (las iniciales no se pisan), primero las que tienen foto
+  UI.caras = (ids, tam) => {
+    const conFoto = id => !!((VETA.modelo && VETA.modelo.quien(id)) || {}).foto;
+    const l = (ids || []).filter((x, k, a) => x && a.indexOf(x) === k), tres = l.slice(0, 3);
+    if (tres.length > 1 && tres.every(conFoto)) return `<span class="caras">${tres.map(id => VETA.av(id, tam || 32)).join('')}</span>`;
+    const dos = l.filter(conFoto).concat(l.filter(id => !conFoto(id))).slice(0, 2);
+    return `<span class="caras caras-sueltas">${dos.map(id => VETA.av(id, tam || 32)).join('')}</span>`;
+  };
+  UI.puerta = o => {
+    const lead = o.caras && o.caras.length ? UI.caras(o.caras) : o.av ? VETA.av(o.av, 40) : o.foto ? UI.foto(o.foto, {tam: 'mini'}) : `<span class="puerta-ic">${ic(o.icono || 'chev', 24)}</span>`;
+    return `<button type="button" class="fila puerta${o.principal ? ' puerta-1' : ''}${o.clase ? ' ' + o.clase : ''}"${attrs(o)}>` +
+      `<span class="puerta-l">${lead}</span><span class="fila-c"><span class="fila-t">${o.tituloHtml || esc(o.titulo)}</span>` +
+      (o.sub || o.subHtml ? `<span class="fila-s">${o.subHtml || esc(o.sub)}</span>` : '') + '</span>' +
+      (o.n != null && o.n !== '' ? `<span class="puerta-n">${esc(o.n)}</span>` : '') + `<span class="fila-chev">${ic('chev', 16)}</span></button>`;
+  };
+  // o.panel: en ordenador, la pantalla que se abre sola a la derecha (si no se dice, la de la primera puerta)
+  UI.puertas = (lista, o) => `<div class="puertas"${o && o.i != null ? ` data-i="${o.i}"` : ''}${o && o.panel ? ` data-panel="${esc(o.panel)}"` : ''}>${(lista || []).filter(Boolean).map(UI.puerta).join('')}</div>`;
+  // filas discretas bajo las puertas: lo que casi nunca hace falta
+  UI.menores = (filas, o) => UI.lista(filas, Object.assign({clase: 'menores'}, o || {}));
+
   // ---- cita, borrador, nota ----
   // con dirección mirando el cliente de otra persona, la cita no enseña el texto del chat (VETA.ajeno)
   UI.cita = o => {

@@ -13,7 +13,7 @@
     titulo: p => { const x = X.persona(p.id); return p.id === VETA.yo().id ? 'Tú' : (x.nombre || 'Una persona'); },
     guia: ['Aquí ves a una persona del equipo: lo que lleva, lo que tiene pendiente y lo que Veta ya hace por ella.', 'Tú tocas una operación para verla entera.', 'Así sabes dónde echar una mano. Ella ve esto mismo en su app.'],
     pinta: p => {
-      if (!VETA.datos.personas[p.id]) return UI.vacio({titulo: 'No encuentro a esta persona.', icono: 'usuario', boton: {texto: 'Volver al equipo', ir: 'equipo'}});
+      if (!VETA.datos.personas[p.id]) return UI.vacio({titulo: 'No encuentro a esta persona.', icono: 'usuario', boton: {texto: 'Volver', atras: true}});
       const x = X.personaOps(p.id), yo = p.id === VETA.yo().id, ella = x.p.corto;
       let h = `<div class="d-opd-cab" data-i="0">${VETA.av(p.id, 64, {foco: 'foto'})}<div><p class="d-opd-n" data-foco="nombre">${esc(x.p.nombre)}${yo ? ' (tú)' : ''}</p>` +
         `<p class="d-opd-q">${esc((x.p.papel === 'direccion' ? 'Dirección; también vende' : 'Agente') + ' · ' + X.zona(p.id))}</p></div></div>`;

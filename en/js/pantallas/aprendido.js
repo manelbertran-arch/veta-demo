@@ -8,20 +8,24 @@
 
   // ---- A13 · Lo que he aprendido ----
   // ronda 6: cada cosa con quién la pidió, cuándo, cuántas veces la he usado y cuántas me corregiste,
-  // en qué paso está, si la uso o no (interruptor) y “Olvidar”. Lo enseñado hoy (“Sí, siempre” en Hoy) va el primero.
+  // en qué paso está, si la uso o no (interruptor) y «Olvidar». Lo enseñado hoy («Sí, siempre» en Hoy) va el primero.
   const pausadas = () => C.lee('pausados', []);
+  const abiertas = new Set();   // ronda 7 · las que se han abierto al tocarlas (mientras dure la visita a la pantalla)
   function tarjeta(x) {
     const on = !pausadas().includes(x.id);
     const usos = x.hechas ? `I have used it <b>${x.hechas}</b> ${x.hechas === 1 ? 'time' : 'times'} · you ${x.corregidas === 1 ? 'corrected 1' : x.corregidas ? 'corrected ' + x.corregidas : 'corrected 0'}` : esc(x.usos || '');
+    const abierta = abiertas.has(x.id);
     return `<article class="c-ap-fila${x.hoy ? ' c-ap-hoy' : ''}${on ? '' : ' c-ap-off'}" data-vt="c-apr-${esc(x.id)}">` +
-      (x.hoy ? `<p class="c-ap-cuando">${VETA.vivo.pastilla('Today' + (x.hora ? ', ' + x.hora : ''), 'reloj')}</p>` : '') +
-      `<p class="c-ap-t">${x.hoy ? VETA.vivo.oro(x.texto, {clave: 'ap-hoy'}) : esc(x.texto)}</p>` +
+      `<button type="button" class="c-ap-cab" data-accion="abre" data-de="${esc(x.id)}" aria-expanded="${abierta}"><span class="c-ap-cab-c">` +
+      (x.hoy ? `<span class="c-ap-cuando">${VETA.vivo.pastilla('Today' + (x.hora ? ', ' + x.hora : ''), 'reloj')}</span>` : '') +
+      `<span class="c-ap-t">${x.hoy ? VETA.vivo.oro(x.texto, {clave: 'ap-hoy'}) : esc(x.texto)}</span>` +
+      `<span class="c-ap-q">${esc(x.quien)} ${esc(x.cuando)}${on ? '' : ' · paused'}</span></span><span class="c-ap-ch">${VETA.ic('chev', 16)}</span></button>` +
+      `<div class="c-ap-det"${abierta ? '' : ' hidden'}>` +
       (x.antes ? `<p class="c-ap-cambio"><s>${esc(x.antes)}</s><span>${esc(x.ahora)}</span></p>` : '') +
-      `<p class="c-ap-q">${esc(x.quien)} ${esc(x.cuando)}</p>` +
       `<p class="c-ap-n">${x.hechas ? VETA.vivo.anillo({van: x.hechas - x.corregidas, de: x.hechas, tam: 's'}) : ''}<span>${usos}</span></p>` +
       `<p class="c-ap-paso">${VETA.vivo.escalera({nivel: x.paso, mini: true})}</p>` +
       `<div class="c-ap-acc">${UI.interruptor({texto: 'I use it', sub: on ? 'Yes' : 'Paused: I do not use it', on, accion: 'usar', de: x.id})}` +
-      UI.boton({tipo: 'texto', texto: 'Forget', accion: 'olvidar', de: x.id, ancho: false, g: 'Forget|I stop using it. You can undo it.'}) + `</div></article>`;
+      UI.boton({tipo: 'texto', texto: 'Forget', accion: 'olvidar', de: x.id, ancho: false, g: 'Forget|I stop using it. You can undo it.'}) + `</div></div></article>`;
   }
   VETA.pantalla('A13', {
     titulo: 'What I\'ve learned from you',
@@ -37,7 +41,7 @@
         items.push(olv.includes(a.id) ? UI.lineaHecho({texto: 'Forgotten: ' + a.corto, boton: {texto: 'Undo', accion: 'recordar'}, de: a.id, vt: 'c-apr-' + a.id}) : tarjeta(x));
       });
       const n = C.aprendidoQueda() + (hoy ? 1 : 0);
-      return `<p class="intro" data-i="0">${n ? `${n} ${n === 1 ? 'thing' : 'things'} I do the way you taught me.` : 'Right now I use nothing of what I have learned.'}</p>` +
+      return (n ? '' : `<p class="intro" data-i="0">Right now I use nothing of what I have learned.</p>`) +
         `<div class="c-aprendidos" data-i="1">${items.join('')}</div>` +
         UI.bloque({titulo: 'When you correct me', i: 2, html: UI.lista([
           {titulo: 'You corrected me 4 times and I changed it', icono: 'check'},
@@ -49,6 +53,12 @@
           {titulo: 'Propose an improvement', icono: 'estrella', ir: 'mejora'}])});
     },
     acciones: {
+      abre(ev, el) {
+        const id = el.dataset.de, abre = !abiertas.has(id);
+        if (abre) abiertas.add(id); else abiertas.delete(id);
+        el.setAttribute('aria-expanded', String(abre));
+        const d = el.parentNode.querySelector('.c-ap-det'); if (d) d.hidden = !abre;
+      },
       olvidar(ev, el) {
         const id = el.dataset.de;
         if (id === 'siempre') { C.pon('siempreOlvidado', VETA.r6.siempre()); VETA.r6.olvida(); }

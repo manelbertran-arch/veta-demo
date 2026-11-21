@@ -1,0 +1,128 @@
+/* Veta demo · ronda 7 (limpia) · r7.css
+   Menos ruido: las pantallas principales son pocas puertas (cara o icono, verbo, una línea y un número); nada llega desplegado.
+   Cada pantalla dice arriba para qué sirve (.para). Los bloques largos entran plegados (.pliegue). El «‹» dice a dónde vuelve.
+   Va detrás de los p-*.css: lo que aquí se dice manda. Mismas variables y los cinco tamaños de base.css. */
+
+/* ---- para qué sirve la pantalla: una línea, siempre arriba ---- */
+.para{font:500 var(--f-apoyo)/1.4 var(--body);color:var(--t2);margin:0 0 var(--e1);max-width:34em;text-wrap:pretty}
+.col-completa .para{margin-top:var(--e2)}
+.pant-E1 .para,.pant-E2 .para{display:none}
+
+/* ---- puertas ---- */
+.puertas{display:flex;flex-direction:column;gap:var(--e2)}
+.puerta{min-height:84px;padding:var(--e3) var(--e4) var(--e3) var(--e3);gap:10px;background:var(--s1);border:1px solid var(--borde);border-radius:var(--r-3);box-shadow:var(--somb)}
+.puerta-l{flex:none;width:64px;display:flex;align-items:center;justify-content:center}
+.puerta-ic{width:44px;height:44px;border-radius:50%;display:grid;place-items:center;background:var(--s2);color:var(--t1)}
+.puerta .fila-t{font:600 var(--f-cuerpo)/1.2 var(--display);letter-spacing:-.005em}
+.puerta .fila-s{line-height:1.3}
+.puerta-n{flex:none;text-align:right;font:700 var(--f-titulo)/1 var(--display);letter-spacing:-.02em;font-variant-numeric:tabular-nums;color:var(--t1)}
+.puerta .foto-mini{width:48px;height:48px;border-radius:var(--r-2)}
+.puerta-1{background:var(--t1);color:var(--fondo);border-color:transparent}
+.puerta-1 .fila-s{color:inherit;opacity:.78}
+.puerta-1 .puerta-n{color:var(--top-acento)}
+.puerta-1 .fila-chev{color:inherit;opacity:.55}
+.puerta-1 .puerta-ic{background:var(--top-acento);color:var(--t1)}
+.puerta-hecha .puerta-ic{background:var(--oro-suave);color:var(--oro)}
+.caras{display:flex;align-items:center}
+.caras>*{width:30px;height:30px;margin-left:-13px;box-shadow:0 0 0 2px var(--s1);border-radius:50%}
+.caras>*:first-child{margin-left:0}
+.puerta-1 .caras>*{box-shadow:0 0 0 2px var(--t1)}
+.caras-sueltas{gap:4px}
+.caras-sueltas>*{margin-left:0;box-shadow:none}
+.puerta-1 .caras-sueltas>*{box-shadow:none}
+/* lo que casi nunca hace falta: filas bajas, sin círculo, debajo de las puertas */
+.menores{background:transparent;border:0;box-shadow:none;border-radius:0;margin-top:var(--e2)}
+.menores>.fila{min-height:var(--toque);padding:var(--e2) var(--e1);color:var(--t2)}
+.menores .fila-t{font:600 var(--f-apoyo)/1.3 var(--body)}
+.menores .fila-s{display:none}
+.menores .fila-ic{width:28px;height:28px;background:transparent;color:var(--t3)}
+
+/* ---- pliegues: un bloque largo entra cerrado, con su título, una línea y su número ---- */
+.pliegue{gap:0;background:var(--s1);border:1px solid var(--borde);border-radius:var(--r-3);box-shadow:var(--somb);overflow:hidden}
+.pliegue-b{display:flex;align-items:center;gap:var(--e3);width:100%;min-height:var(--fila);padding:var(--e3) var(--e4);text-align:left;color:var(--t1)}
+.pliegue-tx{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+.pliegue-t{font:600 var(--f-cuerpo)/1.25 var(--body)}
+.pliegue-s{font:500 var(--f-apoyo)/1.35 var(--body);color:var(--t2)}
+.pliegue-n{flex:none;font:700 var(--f-hoja)/1 var(--display);font-variant-numeric:tabular-nums;color:var(--t1)}
+.pliegue-ch{flex:none;color:var(--t3);display:grid;place-items:center;transform:rotate(90deg);transition:transform var(--t-corto) var(--c-estandar)}
+.pliegue-b[aria-expanded=true] .pliegue-ch{transform:rotate(-90deg)}
+.pliegue-c{display:flex;flex-direction:column;gap:var(--e2);padding:0 var(--e3) var(--e3)}
+.pliegue-c>.lista,.pliegue-c>.tarjeta{box-shadow:none}
+.pliegue+.pliegue{margin-top:calc(-1*var(--e1))}
+
+/* ---- el «‹» dice a dónde vuelve ---- */
+.cab-detalle{grid-template-columns:minmax(0,1fr) minmax(0,auto) minmax(0,1fr)}
+.cab-detalle .cab-atras{color:var(--t1);padding-right:var(--e2)}
+.cab-detalle .cab-atras span{max-width:7.5em;color:var(--t2)}
+.cab-detalle .cab-t{font-size:var(--f-cuerpo);font-weight:700;font-family:var(--body);letter-spacing:0;max-width:11em;text-wrap:balance}
+
+/* ---- las hojas se cierran con su ✕ (además del velo y del asa) ---- */
+.hoja-x-b{position:absolute;top:var(--e3);right:var(--e3);width:36px;height:36px;border-radius:50%;display:grid;place-items:center;background:var(--s2);color:var(--t2);z-index:3}
+.hoja .hoja-t{padding-right:52px}
+
+/* ---- portada: los dos idiomas quietos, uno a cada lado ---- */
+.m-dos{display:grid;grid-template-columns:1fr 1fr;gap:var(--e3);width:min(100%,21rem)}
+.m-dos .m-idioma{position:static;transform:none;opacity:1;animation:none;width:100%;padding:0 var(--e2);letter-spacing:.22em;text-indent:.22em}
+.m-logo img,.m-halo{animation:none}
+
+/* ---- entrar: una pantalla de acceso, sin historia ---- */
+.c-acceso .c-entrar-c{margin-top:auto;margin-bottom:auto;gap:var(--e3);padding-top:0}
+.c-acceso .port-dice{margin-top:calc(-1*var(--e1));margin-bottom:var(--e2)}
+.c-acceso .c-papel{min-height:76px}
+.c-acceso .c-papel-t{font:600 var(--f-cuerpo)/1.2 var(--display)}
+.c-acceso .c-primer{margin-top:var(--e2)}
+.c-acceso .c-primer .btn-texto{font-size:var(--f-apoyo)}
+
+/* ---- la visita contada (A4): el acta y el informe para el propietario, plegados; se abren al tocarlos ---- */
+.a-ent{align-items:center}
+.a-ent-t{padding-top:0}
+.a-doc{display:flex;flex-direction:column;background:var(--s1);border:1px solid var(--borde);border-radius:var(--r-3);box-shadow:var(--somb);overflow:hidden}
+.a-doc-b{display:flex;align-items:center;gap:var(--e3);width:100%;min-height:80px;padding:var(--e3);text-align:left;color:var(--t1)}
+.a-doc-b .foto-mini{width:56px;height:56px;border-radius:var(--r-2)}
+.a-doc-c{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+.a-doc-t{font:600 var(--f-cuerpo)/1.2 var(--display);letter-spacing:-.005em}
+.a-doc-s{font:500 var(--f-apoyo)/1.3 var(--body);color:var(--t2)}
+.a-doc-e{flex:none;display:inline-flex;align-items:center;gap:var(--e1);font:700 var(--f-apoyo)/1 var(--body);color:var(--t2)}
+.a-doc-ok{color:var(--opo-t)}
+.a-doc-ch{flex:none;color:var(--t3);display:grid;place-items:center;transform:rotate(90deg);transition:transform var(--t-corto) var(--c-estandar)}
+.a-doc-b[aria-expanded=true] .a-doc-ch{transform:rotate(-90deg)}
+.a-doc-x{display:flex;flex-direction:column;gap:var(--e3);padding:0 var(--e3) var(--e4);border-top:1px solid var(--borde);padding-top:var(--e3)}
+.a-doc-x.a-acta{border:0;border-top:1px solid var(--borde);border-radius:0;background:transparent;box-shadow:none}
+.a-doc-foto .foto-ancha{border-radius:var(--r-2)}
+.a-doc-carta{display:flex;flex-direction:column;gap:var(--e3);padding:var(--e3);border-radius:var(--r-2);background:var(--fondo);box-shadow:inset 0 0 0 1px var(--borde)}
+.a-doc-carta h4{margin:0}
+.a-doc-carta .a-inf-r{order:0;padding-top:0}
+.a-doc-carta .a-inf-t{padding-top:0}
+.a-doc-carta .a-inf-firma{padding-bottom:0}
+.a-doc-fotos{display:grid;grid-template-columns:1fr 1fr;gap:var(--e2)}
+.a-doc-fotos .foto-ancha{aspect-ratio:4/3;border-radius:var(--r-2)}
+.a-doc-cuando{margin-top:calc(-1*var(--e2));font:500 var(--f-apoyo)/1.3 var(--body);color:var(--t2)}
+.a-doc-msg{display:flex;flex-direction:column;gap:var(--e1);padding:var(--e3) var(--e4);border-radius:var(--r-btn);background:var(--s2)}
+.a-doc-msg-r{font:700 var(--f-apoyo)/1.25 var(--body);color:var(--t2)}
+.a-doc-msg p{font:500 var(--f-cuerpo)/1.45 var(--body)}
+
+/* ---- lo aprendido (A13): cada cosa entra plegada; al tocarla, cuánto se usa, hasta dónde llega Veta y «Olvidar» ---- */
+.c-ap-fila{padding:0;gap:0;overflow:hidden;border-radius:var(--r-3)}
+.c-ap-cab{display:flex;align-items:center;gap:var(--e3);width:100%;min-height:var(--fila);padding:var(--e3) var(--e4);text-align:left;color:var(--t1)}
+.c-ap-cab-c{flex:1;min-width:0;display:flex;flex-direction:column;gap:4px}
+.c-ap-cab .c-ap-t{font:600 var(--f-cuerpo)/1.3 var(--body)}
+.c-ap-cab .c-ap-q{font:500 var(--f-apoyo)/1.35 var(--body);color:var(--t2)}
+.c-ap-ch{flex:none;color:var(--t3);display:grid;place-items:center;transform:rotate(90deg);transition:transform var(--t-corto) var(--c-estandar)}
+.c-ap-cab[aria-expanded=true] .c-ap-ch{transform:rotate(-90deg)}
+.c-ap-det{display:flex;flex-direction:column;gap:var(--e2);padding:0 var(--e4) var(--e3)}
+.c-aprendidos{gap:var(--e2)}
+
+/* ---- qué hace Veta (A19, G15): el ejemplo y los tres grupos, plegados ---- */
+.c-qh.pliegue .c-qh-l{border:0;border-radius:0;background:transparent}
+.c-qh.pliegue .c-qh-f{padding-left:var(--e1)}
+.c-qh.pliegue .pliegue-c{padding-top:0}
+
+/* ---- operaciones (G17): los filtros en una sola fila que se desliza; cada operación, en dos líneas ---- */
+.app[data-vista=movil] .d-filtros{flex-wrap:nowrap;overflow-x:auto;margin:0 calc(-1*var(--margen)) var(--e2);padding:0 var(--margen);scrollbar-width:none}
+.app[data-vista=movil] .d-filtros::-webkit-scrollbar{display:none}
+.app[data-vista=movil] .d-filtro{flex:none;min-height:40px;padding:0 var(--e3)}
+.pliegue-dato .pliegue-b{cursor:default}
+
+/* ---- ordenador: la puerta abierta en el panel se marca con el filete, sin perder su fondo ---- */
+.puerta.marcada{background:var(--s1);box-shadow:inset 3px 0 0 var(--top-acento),var(--somb)}
+.puerta-1.marcada{background:var(--t1)}

@@ -1,6 +1,6 @@
 /* Veta demo · núcleo · rutas.js
    El mapa entero (sección 2), el registro de pantallas, la navegación y el armazón (barra, barra lateral, columnas).
-   - Toda ruta del mapa queda registrada al cargar con una pantalla “pendiente” que dice su código; el paquete que la
+   - Toda ruta del mapa queda registrada al cargar con una pantalla «pendiente» que dice su código; el paquete que la
      construye la sustituye con VETA.pantalla('<código>', {...}) y hereda del mapa lo que no diga (ruta, destino, completa…).
    - Pila propia con el nombre real de la anterior, almohadilla (#/hoy) y botón atrás del navegador, dirección de la
      transición, memoria del desplazamiento, destino marcado, pantallas completas sin barra, dos columnas en ordenador.
@@ -21,6 +21,8 @@
     ['A3', 'dictar/:guion', 'Dictate', null, 'A', 'dictar.js', 'A1', 'dictar/libre', {completa: true, grupo: G.A}],
     ['A4', 'acta/:id', 'Viewing notes', 'hoy', 'A', 'acta.js', 'A1', 'acta/elena', {completa: true, grupo: G.A}],
     ['A4b', 'entendido-dictado/:id', 'What I\'ve understood', 'hoy', 'A', 'dictado.js', 'A1', 'entendido-dictado/tarea', {completa: true, grupo: G.A}],
+    ['A1c', 'hoy/cola', 'Today\'s list', 'hoy', 'A', 'hoy.js', 'A1', null, {grupo: G.A}],
+    ['A1v', 'hoy/veta', 'What Veta did', 'hoy', 'A', 'hoy.js', 'A1', null, {grupo: G.A}],
     ['A7', 'espera', 'What I\'m watching for you', 'hoy', 'A', 'espera.js', 'A1', null, {grupo: G.A}],
     ['A12', 'informe/:id', 'Owner report', 'hoy', 'A', 'informe.js', 'A1', 'informe/pere', {grupo: G.A}],
     ['A5', 'clientes', 'Clients', 'clientes', 'B', 'clientes.js', null, null, {grupo: G.B}],
@@ -30,7 +32,7 @@
     ['A6d', 'cliente/:id/documentos', 'Documents and dates', 'clientes', 'B', 'documentos.js', 'A6', 'cliente/pere/documentos', {grupo: G.B}],
     ['A16', 'cliente/:id/historia', 'History', 'clientes', 'B', 'historia.js', 'A6', 'cliente/pere/historia', {grupo: G.B}],
     ['A8', 'veta', 'Veta', 'veta', 'C', 'veta.js', null, null, {grupo: G.C}],
-    ['A9', 'reglas', 'What I do for you', 'veta', 'C', 'reglas.js', 'A8', null, {grupo: G.C}],
+    ['A9', 'reglas', 'Proposals and jobs', 'veta', 'C', 'reglas.js', 'A8', null, {grupo: G.C}],
     ['A9b', 'reglas/semana-pasada', 'Last week', 'veta', 'C', 'reglas.js', 'A9', null, {grupo: G.C}],
     ['A10', 'regla/:id', 'A job', 'veta', 'C', 'regla.js', 'A9', 'regla/r-valoraciones', {grupo: G.C}],
     ['A10b', 'regla/:id/nivel', 'How far it goes', 'veta', 'C', 'regla.js', 'A10', 'regla/r-valoraciones/nivel', {grupo: G.C}],
@@ -42,6 +44,9 @@
     ['A15b', 'cuenta/chats', 'Chats I don\'t read', 'veta', 'C', 'cuenta.js', 'A15', null, {grupo: G.C}],
     ['A15c', 'cuenta/seguridad', 'Security', 'veta', 'C', 'cuenta.js', 'A15', null, {grupo: G.C}],
     ['G1', 'equipo', 'Team', 'equipo', 'D', 'equipo.js', null, null, {grupo: G.D}],
+    ['G1d', 'equipo/decidir', 'You have to decide', 'equipo', 'D', 'equipo.js', 'G1', null, {grupo: G.D}],
+    ['G1p', 'equipo/personas', 'The team', 'equipo', 'D', 'equipo.js', 'G1', null, {grupo: G.D}],
+    ['G1m', 'equipo/oficina', 'More from the office', 'equipo', 'D', 'equipo.js', 'G1', null, {grupo: G.D}],
     ['G2', 'asunto/:id', 'What happened', 'equipo', 'D', 'asunto.js', 'G1', 'asunto/carmen', {grupo: G.D}],
     ['G2b', 'regla-oficina/:id', 'A job for the office', 'equipo', 'D', 'regla-oficina.js', 'G1', 'regla-oficina/dossier', {grupo: G.D}],
     ['G3', 'semana-equipo', 'Week', 'equipo', 'D', 'semana-equipo.js', 'G1', null, {grupo: G.D}],
@@ -175,7 +180,7 @@
   }
   const scrollDe = ruta => { const x = pila.slice().reverse().find(y => y.ruta === ruta); return x ? x.scroll || 0 : 0; };
 
-  // ruta del padre (para entrar en frío y para el “‹”)
+  // ruta del padre (para entrar en frío y para el «‹»)
   function padreDe(e) {
     const m = MAPA[e.def.cod];
     if (m && m.padre && MAPA[m.padre]) {
@@ -203,7 +208,7 @@
       return `<header class="cab cab-panel"><nav class="miga" aria-label="Where you are">${raizMiga}${migas.map(o => `<button type="button" class="miga-b" data-atras-a="${o.k}">${esc(o.x.titulo || '')}</button><span class="miga-s" aria-hidden="true">›</span>`).join('')}<h1 class="cab-t">${t}</h1></nav>${e.def.cabDerecha ? `<span class="cab-der">${e.def.cabDerecha(e.p)}</span>` : ''}</header>`;
     }
     const ant = pila.length > 1 ? pila[pila.length - 2].titulo : (() => { const r = resuelve(padreDe(e)); return r ? titulo(r) : 'Today'; })();
-    return `<header class="cab cab-detalle"><button type="button" class="cab-atras" data-atras aria-label="Back to ${esc(ant)}">${VETA.ic('atras', 20)}</button>` +
+    return `<header class="cab cab-detalle"><button type="button" class="cab-atras" data-atras aria-label="Back to ${esc(ant)}">${VETA.ic('atras', 20)}<span>${esc(ant)}</span></button>` +
       `<h1 class="cab-t">${e.def.cabTitulo ? e.def.cabTitulo(e.p) : t}</h1><span class="cab-der">${e.def.cabDerecha ? e.def.cabDerecha(e.p) : ''}</span></header>`;
   }
 
@@ -213,8 +218,17 @@
     t.style.fontSize = '';
     const un = parseFloat(getComputedStyle(t).lineHeight) || 22; let fs = parseFloat(getComputedStyle(t).fontSize) || 20;
     while (t.getBoundingClientRect().height > un * 1.5 && fs > 16) { fs -= 1; t.style.fontSize = fs + 'px'; }
+    ajustaAtras(col);
+  }
+  // ronda 7 · el «‹» dice a dónde vuelve; si el nombre no cabe entero, dice «Atrás» (nunca un nombre cortado)
+  function ajustaAtras(col) {
+    const s = col.querySelector('.cab-detalle .cab-atras span'); if (!s || !s.isConnected) return;
+    if (s.dataset.nombre) s.textContent = s.dataset.nombre; else s.dataset.nombre = s.textContent;
+    if (s.scrollWidth > s.clientWidth + 1) s.textContent = 'Back';
+    s.hidden = s.scrollWidth > s.clientWidth + 1;
   }
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => VETA.$$('#marco .col').forEach(ajustaTitulo));
+  window.addEventListener('resize', () => VETA.$$('#marco .col').forEach(ajustaAtras));
 
   // ---- montar una pantalla en una columna ----
   function monta(col, e, modo, o) {
@@ -227,10 +241,13 @@
     try { cuerpo = VETA.tieneParam('error') && e.def.cod !== 'E1' ? UI.error() : e.def.pinta(e.p); }
     catch (err) { setTimeout(() => { throw err; }); cuerpo = UI.error({texto: 'This screen failed to render.'}); }
     const fijo = e.def.botonFijo ? e.def.botonFijo(e.p) : '';
+    // ronda 7 · cada pantalla dice arriba, en una línea, para qué sirve y qué puedes hacer en ella (VETA.PARA, en para.js)
+    const pq = VETA.paraQue ? VETA.paraQue(e) : '';
     col.innerHTML = cabecera(e, modo) + (navigator.onLine === false ? UI.sinRed() : '') +
-      `<div class="desplaza" tabindex="-1"><section class="pant pant-${esc(e.def.cod)}${e.def.pendiente ? ' pant-pendiente' : ''}" data-pant="${esc(e.def.cod)}" aria-label="${esc(titulo(e))}"><div class="pant-cuerpo">${cuerpo}</div></section></div>` +
+      `<div class="desplaza" tabindex="-1"><section class="pant pant-${esc(e.def.cod)}${e.def.pendiente ? ' pant-pendiente' : ''}" data-pant="${esc(e.def.cod)}" aria-label="${esc(titulo(e))}"><div class="pant-cuerpo">${pq ? `<p class="para" data-i="0">${esc(pq)}</p>` : ''}${cuerpo}</div></section></div>` +
       (fijo ? `<div class="fijo">${fijo}</div>` : '');
     ajustaTitulo(col);
+    if (VETA.pliega) VETA.pliega(col, e);
     const d = col.querySelector('.desplaza');
     if (o.scroll) d.scrollTop = o.scroll;
     VETA.mov.vigilaDesplazamiento(d, col);
@@ -348,7 +365,7 @@
     if (st && st.veta && st.n === pila.length - 1) { history.go(-pasos); return; }
     pila = pila.slice(0, n + 1); pon(pila[n].ruta, n, true); pinta('atras');
   };
-  // repinta la pantalla actual (después de cambiar el modelo); {hecho: id} hace el “hecho en el sitio” (efecto 7)
+  // repinta la pantalla actual (después de cambiar el modelo); {hecho: id} hace el «hecho en el sitio» (efecto 7)
   VETA.repinta = o => {
     o = o || {}; guardaScroll();
     if ((o.hecho || o.paso) && !VETA.reducido() && VETA.mov.hayVT()) { pinta('cambia', null, true); return; }   // {paso: true}: lo que lleve data-vt viaja a su sitio
@@ -357,7 +374,7 @@
   VETA.actual = () => actual;
   VETA.pila = () => pila.slice();
 
-  // “atrás” del navegador con una hoja abierta: cierra la hoja y la pantalla se queda donde está
+  // «atrás» del navegador con una hoja abierta: cierra la hoja y la pantalla se queda donde está
   // (el navegador ya retrocedió una entrada: se le hace avanzar y se ignoran los dos avisos de ese ir y venir)
   let restaura = null;
   const SIN_SESION = ['E1', 'E2'];
@@ -377,7 +394,7 @@
       return;
     }
     sueltaTodo();
-    // dentro de la app, “atrás” no vuelve a la portada ni a entrar: se queda en tu primera pantalla
+    // dentro de la app, «atrás» no vuelve a la portada ni a entrar: se queda en tu primera pantalla
     const e0 = resuelve(ruta);
     if (e0 && SIN_SESION.indexOf(e0.def.cod) >= 0 && VETA.est.lee('dentro', false) && history.state && history.state.veta) {   // solo al volver con el botón del navegador, no al escribir la dirección
       pila = [{ruta: entrada()}]; pon(entrada(), 0, true); pinta(null, null, true); return;
@@ -433,7 +450,7 @@
     pintaLateral();
   });
 
-  // ---- entrar con una cuenta (E2): la barra gana o pierde “Equipo”, se abre el primer destino. No hay cambio de perfil dentro de la app ----
+  // ---- entrar con una cuenta (E2): la barra gana o pierde «Equipo», se abre el primer destino. No hay cambio de perfil dentro de la app ----
   VETA.cambiaPerfil = id => {
     if (!VETA.modelo.persona(id)) return;
     VETA.est.pon('perfil', id);

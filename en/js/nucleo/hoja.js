@@ -37,8 +37,9 @@
     actual = {id, d, def};
     const titulo = typeof def.titulo === 'function' ? def.titulo(d) : (def.titulo || '');
     h.style.transform = ''; h.style.transition = '';
-    h.dataset.id = id;   // no “data-hoja”: rutas.js abre hojas con [data-hoja] y el clic dentro la volvería a abrir
-    h.innerHTML = `<div class="asa" aria-hidden="true"><i></i></div><h2 class="hoja-t" id="hoja-titulo">${VETA.esc(titulo)}</h2><div class="hoja-c">${def.pinta ? def.pinta(d) : ''}</div>`;
+    h.dataset.id = id;   // no «data-hoja»: rutas.js abre hojas con [data-hoja] y el clic dentro la volvería a abrir
+    h.innerHTML = `<div class="asa" aria-hidden="true"><i></i></div><button type="button" class="hoja-x-b" data-cierra="1" aria-label="Close">${VETA.ic('cerrar', 18)}</button>` +
+      `<h2 class="hoja-t" id="hoja-titulo">${VETA.esc(titulo)}</h2><div class="hoja-c">${def.pinta ? def.pinta(d) : ''}</div>`;
     h.setAttribute('aria-labelledby', 'hoja-titulo');
     if (!yaAbierta) {
       h.hidden = false; $v().hidden = false;

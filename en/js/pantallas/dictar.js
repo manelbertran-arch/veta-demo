@@ -1,7 +1,7 @@
 /* Veta demo · pantallas · dictar.js · paquete A (El día)
-   A3 · Dictar · #/dictar/<guion> (acta, tarea, nota, orden, pregunta, aviso, operacion, queja, mejorar; “libre” = el micro de la barra).
-   Pantalla completa. El tiempo corre, la onda se mueve; “Terminar” pasa a texto (silueta 1,2 s) y abre el resultado.
-   Al salir con “‹” sin terminar, lo dictado queda a medias y Hoy lo dice. */
+   A3 · Dictar · #/dictar/<guion> (acta, tarea, nota, orden, pregunta, aviso, operacion, queja, mejorar; «libre» = el micro de la barra).
+   Pantalla completa. El tiempo corre, la onda se mueve; «Terminar» pasa a texto (silueta 1,2 s) y abre el resultado.
+   Al salir con «‹» sin terminar, lo dictado queda a medias y Hoy lo dice. */
 (function () {
   'use strict';
   const UI = VETA.UI, esc = VETA.esc, ic = VETA.ic;
@@ -29,6 +29,7 @@
   }
 
   VETA.pantalla('A3', {
+    titulo: p => ({acta: 'Describe the viewing', orden: 'Teach Veta'})[p.guion] || 'Dictate',
     guia: ['Here you talk the way you\'d tell a colleague.', 'You say how it went, what needs doing or what you want it to learn.', 'Here is how I sort it: a viewing note, a task, a note or a job.'],
     pinta: p => {
       const g = guionDe(p), ctx = (DA().contexto || {})[g];
@@ -95,7 +96,7 @@
     }
   });
 
-  // H08 · “¿Qué puedo decir?”: cambia el guion en el sitio y sigue grabando
+  // H08 · «¿Qué puedo decir?»: cambia el guion en el sitio y sigue grabando
   VETA.hojaDef('h08', {
     titulo: 'What can I say?',
     pinta: () => {

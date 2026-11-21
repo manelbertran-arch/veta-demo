@@ -8,12 +8,12 @@
 
   // ---- A9 · Lo que hago por ti ----
   VETA.pantalla('A9', {
-    titulo: 'The jobs, one by one',
+    titulo: 'Proposals and jobs',
     guia: ['Here you see each job and who does it: you or me.', 'You tap one to see its cases and decide if I take one more step.', 'This way nothing becomes mine to do without you having seen it.'],
     pinta: () => {
       const l = M.reglas().slice().sort((a, b) => (ORDEN[a.estado] ?? 2) - (ORDEN[b.estado] ?? 2));
       const v = C.visitas();
-      // una sola etiqueta por fila: de color solo “¿Lo hago yo?” y “Lo estoy probando”; lo que ya hago, en gris con su paso y desde cuándo
+      // una sola etiqueta por fila: de color solo «¿Lo hago yo?» y «Lo estoy probando»; lo que ya hago, en gris con su paso y desde cuándo
       const filas = [v.etq === 'activa' ? {titulo: C.nombre('r-visitas'), subHtml: VETA.vivo.escalera({nivel: v.n, desde: 'today', mini: true}), ir: 'regla/r-visitas'}
         : {titulo: C.nombre('r-visitas'), etiqueta: v.etq, etiquetaTexto: v.lista || v.texto, ir: 'regla/r-visitas', clase: v.estado === 'propuesta' ? 'c-resalta' : ''}]
         .concat(l.map(r => {
@@ -23,7 +23,7 @@
             subHtml: e.etq === 'activa' ? VETA.vivo.escalera({nivel: C.paso(r.id), desde: (C.lee('nivelLinea', null) || {}).id === r.id ? 'today' : e.desde, mini: true}) : null,
             ir: 'regla/' + r.id, clase: r.estado === 'propuesta' ? 'c-resalta' : (r.estado === 'descartada' ? 'c-apagada' : '')};
         }));
-      return `<p class="intro" data-i="0">Tap one to see who does it: you or me.</p>` +
+      return `` +
         UI.lista(filas, {i: 1, clase: 'c-reglas'}) +
         UI.bloque({i: 2, html: UI.lista([
           {titulo: 'Teach me something new', sub: 'Tell me by talking. I suggest it, and you decide.', icono: 'mic', ir: 'dictar/orden'},

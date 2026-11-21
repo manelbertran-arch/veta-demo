@@ -1,6 +1,6 @@
 /* Veta demo · pantallas · entendido.js · paquete C (Veta, cuenta y entrada)
    - A11 · Así lo he entendido · #/entendido/<id>   (completa; llega desde Dictar con el guion de orden)
-   #/entendido/recordatorios: la orden de ejemplo · #/entendido/no-entendida: el estado “no lo he entendido”. */
+   #/entendido/recordatorios: la orden de ejemplo · #/entendido/no-entendida: el estado «no lo he entendido». */
 (function () {
   'use strict';
   const UI = VETA.UI, esc = VETA.esc, M = VETA.modelo, C = VETA.c;
@@ -35,7 +35,7 @@
     botonFijo: p => {
       const r = M.regla(ID), hecha = !noEntendida(p) && r && r.estado !== 'nueva';
       const sec = UI.botones([{texto: 'Put it another way', ir: 'dictar/orden'}, escribe || hecha ? null : {texto: 'Type it myself', accion: 'escribir'}]);
-      if (hecha) return UI.boton({tipo: 'secundario', texto: 'Back to Veta', ir: 'veta'});
+      if (hecha) return UI.boton({tipo: 'secundario', texto: 'Back', atras: true});
       if (noEntendida(p)) return escribe ? UI.boton({texto: 'Save and try it', accion: 'guardar'}) + sec : sec;
       return UI.boton({texto: escribe ? 'Save and try it' : 'Try it', accion: escribe ? 'guardar' : 'prueba'}) + sec;
     },

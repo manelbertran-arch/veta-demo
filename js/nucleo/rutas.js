@@ -21,6 +21,8 @@
     ['A3', 'dictar/:guion', 'Dictar', null, 'A', 'dictar.js', 'A1', 'dictar/libre', {completa: true, grupo: G.A}],
     ['A4', 'acta/:id', 'Nota de la visita', 'hoy', 'A', 'acta.js', 'A1', 'acta/elena', {completa: true, grupo: G.A}],
     ['A4b', 'entendido-dictado/:id', 'Lo que he entendido', 'hoy', 'A', 'dictado.js', 'A1', 'entendido-dictado/tarea', {completa: true, grupo: G.A}],
+    ['A1c', 'hoy/cola', 'Lo de hoy', 'hoy', 'A', 'hoy.js', 'A1', null, {grupo: G.A}],
+    ['A1v', 'hoy/veta', 'Lo hecho por Veta', 'hoy', 'A', 'hoy.js', 'A1', null, {grupo: G.A}],
     ['A7', 'espera', 'Lo que vigilo por ti', 'hoy', 'A', 'espera.js', 'A1', null, {grupo: G.A}],
     ['A12', 'informe/:id', 'Informe al propietario', 'hoy', 'A', 'informe.js', 'A1', 'informe/pere', {grupo: G.A}],
     ['A5', 'clientes', 'Clientes', 'clientes', 'B', 'clientes.js', null, null, {grupo: G.B}],
@@ -30,7 +32,7 @@
     ['A6d', 'cliente/:id/documentos', 'Documentos y fechas', 'clientes', 'B', 'documentos.js', 'A6', 'cliente/pere/documentos', {grupo: G.B}],
     ['A16', 'cliente/:id/historia', 'Historia', 'clientes', 'B', 'historia.js', 'A6', 'cliente/pere/historia', {grupo: G.B}],
     ['A8', 'veta', 'Veta', 'veta', 'C', 'veta.js', null, null, {grupo: G.C}],
-    ['A9', 'reglas', 'Lo que hago por ti', 'veta', 'C', 'reglas.js', 'A8', null, {grupo: G.C}],
+    ['A9', 'reglas', 'Propuestas y trabajos', 'veta', 'C', 'reglas.js', 'A8', null, {grupo: G.C}],
     ['A9b', 'reglas/semana-pasada', 'La semana pasada', 'veta', 'C', 'reglas.js', 'A9', null, {grupo: G.C}],
     ['A10', 'regla/:id', 'Un trabajo', 'veta', 'C', 'regla.js', 'A9', 'regla/r-valoraciones', {grupo: G.C}],
     ['A10b', 'regla/:id/nivel', 'Hasta dónde llega', 'veta', 'C', 'regla.js', 'A10', 'regla/r-valoraciones/nivel', {grupo: G.C}],
@@ -42,6 +44,9 @@
     ['A15b', 'cuenta/chats', 'Chats que no leo', 'veta', 'C', 'cuenta.js', 'A15', null, {grupo: G.C}],
     ['A15c', 'cuenta/seguridad', 'Seguridad', 'veta', 'C', 'cuenta.js', 'A15', null, {grupo: G.C}],
     ['G1', 'equipo', 'Equipo', 'equipo', 'D', 'equipo.js', null, null, {grupo: G.D}],
+    ['G1d', 'equipo/decidir', 'Tienes que decidir', 'equipo', 'D', 'equipo.js', 'G1', null, {grupo: G.D}],
+    ['G1p', 'equipo/personas', 'El equipo', 'equipo', 'D', 'equipo.js', 'G1', null, {grupo: G.D}],
+    ['G1m', 'equipo/oficina', 'Más de la oficina', 'equipo', 'D', 'equipo.js', 'G1', null, {grupo: G.D}],
     ['G2', 'asunto/:id', 'Qué ha pasado', 'equipo', 'D', 'asunto.js', 'G1', 'asunto/carmen', {grupo: G.D}],
     ['G2b', 'regla-oficina/:id', 'Un trabajo para la oficina', 'equipo', 'D', 'regla-oficina.js', 'G1', 'regla-oficina/dossier', {grupo: G.D}],
     ['G3', 'semana-equipo', 'Semana', 'equipo', 'D', 'semana-equipo.js', 'G1', null, {grupo: G.D}],
@@ -203,7 +208,7 @@
       return `<header class="cab cab-panel"><nav class="miga" aria-label="Dónde estás">${raizMiga}${migas.map(o => `<button type="button" class="miga-b" data-atras-a="${o.k}">${esc(o.x.titulo || '')}</button><span class="miga-s" aria-hidden="true">›</span>`).join('')}<h1 class="cab-t">${t}</h1></nav>${e.def.cabDerecha ? `<span class="cab-der">${e.def.cabDerecha(e.p)}</span>` : ''}</header>`;
     }
     const ant = pila.length > 1 ? pila[pila.length - 2].titulo : (() => { const r = resuelve(padreDe(e)); return r ? titulo(r) : 'Hoy'; })();
-    return `<header class="cab cab-detalle"><button type="button" class="cab-atras" data-atras aria-label="Volver a ${esc(ant)}">${VETA.ic('atras', 20)}</button>` +
+    return `<header class="cab cab-detalle"><button type="button" class="cab-atras" data-atras aria-label="Volver a ${esc(ant)}">${VETA.ic('atras', 20)}<span>${esc(ant)}</span></button>` +
       `<h1 class="cab-t">${e.def.cabTitulo ? e.def.cabTitulo(e.p) : t}</h1><span class="cab-der">${e.def.cabDerecha ? e.def.cabDerecha(e.p) : ''}</span></header>`;
   }
 
@@ -213,8 +218,17 @@
     t.style.fontSize = '';
     const un = parseFloat(getComputedStyle(t).lineHeight) || 22; let fs = parseFloat(getComputedStyle(t).fontSize) || 20;
     while (t.getBoundingClientRect().height > un * 1.5 && fs > 16) { fs -= 1; t.style.fontSize = fs + 'px'; }
+    ajustaAtras(col);
+  }
+  // ronda 7 · el «‹» dice a dónde vuelve; si el nombre no cabe entero, dice «Atrás» (nunca un nombre cortado)
+  function ajustaAtras(col) {
+    const s = col.querySelector('.cab-detalle .cab-atras span'); if (!s || !s.isConnected) return;
+    if (s.dataset.nombre) s.textContent = s.dataset.nombre; else s.dataset.nombre = s.textContent;
+    if (s.scrollWidth > s.clientWidth + 1) s.textContent = 'Atrás';
+    s.hidden = s.scrollWidth > s.clientWidth + 1;
   }
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => VETA.$$('#marco .col').forEach(ajustaTitulo));
+  window.addEventListener('resize', () => VETA.$$('#marco .col').forEach(ajustaAtras));
 
   // ---- montar una pantalla en una columna ----
   function monta(col, e, modo, o) {
@@ -227,10 +241,13 @@
     try { cuerpo = VETA.tieneParam('error') && e.def.cod !== 'E1' ? UI.error() : e.def.pinta(e.p); }
     catch (err) { setTimeout(() => { throw err; }); cuerpo = UI.error({texto: 'Esta pantalla ha fallado al pintarse.'}); }
     const fijo = e.def.botonFijo ? e.def.botonFijo(e.p) : '';
+    // ronda 7 · cada pantalla dice arriba, en una línea, para qué sirve y qué puedes hacer en ella (VETA.PARA, en para.js)
+    const pq = VETA.paraQue ? VETA.paraQue(e) : '';
     col.innerHTML = cabecera(e, modo) + (navigator.onLine === false ? UI.sinRed() : '') +
-      `<div class="desplaza" tabindex="-1"><section class="pant pant-${esc(e.def.cod)}${e.def.pendiente ? ' pant-pendiente' : ''}" data-pant="${esc(e.def.cod)}" aria-label="${esc(titulo(e))}"><div class="pant-cuerpo">${cuerpo}</div></section></div>` +
+      `<div class="desplaza" tabindex="-1"><section class="pant pant-${esc(e.def.cod)}${e.def.pendiente ? ' pant-pendiente' : ''}" data-pant="${esc(e.def.cod)}" aria-label="${esc(titulo(e))}"><div class="pant-cuerpo">${pq ? `<p class="para" data-i="0">${esc(pq)}</p>` : ''}${cuerpo}</div></section></div>` +
       (fijo ? `<div class="fijo">${fijo}</div>` : '');
     ajustaTitulo(col);
+    if (VETA.pliega) VETA.pliega(col, e);
     const d = col.querySelector('.desplaza');
     if (o.scroll) d.scrollTop = o.scroll;
     VETA.mov.vigilaDesplazamiento(d, col);

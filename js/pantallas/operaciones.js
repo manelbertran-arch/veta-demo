@@ -23,12 +23,13 @@
   const pasa = (o, cls) => (o.mirar || o.deBaja) && o.aviso ? `<span class="${cls} d-tono-${o.aviso.tono}">${VETA.ic(o.aviso.tono === 'rojo' ? 'aviso' : 'reloj', 18)}<span>${esc(o.aviso.texto)}</span></span>`
     : o.nota ? `<span class="${cls} d-tono-neutro d-op-nota">${VETA.ic('check', 18)}<span>${esc(o.nota)}</span></span>` : '';
 
-  // móvil: dos líneas por operación (y una tercera, corta, solo si hay que mirarla)
+  // móvil · ronda 7: el nombre, y debajo qué es y quién la lleva; una tercera línea, corta, solo si hay que mirarla.
+  // En qué paso va y qué toca se ve dentro de la operación (G18): aquí sobraba.
   const linea = (o, conQuien) => {
-    const quien = conQuien === false ? '' : (o.persona ? esc(o.persona.corto) + (o.lleva === VETA.yo().id ? ' (tú)' : '') : 'Nadie');
-    const dos = [quien, esc(o.comoCorto), esc(tocaDe(o))].filter(Boolean).join(' · ');
+    const quien = conQuien === false || !o.persona ? '' : 'la lleva ' + esc(o.persona.corto) + (o.lleva === VETA.yo().id ? ' (tú)' : '');
+    const dos = [esc(o.texto), quien].filter(Boolean).join(' · ');
     return `<button type="button" class="d-op d-op-m" data-ir="operacion/${esc(o.id)}">${VETA.av(o.id, 40, {nombre: o.nombre})}` +
-      `<span class="d-op-tc"><span class="d-op-1"><b>${esc(o.nombre)}</b> · ${esc(o.texto)}</span><span class="d-op-2">${dos}</span>${pasa(o, 'd-op-que')}</span>` +
+      `<span class="d-op-tc"><span class="d-op-1"><b>${esc(o.nombre)}</b></span><span class="d-op-2">${dos}</span>${pasa(o, 'd-op-que')}</span>` +
       `<span class="fila-chev">${VETA.ic('chev', 16)}</span></button>`;
   };
   // ordenador: una fila de tabla por operación; los rótulos van en la cabecera
@@ -58,8 +59,7 @@
       const nadie = todas.filter(o => !o.lleva), teresa = todas.filter(o => o.deBaja);
       const N = {mirar: ojo.length, todas: todas.length, nadie: nadie.length, teresa: teresa.length};
       if (filtro === 'teresa' && !teresa.length) filtro = 'mirar';
-      // una línea, la misma frase que en Equipo; lo de Teresa se explica en su filtro
-      let h = `<p class="d-ops-intro" data-i="0"><b>${todas.length} operaciones</b> · ${ojo.length ? `<b>${ojo.length}</b> hay que mirar${ojo.length === 1 ? 'la' : 'las'} hoy` : 'hoy no hay que mirar ninguna'}</p>`;
+      let h = '';
       h += `<div class="d-filtros" role="group" aria-label="Qué operaciones ver" data-i="0">${FILTROS.filter(([id]) => id !== 'teresa' || teresa.length).map(([id, t]) =>
         `<button type="button" class="d-filtro" data-accion="filtro" data-valor="${id}" aria-pressed="${filtro === id}">${esc(t)}${N[id] != null ? ` <b>${N[id]}</b>` : ''}</button>`).join('')}</div>`;
       if (filtro === 'persona') {

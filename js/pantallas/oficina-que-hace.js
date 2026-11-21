@@ -10,9 +10,9 @@
     guia: ['Aquí ves todo lo que Veta hace por la oficina, con ejemplos de verdad.', 'Tú tocas «Verlo» para ir a su sitio en la app.', 'Así sabes qué hago yo, qué decides tú y qué no sé hacer todavía.'],
     pinta: () => {
       const n = VETA.datos.numeros, ops = X.ops(), par = X.paradas().length, sin = X.sinDueno().length;
-      let h = `<div data-i="0">${VETA.vivo.escena({clave: 'oficina-que-hace', ir: 'operacion/carmen', boton: 'Verla en Operaciones',
+      let h = UI.bloque({titulo: 'Un ejemplo, paso a paso', texto: 'Veta lee el WhatsApp de la oficina y te propone quién lo lleva.', i: 0, html: `<div>${VETA.vivo.escena({clave: 'oficina-que-hace', ir: 'operacion/carmen', boton: 'Verla en Operaciones',
         mensajes: [{quien: 'Carmen López', texto: 'Hola, buenas tardes'}, {quien: 'Carmen López', texto: 'Busco piso de 3 habitaciones en Gràcia, hasta 450.000 €', clave: true}],
-        frase: '3 habitaciones en Gràcia', tarjeta: {av: 'carmen', nombre: 'Carmen López', quienEs: 'Contacto nuevo · no la lleva nadie', origen: 'WhatsApp de la oficina · ayer, 19:10', hecho: 'Te propongo que la lleve Laura, que lleva Gràcia. Decides tú.'}})}</div>`;
+        frase: '3 habitaciones en Gràcia', tarjeta: {av: 'carmen', nombre: 'Carmen López', quienEs: 'Contacto nuevo · no la lleva nadie', origen: 'WhatsApp de la oficina · ayer, 19:10', hecho: 'Te propongo que la lleve Laura, que lleva Gràcia. Decides tú.'}})}</div>`});
       h += grupo('Esto ya lo hago yo', 1, [
         {titulo: 'Leo el WhatsApp de la oficina y os aviso de cada contacto nuevo', sub: sin ? `Ahora hay ${sin} que no lleva nadie` : 'Ahora todos tienen quien los lleve', icono: 'entra', ir: 'entra'},
         {titulo: 'Apunto lo que se promete y aviso si no llega', sub: 'Jordi Ferrer espera el informe del piso antes del jueves', icono: 'mano', ir: 'operacion/jordi'},

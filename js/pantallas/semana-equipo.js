@@ -43,7 +43,7 @@
       h += UI.bloque({titulo: 'Tienes que decidir', i: 2, texto: `${par.length} operaciones llevan más de 7 días sin moverse.`, html: UI.lista(par.map(o => {
         const c = M.cliente(o.cliente) || {}, p = X.persona(o.lleva);
         return {titulo: c.nombre || o.texto, sub: o.texto + ' · la lleva ' + p.corto + ' · ' + o.estadoTexto.replace('Parada · ', '').replace(/ · fase.*$/, ''), icono: 'pausa', ir: 'operacion/' + o.cliente};
-      }).concat(dec ? [{titulo: dec === 1 ? '1 cosa espera tu decisión' : dec + ' cosas esperan tu decisión', icono: 'estrella', ir: 'equipo'}] : []))});
+      }).concat(dec ? [{titulo: dec === 1 ? '1 cosa espera tu decisión' : dec + ' cosas esperan tu decisión', icono: 'estrella', ir: 'equipo/decidir'}] : []))});
       // 3 · lo aprendido y lo que viene
       const sig = VETA.datos.r6.direccion.pide[0];
       h += UI.bloque({titulo: 'Lo que he aprendido y lo que viene', i: 3, html:

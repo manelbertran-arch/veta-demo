@@ -1,7 +1,7 @@
-/* Veta demo · núcleo · vivo.js · ronda 6 · “Piezas vivas” (VETA.vivo)
+/* Veta demo · núcleo · vivo.js · ronda 6 · «Piezas vivas» (VETA.vivo)
    Las piezas que hacen ver que Veta lee, aprende y trabaja sola. Todas devuelven HTML (como VETA.UI) y se despiertan solas
    al entrar en pantalla: un MutationObserver encuentra lo que lleve data-vivo, le pone su estado de salida (.v-antes) y un
-   IntersectionObserver lo suelta cuando se ve. Con “Reducir movimiento” no se toca nada: el HTML ya es el estado final.
+   IntersectionObserver lo suelta cuando se ve. Con «Reducir movimiento» no se toca nada: el HTML ya es el estado final.
    Estilos en css/vivo.css. Guía de uso con ejemplos: PIEZAS_VIVAS.md. */
 (function () {
   'use strict';
@@ -24,7 +24,7 @@
   // VETA.vivo.anillo({van: 11, de: 14, tam: 's'|'m'|'l', texto: '11 de 14 casos'}) · VETA.vivo.anillo({veces: 9})
   V.anillo = o => {
     const veces = o.veces != null, N = Math.max(1, veces ? o.veces : o.de), van = Math.min(veces ? o.veces : o.van, N), tam = o.tam || 'm';
-    // a tamaño “s” caben como mucho 8 tramos que se lean: si hay más, cada tramo agrupa varias veces (14 veces → 7 tramos)
+    // a tamaño «s» caben como mucho 8 tramos que se lean: si hay más, cada tramo agrupa varias veces (14 veces → 7 tramos)
     const g = tam === 's' ? Math.ceil(N / 8) : 1, S = Math.ceil(N / g);
     const seg = N <= 24, L = S * 10, k = Math.round(van / N * L * 100) / 100, hueco = seg && S > 1 ? Math.round((tam === 's' ? 30 : 16) * S) / 100 : 0, id = 'v-m' + (++nId);
     const c = `cx="18" cy="18" r="15.9155" pathLength="${L}"`;
@@ -38,7 +38,7 @@
 
   // ---- 3 · escalera ----
   // mini: VETA.vivo.escalera({nivel: 2, desde: 'el 12 nov', mini: true})
-  // completa (de arriba abajo, de “Lo haces tú” a “Lo hago yo”; `nota`: una frase bajo el paso de ahora, sin botón):
+  // completa (de arriba abajo, de «Lo haces tú» a «Lo hago yo»; `nota`: una frase bajo el paso de ahora, sin botón):
   // VETA.vivo.escalera({nivel: 2, desde: 'el 12 nov', nota: 'Hecho. …', sube: {hechas: 14, corregidas: 1, pregunta: '¿Apunto yo la tarea sin preguntarte?', boton: 'Sí, hazlo tú', accion: 'subir', de: 'r-x'}})
   const NIVELES = () => (VETA.datos.c && VETA.datos.c.niveles) || [
     {n: 1, nombre: 'I only tell you', texto: 'I tell you it is time. You do it.'}, {n: 2, nombre: 'I write it for you', texto: 'I get the message ready. You send it.'},
@@ -67,7 +67,7 @@
   };
 
   // ---- 4 · hilo ----
-  // VETA.vivo.hilo([{paso: 'Dijo', texto: '“Si baja de 300.000…”', cuando: 'Pere · 6 nov'}, …], {scroll: true})
+  // VETA.vivo.hilo([{paso: 'Dijo', texto: '«Si baja de 300.000…»', cuando: 'Pere · 6 nov'}, …], {scroll: true})
   V.hilo = (nodos, o) => `<ol class="v-hilo" data-vivo="hilo"${o && o.scroll ? ' data-scroll' : ''}>` + (nodos || []).map((n, k) =>
     `<li class="v-hilo-n" style="--k:${k}"><span class="v-hilo-k">${esc(n.paso)}</span><p class="v-hilo-t">${n.html || esc(n.texto)}</p>${n.cuando ? `<span class="v-hilo-c">${esc(n.cuando)}</span>` : ''}</li>`).join('') + '</ol>';
 
@@ -94,8 +94,8 @@
         `<div class="v-aa-ejes"><span>${esc(o.ejeAntes || 'When we started · ' + s[0])}</span><span>${esc(o.ejeAhora || 'Last week · ' + s[n - 1])}</span></div>` : '') + '</div>';
   };
 
-  // ---- 7 · escena “Veta lee” ----
-  // VETA.vivo.escena() (Marta, con datos del modelo) · VETA.vivo.escena({cosa: 'c-pere', ir: 'hoy', boton: 'Verla en Hoy', clave: 'que-hace'})
+  // ---- 7 · escena «Veta lee» ----
+  // VETA.vivo.escena() (Marta, con datos del modelo) · VETA.vivo.escena({cosa: 'c-pere', ir: 'hoy', boton: 'Verla en lo de hoy', clave: 'que-hace'})
   // o a mano: {mensajes: [{quien, texto, clave: true}], frase, tarjeta: {av, nombre, quienEs, origen, hecho}}
   V.escena = o => {
     o = o || {};
@@ -117,7 +117,7 @@
       `<div class="v-es-fin tarjeta"><div class="v-es-quien">${t.av ? VETA.av(t.av, 40) : ''}<span><b>${esc(t.nombre)}</b><span>${esc(t.quienEs || '')}</span></span></div>` +
       `<p class="v-es-cita"><span class="v-es-frase">“<span class="v-oro">${esc(frase)}</span>”</span></p>` +
       `<div class="v-es-prueba">${t.origen ? V.pastilla(t.origen, 'chat') : ''}<p class="v-es-hecho">${ic('check', 18)}<span>${esc(t.hecho)}</span></p>` +
-      `${o.ir || o.accion || o.hoja ? UI.boton({tipo: 'secundario', texto: o.boton || 'See it in Today', ir: o.ir, accion: o.accion, hoja: o.hoja, de: o.de}) : ''}</div></div></div></div>`;
+      `${o.ir || o.accion || o.hoja ? UI.boton({tipo: 'secundario', texto: o.boton || 'See it in today\'s list', ir: o.ir, accion: o.accion, hoja: o.hoja, de: o.de}) : ''}</div></div></div></div>`;
   };
   const FASES = [[80, 'f1'], [950, 'f2'], [1800, 'f3'], [3000, 'lee'], [4500, 'carta'], [6000, 'prueba'], [6900, 'fin']];
   const pulsoDe = el => $('.v-pulso', el);
@@ -163,7 +163,7 @@
   });
 
   // ---- 8 · pulso y halo ----
-  // VETA.vivo.pulso({ahora: 'Leyendo 3 chats nuevos…', texto: 'Al día · leído hasta las 9:38'}) late 2,4 s y descansa en “texto”
+  // VETA.vivo.pulso({ahora: 'Leyendo 3 chats nuevos…', texto: 'Al día · leído hasta las 9:38'}) late 2,4 s y descansa en «texto»
   // VETA.vivo.pulso({texto: 'Te escucho', siempre: true}) late mientras esté en pantalla
   V.pulso = o => `<span class="v-pulso${o.siempre ? ' vivo' : ''}"${o.ahora ? ' data-vivo="pulso"' : ''} data-ahora="${esc(o.ahora || '')}" data-luego="${esc(o.texto)}" data-ms="${o.ms != null ? o.ms : 2400}"><i class="v-pulso-p" aria-hidden="true"></i><span class="v-pulso-t">${esc(o.texto)}</span></span>`;
   function late(el) {
@@ -216,7 +216,7 @@
   window.addEventListener('hashchange', () => V.halo(false));
 
   // ---- lo que comparten los paquetes de la ronda 6 (se borra con ?nuevo, como todo VETA.est) ----
-  // r6_siempre: lo que Laura acaba de enseñar con “Sí, siempre” · r6_regla_visitas: 'propuesta' → 'prueba' → 'sola'
+  // r6_siempre: lo que Laura acaba de enseñar con «Sí, siempre» · r6_regla_visitas: 'propuesta' → 'prueba' → 'sola'
   const PASOS = ['propuesta', 'prueba', 'sola'];
   VETA.r6 = {
     PASOS,
@@ -226,9 +226,9 @@
     reglaVisitas: () => { const v = VETA.est.lee('r6_regla_visitas', 'propuesta'); return PASOS.includes(v) ? v : 'propuesta'; },
     subeReglaVisitas: () => { const i = PASOS.indexOf(VETA.r6.reglaVisitas()), v = PASOS[Math.min(i + 1, PASOS.length - 1)]; VETA.est.pon('r6_regla_visitas', v); return v; },
     ponReglaVisitas: v => { if (PASOS.includes(v)) VETA.est.pon('r6_regla_visitas', v); },
-    // “Hoy te tocan N”: LA cuenta, una sola para el título de Hoy, el “1 de N” de la tarjeta, el número de la pestaña,
-    // “Lo que dirección ve de ti” y la ficha de la persona. Son las tarjetas del día y lo que Veta cerró y Laura ha vuelto
-    // a abrir con “Deshacer” (clave a.r6.abiertas). La visita de mañana no cuenta (no es ninguna de las tarjetas): visita siempre 0.
+    // «Hoy te tocan N»: LA cuenta, una sola para el título de Hoy, el «1 de N» de la tarjeta, el número de la pestaña,
+    // «Lo que dirección ve de ti» y la ficha de la persona. Son las tarjetas del día y lo que Veta cerró y Laura ha vuelto
+    // a abrir con «Deshacer» (clave a.r6.abiertas). La visita de mañana no cuenta (no es ninguna de las tarjetas): visita siempre 0.
     tocan: q => {
       const M = VETA.modelo, re = q === 'laura' ? VETA.est.lee('a.r6.abiertas', []).length : 0;
       return {total: M.cola(q).length + re, quedan: M.pendientes(q).length + re, visita: 0};

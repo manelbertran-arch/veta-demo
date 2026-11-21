@@ -117,7 +117,7 @@
     pinta: p => {
       if (p.id === 'r-visitas') return visitas();
       const r = M.regla(p.id);
-      if (!r) return UI.vacio({titulo: 'Este trabajo ya no está', texto: 'Vuelve a «Los trabajos, uno a uno» para ver los que hay.', icono: 'info', boton: {texto: 'Ver los trabajos', ir: 'reglas'}});
+      if (!r) return UI.vacio({titulo: 'Este trabajo ya no está', texto: 'Vuelve a «Propuestas y trabajos» para ver los que hay.', icono: 'info', boton: {texto: 'Ver los trabajos', ir: 'reglas'}});
       const info = C.info(p.id), e = C.estadoRegla(r), l = linea(p.id);
       const desc = r.estado === 'descartada';
       const top = l || desc
@@ -135,7 +135,7 @@
       const otra = {texto: 'Otra cosa…', tipo: 'texto', hoja: 'h20', de: p.id};
       if (r.estado === 'propuesta' || r.estado === 'nueva') return UI.boton({texto: 'Pruébalo dos semanas', accion: 'prueba', g: 'Pruébalo dos semanas|Dos semanas en que te enseño lo que haría, sin enviar nada.'}) + UI.boton(otra);
       // a prueba: no se empuja a saltarse la prueba; «Activarla ya» queda en «Otra cosa…»
-      if (r.estado === 'a-prueba') return UI.boton({texto: 'Volver a Veta', ir: 'veta'}) + UI.boton(otra);
+      if (r.estado === 'a-prueba') return UI.boton({texto: 'Volver', atras: true}) + UI.boton(otra);
       if (r.estado === 'activa') return UI.boton(otra);
       return '';
     },

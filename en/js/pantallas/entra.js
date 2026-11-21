@@ -9,7 +9,7 @@
     guia: ['Here Veta shows you what reaches the office and nobody has replied to.', 'You open each group and allocate what has no owner.', 'That way no new contact goes cold waiting.'],
     pinta: () => {
       const sin = X.sinResponder().length, sd = X.sinDueno().length;
-      return `<p class="intro" data-i="0">What has come in through the office channels and still has no reply.</p>` +
+      return `` +
         `<div class="d-entra" data-i="1">${[
           ['Contacts without a reply', sin, 'contactos', 'entra'],
           ['Write twice or more without a reply', D.entra.dosVeces.length, 'dos', 'chat'],

@@ -67,83 +67,50 @@
   C.repaso = () => VETA.pila().some(x => x.ruta === 'cuenta');
 
   // ---- A8 · Veta ----
-  // dirección abre en «De la oficina»; su «Mías» es suya (sus mensajes y sus chats), nunca la de Laura
-  const vista = () => (VETA.yo().papel === 'direccion' ? lee('vetaVista', 'oficina') : 'mias');
-
-  function miasDir() {
-    return UI.vacio({titulo: 'Nada por decidir', texto: 'Cuando vea algo que se repite en tus chats, te lo propongo aquí.', icono: 'check', i: 0}) + UI.lista([
-      {titulo: 'Tu semana', sub: `te preparé ${C.semanaDe().preparados} mensajes`, icono: 'grafica', ir: 'semana'},
-      {titulo: 'Cuenta y privacidad', sub: C.lecturaTexto(), icono: 'escudo', ir: 'cuenta'}
-    ], {i: 1});
-  }
+  // ronda 7 · una pantalla corta de puertas: lo que puedes hacer con Veta, con su número. Lo demás, un toque más allá.
+  // La primera puerta es enseñarle: es lo que la hace mejor, y no puede quedar escondido.
   // la semana de quien mira (Laura: 31 mensajes; Montse: los suyos)
   C.semanaDe = () => VETA.yo().id === 'montse' ? {preparados: 9, enviados: 8, retocados: 2, actas: 1, promesas: 2} : {preparados: 31, enviados: 27, retocados: 6, actas: 3, promesas: 4};
+  const cortaFrase = t => { t = String(t || '').replace(/\.$/, ''); return t.length > 58 ? t.slice(0, 56).replace(/\s+\S*$/, '') + '…' : t; };
 
-  // A8 · agente (ronda 6): primero lo que ya hago yo, después lo que te propongo y lo que he aprendido
-  function mias() {
-    if (VETA.yo().papel === 'direccion') return miasDir();
-    const s = C.semanaDe(), aa = C.r6().antesAhora, res = M.resumenReglas(), vis = C.visitas();
-    const cifra = (n, t, k) => `<li><b>${VETA.vivo.cuenta({de: 0, a: n, clave: 'c-veta-' + k})}</b><span>${esc(t)}</span></li>`;
-    const cab = `<section class="c-ya" data-i="0"><h2 class="c-ya-h">Lo que ya preparo yo</h2><p class="c-ya-s">La semana pasada, sin que me lo pidas:</p>` +
-      `<ul class="c-ya-n">${cifra(s.preparados, 'mensajes te dejé escritos', 'm')}${cifra(s.promesas, 'promesas apunté', 'p')}${cifra(s.actas, 'notas de visita guardé', 'a')}</ul>` +
-      `<a class="c-ya-aa" data-ir="antes-ahora" href="#/antes-ahora"><span>Cuando empezamos te tocaban <b>${aa.antes.valor}</b> cosas por semana. Ahora, <b>${aa.ahora.valor}</b>.</span>${VETA.ic('chev', 16)}</a></section>`;
-    const que = `<a class="c-qh-entra" data-i="1" data-ir="que-hace" href="#/que-hace"><span class="c-qh-ic">${VETA.ic('aprende', 26)}</span>` +
-      `<span class="c-qh-tx"><b>Qué hace Veta</b><span>Todo lo que hago por ti, con ejemplos de tus chats</span></span>${VETA.ic('chev', 16)}</a>`;
-    // lo que te propongo: confirmar las visitas el día antes y el informe del piso; mismo nombre y misma pregunta que en Hoy
-    const r = M.regla('r-valoraciones'), prop = [];
-    prop.push(UI.fila({titulo: R6v().corto, subHtml: vis.estado === 'propuesta' ? `Esto lo has hecho ${R6v().hechas} veces. <b>¿Lo hago yo?</b>` : esc(vis.texto),
-      ir: 'regla/r-visitas', clase: 'c-prop-f'}).replace('<span class="fila-c">', `${VETA.vivo.anillo({veces: R6v().hechas, tam: 'm'})}<span class="fila-c">`));
-    if (r && r.estado === 'propuesta') prop.push(UI.fila({titulo: r.texto, subHtml: 'Esto lo has hecho 14 veces. <b>¿Lo hago yo?</b>',
-      ir: 'regla/r-valoraciones', clase: 'c-prop-f'}).replace('<span class="fila-c">', `${VETA.vivo.anillo({veces: 14, tam: 'm'})}<span class="fila-c">`));
-    const propone = UI.bloque({titulo: 'Te lo propongo', i: 2, html: `<div class="lista">${prop.join('')}</div>`});
-    // lo aprendido: lo de hoy primero
-    const hoy = VETA.r6.siempre(), a0 = C.r6().aprendido['pere-tarde'];
-    const apr = UI.bloque({titulo: 'Lo que he aprendido de ti', i: 3, html: UI.lista([
-      hoy ? {titulo: hoy.regla, subHtml: `<b class="c-hoy-t">Hoy</b> · me lo enseñaste tú${hoy.cuando ? ' a las ' + esc(hoy.cuando) : ''}`, icono: 'aprende', ir: 'aprendido'}
-        : {titulo: a0.texto, sub: `${a0.quien} ${a0.cuando} · lo he usado ${a0.hechas} veces`, icono: 'aprende', ir: 'aprendido'},
-      {titulo: 'Todo lo que he aprendido', sub: `${C.aprendidoQueda() + (hoy ? 1 : 0)} cosas`, icono: 'libro', ir: 'aprendido'}])});
-    return cab + que + propone + apr + UI.lista([
-      {titulo: 'Los trabajos, uno a uno', sub: 'tú decides quién hace cada uno', icono: 'probeta', ir: 'reglas'},
-      {titulo: 'Antes y ahora', sub: `de ${aa.antes.valor} cosas por semana a ${aa.ahora.valor}`, icono: 'grafica', ir: 'antes-ahora'},
-      {titulo: 'Tu semana', sub: `te dejé ${s.preparados} mensajes escritos`, icono: 'cal', ir: 'semana'},
-      {titulo: 'Cuenta y privacidad', sub: C.lecturaTexto(), icono: 'escudo', ir: 'cuenta'}
-    ], {i: 4});
+  function puertasAgente() {
+    const aa = C.r6().antesAhora, vis = C.visitas(), r = M.regla('r-valoraciones');
+    const nProp = (vis.estado === 'propuesta' ? 1 : 0) + (r && r.estado === 'propuesta' ? 1 : 0);
+    const hoy = VETA.r6.siempre(), nApr = C.aprendidoQueda() + (hoy ? 1 : 0), a0 = C.r6().aprendido['pere-tarde'];
+    return UI.puertas([
+      {principal: true, icono: 'mic', titulo: 'Enseñarle algo nuevo', sub: 'Se lo dices hablando. Te lo propone y tú decides.', ir: 'dictar/orden',
+        g: 'Enseñarle algo nuevo|Una orden dicha con tu voz se convierte en un trabajo suyo.'},
+      nProp ? {icono: 'estrella', titulo: 'Decidir propuestas', sub: 'Trabajos que repites y puede hacer ella.', n: nProp, ir: 'reglas'}
+        : {icono: 'probeta', titulo: 'Ver sus trabajos, uno a uno', sub: 'Tú decides quién hace cada uno.', ir: 'reglas'},
+      {icono: 'tarea', titulo: 'Ver qué hace por ti', sub: 'Lo que hace sola, lo que hacéis a medias y lo que aún no.', ir: 'que-hace'},
+      {icono: 'libro', titulo: 'Ver lo aprendido', sub: hoy ? 'Hoy: ' + cortaFrase(hoy.regla) + '.' : cortaFrase(a0.texto) + '.', n: nApr, ir: 'aprendido'},
+      {icono: 'grafica', titulo: 'Comparar antes y ahora', sub: `De ${aa.antes.valor} cosas por semana a ${aa.ahora.valor}.`, ir: 'antes-ahora'}
+    ], {i: 1, panel: 'que-hace'}) + UI.menores([
+      {titulo: 'Tu semana', icono: 'cal', ir: 'semana'},
+      {titulo: 'Cuenta y privacidad', icono: 'escudo', ir: 'cuenta'}], {i: 2});
   }
-  const R6v = () => C.r6().visitas;
 
-  function oficina() {
-    const d = M.cosa('d-regla');
-    const arriba = d && !M.RESUELTOS.includes(d.estado)
-      ? UI.tarjeta(`<div class="c-prop-cab">${UI.etiqueta('por-decidir', 'Tienes que decidir · un trabajo para la oficina')}</div>` +
-          `<p class="c-frase">Informe del piso al día siguiente</p><p class="c-apoyo">La propone Laura Martí. Desde agosto han llegado 23 peticiones de valoración; ella lo ha hecho a mano 14 veces.</p>` +
-          UI.boton({texto: 'Ver los casos y decidir', ir: 'regla-oficina/dossier'}), {clase: 'abierta c-propuesta', i: 0})
-      : UI.vacio({titulo: 'Nada por decidir en la oficina', texto: 'Cuando alguien proponga un trabajo para todos, sale aquí.', icono: 'check', i: 0});
+  function puertasDireccion() {
+    const d = M.cosa('d-regla'), decide = d && !M.RESUELTOS.includes(d.estado);
     const n = D().practicas.length + (lee('practicaClaudia', false) ? 1 : 0);
-    return arriba + UI.lista([
-      {titulo: 'Cómo trabajamos', sub: `${n} prácticas`, icono: 'libro', ir: 'oficina/practicas'},
-      {titulo: 'Lo que aprende la oficina', sub: 'Dónde se paran las operaciones', icono: 'grafica', ir: 'oficina/aprende'},
-      {titulo: 'Lo que Veta aún no hace', sub: '43 veces a mano', icono: 'mano', ir: 'oficina/falta'},
-      {titulo: 'Lo que sabe tu oficina', sub: 'De 301 contactos, 212 visitas', icono: 'ojo', ir: 'oficina/sabe'},
-      {titulo: 'Qué hace Veta por tu oficina', sub: 'Todo lo que hago, con ejemplos de la oficina', icono: 'aprende', ir: 'oficina-que-hace'}
-    ], {i: 1});
+    const propone = VETA.dir && VETA.dir.laPropuso && VETA.dir.laPropuso() ? 'Lo propone Laura.' : 'Lo propone Veta.';
+    return UI.puertas([
+      {principal: true, icono: 'mic', titulo: 'Enseñarle algo nuevo', sub: 'Se lo dices hablando. Lo propone y tú decides.', ir: 'dictar/orden',
+        g: 'Enseñarle algo nuevo|Una orden dicha con tu voz se convierte en un trabajo suyo.'},
+      decide ? {icono: 'estrella', titulo: 'Decidir un trabajo', sub: 'Informe del piso al día siguiente. ' + propone, n: 1, ir: 'regla-oficina/dossier'} : null,
+      {icono: 'tarea', titulo: 'Ver qué hace por todos', sub: 'Lo que hace sola, lo que hacéis a medias y lo que aún no.', ir: 'oficina-que-hace'},
+      {icono: 'mano', titulo: 'Ver lo hecho a mano', sub: 'Trabajo que el equipo repite y ella puede aprender.', n: 43, ir: 'oficina/falta'},
+      {icono: 'libro', titulo: 'Ver cómo trabajamos', sub: 'Las prácticas que usa el equipo.', n, ir: 'oficina/practicas'}
+    ], {i: 1, panel: 'oficina-que-hace'}) + UI.menores([
+      {titulo: 'Lo que aprende la oficina', icono: 'grafica', ir: 'oficina/aprende'},
+      {titulo: 'Lo que sabe tu oficina', icono: 'ojo', ir: 'oficina/sabe'},
+      {titulo: 'Tu semana', icono: 'cal', ir: 'semana'},
+      {titulo: 'Cuenta y privacidad', icono: 'escudo', ir: 'cuenta'}], {i: 2});
   }
 
   VETA.pantalla('A8', {
     titulo: 'Veta',
-    guia: ['Aquí ves lo que ya hago yo por ti, lo que te propongo y lo que he aprendido.', 'Tú decides qué hago yo y qué haces tú, paso a paso.', 'Así cada semana te toca menos trabajo.'],
-    pinta: () => {
-      const dir = VETA.yo().papel === 'direccion';
-      const sel = dir ? `<div class="c-sel" data-i="0">${UI.selector({etiqueta: 'Qué ver', opciones: [{id: 'mias', texto: 'Mías'}, {id: 'oficina', texto: 'De la oficina'}], valor: vista(), accion: 'vista'})}</div>` : '';
-      return sel + `<div class="c-vista" id="c-vista">${vista() === 'oficina' ? oficina() : mias()}</div>`;
-    },
-    acciones: {
-      vista(ev, el) {
-        pon('vetaVista', el.dataset.valor);
-        const caja = document.getElementById('c-vista'); if (!caja) return;
-        const pinta = () => { caja.innerHTML = el.dataset.valor === 'oficina' ? oficina() : mias(); VETA.mov.cascada(caja); };
-        if (VETA.mov.hayVT() && !VETA.reducido()) { caja.style.viewTransitionName = 'c-vista'; document.startViewTransition(pinta).finished.finally(() => { caja.style.viewTransitionName = ''; }); }
-        else pinta();
-      }
-    }
+    guia: ['Aquí ves, en pocas puertas, lo que puedes hacer con Veta.', 'Tú tocas una: enseñarle algo nuevo, decidir lo que te propone, o ver lo que hace y lo que ha aprendido.', 'Así sabes desde el principio qué hace Veta y cómo hacerla mejor.'],
+    pinta: () => VETA.yo().papel === 'direccion' ? puertasDireccion() : puertasAgente()
   });
 })();

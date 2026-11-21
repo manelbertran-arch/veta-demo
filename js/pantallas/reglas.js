@@ -8,7 +8,7 @@
 
   // ---- A9 · Lo que hago por ti ----
   VETA.pantalla('A9', {
-    titulo: 'Los trabajos, uno a uno',
+    titulo: 'Propuestas y trabajos',
     guia: ['Aquí ves cada trabajo y quién lo hace: tú o yo.', 'Tú tocas uno para ver sus casos y decidir si doy un paso más.', 'Así nada pasa a hacerlo yo sin que lo hayas visto.'],
     pinta: () => {
       const l = M.reglas().slice().sort((a, b) => (ORDEN[a.estado] ?? 2) - (ORDEN[b.estado] ?? 2));
@@ -23,7 +23,7 @@
             subHtml: e.etq === 'activa' ? VETA.vivo.escalera({nivel: C.paso(r.id), desde: (C.lee('nivelLinea', null) || {}).id === r.id ? 'hoy' : e.desde, mini: true}) : null,
             ir: 'regla/' + r.id, clase: r.estado === 'propuesta' ? 'c-resalta' : (r.estado === 'descartada' ? 'c-apagada' : '')};
         }));
-      return `<p class="intro" data-i="0">Toca uno para ver quién lo hace: tú o yo.</p>` +
+      return `` +
         UI.lista(filas, {i: 1, clase: 'c-reglas'}) +
         UI.bloque({i: 2, html: UI.lista([
           {titulo: 'Enséñame algo nuevo', sub: 'Dímelo hablando. Yo te lo propongo y tú decides.', icono: 'mic', ir: 'dictar/orden'},
