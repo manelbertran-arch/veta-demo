@@ -166,7 +166,7 @@
   VETA.hojaTexto('h40', {
     titulo: 'Clientes con dos chats',
     bloques: () => [{texto: 'Veta une sola los chats del mismo teléfono. Un cliente, una ficha.'},
-      {titulo: 'Unidos esta semana · ' + D.dosChats.length, html: `<div class="lista">${D.dosChats.map(c => UI.fila({titulo: c.texto, sub: c.sub, icono: 'chat'})).join('')}</div>`}]
+      {titulo: 'Unidos la semana pasada · ' + D.dosChats.length, html: `<div class="lista">${D.dosChats.map(c => UI.fila({titulo: c.texto, sub: c.sub, icono: 'chat'})).join('')}</div>`}]
   });
 
   // ---------------- d-regla-otra · G2b «Otra cosa…» ----------------
@@ -187,7 +187,7 @@
     bloques: d => {
       const t = (D.temas || []).find(x => x.id === d.tema) || {cifra: ''};
       const casos = d.tema === 'contactos' ? (D.contactos || []).map(c => c.nombre + ' · ' + c.cuando) : ((D.casosTema || {})[d.tema] || []);
-      return [{html: `<p class="d-dato"><b>${esc(t.cifra)}</b> ${d.tema === 'respuesta' ? 'de media, la última semana' : 'esta semana'}</p>`}, {lista: casos},
+      return [{html: `<p class="d-dato"><b>${esc(t.cifra)}</b> ${d.tema === 'respuesta' ? 'de media, la semana pasada' : 'la semana pasada'}</p>`}, {lista: casos},
         {texto: 'Sin nombres de agentes: es para hablarlo en equipo.'}];
     }
   });

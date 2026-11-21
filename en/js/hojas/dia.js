@@ -1,6 +1,6 @@
 /* Veta demo · hojas · dia.js · paquete A (El día)
    H03 Registro · H04 Lo que he leído · H05 Hechas hoy · H06 Día cerrado · H07 Lo que dijiste · H09 No es eso.
-   (H08 «¿Qué puedo decir?» está en pantallas/dictar.js y H42 «¿Cómo quieres enviarlo?» en pantallas/informe.js,
+   (H08 “¿Qué puedo decir?” está en pantallas/dictar.js y H42 “¿Cómo quieres enviarlo?” en pantallas/informe.js,
    junto a la pantalla que las usa.) */
 (function () {
   'use strict';
@@ -27,8 +27,8 @@
       h += sec('Did it arrive?', llego
         ? UI.lineaHecho({texto: llego === 'si' ? 'Arrived · logged' : 'Didn\'t arrive · logged', boton: {texto: 'Change', accion: 'llego-borra'}})
         : UI.botones([{texto: 'Yes', accion: 'llego', datos: {v: 'si'}}, {texto: 'Didn\'t arrive', accion: 'llego', datos: {v: 'no'}}]));
-      h += rec ? UI.lista([{titulo: 'Reminder ready', sub: 'It\'s in Waiting, ' + rec.fecha.toLowerCase(), icono: 'reloj'}])
-        : UI.lista([{titulo: 'Prepare a reminder if there\'s no reply', sub: 'I\'ll leave it in Waiting', icono: 'reloj', accion: 'recordatorio'}]);
+      h += rec ? UI.lista([{titulo: 'Reminder ready', sub: 'I\'ll keep an eye on it: ' + rec.fecha.toLowerCase(), icono: 'reloj'}])
+        : UI.lista([{titulo: 'Prepare a reminder if there\'s no reply', sub: 'I\'ll keep an eye on it', icono: 'reloj', accion: 'recordatorio'}]);
       return h + cerrar();
     },
     acciones: {
@@ -49,13 +49,14 @@
       const L = M.lectura() || {}, hoy = L.hoy || {}, dir = VETA.yo().papel === 'direccion', equipo = dir && d && d.quien === 'equipo';
       const sergi = dir ? null : M.cosa((DA().yaNo || {}).cosa);
       let h = `<p class="hoja-x">Read up to today, ${esc(VETA.ahora(-3))}</p>`;
-      h += `<ul class="a-canales">${(L.canales || []).map(c => `<li><span class="a-verde" aria-hidden="true"></span><span class="a-can-n">${esc(c.nombre)}</span><span class="a-can-h">${esc(c.hace)}</span></li>`).join('')}</ul>`;
-      h += `<p class="a-h-txt">${esc(equipo ? '46 work chats read today in the office · 14 audio clips transcribed · 3 to listen to' : hoy.chats + ' chats read today · ' + hoy.audios + ' audio clips transcribed · ' + hoy.porEscuchar + ' to listen to')}</p>`;
+      h += `<ul class="a-canales">${(L.canales || []).filter(c => /whatsapp/i.test(c.nombre)).map(c => `<li><span class="a-verde" aria-hidden="true"></span><span class="a-can-n">${esc(c.nombre)}</span><span class="a-can-h">${esc(c.hace)}</span></li>`).join('')}</ul>`;
+      h += `<p class="a-h-txt">${esc(equipo ? '46 work chats read today in the office' : hoy.chats + ' chats read today')}</p>`;
       // dirección: en Equipo, lo de la oficina (sin chats de nadie); en lo suyo, sus clientes
       const det = equipo ? ['Carmen López writes to the office WhatsApp and nobody replies', 'Joan Serra complains: ten days without news', 'Teresa is on leave: 34 unattended conversations']
         : dir ? ['Rubén Gil asks about the penthouse viewings', 'Guillem Roig asks you to confirm Wednesday\'s viewing', 'Sílvia Prat is waiting for a reply to her offer'] : (DA().detectado || []);
       h += sec('Detected today · ' + det.length, `<ul class="a-h-lista">${det.map(t => `<li>${esc(t)}</li>`).join('')}</ul>`);
       if (sergi && sergi.estado === 'quitada') h += sec('No longer here · 1', `<ul class="a-h-lista"><li>${esc(DA().yaNo.texto)}</li></ul>`);
+      h += `<p class="a-h-gris a-h-aun"><span><b>Not yet:</b> I don't read emails, calls or voice notes.</span></p>`;
       h += `<p class="a-h-gris">${ic('candado', 18)} ${equipo ? 'Only office matters show here: each person\'s chats don\'t show in management.' : 'I don\'t read your personal groups or the chats you left out.'}</p>`;
       return h + cerrar();
     }
@@ -89,7 +90,7 @@
       const hecho = cola.filter(c => ['enviada', 'hecha', 'quitada'].includes(c.estado)).length;
       const espera = VETA.A.esperaPend(q).length, man = M.manana(q).length;
       const parte = ((VETA.datos.partes || {})['1930'] || {}).bloques || [];
-      let h = `<div class="a-h-cifras">${[['Done', hecho], ['Waiting', espera], ['Moved to tomorrow', man]].map(([t, n]) => `<div><b>${n}</b><span>${esc(t)}</span></div>`).join('')}</div>`;
+      let h = `<div class="a-h-cifras">${[['Done', hecho], ['Watching', espera], ['Moved to tomorrow', man]].map(([t, n]) => `<div><b>${n}</b><span>${esc(t)}</span></div>`).join('')}</div>`;
       h += `<div class="hoja-texto">${parte.slice(1).map(b => `<section class="ht-b">${b.titulo ? `<h3 class="ht-t">${esc(b.titulo)}</h3>` : ''}${b.texto ? `<p>${esc(b.texto)}</p>` : ''}${b.lista ? `<ul>${b.lista.map(x => `<li>${esc(x)}</li>`).join('')}</ul>` : ''}</section>`).join('')}</div>`;
       h += UI.lista([{titulo: 'See the full wrap-up', icono: 'doc', hoja: 'h41', datos: {parte: '1930'}}]);
       return h + UI.boton({texto: 'Back to Today', datos: {cierra: '1'}});

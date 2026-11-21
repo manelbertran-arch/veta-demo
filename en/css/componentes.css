@@ -226,8 +226,37 @@ textarea.campo-i{resize:vertical;line-height:1.4}
 .port-dice{margin-top:var(--e3);font:500 var(--f-cuerpo)/1.4 var(--body);color:var(--port-t2)}
 .port-acc{margin-top:var(--e7);display:flex;flex-direction:column;gap:var(--e2)}
 .port-acc .btn-texto{align-self:center;color:var(--port-3)}
-.portada .port-acc .btn-texto{font-size:var(--f-apoyo)}
 .port-aviso{margin-top:var(--e3);font:500 var(--f-apoyo)/1.4 var(--body);color:var(--top-t3);text-align:center}
+
+/* ---- marca e idioma (E1), como la portada de la web (revision_valor/PORTADA_WEB.md, A); el fondo también en Entrar (E2) ----
+   El movimiento (luz que deriva, logotipo que respira, carrusel que gira) está en movimiento.css (17). */
+.m-fondo{position:absolute;inset:0;max-width:none;margin:0;pointer-events:none;overflow:hidden;background:radial-gradient(125% 105% at 43% 46%,#1c1a12,#11100e 48%,#0a0a0b)}
+.m-fondo i{position:absolute;display:block}
+.m-luz{inset:-30%;background:radial-gradient(38% 32% at 22% 26%,rgba(226,192,103,.12),transparent 70%),radial-gradient(34% 30% at 82% 72%,rgba(201,162,75,.11),transparent 72%)}
+.m-luz.dos{background:radial-gradient(30% 26% at 68% 20%,rgba(242,217,141,.09),transparent 70%),radial-gradient(40% 34% at 14% 82%,rgba(201,162,75,.08),transparent 74%)}
+.m-vin{inset:0;box-shadow:inset 0 0 170px 34px #000000b3}
+.m-grano{inset:0;opacity:.05;mix-blend-mode:overlay;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>")}
+.m-marca{padding:0}
+/* la entrada ocupa la pantalla justa: sin el respiro de arriba que llevan las demás pantallas en móviles bajos (base.css) */
+.app[data-vista=movil] .pant-E1,.app[data-vista=movil] .pant-E2{padding-top:0}
+.m-pick{flex:1;max-width:none;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:clamp(1.5rem,3.5vh,2.4rem);padding:var(--e5) var(--margen) calc(var(--e5) + env(safe-area-inset-bottom,0px))}
+.m-logo{position:relative;display:inline-block}
+.m-logo img{display:block;width:min(72vw,380px);height:auto;filter:drop-shadow(0 2px 30px rgba(0,0,0,.5));position:relative;z-index:2}
+.m-halo{position:absolute;left:20%;top:72%;width:42%;aspect-ratio:1;transform:translate(-50%,-50%);background:radial-gradient(circle,rgba(226,170,78,.42) 0%,rgba(226,170,78,.12) 32%,transparent 60%);pointer-events:none;z-index:1;opacity:.65}
+/* los idiomas: «Elige idioma · Choose your language» y la órbita con los dos. Cada idioma es su botón y se toca siempre:
+   el de detrás sube y se atenúa, no se esconde. La órbita mide 2 × 5,75rem de ancho más el botón; 2 × 2rem de alto más el toque */
+.m-idiomas{display:flex;flex-direction:column;align-items:center;gap:var(--e2);touch-action:manipulation;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+.m-elige{margin:0;display:flex;flex-wrap:wrap;justify-content:center;gap:0 .6em;font:500 var(--f-apoyo)/1.5 var(--body);letter-spacing:.08em;text-transform:uppercase;color:var(--port-t2);opacity:.85;text-align:center}
+.m-elige i{font-style:normal;opacity:.6}
+.m-orbita{position:relative;width:min(100%,21rem);height:calc(4rem + var(--toque))}
+.m-via{position:absolute;left:50%;top:50%;width:0;height:0}
+.m-idioma{position:absolute;left:0;top:0;transform:translate(-50%,-50%);display:flex;align-items:center;justify-content:center;min-height:calc(var(--toque) + 4px);padding:0 1rem;white-space:nowrap;background:rgba(10,9,6,.35);border:1px solid rgba(245,236,220,.2);border-radius:999px;font:600 var(--f-apoyo)/1 var(--body);letter-spacing:.3em;text-indent:.3em;text-transform:uppercase;color:#F5ECDC;cursor:pointer;touch-action:manipulation;-webkit-user-select:none;user-select:none}
+.m-idioma:focus-visible{outline:2px solid var(--port-3);outline-offset:2px}
+@media (hover:hover) and (pointer:fine){.m-idioma:hover{border-color:rgba(232,190,120,.6)}}
+/* sin movimiento: los dos quietos, en fila */
+html[data-mov=reducido] .m-orbita{width:auto;height:auto;display:flex;flex-wrap:wrap;justify-content:center;gap:var(--e3)}
+html[data-mov=reducido] .m-via{position:static;width:auto;height:auto}
+html[data-mov=reducido] .m-idioma{position:static;transform:none;opacity:1}
 
 /* ---- muestrario ---- */
 .mu-sec{display:flex;flex-direction:column;gap:var(--e3)}
@@ -244,3 +273,6 @@ textarea.campo-i{resize:vertical;line-height:1.4}
 /* cita de un chat que dirección no lee (cliente de otra persona) */
 .cita.cita-ajena{flex-direction:row;align-items:flex-start;gap:var(--e2);min-height:0;color:var(--t2);font:500 var(--f-apoyo)/1.4 var(--body)}
 .cita-ajena svg{flex:none;margin-top:2px}
+
+/* A11 · las dos etiquetas de la orden dictada (Trabajo nuevo · Te lo propongo + Ejemplo) */
+.c-etqs{display:flex;flex-wrap:wrap;gap:var(--e2);align-items:center}

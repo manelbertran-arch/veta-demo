@@ -17,6 +17,47 @@
   const baseDe = el => String(el.dataset.de || '').replace(/^mu-/, '');
   const pon = (el, estado, extra) => { const id = baseDe(el); local[id] = {estado, hora: VETA.ahora(), extra: Object.assign({}, (local[id] || {}).extra, extra || {})}; VETA.repinta({hecho: 'mu-' + id}); };
 
+  // ---- ronda 6 · piezas vivas (VETA.vivo): todas a la vista y con su botón para probarlas ----
+  let vNivel = 2, vLleva = false;
+  const pieza = (rotulo, html) => `<p class="v-mu-r">${esc(rotulo)}</p>${html}`;
+  const vivas = () => {
+    const Vv = VETA.vivo, m = VETA.modelo.cosa('c-marta');
+    const fila = (id, t, sub) => UI.fila({titulo: t, sub, av: id, vt: 'mu-v-' + id, datos: {muda: '1'}});
+    const mias = [vLleva ? null : fila('elena', 'Elena Vives', 'Confirm tomorrow\'s viewing'), fila('marta', 'Marta Puig', 'Reply: asks to see the flat'), fila('pere', 'Pere Soler', 'Send the weekly report')].filter(Boolean);
+    return `<div class="v-mu">` +
+      pieza('1 · Gold: the line is drawn once under the sentence that proves something', `<p class="hoja-x">Marta wrote: “${Vv.marca(m.cita.texto + ', morning is better', 'We could see it this Saturday')}”.</p>`) +
+      pieza('2 · Ring: cases counted or times seen, in three sizes', `<div class="v-mu-fila">${Vv.anillo({van: 11, de: 14, tam: 's', texto: '11 of 14 cases'})}${Vv.anillo({van: 11, de: 14})}${Vv.anillo({veces: 9})}${Vv.anillo({van: 11, de: 14, tam: 'l'})}</div>`) +
+      pieza('3 · Ladder: small (in a line) and full, with the cases first so you can go up', `<p class="hoja-x">Confirm viewings: ${Vv.escalera({nivel: vNivel, desde: '12 Nov', mini: true})}</p>` +
+        UI.tarjeta(Vv.escalera({nivel: vNivel, desde: vNivel === 2 ? '12 Nov' : 'today', sube: {hechas: 14, corregidas: 1, pregunta: vNivel === 2 ? 'Shall I note the viewing down without asking you?' : 'Shall I leave it ready to send with one tap?', boton: 'Yes, go up a step', accion: 'v-sube'}})) +
+        (vNivel > 2 ? UI.boton({tipo: 'texto', texto: 'Back to step 2', accion: 'v-baja'}) : '')) +
+      pieza('4 · Thread: she said → I prepared → you decided → I learned', UI.tarjeta(Vv.hilo([
+        {paso: 'She said', texto: '“' + m.cita.texto + '”', cuando: m.cita.origen},
+        {paso: 'I prepared', texto: 'The reply, with day and time: Saturday at 11:00.'},
+        {paso: 'You decided', texto: 'You changed “when suits you?” to two exact times.'},
+        {paso: 'I learned', texto: 'When you suggest a viewing, I give two times.', cuando: 'Example'}]))) +
+      pieza('5 · Count: the number rolls from one value to another', `<p class="hoja-x">Today you have <b>${Vv.cuenta({de: 9, a: 6})}</b> · a month ago, 9.</p>`) +
+      pieza('6 · Before and now: two columns and the six-week line', UI.tarjeta(Vv.antesAhora({
+        antes: {rotulo: 'The first day', valor: 46, unidad: 'things for you per week'}, ahora: {rotulo: 'Today', valor: 21, unidad: 'things for you per week'}, semanas: [46, 41, 37, 30, 25, 21]}))) +
+      pieza('7 · “Veta reads” scene: the messages fall, the gold underlines and the sentence becomes the card', Vv.escena({ir: 'muestrario/abierta', boton: 'See the card'})) +
+      pieza('8 · Pulse (Veta working) and halo while it listens', `<div class="v-mu-fila">${Vv.pulso({ahora: 'Reading 3 new chats…', texto: 'Up to date · read up to ' + VETA.ahora(-3)})}</div>` +
+        UI.boton({tipo: 'secundario', texto: 'Listen for 3 seconds', accion: 'v-halo', icono: 'mic'})) +
+      pieza('9 · Step: the row moves to another block, the list moves around and the card opens from its place',
+        `<div class="tarjeta"><h3 class="bloque-t">For you today · ${Vv.cuenta({de: vLleva ? 3 : 2, a: vLleva ? 2 : 3, clave: 'mu-v-n' + vLleva})}</h3>${UI.lista(mias)}` +
+        `<h3 class="bloque-t">I'll handle it</h3>${vLleva ? UI.lista([fila('elena', 'Elena Vives', 'Viewing confirmed · I did it')]) : '<p class="bloque-sub">Nothing yet.</p>'}</div>` +
+        UI.boton({tipo: 'secundario', texto: vLleva ? 'Give it back to me' : 'Let Veta confirm the viewings', accion: 'v-lleva'}) +
+        `<div class="tarjeta" data-foco="tarjeta"><div class="v-es-quien">${VETA.av('marta', 40)}<span><b>${esc(m.titulo)}</b><span>${esc(m.quienEs)}</span></span></div>` +
+        UI.boton({tipo: 'secundario', texto: 'Open from its place', ir: 'muestrario/abierta'}) + `</div>`) +
+      pieza('10 · Alert with undo: countdown ring; when you undo, it teaches', UI.boton({tipo: 'secundario', texto: 'Close something and undo', accion: 'v-aviso'})) +
+      pieza('11 · “Where it comes from” (H01): the exact sentence underlined and the date in a pill', UI.tarjeta(UI.cita({texto: m.cita.texto, origen: m.cita.origen, de: 'c-marta'}))) +
+      UI.boton({tipo: 'texto', texto: 'Draw it all again', accion: 'v-otra'}) + `</div>`;
+  };
+  VETA.pantalla('muestrario-abierta', {
+    ruta: 'muestrario/abierta', titulo: 'Marta Puig', destino: null, grupo: 'Core',
+    guia: ['Here you see a card that has opened from its place.', 'You go back.', 'This is how data-foco="tarjeta" is used.'],
+    pinta: () => { const m = VETA.modelo.cosa('c-marta'); return `<div class="tarjeta" data-foco="tarjeta" data-i="0"><div class="v-es-quien">${VETA.av('marta', 40)}<span><b>${esc(m.titulo)}</b><span>${esc(m.quienEs)}</span></span></div>` +
+      UI.cita({texto: m.cita.texto, origen: m.cita.origen, de: 'c-marta'}) + UI.borrador({texto: m.borrador}) + `</div><p class="intro" data-i="1">The card on the previous screen and this one both have data-foco="tarjeta": it travels and grows to its place.</p>`; }
+  });
+
   VETA.pantalla('muestrario', {
     ruta: 'muestrario', titulo: 'Showcase', destino: null, ancha: true, grupo: 'Core',
     guia: ['Here are all the core components.', 'You tap them to see how they respond.', 'That way the packages know what to use.'],
@@ -26,8 +67,9 @@
       const hojas = Object.values(VETA.HOJAS);
       return [
         `<p class="intro" data-i="0">Everything the core gives the packages. Whatever you tap here doesn't change the demo.</p>`,
+        sec('Live parts', vivas(), 'ronda 6 · VETA.vivo'),
         sec('Destination band', `<div class="mu-banda"><div class="cab cab-banda"><span class="cab-t">Today</span><span class="cab-yo">${VETA.av(yo.id, 36, {aro: true})}</span></div></div>`),
-        sec('Detail header', `<div class="mu-banda"><div class="cab cab-detalle"><button type="button" class="cab-atras" data-accion="toca">${VETA.ic('atras', 20)}<span>Today</span></button><span class="cab-t">Pere Soler</span><span class="cab-der"></span></div></div>`),
+        sec('Detail header', `<div class="mu-banda"><div class="cab cab-detalle"><button type="button" class="cab-atras" data-accion="toca">${VETA.ic('atras', 20)}</button><span class="cab-t">Pere Soler</span><span class="cab-der"></span></div></div>`),
         sec('Bar and “Dictate” mic', `<div class="mu-barra"><div class="barra"><div class="tabs">` +
           [['hoy', 'Today', 'hoy', 3], ['clientes', 'Clients', 'clientes'], ['aprende', 'Veta', 'veta']].map(([ic, t, k, n], i) =>
             `<button type="button" class="tab${i === 0 ? ' on' : ''}" data-accion="toca"><span class="tab-ic">${VETA.ic(ic, 24)}${n ? `<span class="contador"><span class="contador-n">${n}</span></span>` : ''}</span><span class="tab-p">${t}</span></button>`).join('') +
@@ -38,12 +80,12 @@
         sec('Rows and list', UI.lista([
           {titulo: 'Pere Soler', sub: 'Owner of the Verdi 42 flat', av: 'pere', ir: 'muestrario/lista', focoFoto: true},
           {titulo: 'Carmen López', sub: 'Initials when there\'s no photo', av: 'carmen', etiqueta: 'te-toca', ir: 'muestrario/lista'},
-          {titulo: 'Verdi 42, 3.º 2.ª', sub: 'With a flat thumbnail', foto: 'verdi', derecha: '395.000 €', ir: 'muestrario/lista'},
+          {titulo: 'Verdi 42, 3.º 2.ª', sub: 'With a flat thumbnail', foto: 'verdi', derecha: '€395,000', ir: 'muestrario/lista'},
           {titulo: 'With an icon', sub: 'And without “›” because it isn\'t tappable', icono: 'reloj'}])),
         sec('Card', UI.tarjeta(`<p class="hoja-x">Radius 20, thin border and shadow. One open per screen.</p>`)),
         sec('Quote and draft', UI.cita({texto: 'Is the Gràcia flat still available? We could see it this Saturday', origen: 'Marta · yesterday, 18:42', de: 'c-marta'}) +
           UI.borrador({texto: 'Hi Marta, it\'s Laura. Does this Saturday at 11:00 work for you to see the Gràcia flat?'}) +
-          UI.borrador({html: 'Hi Jordi, it\'s Laura. Here\'s the dossier: floor plans, land registry extract <mark>and community fees</mark>.'}) +
+          UI.borrador({html: 'Hi Jordi, it\'s Laura. Here is the flat report: floor plans, land registry extract <mark>and community fees</mark>.'}) +
           UI.nota({texto: 'It doesn\'t go out until you send it', icono: 'candado'}) + UI.nota({texto: 'Alert with a padlock, boxed.', icono: 'candado', caja: true})),
         sec('Done line', UI.lineaHecho({texto: 'Sent to Marta', hora: VETA.ahora(), hoja: 'h03', de: 'c-marta', boton: {texto: 'I didn\'t send it', accion: 'toca'}})),
         sec('The queue card · six types', tipos.map((c, k) => UI.tarjetaCosa(c, {n: k + 1, total: 6})).join('')),
@@ -77,19 +119,26 @@
           {titulo: 'Action sheet', sub: 'VETA.hojaAcciones', hoja: 'mu-acciones', icono: 'puntos'},
           {titulo: 'Text sheet', sub: 'VETA.hojaTexto', hoja: 'mu-texto', icono: 'doc'},
           {titulo: 'Choice sheet', sub: 'VETA.hojaElegir', hoja: 'mu-elegir', icono: 'usuario'}])),
-        sec('The 42 sheets', UI.lista(hojas.map(h => ({titulo: h.titulo, sub: h.cod + ' · ' + (VETA.hojaDefs[h.id] ? 'hecha' : 'pending from package ' + h.paq), hoja: h.id,
+        sec('The 42 sheets', UI.lista(hojas.map(h => ({titulo: h.titulo, sub: h.cod + ' · ' + (VETA.hojaDefs[h.id] ? 'done' : 'pending from package ' + h.paq), hoja: h.id,
           datos: h.id === 'h01' || h.id === 'h02' ? {de: 'c-marta'} : h.id === 'h17' ? {piso: 'verdi'} : h.id === 'h29' ? {texto: 'acuerdo'} : h.id === 'h41' ? {parte: 'socios'} : null}))))
       ].join('');
     },
     acciones: {
       toca() {},
       // tarjetas de muestra: su propio estado
-      principal(ev, el) { const c = VETA.modelo.cosa(baseDe(el)); pon(el, c && c.sale ? 'pregunta-envio' : 'hecha'); },
+      principal(ev, el) { const c = VETA.modelo.cosa(baseDe(el)); pon(el, c && c.sale ? 'pregunta-envio' : 'done'); },
       'si-enviado'(ev, el) { pon(el, 'enviada'); }, 'ya-lo-envie'(ev, el) { pon(el, 'enviada'); },
       'todavia-no'(ev, el) { pon(el, 'por-hacer'); }, 'no-lo-envie'(ev, el) { delete local[baseDe(el)]; VETA.repinta({hecho: el.dataset.de}); },
       deshacer(ev, el) { delete local[baseDe(el)]; VETA.repinta({hecho: el.dataset.de}); },
       quitar(ev, el) { pon(el, 'quitada'); },
       copiar(ev, el) { VETA.aviso('Text copied. Send it from your WhatsApp.'); pon(el, 'por-hacer', {boton: {texto: 'I\'ve sent it', accion: 'ya-lo-envie'}, secundarios: [{texto: 'Copy again', accion: 'copiar'}]}); },
+      // piezas vivas
+      'v-sube'() { vNivel = Math.min(vNivel + 1, 4); VETA.repinta({paso: true}); },
+      'v-baja'() { vNivel = 2; VETA.repinta({paso: true}); },
+      'v-lleva'() { vLleva = !vLleva; VETA.repinta({paso: true}); },
+      'v-halo'() { VETA.vivo.halo(true); setTimeout(() => VETA.vivo.halo(false), 3000); },
+      'v-aviso'() { VETA.aviso('Closed: Marta has already replied.', {deshacer: () => {}, ensena: 'Got it: I won\'t close it without asking you.'}); },
+      'v-otra'() { VETA.vivo.olvida(); VETA.repinta(); },
       // efectos
       'ir-lista'() { VETA.ir('muestrario/lista'); },
       pestana() { VETA.ir('clientes', {pestana: true}); },
@@ -117,17 +166,17 @@
     cabDerecha: () => VETA.av('pere', 32, {foco: 'foto'}),
     guia: ['Here you see a screen built only from data.', 'You tap a row.', 'That\'s how the priority 2 ones are built.'],
     intro: 'A list screen: blocks with a title and rows. The header photo is the one that travelled from the row.',
-    bloques: [{titulo: 'Latest', filas: [{titulo: 'Report sent', sub: 'Mon 16', icono: 'papel', hoja: 'h41', datos: {parte: 'socios'}}, {titulo: 'Voice note', sub: 'Sat 21, 21:10', icono: 'mic'}]},
+    bloques: [{titulo: 'Latest', filas: [{titulo: 'Report sent', sub: 'Mon 16', icono: 'papel', hoja: 'h41', datos: {parte: 'socios'}}, {titulo: 'Message', sub: 'Sat 21, 21:10', icono: 'chat'}]},
       {titulo: 'More', filas: [{titulo: 'Go to the confirmation', ir: 'muestrario/confirma', icono: 'check'}]}],
     pie: 'Example with made-up data.'
   });
   VETA.confirma('muestrario-confirma', {
-    ruta: 'muestrario/confirma', titulo: 'Hand over the portfolio', destino: null, grupo: 'Core',
+    ruta: 'muestrario/confirma', titulo: 'Handing over their clients', destino: null, grupo: 'Core',
     texto: 'A confirmation screen: what\'s going to happen, the details and a button.',
     filas: [{titulo: '34 conversations', sub: 'From Teresa Gil to Laura Martí', av: 'teresa'}, {titulo: '3 viewings this week', icono: 'cal'}],
     nota: 'Nobody receives anything until you approve it.',
-    boton: {texto: 'Hand over the portfolio to Laura'},
-    alConfirmar: () => ({aviso: 'Portfolio handed over to Laura.'})
+    boton: {texto: 'Hand the clients over to Laura'},
+    alConfirmar: () => ({aviso: 'Clients handed over to Laura.'})
   });
   VETA.hojaAcciones('mu-acciones', {
     titulo: 'Marta Puig', texto: 'An action sheet: options as 56 px rows.',

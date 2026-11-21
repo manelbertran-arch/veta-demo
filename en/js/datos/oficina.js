@@ -11,7 +11,7 @@
     {id: 'm-ruben', quien: 'montse', tipo: 'mensaje', cliente: 'ruben', titulo: 'Rubén Gil', corto: 'Rubén', sale: true, chat: 'ruben',
       quienEs: 'Seller · Sant Gervasi penthouse', etiqueta: 'sin-responder',
       cita: {texto: 'Has anyone come to see the penthouse this week?', origen: 'Rubén · yesterday, 20:15'},
-      borrador: 'Hi Rubén, it\'s Montse. Two couples saw the penthouse this week; one wants to come back on Saturday. I\'ll call you on Friday with what they say.',
+      borrador: 'Hi Rubén, it\'s Montse. Two couples saw the penthouse last week; one wants to come back on Saturday. I\'ll call you on Friday with what they say.',
       boton: {texto: 'Open WhatsApp with the message'}, secundarios: [{texto: 'Edit', ir: 'mensaje/m-ruben'}, otra],
       fila: 'Rubén Gil', filaSub: 'Asks about the penthouse viewings', lineas: {enviada: 'Sent to Rubén'}},
     {id: 'm-guillem', quien: 'montse', tipo: 'mensaje', cliente: 'guillem', titulo: 'Guillem Roig', corto: 'Guillem', sale: true, chat: 'guillem',
@@ -30,33 +30,33 @@
   // G1 · las decisiones del equipo (4)
   D.cola.equipo = [
     {id: 'd-carmen', quien: 'equipo', tipo: 'asunto', cliente: 'carmen', titulo: 'Carmen López', corto: 'Carmen', nota: false, chat: 'carmen',
-      quienEs: 'To decide · unowned contact', etiqueta: 'por-decidir', etiquetaTexto: 'To decide',
+      quienEs: 'Nobody is handling her', etiqueta: 'por-decidir', etiquetaTexto: 'You have to decide',
       momento: 'Nobody has replied to her since yesterday, 19:10.',
       cita: {texto: 'Looking for a 3-bedroom flat in Gràcia, up to €450,000', origen: 'Carmen · Office WhatsApp · yesterday, 19:10'},
-      propone: 'Veta suggests Laura: she covers Gràcia. It fits a flat you already have: Verdi 42.',
-      boton: {texto: 'Assign to Laura', accion: 'asignar'}, secundarios: [{texto: 'See the matter', ir: 'asunto/carmen'}, otra],
-      otraCosa: [{texto: 'Assign to someone else', hoja: 'h35'}, {texto: 'I\'ll handle it', llevoYo: true},
+      propone: 'I would give this one to Laura: she looks after Gràcia. It matches a flat you already have: Verdi 42.',
+      boton: {texto: 'Give her to Laura', accion: 'asignar'}, secundarios: [{texto: 'See what happened', ir: 'asunto/carmen'}, otra],
+      otraCosa: [{texto: 'Give her to someone else', hoja: 'h35'}, {texto: 'I\'ll handle it', llevoYo: true},
         {texto: 'For later', estado: 'para-manana', linea: 'For later · Carmen López'}, {texto: 'Dismiss it', estado: 'quitada', linea: 'Dismissed · Carmen López'}],
-      fila: 'Carmen López', filaSub: 'Unowned contact since yesterday', lineas: {hecha: 'Carmen López, assigned to Laura'},
+      fila: 'Carmen López', filaSub: 'Nobody has handled her since yesterday', lineas: {hecha: 'Carmen López, assigned to Laura'},
       alResolver: {flag: 'carmen-asignada'}},
-    {id: 'd-regla', quien: 'equipo', tipo: 'regla', titulo: 'Dossier the next day', icono: 'estrella', nota: false,
-      quienEs: 'To decide · office rule', etiqueta: 'por-decidir',
-      resumen: 'When someone asks for a valuation, Veta prepares the dossier the next day and the agent sends it.',
-      get propone() { return VETA.dir.proponeRegla() + '. In the office it has happened 23 times since August.'; },
+    {id: 'd-regla', quien: 'equipo', tipo: 'regla', titulo: 'Flat report the next day', icono: 'estrella', nota: false,
+      quienEs: 'A job for the office', etiqueta: 'por-decidir', etiquetaTexto: 'You have to decide',
+      resumen: 'When someone asks for a valuation, I prepare the flat report for the next day and the agent sends it.',
+      get propone() { return VETA.dir.proponeRegla() + '. 23 valuation requests have come in; Laura has done it by hand 14 times.'; },
       boton: {texto: 'See the cases and decide', ir: 'regla-oficina/dossier'},
-      fila: 'A rule for the whole office', get filaSub() { return 'Dossier the next day · ' + (VETA.dir.laPropuso() ? 'proposed by Laura' : 'proposed by Veta'); }, ficha: 'regla-oficina/dossier', lineas: {hecha: 'Decided · Dossier the next day'}},
+      fila: 'A job for the whole office', get filaSub() { return 'Flat report the next day · ' + (VETA.dir.laPropuso() ? 'Laura suggests it' : 'I suggest it'); }, ficha: 'regla-oficina/dossier', lineas: {hecha: 'Decided · Flat report the next day'}},
     {id: 'd-teresa', quien: 'equipo', tipo: 'reparto', titulo: 'Teresa Gil is on leave', av: 'teresa', nota: false,
-      quienEs: 'To decide · unattended portfolio', etiqueta: 'por-decidir',
+      quienEs: 'Her clients, with no one looking after them', etiqueta: 'por-decidir', etiquetaTexto: 'You have to decide',
       resumen: 'Since Monday 16. She has 34 open conversations with 12 clients and 3 viewings this week.',
-      propone: 'Veta suggests passing them to Laura, who works in the same office.',
-      boton: {texto: 'Split Teresa\'s portfolio', ir: 'reparto'},
-      fila: 'Teresa is on leave', filaSub: '34 unattended conversations', ficha: 'reparto', lineas: {hecha: 'Teresa\'s portfolio split'}},
+      propone: 'I would pass them to Laura, who works in the same office.',
+      boton: {texto: 'Pass her clients to someone else', ir: 'reparto'},
+      fila: 'Teresa is on leave', filaSub: '34 unattended conversations', ficha: 'reparto', lineas: {hecha: 'Teresa\'s clients, passed on'}},
     {id: 'd-joan', quien: 'equipo', tipo: 'queja', cliente: 'joan-serra', titulo: 'Complaint from Joan Serra', corto: 'Joan', nota: false, chat: 'joan-serra',
-      quienEs: 'To decide · owner complaint', etiqueta: 'por-decidir',
+      quienEs: 'Owner complaint', etiqueta: 'por-decidir', etiquetaTexto: 'You have to decide',
       // sin citar el chat de Marc: dirección lo sabe porque saltó su aviso de quejas
-      resumen: 'Your alert “An owner complains” triggered on Saturday at 20:05: ten days without news about the flat.',
+      resumen: 'I alerted you on Saturday at 20:05, as you asked: an owner is complaining. They have had no news about the flat for ten days.',
       pie: 'Marc handles it.',
-      boton: {texto: 'Ask Marc to call him today', accion: 'pedir-marc'}, secundarios: [{texto: 'See the matter', ir: 'asunto/joan-serra'}, otra],
+      boton: {texto: 'Ask Marc to call him today', accion: 'pedir-marc'}, secundarios: [{texto: 'See what happened', ir: 'asunto/joan-serra'}, otra],
       otraCosa: [{texto: 'I\'ll call him', estado: 'hecha', linea: 'Joan Serra · you call him'}, {texto: 'For later', estado: 'para-manana', linea: 'For later · Joan Serra'},
         {texto: 'Dismiss it', estado: 'quitada', linea: 'Dismissed · complaint from Joan Serra'}],
       fila: 'Complaint from Joan Serra, owner', filaSub: 'Marc handles it · Saturday 21, 20:05', ficha: 'asunto/joan-serra', lineas: {hecha: 'Asked Marc: call Joan Serra today'},
@@ -106,8 +106,8 @@
 
   // los ocho números de la oficina (los del backend, con cifras inventadas)
   D.numeros = {
-    nombres: ['Matters detected', 'Messages and tasks ready', 'Completed', 'Awaiting approval', 'Corrections', 'Done without anyone touching them', 'Tasks Veta follows on its own', 'Office rules'],
-    ventanas: {'7d': 'Last 7 days', desde: 'Since 3 October'},
+    nombres: ['Things I have seen', 'Messages and tasks ready', 'Completed', 'Awaiting approval', 'Corrections', 'Done without anyone touching them', 'Tasks I am following', 'Office jobs'],
+    ventanas: {'7d': 'Last 7 days', desde: 'Since we started'},
     '7d': [184, 156, 132, 19, 14, 0, 23, 1],
     desde: [1196, 1012, 861, 24, 97, 0, 41, 6],
     semanaAnterior: {texto: '9 to 15 November', preparados: 141, completados: 118},
@@ -117,20 +117,20 @@
   // H34 · los temas de hoy (elige hasta 3)
   D.temas = [
     {id: 'esperando', texto: 'Waiting for a reply', cifra: '11'}, {id: 'promesas', texto: 'Promises with no record', cifra: '7'},
-    {id: 'quieren', texto: 'Want to sell or buy', cifra: '9'}, // la cifra de contactos sale de lo mismo que «Lo que entra» (baja al asignar)
+    {id: 'quieren', texto: 'Want to sell or buy', cifra: '9'}, // la cifra de contactos sale de lo mismo que “Lo que entra” (baja al asignar)
     {id: 'contactos', texto: 'New contacts without a reply', get cifra() { return String(VETA.dir.sinResponder().length); }},
     {id: 'respuesta', texto: 'Usual response time', cifra: '2 h 40 min'}, {id: 'visitas', texto: 'Unconfirmed viewings', cifra: '4'}
   ];
   D.temasIniciales = ['contactos', 'promesas', 'visitas'];
 
-  // tiempos (solo con la etiqueta «Ejemplo»; el código hace la cuenta, no se escribe el resultado a mano)
+  // tiempos (solo con la etiqueta “Ejemplo”; el código hace la cuenta, no se escribe el resultado a mano)
   D.tiempos = {
-    laura: [{id: 'mensajes', texto: 'Messages prepared', n: 27, minEjemplo: 4}, {id: 'actas', texto: 'Notes', n: 3, minEjemplo: 12}, {id: 'avisos', texto: 'Alerts and reminders', n: 4, minEjemplo: 2}],
+    laura: [{id: 'mensajes', texto: 'Messages prepared', n: 27, minEjemplo: 4}, {id: 'actas', texto: 'Viewing notes', n: 3, minEjemplo: 12}, {id: 'avisos', texto: 'Alerts and reminders', n: 4, minEjemplo: 2}],
     equipo: {minutos: 765, conTiempos: 4, personas: 6, costeEjemplo: 35}
   };
 
   // H41 · informe a socios
   D.partes = D.partes || {};
   D.partes.socios = {titulo: 'Partners report · November', bloques: [
-    {lista: ['Read: 128 conversations', 'Replied: 94 in the last week', 'Promises: 12 found, 7 with no record', 'Starting point: on day 0 there were 46 cards per week']}]};
+    {lista: ['Read: 212 chats', 'Replied: 94 in the last week', 'Promises: 12 found, 7 with no record', 'Starting point: on day 0 there were 46 cards per week']}]};
 })();

@@ -128,6 +128,13 @@ html:not([data-mov=reducido]) .c-nivel.on .c-nivel-n{animation:c-late var(--t-la
 .c-papel-s{font:500 var(--f-apoyo)/1.4 var(--body);color:var(--port-t2)}
 .c-papel-chev{flex:none;display:flex;color:var(--port-t2)}
 .c-papel-nota{font:500 var(--f-apoyo)/1.4 var(--body);color:var(--port-t2)}
+/* paso 2 de la entrada: el lema y el papel en una sola pantalla (mismo fondo que la portada) */
+.c-lema .c-entrar-c{gap:var(--e3)}
+.c-lema .port-h,.c-lema .port-que{margin-top:0}
+.c-papel-h{margin-top:var(--e4);font:600 var(--f-hoja)/1.2 var(--display);letter-spacing:-.01em;color:var(--port-t)}
+.c-primer{display:flex;justify-content:center}
+.c-primer .btn-texto{color:var(--port-3)}
+@media (max-height:700px){.c-lema .port-que{display:none}.c-lema .c-papel-h{margin-top:var(--e2)}}
 .c-entrar-papel{display:flex;align-items:center;gap:var(--e2);font:600 var(--f-apoyo)/1.35 var(--body);color:var(--port-3)}
 .c-entrar-papel svg{flex:none}
 
@@ -223,3 +230,96 @@ html:not([data-mov=reducido]) .c-barra-t i{animation:c-crece var(--t-largo) var(
 .c-chat-f{display:flex;align-items:center;gap:var(--e2);padding-right:var(--e2)}
 .c-chat-f>.fila{flex:1;min-width:0}
 .c-chat-f>.btn{flex:none}
+
+/* ================= ronda 6 · P2 · Veta: aprender ================= */
+/* A8 · «Lo que ya preparo yo» arriba */
+.c-ya{display:flex;flex-direction:column;gap:var(--e3);padding:var(--e4);background:var(--s1);border:1px solid var(--borde);border-radius:var(--r-2)}
+.c-ya-h{font:600 var(--f-titulo)/1.1 var(--display);letter-spacing:-.02em;margin:0}
+.c-ya-s{font:500 var(--f-apoyo)/1.4 var(--body);color:var(--t2);margin:0}
+.c-ya-n{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:var(--e2)}
+.c-ya-n li{display:flex;flex-direction:column;gap:2px;min-width:0}
+.c-ya-n b{font:600 var(--f-cifra)/1 var(--display);font-variant-numeric:tabular-nums;color:var(--t1)}
+.c-ya-n span{font:500 var(--f-apoyo)/1.3 var(--body);color:var(--t2)}
+.c-ya-aa{display:flex;align-items:center;gap:var(--e2);min-height:48px;padding:var(--e2) 0 0;border-top:1px solid var(--borde);color:var(--t1);text-decoration:none;font:500 var(--f-cuerpo)/1.4 var(--body)}
+.c-ya-aa span{flex:1}
+.c-ya-aa b{font-weight:700;color:var(--t1)}
+.c-ya-aa svg{flex:none;color:var(--t3)}
+/* entrada a «Qué hace Veta» */
+.c-qh-entra{display:flex;align-items:center;gap:var(--e3);min-height:64px;padding:var(--e3) var(--e4);background:var(--t1);color:var(--fondo);border-radius:var(--r-2);text-decoration:none}
+.c-qh-ic{flex:none;display:inline-flex;align-items:center;justify-content:center;width:44px;height:44px;border-radius:50%;background:var(--oro,var(--veta));color:var(--t1)}
+.c-qh-tx{flex:1;display:flex;flex-direction:column;gap:2px;min-width:0}
+.c-qh-tx b{font:600 var(--f-hoja)/1.2 var(--display)}
+.c-qh-tx span{font:500 var(--f-apoyo)/1.35 var(--body);opacity:.85}
+.c-prop-f .v-anillo{flex:none;margin-right:var(--e2)}
+.c-hoy-t{color:var(--acento)}
+
+/* A19 · Qué hace Veta */
+.c-qh-intro{font-size:var(--f-hoja);line-height:1.35}
+.c-qh-nav{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:var(--e2)}
+.c-qh-sal{display:flex;flex-direction:column;align-items:flex-start;gap:2px;min-height:72px;padding:var(--e2) var(--e3);background:var(--s1);border:1px solid var(--borde);border-radius:var(--r-2);color:var(--t1);text-align:left;font:500 var(--f-apoyo)/1.25 var(--body);cursor:pointer}
+.c-qh-sal b{font:600 1.75rem/1 var(--display)}
+.c-qh-sal-yo b{color:var(--acento)}
+.c-qh-sal-no{opacity:.8}
+.c-qh{scroll-margin-top:72px}
+.c-qh-h{display:flex;align-items:center;gap:var(--e2)}
+.c-qh-h svg{flex:none;color:var(--acento)}
+.c-qh-no .c-qh-h svg{color:var(--t3)}
+.c-qh-l{list-style:none;margin:0;padding:0;background:var(--s1);border:1px solid var(--borde);border-radius:var(--r-2);overflow:hidden}
+.c-qh-f{display:flex;align-items:flex-start;gap:var(--e2);padding:var(--e3) var(--e2) var(--e3) var(--e4)}
+.c-qh-f+.c-qh-f{border-top:1px solid var(--borde)}
+.c-qh-fc{flex:1;min-width:0;display:flex;flex-direction:column;gap:4px}
+.c-qh-t{margin:0;font:600 var(--f-cuerpo)/1.3 var(--body);color:var(--t1)}
+.c-qh-t .etq{margin-left:4px;vertical-align:2px}
+.c-qh-e{margin:0;font:500 var(--f-apoyo)/1.45 var(--body);color:var(--t2);text-wrap:pretty}
+.c-qh-no .c-qh-t{color:var(--t2)}
+.c-qh-ver{flex:none;display:inline-flex;align-items:center;gap:2px;min-width:72px;min-height:48px;padding:0 var(--e2);background:none;border:0;color:var(--acento);font:600 var(--f-apoyo)/1 var(--body);cursor:pointer}
+.c-qh-pie{font:500 var(--f-apoyo)/1.45 var(--body);color:var(--t2)}
+.c-qh-pie a{color:var(--acento);font-weight:600;display:inline-block;min-height:48px;line-height:48px}
+
+/* A10 · ¿Quién lo hace? */
+.c-quien-ej{display:flex;align-items:center;gap:6px;margin:0 0 var(--e2);font:600 var(--f-apoyo)/1.2 var(--body);color:var(--t2)}
+.c-quien-yo{color:var(--acento)}
+.c-quien-yo svg{transform:rotate(180deg)}
+.c-quien-tu{margin:var(--e2) 0 0}
+.c-ya-n b .v-cuenta{font:inherit}
+.c-vivo-f{border-left:3px solid var(--oro,var(--veta))}
+
+/* A13 · lo aprendido, con quién, cuándo y cuántas veces */
+.c-aprendidos{display:flex;flex-direction:column;gap:var(--e3)}
+.c-ap-fila{display:flex;flex-direction:column;gap:var(--e2);padding:var(--e4);background:var(--s1);border:1px solid var(--borde);border-radius:var(--r-2);transition:opacity .2s}
+.c-ap-hoy{border-color:var(--oro,var(--veta));box-shadow:0 0 0 1px var(--oro,var(--veta)) inset}
+.c-ap-off .c-ap-t,.c-ap-off .c-ap-n,.c-ap-off .c-ap-cambio{opacity:.5}
+.c-ap-cuando{margin:0}
+.c-ap-t{margin:0;font:600 var(--f-hoja)/1.3 var(--display);color:var(--t1);text-wrap:pretty}
+.c-ap-cambio{margin:0;display:flex;flex-direction:column;gap:2px;font:500 var(--f-apoyo)/1.4 var(--body)}
+.c-ap-cambio s{color:var(--t3)}
+.c-ap-cambio span{color:var(--t1);font-weight:600}
+.c-ap-q{margin:0;font:500 var(--f-apoyo)/1.4 var(--body);color:var(--t2)}
+.c-ap-n{margin:0;display:flex;align-items:center;gap:var(--e2);font:500 var(--f-apoyo)/1.4 var(--body);color:var(--t1)}
+.c-ap-paso{margin:0;font:500 var(--f-apoyo)/1.4 var(--body);color:var(--t2)}
+.c-ap-acc{display:flex;align-items:center;justify-content:space-between;gap:var(--e2);border-top:1px solid var(--borde);padding-top:var(--e2)}
+.c-ap-acc .interr{flex:1}
+
+/* A20 · antes y ahora */
+.c-aa-horas{display:flex;flex-direction:column;gap:4px;margin:0 0 var(--e3)}
+.c-aa-horas b{font:600 var(--f-cifra)/1 var(--display);font-variant-numeric:tabular-nums}
+.c-aa-horas span{font:500 var(--f-apoyo)/1.4 var(--body);color:var(--t2)}
+
+/* A14 · A15 · lo que dirección ve de ti */
+.c-dv .nota{margin-top:var(--e3)}
+
+/* A18 · primer día: lo que he encontrado */
+.c-pd-hall{display:flex;flex-direction:column;gap:var(--e2);padding:var(--e4);margin-bottom:var(--e3)}
+.c-pd-hq{display:flex;align-items:center;gap:var(--e3)}
+.c-pd-hq>span{display:flex;flex-direction:column;gap:2px;font:500 var(--f-apoyo)/1.3 var(--body);color:var(--t2)}
+.c-pd-hq b{font:600 var(--f-cuerpo)/1.2 var(--body);color:var(--t1)}
+.c-pd-hf{margin:0;font:500 var(--f-cuerpo)/1.45 var(--body);color:var(--t1)}
+.c-pd-h2{margin-top:var(--e5)}
+
+/* ---- pulido ronda 6 (B) ---- */
+/* un trabajo: su nombre en grande y, debajo, qué es */
+.c-regla-que{font:500 var(--f-cuerpo)/1.45 var(--body);color:var(--t1);margin-top:calc(var(--e2) * -1);text-wrap:pretty}
+/* «Te lo propongo»: el anillo con el número dentro (9, 14), del tamaño de los iconos de las otras filas */
+.c-prop-f .v-anillo{--v-d:44px;--v-g:4}
+/* Qué hace Veta: tres filas por grupo y «Ver los 6» */
+.c-qh-mas{display:flex;align-items:center;justify-content:center;gap:4px;width:100%;min-height:48px;margin-top:var(--e1);background:none;border:0;color:var(--acento);font:600 var(--f-cuerpo)/1 var(--body);cursor:pointer}

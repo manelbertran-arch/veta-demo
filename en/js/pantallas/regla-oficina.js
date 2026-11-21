@@ -1,7 +1,7 @@
 /* Veta demo · pantallas · regla-oficina.js · paquete D (Dirección)
    G2b · Una regla para la oficina · #/regla-oficina/<id> — dossier (propuesta de Laura), mismo-dia (a prueba) y actas (en marcha).
-   Estados: propuesta → «Ponerla a prueba» → «A prueba con todo el equipo hasta el 7 de diciembre · Deshacer».
-   Tras la prueba: «Extenderla a todo el equipo» → confirmación (a quién, qué cambia, desde cuándo) → «En marcha · la usa todo el equipo · Deshacer». */
+   Estados: propuesta → “Ponerla a prueba” → “A prueba con todo el equipo hasta el 7 de diciembre · Deshacer”.
+   Tras la prueba: “Extenderla a todo el equipo” → confirmación (a quién, qué cambia, desde cuándo) → “En marcha · la usa todo el equipo · Deshacer”. */
 (function () {
   'use strict';
   const UI = VETA.UI, esc = VETA.esc, M = VETA.modelo, X = VETA.dir;
@@ -23,7 +23,7 @@
     if (e) return {f: 'en-marcha', linea: 'In use · the whole team uses it', hora: e.hora, propio: true};
     return {f: r.estado, inicial: true};
   }
-  const etq = f => ({propuesta: ['por-decidir', null], 'a-prueba': ['a-prueba', null], 'en-marcha': ['en-marcha', null], descartada: ['cerrado', 'Dismissed'], luego: ['para-manana', 'For later']})[f] || ['por-decidir', null];
+  const etq = f => ({propuesta: ['por-decidir', 'You have to decide'], 'a-prueba': ['a-prueba', null], 'en-marcha': ['en-marcha', null], descartada: ['cerrado', 'Dismissed'], luego: ['para-manana', 'For later']})[f] || ['por-decidir', null];
 
   VETA.pantalla('G2b', {
     titulo: p => R(p.id).titulo,
@@ -41,6 +41,11 @@
       let h = `<div class="d-regla-cab" data-i="0">${UI.etiqueta(tq, tt)}<span class="d-regla-quien">${esc(r.propone)}</span></div>`;
       if (e.linea && !e.inicial) h += `<div data-i="0">${UI.lineaHecho({texto: e.linea, hora: e.hora, vt: 'regla-' + p.id, boton: {texto: 'Undo', accion: 'deshacer-regla'}})}</div>`;
       h += `<blockquote class="d-frase" data-i="1">${esc(r.frase)}</blockquote>`;
+      // ronda 6 · “¿Quién lo hace?”: los cinco pasos a la vista; la que ya está en marcha pregunta si sube uno, con sus casos contados
+      const sube = X.lee('nivelOf', {})[p.id], niv = sube || ({propuesta: 1, 'a-prueba': 2, 'en-marcha': 3})[e.f] || 1;
+      if (!['descartada', 'luego'].includes(e.f)) h += UI.bloque({titulo: 'Who does it?', i: 1, html: e.f === 'en-marcha' && !sube
+        ? VETA.vivo.escalera({nivel: niv, desde: 'since 3 September', sube: {hechas: 42, corregidas: 1, pregunta: 'Shall I stop asking permission and tell you afterwards?', boton: 'Yes, you do it', accion: 'subir-of', de: p.id}})
+        : VETA.vivo.escalera({nivel: niv, desde: sube ? 'today' : e.f === 'a-prueba' ? 'day 1 of the trial' : 'today', mini: true})});
       if (e.f === 'propuesta') {
         h += UI.bloque({titulo: 'If you try it for two weeks', i: 2, texto: 'For 14 days I show each agent what I would have done, without doing it. Nobody receives anything. Then you decide whether it stays for everyone.'});
       } else if (e.f === 'a-prueba') {
@@ -50,13 +55,13 @@
       } else if (e.f === 'en-marcha') {
         h += UI.bloque({titulo: 'In use', i: 2, texto: e.propio ? 'The whole team uses it.' : 'Used by ' + (r.usan || '4 of 6') + ' people on the team.'});
       }
-      h += UI.bloque({titulo: 'In the office, since ' + (r.decision ? 'August' : '3 October'), i: 3, html: `<p class="d-dato"><b>${esc(r.desde.split(' ')[0])}</b> ${esc(r.desde.split(' ').slice(1).join(' '))}</p>`});
+      h += UI.bloque({titulo: 'In the office, since we started', i: 3, html: `<p class="d-dato"><b>${esc(r.desde.split(' ')[0])}</b> ${esc(r.desde.split(' ').slice(1).join(' '))}</p>`});
       return h;
     },
     botonFijo: p => {
       const r = R(p.id), e = fase(p.id);
       if (confirmando === p.id) return UI.boton({texto: 'Extend to the 6 people', accion: 'extender'}) + UI.boton({tipo: 'texto', texto: 'Cancel', accion: 'cancelar'});
-      if (e.f === 'propuesta') return UI.boton({texto: 'Put it on trial', accion: 'probar'}) + UI.botones([{texto: 'Something else…', hoja: 'd-regla-otra', datos: {regla: p.id}}]);
+      if (e.f === 'propuesta') return UI.boton({texto: 'Try it', accion: 'probar'}) + UI.botones([{texto: 'Something else…', hoja: 'd-regla-otra', datos: {regla: p.id}}]);
       if ((e.f === 'a-prueba' && !r.decision) || (e.f === 'en-marcha' && e.inicial)) return UI.boton({texto: 'Extend it to the whole team', accion: 'confirmar'});
       return '';
     },
@@ -68,6 +73,10 @@
       },
       confirmar(ev, el, p) { confirmando = p.id; VETA.repinta(); VETA.mov.cascada(VETA.$('.col.activa .pant')); },
       cancelar() { confirmando = null; VETA.repinta(); },
+      'subir-of'(ev, el, p) {
+        const t = X.lee('nivelOf', {}); t[p.id] = 4; X.guarda('nivelOf', t); VETA.repinta();
+        VETA.aviso('Done: I do it myself and tell you afterwards.', {deshacer: () => { const u = X.lee('nivelOf', {}); delete u[p.id]; X.guarda('nivelOf', u); VETA.repinta(); }, ensena: 'OK. I will keep asking permission every time.'});
+      },
       extender(ev, el, p) {
         confirmando = null;
         const t = X.lee('practicas', {}); t[p.id] = {hora: VETA.ahora()}; X.guarda('practicas', t);

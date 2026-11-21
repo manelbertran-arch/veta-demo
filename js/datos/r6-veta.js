@@ -80,7 +80,7 @@
     semanas: [46, 40, 34, 29, 25, 21],
     antes: {rotulo: 'Cuando empezamos', valor: 46, unidad: 'cosas tuyas por semana',
       filas: ['Escribías cada respuesta', 'Te acordabas tú de cada promesa', 'Mirabas quién había contestado', 'Escribías las notas de visita de noche']},
-    ahora: {rotulo: 'Esta semana', valor: 21, unidad: 'cosas tuyas por semana',
+    ahora: {rotulo: 'La semana pasada', valor: 21, unidad: 'cosas tuyas por semana',
       filas: ['Lees y envías lo que te dejo escrito', 'Me cuentas la visita al salir', 'Haces lo nuevo, que aún no sé hacer']}
   };
 

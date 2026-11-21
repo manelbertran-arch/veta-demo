@@ -25,7 +25,7 @@
     pinta: d => {
       const k = caso(d); if (!k.x) return `<p class="hoja-x">This case is no longer here.</p>` + cerrar(null, 'secundario');
       if (k.tipo === 'prueba') return citaQuieta(k.x.cita, k.x.origen) + `<p class="hoja-x">${esc(k.x.propone)}. This is the message I would have left you:</p>` +
-        UI.borrador({texto: k.x.borrador}) + UI.nota({texto: 'I didn\'t send it: the rule is on trial.', icono: 'candado', caja: true}) + cerrar(null, 'secundario');
+        UI.borrador({texto: k.x.borrador}) + UI.nota({texto: 'I did not send it: I\'m trying it.', icono: 'candado', caja: true}) + cerrar(null, 'secundario');
       const corto = k.x.nombre.split(' ')[0], ya = C.excepciones(d.regla).includes(d.caso);
       return citaQuieta(k.x.texto, k.extra.origen || '') + `<p class="hoja-x">${esc(k.extra.habria || '')}</p>` +
         (ya ? UI.nota({texto: `With ${corto} I don't do it any more.`, icono: 'check', caja: true}) + cerrar(null, 'secundario')
@@ -34,24 +34,24 @@
     acciones: {
       excepcion(ev, el, d) {
         C.ponExcepcion(d.regla, d.caso); VETA.cierraHoja({foco: false}); VETA.repinta();
-        VETA.aviso(`Exception: not with ${nombre(d.caso)} `, {deshacer: () => { C.quitaExcepcion(d.regla, d.caso); VETA.repinta(); }});
+        VETA.aviso(`Exception: not with ${nombre(d.caso)}`, {deshacer: () => { C.quitaExcepcion(d.regla, d.caso); VETA.repinta(); }});
       }
     }
   });
 
   // ---- H19 · Los casos como yo ----
   VETA.hojaDef('h19', {
-    titulo: d => (d.regla === 'r-recordatorios' ? 'The 6 cases' : 'The 11 cases like me'),
+    titulo: d => (d.regla === 'r-recordatorios' ? 'The 6 cases' : 'The 11 times you did it the same way'),
     pinta: d => {
       const r = M.regla(d.regla) || {}, l = d.regla === 'r-recordatorios' ? (r.casos || []) : ((r.casos || {}).comoYo || []);
-      const txt = d.regla === 'r-recordatorios' ? 'A buyer took more than three days to reply to you. I would have prepared the reminder for you.' : 'Someone asked for a valuation and the next day you sent them the dossier, as I would have done.';
+      const txt = d.regla === 'r-recordatorios' ? 'A buyer took more than three days to reply to you. A reminder would have been due here.' : 'Someone asked for a valuation and the next day you sent them the flat report.';
       return `<p class="hoja-x">${esc(txt)}</p><div class="lista c-hoja-lista">${l.map(c => UI.fila({titulo: c.nombre, derecha: c.cuando, icono: 'check'})).join('')}</div>` + cerrar(null, 'secundario');
     }
   });
 
   // ---- H20 · Otra cosa… (de una regla) ----
   VETA.hojaDef('h20', {
-    titulo: d => (d.paso === 'cliente' ? 'Not with a client…' : C.info(d.de).nombre),
+    titulo: d => (d.paso === 'cliente' ? 'Not with a client…' : 'Something else…'),
     pinta: d => {
       if (d.paso === 'cliente') {
         const ex = C.excepciones(d.de);
@@ -60,38 +60,38 @@
       }
       const r = M.regla(d.de) || {}, activa = r.estado === 'activa', ofi = C.lee('aOficina', {})[d.de];
       const ops = [
-        r.estado === 'a-prueba' ? ['Turn it on now, without waiting for 7 Dec', 'activar', 'check'] : null,
-        [activa ? 'Stop doing it' : 'Dismiss it', 'descartar', 'borrar', true],
+        r.estado === 'a-prueba' ? ['Make it do it now, without waiting for 7 Dec', 'activar', 'check'] : null,
+        [activa ? 'Stop doing it' : 'I do not want it', 'descartar', 'borrar', true],
         ['Put it another way', 'otra-forma', 'mic'],
         ['Not with a client…', 'no-cliente', 'usuario'],
-        ['Change how far it goes', 'nivel', 'escalera'],
-        ofi ? null : ['Propose it to the office', 'oficina', 'equipo', false, 'Montse will see it with your name and decide whether the whole office tries it.']
+        ['Who does it? Change it', 'nivel', 'escalera'],
+        ofi ? null : ['Suggest it to the office', 'oficina', 'equipo', false, 'Montse will see it with your name and decide if the whole office tries it.']
       ].filter(Boolean);
       return `<div class="ops">${ops.map(([t, a, ic, pel, sub]) => `<button type="button" class="op${pel ? ' op-peligro' : ''}" data-accion="${a}">${VETA.ic(ic, 22)}<span class="op-c"><span class="op-t">${esc(t)}</span>${sub ? `<span class="op-s">${esc(sub)}</span>` : ''}</span></button>`).join('')}</div>` + cerrar('Cancel');
     },
     acciones: {
-      activar(ev, el, d) { VETA.cierraHoja({foco: false}); C.cambiaRegla(d.de, 'activa', 'Active · I\'ll prepare it for you in Today'); },
+      activar(ev, el, d) { VETA.cierraHoja({foco: false}); C.cambiaRegla(d.de, 'activa', 'I already do it · I\'ll leave it for you in Today'); },
       descartar(ev, el, d) {
         const activa = (M.regla(d.de) || {}).estado === 'activa';
-        VETA.cierraHoja({foco: false}); C.cambiaRegla(d.de, 'descartada', activa ? 'I don\'t do it any more · stopped today' : 'Dismissed · I won\'t propose it again');
+        VETA.cierraHoja({foco: false}); C.cambiaRegla(d.de, 'descartada', activa ? 'I don\'t do it any more · stopped today' : 'I no longer do it · I will not suggest it again');
       },
       'otra-forma'() { VETA.cierraHoja({foco: false}); VETA.ir('dictar/orden'); },
       'no-cliente'(ev, el, d) { VETA.hoja('h20', Object.assign({}, d, {paso: 'cliente'})); },
       cliente(ev, el, d) {
         const c = el.dataset.c; C.ponExcepcion(d.de, c); VETA.cierraHoja({foco: false}); VETA.repinta();
-        VETA.aviso(`Exception: not with ${nombre(c)} `, {deshacer: () => { C.quitaExcepcion(d.de, c); VETA.repinta(); }});
+        VETA.aviso(`Exception: not with ${nombre(c)}`, {deshacer: () => { C.quitaExcepcion(d.de, c); VETA.repinta(); }});
       },
       nivel(ev, el, d) { VETA.cierraHoja({foco: false}); VETA.ir('regla/' + d.de + '/nivel'); },
       oficina(ev, el, d) {
         const o = C.lee('aOficina', {}); o[d.de] = VETA.ahora(); C.pon('aOficina', o); VETA.cierraHoja({foco: false}); VETA.repinta();
-        VETA.aviso('Proposed to the office, with your name', {deshacer: () => { const x = C.lee('aOficina', {}); delete x[d.de]; C.pon('aOficina', x); VETA.repinta(); }});
+        VETA.aviso('I have suggested it to the office, with your name', {deshacer: () => { const x = C.lee('aOficina', {}); delete x[d.de]; C.pon('aOficina', x); VETA.repinta(); }});
       }
     }
   });
 
   // ---- H21 · Cómo la he entendido, por partes ----
   VETA.hojaDef('h21', {
-    titulo: 'How I understood it, step by step',
+    titulo: 'What I understood',
     pinta: () => `<div class="c-partes-h">${D().orden.partes.map(x => `<div class="c-parte-h"><div class="c-parte-h-c"><p class="c-parte-h-t">${esc(x.titulo)}</p><p class="c-parte-h-x">${esc(x.texto)}</p></div>` +
       UI.boton({tipo: 'texto', texto: 'Change', accion: 'cambiar', ancho: false, datos: {parte: x.id}}) + '</div>').join('')}</div>` + cerrar(null, 'secundario'),
     acciones: {
@@ -101,21 +101,21 @@
 
   // ---- H22 · Subir un nivel (dirección) ----
   VETA.hojaDef('h22', {
-    titulo: 'Raise one level',
+    titulo: 'Go up one step',
     pinta: d => `<div class="hoja-texto"><section class="ht-b"><h3 class="ht-t">Who it's for</h3><p>For the whole team.</p></section>` +
-      `<section class="ht-b"><h3 class="ht-t">What changes</h3><p>“${esc(C.info(d.de).nombre)}” goes from “Prepares” to “Does the internal stuff”: notes, marks and saves on its own. Sends nothing.</p></section></div>` +
-      UI.boton({texto: 'Raise one level', accion: 'subir'}) + cerrar('Cancel'),
+      `<section class="ht-b"><h3 class="ht-t">What changes</h3><p>“${esc(C.nombre(d.de))}” goes from “I write it for you” to “I note it down”: I note, mark and save. I send nothing.</p></section></div>` +
+      UI.boton({texto: 'Yes, go up one step', accion: 'subir'}) + cerrar('Cancel'),
     acciones: {
       subir(ev, el, d) {
         const antes = C.nivel(d.de); C.ponNivel(d.de, 3);
-        C.pon('nivelLinea', {id: d.de, texto: 'Level raised', hora: VETA.ahora(), subido: antes});
+        C.pon('nivelLinea', {id: d.de, texto: 'I note it down · from today', hora: VETA.ahora(), subido: antes});
         VETA.cierraHoja({foco: false}); VETA.repinta({hecho: 'c-nivel'});
       }
     }
   });
 
   // ---- H23 · Una práctica de la oficina ----
-  const SIGUE = {propuesta: {texto: 'Put it on trial', estado: 'a-prueba', estadoTexto: 'On trial · day 1 of 14', aviso: 'On trial for two weeks'},
+  const SIGUE = {propuesta: {texto: 'Try it for two weeks', estado: 'a-prueba', estadoTexto: 'We are trying it · day 1 of 14', aviso: 'We try it for two weeks'},
     'a-prueba': {texto: 'Extend it to the whole team', estado: 'en-marcha', estadoTexto: 'In use', aviso: 'Extended to the whole team'}};
   VETA.hojaDef('h23', {
     titulo: d => (C.practicas().find(x => x.id === d.practica) || {}).titulo || 'A practice',
@@ -177,8 +177,8 @@
       if (!s) return `<div class="ops">${D().semanas.slice().reverse().map(x => `<button type="button" class="op" data-hoja="h25" data-semana="${x.id}">${VETA.ic('cal', 22)}<span class="op-c"><span class="op-t">${esc(x.texto)}</span><span class="op-s">${VETA.yo().papel === 'direccion' ? '' : x.mensajes + ' messages prepared · '}${x.preparados} ready in the office</span></span></button>`).join('')}</div>` + cerrar();
       // dirección: solo la cifra de la oficina (los mensajes y actas de la semana son de Laura)
       const dir = VETA.yo().papel === 'direccion';
-      return `<div class="lista c-hoja-lista">${dir ? '' : UI.fila({titulo: 'Messages I prepared for you', sub: `You sent ${s.enviados}`, derecha: String(s.mensajes), icono: 'chat'}) +
-        UI.fila({titulo: 'Notes saved', derecha: String(s.actas), icono: 'doc'})}` + UI.fila({titulo: 'Messages and tasks ready in the office', derecha: VETA.num(s.preparados), icono: 'equipo'}) + `</div>` +
+      return `<div class="lista c-hoja-lista">${dir ? '' : UI.fila({titulo: 'Messages I wrote for you', sub: `You sent ${s.enviados}`, derecha: String(s.mensajes), icono: 'chat'}) +
+        UI.fila({titulo: 'Viewing notes saved', derecha: String(s.actas), icono: 'doc'})}` + UI.fila({titulo: 'Messages and tasks ready in the office', derecha: VETA.num(s.preparados), icono: 'equipo'}) + `</div>` +
         UI.nota({texto: 'No hours: they only come from the times each person enters.', icono: 'info', clase: 'nota-gris'}) +
         UI.boton({tipo: 'secundario', texto: 'Other weeks', hoja: 'h25'}) + cerrar();
     }
@@ -193,13 +193,13 @@
 
   // ---- H30 · ¿Qué chat borras? y Recibo de borrado ----
   VETA.hojaDef('h30', {
-    titulo: d => (d.de ? 'Deletion receipt' : 'Which chat are you deleting?'),
+    titulo: d => (d.de ? 'What was deleted' : 'Which chat are you deleting?'),
     pinta: d => {
       if (d.de) return `<div class="c-recibo"><p class="c-recibo-t">${VETA.ic('sello', 22)}<b>${esc(d.de)}</b></p>` +
         `<p>1 conversation · requested today · fully deleted before Thursday 26</p></div>` + UI.nota({texto: 'Whatever was already on a client\'s profile stays on the profile.', icono: 'info', clase: 'nota-gris'}) + cerrar(null, 'secundario');
       const ya = C.lee('borrados', []).map(b => b.nombre);
       const chats = M.lectura().fuera.concat(M.clientes(VETA.yo().id).slice(0, 6).map(c => c.nombre)).filter(n => !ya.includes(n));
-      return `<p class="hoja-x">It disappears within 72 h and you get a receipt.</p><div class="ops">${chats.map(n => `<button type="button" class="op op-peligro" data-accion="borra" data-n="${esc(n)}">${VETA.ic('borrar', 22)}<span class="op-c"><span class="op-t">${esc(n)}</span></span></button>`).join('')}</div>` + cerrar('Cancel');
+      return `<p class="hoja-x">It goes away in 72 h and I tell you what was deleted.</p><div class="ops">${chats.map(n => `<button type="button" class="op op-peligro" data-accion="borra" data-n="${esc(n)}">${VETA.ic('borrar', 22)}<span class="op-c"><span class="op-t">${esc(n)}</span></span></button>`).join('')}</div>` + cerrar('Cancel');
     },
     acciones: {
       borra(ev, el) { const n = el.dataset.n; C.pon('borrados', C.lee('borrados', []).concat([{nombre: n, hora: VETA.ahora()}])); VETA.hoja('h30', {de: n}); repintaSiVe('cuenta/chats'); }
@@ -207,7 +207,7 @@
   });
 
   // ---- H31 · Poner Veta en la pantalla de inicio ----
-  // Son instrucciones, no botones: pasos numerados sin marco. Lo único tocable hace algo («Copiar la dirección», «Cerrar»).
+  // Son instrucciones, no botones: pasos numerados sin marco. Lo único tocable hace algo (“Copiar la dirección”, “Cerrar”).
   // C.inicio(): 'hecho' (ya abierta desde el icono) · 'ios-safari' · 'ios-otro' (navegador de dentro de otra app, Chrome…) · 'android' · 'ordenador'
   C.inicio = () => {
     try { if (navigator.standalone || (window.matchMedia && matchMedia('(display-mode: standalone)').matches)) return 'hecho'; } catch (e) {}

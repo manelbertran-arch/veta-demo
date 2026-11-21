@@ -22,7 +22,7 @@
       operacion: {tipo: 'venta', fase: 3, texto: 'La venta · Visitas · paso 3 de 5'}, siguiente: {texto: 'Enviarle el informe de la semana.', boton: {texto: 'Ver el informe para Pere', ir: 'informe/pere'}, cosa: 'c-pere'},
       encajan: {titulo: 'Compradores que encajan · 2', clientes: ['marta', 'toni']},
       documentos: [{texto: 'Certificado energético', estado: 'falta', fecha: 'vie 27'}],
-      historia: [{cuando: 'Sáb 21, 21:10', tipo: 'Nota de voz', texto: 'Nota de voz de 0:48'}, {cuando: 'Lun 16', tipo: 'Informe', texto: 'Informe de la semana enviado'}], chat: 'pere'}),
+      historia: [{cuando: 'Sáb 21, 21:10', tipo: 'Mensaje', texto: '«Si hace falta para cerrar, bajo a 385.000 €, pero no menos.»'}, {cuando: 'Lun 16', tipo: 'Informe', texto: 'Informe de la semana enviado'}], chat: 'pere'}),
     jordi: c('jordi', {nombre: 'Jordi Ferrer', corto: 'Jordi', tel: '609 77 14 52', foto: 'jordi', quienEs: 'Comprador; piso de Sants, c/ Olzinelles', estado: 'te-toca', piso: 'olzinelles',
       operacion: {tipo: 'compra', fase: 2, texto: 'La compra · Visitas · paso 2 de 5'}, siguiente: {texto: 'Pasarle el informe del piso antes del jueves', cosa: 'c-jordi'},
       documentos: [{texto: 'Nota simple de Olzinelles', estado: 'falta', fecha: 'lun 30', nota: 'Pedida al Registro'}],

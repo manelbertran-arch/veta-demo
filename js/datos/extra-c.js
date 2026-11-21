@@ -49,10 +49,10 @@
       {id: 'llega', titulo: 'Hasta dónde llega', texto: 'Prepara. Tú lo envías.'}
     ]
   };
-  // A9b · la semana pasada
+  // A9b · la semana pasada: la del 16 al 22 (pulido 2: hoy es lunes 23; las mismas cifras que la pestaña Veta y C.semanas '16-nov')
   C.semanaPasada = [
-    {titulo: 'Mensajes que te dejé escritos', derecha: '27', sub: 'Enviaste 24'},
-    {titulo: 'Notas de visita guardadas', derecha: '2'}, {titulo: 'Promesas apuntadas', derecha: '3'},
+    {titulo: 'Mensajes que te dejé escritos', derecha: '31', sub: 'Enviaste 27'},
+    {titulo: 'Notas de visita guardadas', derecha: '3'}, {titulo: 'Promesas apuntadas', derecha: '4'},
     {titulo: 'Informes de propietario', derecha: '1'}, {titulo: 'Respuestas marcadas', derecha: '8'}
   ];
   // A13 · lo que he aprendido

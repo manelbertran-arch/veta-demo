@@ -1,8 +1,8 @@
 /* Veta demo · núcleo · ui.js
    Los componentes de la sección 5.3 como funciones que devuelven HTML (texto). Ninguna pinta efectos:
    el movimiento lo pone el núcleo al montar. Clases en css/componentes.css.
-   Atributos comunes que aceptan casi todos: ir, hoja, accion, de, g (guía «Título|Frase»), datos ({clave: valor} → data-clave),
-   vt (nombre para el efecto «hecho en el sitio»), i (escalón de cascada). */
+   Atributos comunes que aceptan casi todos: ir, hoja, accion, de, g (guía “Título|Frase”), datos ({clave: valor} → data-clave),
+   vt (nombre para el efecto “hecho en el sitio”), i (escalón de cascada). */
 (function () {
   'use strict';
   const ic = (n, w) => VETA.ic(n, w);
@@ -34,8 +34,8 @@
     'sin-responder': ['rojo', 'aviso', 'No reply since yesterday'], 'vencida': ['rojo', 'reloj', 'Overdue'], 'no-se-puede': ['rojo', 'candado', 'Can\'t be sent'],
     'prometiste': ['ambar', 'mano', 'You promised it'], 'parado': ['ambar', 'pausa', 'Stalled'], 'para-manana': ['ambar', 'luna', 'For tomorrow'], 'falta': ['ambar', 'papel', 'Missing'],
     'oportunidad': ['verde', 'rayo', 'Opportunity'], 'recibido': ['verde', 'check', 'Received'], 'en-marcha': ['verde', 'check', 'In use'],
-    'a-prueba': ['azul', 'probeta', 'On trial'], 'ejemplo': ['azul', 'info', 'Example'], 'tuya': ['azul', 'usuario', 'Yours'],
-    'propuesta': ['oro', 'estrella', 'Proposal'], 'por-decidir': ['oro', 'estrella', 'To decide']
+    'a-prueba': ['azul', 'probeta', 'I\'m trying it'], 'ejemplo': ['azul', 'info', 'Example'], 'tuya': ['azul', 'usuario', 'Yours'],
+    'propuesta': ['oro', 'estrella', 'My suggestion'], 'por-decidir': ['oro', 'estrella', 'You need to decide']
   };
 
   // ---- avatar: foto o iniciales; si la foto falla, quedan las iniciales ----
@@ -90,7 +90,7 @@
       (o.etiqueta ? `<span class="fila-e">${UI.etiqueta(o.etiqueta, o.etiquetaTexto)}</span>` : '') + '</span>' +
       (o.derecha ? `<span class="fila-d">${esc(o.derecha)}</span>` : '') + (chev ? `<span class="fila-chev">${ic('chev', 16)}</span>` : '');
     const cls = 'fila' + (o.marcada ? ' marcada' : '') + (o.clase ? ' ' + o.clase : '');
-    return interactivo(o) ? `<button type="button" class="${cls}"${attrs(o)}>${cuerpo}</button>` : `<div class="${cls} fila-quieta"${attrs({vt: o.vt, i: o.i})}>${cuerpo}</div>`;
+    return interactivo(o) ? `<button type="button" class="${cls}"${attrs(o)}>${cuerpo}</button>` : `<div class="${cls} fila-quieta"${attrs({vt: o.vt, i: o.i, datos: o.datos})}>${cuerpo}</div>`;
   };
   UI.lista = (filas, o) => { o = o || {}; return `<div class="lista${o.clase ? ' ' + o.clase : ''}"${o.i != null ? ` data-i="${o.i}"` : ''}>${(filas || []).filter(Boolean).map(f => typeof f === 'string' ? f : UI.fila(f)).join('')}</div>`; };
 
@@ -102,7 +102,7 @@
     return `<button type="button" class="cita" data-hoja="h01"${o.de ? ` data-de="${esc(o.de)}"` : ''}${o.chat ? ` data-chat="${esc(o.chat)}"` : ''}>` +
       `<span class="cita-t">“${esc(o.texto)}”</span><span class="cita-o">${esc(o.origen)} ›</span></button>`;
   };
-  UI.borrador = o => `<div class="borrador"${o.id ? ` id="${esc(o.id)}"` : ''}><span class="borrador-r">${esc(o.rotulo || 'Veta\'s draft')}</span>` +
+  UI.borrador = o => `<div class="borrador"${o.id ? ` id="${esc(o.id)}"` : ''}><span class="borrador-r">${esc(o.rotulo || 'I wrote this for you')}</span>` +
     `<p class="borrador-t">${o.html || esc(o.texto)}</p></div>`;
   UI.nota = o => `<p class="nota${o.caja ? ' nota-caja' : ''}${o.clase ? ' ' + o.clase : ''}">${o.icono ? ic(o.icono, 18) : ''}<span>${o.html || esc(o.texto)}</span></p>`;
 
@@ -170,7 +170,7 @@
   UI.burbujas = mensajes => `<div class="burbujas">${(mensajes || []).map(m => `<div class="burbuja ${m.tu ? 'b-tu' : 'b-otro'}"><p>${esc(m.texto)}</p><span>${esc((m.tu ? 'You · ' : '') + (m.cuando || ''))}</span></div>`).join('')}</div>`;
 
   // ---- la tarjeta de una cosa de la cola (A1, A6, A7, G1): seis tipos y sus estados ----
-  // cosa: un objeto de VETA.modelo.cola()/.cosa(). o: {n, total} para «1 de 6».
+  // cosa: un objeto de VETA.modelo.cola()/.cosa(). o: {n, total} para “1 de 6”.
   const RESUELTOS = ['enviada', 'hecha', 'quitada', 'para-manana'];
   UI.tarjetaCosa = (c, o) => {
     o = o || {};

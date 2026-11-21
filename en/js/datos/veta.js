@@ -1,5 +1,5 @@
 /* Veta demo · datos · veta.js
-   Lo que Veta hace sola (reglas, A9), sus casos (H18, H19), «Lo último», lo que lee (A15, A15b, H13)
+   Lo que Veta hace sola (reglas, A9), sus casos (H18, H19), “Lo último”, lo que lee (A15, A15b, H13)
    y los textos legales de H29. Reglas: 7 = 1 propuesta + 1 a prueba + 5 activas. Su estado se cambia con
    VETA.modelo.marca('r-<id>', 'a-prueba' | 'activa' | 'descartada' | 'propuesta'). */
 (function () {
@@ -7,7 +7,7 @@
   const D = VETA.datos;
 
   D.reglas = [
-    {id: 'r-valoraciones', texto: 'I prepare the dossier when a valuation is requested', estadoInicial: 'propuesta', estadoTexto: 'to decide', pruebaDias: 14,
+    {id: 'r-valoraciones', texto: 'Get the flat report ready before a valuation', estadoInicial: 'propuesta', estadoTexto: 'to decide', pruebaDias: 14,
       casos: {
         comoYo: [['13 Nov', 'Rosa Vidal'], ['5 Nov', 'Casals family'], ['29 Oct', 'Sergi Font'], ['22 Oct', 'Anna Bosch'], ['15 Oct', 'Pau Mir'], ['8 Oct', 'Carme Roca'],
           ['30 Sep', 'Lluís Pons'], ['24 Sep', 'Marta Puig'], ['16 Sep', 'Joan Vila'], ['5 Sep', 'Elena Vives'], ['27 Aug', 'Pere Soler']].map(([cuando, nombre]) => ({cuando, nombre})),
@@ -15,20 +15,20 @@
           {cuando: '21 Oct', nombre: 'Núria Camps', cliente: 'nuria', texto: 'First of all, can you come and see it?'},
           {cuando: '2 Sep', nombre: 'Toni Ribas', cliente: 'toni', texto: 'No need for a report, just give me a rough figure.'}]
       }},
-    {id: 'r-cancelaciones', texto: 'I suggest another date when a viewing is cancelled', estadoInicial: 'a-prueba', dia: 5, pruebaDias: 14},
-    {id: 'r-actas', texto: 'I ask you for the notes after each viewing', estadoInicial: 'activa', desde: '3 Sep',
+    {id: 'r-cancelaciones', texto: 'Suggest another date when a viewing is cancelled', estadoInicial: 'a-prueba', dia: 5, pruebaDias: 14},
+    {id: 'r-actas', texto: 'Ask you for the note after each viewing', estadoInicial: 'activa', desde: '3 Sep',
       ultimo: ['Sat 21 · Casals family', 'Thu 19 · Toni Ribas', 'Tue 17 · Sergi Font']},
-    {id: 'r-promesas', texto: 'I note what you\'re promised and let you know if it doesn\'t arrive', estadoInicial: 'activa', desde: '3 Sep',
-      ultimo: ['Fri 20 · Jordi (you, the dossier)', 'Mon 16 · Elena (the payslip)', 'Fri 13 · Pere (the certificate)']},
-    {id: 'r-informes', texto: 'I prepare each owner\'s report on Mondays', estadoInicial: 'activa', desde: '7 Oct',
+    {id: 'r-promesas', texto: 'Write down what people promise you and alert you if it does not arrive', estadoInicial: 'activa', desde: '3 Sep',
+      ultimo: ['Fri 20 · Jordi (you, the flat report)', 'Mon 16 · Elena (the payslip)', 'Fri 13 · Pere (the certificate)']},
+    {id: 'r-informes', texto: 'Get each owner\'s report ready on Mondays', estadoInicial: 'activa', desde: '7 Oct',
       ultimo: ['Mon 16 · Pere Soler · sent', 'Mon 9 · Pere Soler · sent', 'Mon 2 · Pere Soler · sent']},
-    {id: 'r-contestado', texto: 'I mark who has replied to you', estadoInicial: 'activa', desde: '3 Sep',
+    {id: 'r-contestado', texto: 'Mark who has replied to you', estadoInicial: 'activa', desde: '3 Sep',
       ultimo: ['Fri 20 · Jordi', 'Thu 19 · Toni', 'Wed 18 · Anna Bosch']},
-    {id: 'r-firmas', texto: 'I alert you the day before a signing', estadoInicial: 'activa', desde: '3 Sep',
+    {id: 'r-firmas', texto: 'Alert you the day before a signing', estadoInicial: 'activa', desde: '3 Sep',
       ultimo: ['Mon 30 · I\'ll alert you about Laia Casas\'s signing', 'Mon 9 · deposit for the Sants flat', '15 Oct · deposit for the Pujades flat']}
   ];
   // la regla que nace en A11 al dictar la orden; entra en la lista cuando se marca 'a-prueba'
-  D.reglaNueva = {id: 'r-recordatorios', texto: 'I prepare a reminder when a buyer doesn\'t reply in three days', estadoInicial: 'nueva', pruebaDias: 14,
+  D.reglaNueva = {id: 'r-recordatorios', texto: 'Get a reminder ready when a buyer does not reply in three days', estadoInicial: 'nueva', pruebaDias: 14,
     casos: [['9 Nov', 'Marta Puig'], ['30 Oct', 'Toni Ribas'], ['28 Oct', 'Elena Vives'], ['19 Oct', 'Sergi Font'], ['15 Oct', 'Jordi Ferrer'], ['2 Oct', 'Anna Bosch']].map(([cuando, nombre]) => ({cuando, nombre}))};
 
   // A15, A15b, H13 · lo que lee Veta
@@ -52,15 +52,15 @@
     resumen: {titulo: 'How Veta looks after data', bloques: [
       {lista: ['It only reads the channels the office has connected.', 'Every message that goes out is approved by a person.', 'Management sees team figures, never per person.', 'You can leave out any chat whenever you want.']}]},
     borrado: {titulo: 'What\'s kept and what\'s deleted', bloques: [
-      {texto: 'When you leave a chat out, Veta deletes what it had read from it and leaves a receipt with the date and time.'},
-      {texto: 'Whatever is already part of a client\'s profile (a viewing, viewing notes) stays on the profile.'}]},
+      {texto: 'When you leave a chat out, Veta deletes what it had read from it and writes down for you what it deleted, with the date and time.'},
+      {texto: 'What is already part of a client\'s profile (a viewing, a viewing note) stays in the profile.'}]},
     ver: {titulo: 'What you can and can\'t see', bloques: [
-      {texto: 'Each person sees their own: their clients, their day and their rules.'},
+      {texto: 'Each person sees their own: their clients, their day and their jobs.'},
       {texto: 'Management sees the team\'s numbers and the office\'s decisions. It doesn\'t see each person\'s numbers separately.'}]},
     leido: {titulo: 'What has been read and what has gone out', bloques: [
-      {texto: 'Read since 3 October: 128 office conversations.'},
+      {texto: 'I read 212 work chats, since 3 September.'},
       {texto: 'Gone out: only what a person approved and sent from their WhatsApp. Veta hasn\'t sent anything on its own.'}]},
-    consentimientos: {titulo: 'Consents', bloques: [
-      {texto: '128 chats, since 3 October. Every new contact receives the agency\'s privacy notice in their first message.'}]}
+    consentimientos: {titulo: 'Who said yes', bloques: [
+      {texto: '212 chats, since 3 September. Each new contact gets the agency\'s privacy notice in their first message.'}]}
   };
 })();

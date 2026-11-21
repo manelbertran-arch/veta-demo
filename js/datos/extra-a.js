@@ -26,9 +26,9 @@
         cercano: '¡Hola, Carmen! Soy Laura, de la agencia. Perdona la espera. Tenemos en la calle Verdi un piso de 3 habitaciones que encaja con lo que buscas. ¿Te va bien verlo esta semana?',
         otroDia: 'Hola, Carmen, soy Laura, de la agencia. Tenemos en Gràcia un piso de 3 habitaciones que encaja. ¿Te va bien verlo el jueves a las 18:00?'},
       'c-pere': {
-        corto: 'Hola, Pere. Esta semana: 3 visitas. A los 3 les parece alto el precio. ¿Hablamos el jueves?',
-        cercano: 'Hola, Pere. Te cuento cómo ha ido: 3 visitas esta semana y a los 3 les parece alto el precio. Toni Ribas volverá con su arquitecto. ¿Te llamo el jueves y lo hablamos con calma?',
-        otroDia: 'Hola, Pere. Esta semana: 3 visitas. A los 3 les parece alto el precio. Toni Ribas volverá con su arquitecto. ¿Hablamos del precio el viernes?'}
+        corto: 'Hola, Pere. La semana pasada: 3 visitas. A los 3 les parece alto el precio. ¿Hablamos el jueves?',
+        cercano: 'Hola, Pere. Te cuento cómo ha ido: 3 visitas la semana pasada y a los 3 les parece alto el precio. Toni Ribas volverá con su arquitecto. ¿Te llamo el jueves y lo hablamos con calma?',
+        otroDia: 'Hola, Pere. La semana pasada: 3 visitas. A los 3 les parece alto el precio. Toni Ribas volverá con su arquitecto. ¿Hablamos del precio el viernes?'}
     },
 
     // A12 · informe al propietario (el mensaje es el texto del plan; «texto» de la tarjeta con foto, inventado por el paquete A)
@@ -36,8 +36,8 @@
       pere: {cosa: 'c-pere', para: 'Para Pere Soler · semana del 16 al 22 de noviembre', piso: 'verdi', titulo: 'Así va tu piso de Gràcia', visitas: 3,
         texto: 'Han venido 3 personas a verlo. A las 3 les gusta la luz y a las 3 les parece alto el precio. Toni Ribas volverá con su arquitecto.',
         firma: 'Preparado por Laura Martí',
-        mensaje: 'Hola, Pere. Esta semana: 3 visitas. A los 3 les parece alto el precio. Toni Ribas volverá con su arquitecto. ¿Hablamos del precio el jueves?',
-        voz: 'Pere te dejó una nota de voz el sábado'}
+        mensaje: 'Hola, Pere. La semana pasada: 3 visitas. A los 3 les parece alto el precio. Toni Ribas volverá con su arquitecto. ¿Hablamos del precio el jueves?',
+        voz: 'Pere te dejó un mensaje el sábado'}
     },
 
     // A4 · acta de la visita (textos del plan)

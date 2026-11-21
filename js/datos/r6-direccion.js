@@ -16,16 +16,16 @@
   const ops = [
     // Laura (las mismas de su app)
     {id: 'marta', lleva: 'laura', tipo: 'compra', fase: 1, texto: 'Compra en Gràcia', estado: 'en-marcha', cosa: 'c-marta',
-      aviso: {tipo: 'sin-contestar', texto: 'Sin contestar desde ayer, 18:42'},
+      aviso: {tipo: 'sin-contestar', texto: 'Sin contestar desde ayer, 18:42'}, contesto: 'Le envió la hora de la visita',
       hitos: [{paso: 'Escribió', texto: 'Pide ver el piso de Gràcia', cuando: 'Ayer, 18:42'}, {paso: 'Preparé', texto: 'Un mensaje para Laura con una hora para la visita', cuando: 'Ayer, 18:43'}]},
     {id: 'elena', lleva: 'laura', tipo: 'compra', fase: 2, texto: 'Compra en Gràcia', estado: 'en-marcha', cosa: 'c-elena',
       ultimo: {cuando: 'Lun 16', texto: 'Dijo que pasaría la nómina el miércoles'},
       aviso: {tipo: 'papel', texto: 'Falta un papel: la nómina, para el miércoles 25'},
       hitos: [{paso: 'Escribió', texto: 'Busca dos habitaciones con luz', cuando: '28 oct'}, {paso: 'Apunté', texto: 'Una promesa: la nómina, para el banco', cuando: 'Lun 16'}, {paso: 'Hoy', texto: 'Visita a las 9:00 en Verdi 42', cuando: 'Hoy'}]},
     {id: 'pere', lleva: 'laura', tipo: 'venta', fase: 3, texto: 'Venta de Verdi 42', estado: 'en-marcha', cosa: 'c-pere',
-      ultimo: {cuando: 'Sáb 21, 21:10', texto: 'Dejó una nota de voz'},
+      ultimo: {cuando: 'Sáb 21, 21:10', texto: 'Dejó un mensaje'},
       aviso: {tipo: 'papel', texto: 'Falta un papel: el certificado energético, para el viernes 27'},
-      hitos: [{paso: 'Hecho', texto: 'Informe de la semana enviado', cuando: 'Lun 16'}, {paso: 'Escribió', texto: 'Dejó una nota de voz', cuando: 'Sáb 21, 21:10'}, {paso: 'Preparé', texto: 'El informe de esta semana, para que Laura lo revise', cuando: 'Hoy, 7:00'}]},
+      hitos: [{paso: 'Hecho', texto: 'Informe de la semana enviado', cuando: 'Lun 16'}, {paso: 'Escribió', texto: 'Dejó un mensaje', cuando: 'Sáb 21, 21:10'}, {paso: 'Preparé', texto: 'El informe de la semana, para que Laura lo revise', cuando: 'Hoy, 7:00'}]},
     {id: 'jordi', lleva: 'laura', tipo: 'compra', fase: 2, texto: 'Compra en Sants', estado: 'en-marcha', cosa: 'c-jordi',
       ultimo: {cuando: 'Vie 20, 12:20', texto: 'Laura le prometió el informe del piso antes del jueves'},
       aviso: {tipo: 'papel', texto: 'Falta un papel: el informe del piso, para el jueves'},
@@ -162,12 +162,21 @@
     const o = base(id); if (!o) return null;
     const c = M().cliente(id), lleva = llevaOp(id), p = lleva ? X.persona(lleva) : null;
     const quien = p ? p.corto : 'Alguien';
-    const nuevos = ((c && c.historia) || []).filter(h => h.de);                     // lo que ha pasado hoy en la app de quien la lleva
+    // contestada: alguien esperaba respuesta y quien la lleva ya envió el mensaje. Es la misma señal que usa Hoy para «Enviado a Marta · 9:41»
+    // (la cosa en estado 'enviada', con su hora). Con «No lo envié» la cosa vuelve a por hacer y todo esto se deshace solo.
+    // Dirección ve que contestó y cuándo; nunca el texto del mensaje (o.contesto lo cuenta con palabras propias).
+    const cs = o.cosa ? M().cosa(o.cosa) : null, pila = String((c && c.nombre) || o.nombre || '').split(' ')[0];
+    const contestada = o.aviso && o.aviso.tipo === 'sin-contestar' && cs && cs.estado === 'enviada' ? {hora: cs.hora} : null;
+    const nuevos = ((c && c.historia) || []).filter(h => h.de && !(contestada && h.de === o.cosa));   // lo que ha pasado hoy en la app de quien la lleva
     const limpio = ((c && c.historia) || []).find(h => !h.de && h.texto && h.texto.charAt(0) !== '«');
-    const ultimo = nuevos.length ? {cuando: nuevos[0].cuando, texto: hechoDe(nuevos[0], quien)} : (o.ultimo || (limpio ? {cuando: limpio.cuando, texto: sinPunto(limpio.texto)} : null));
+    const ultimo = contestada ? {cuando: 'Hoy, ' + contestada.hora, texto: quien + ' le contestó'}
+      : nuevos.length ? {cuando: nuevos[0].cuando, texto: hechoDe(nuevos[0], quien)} : (o.ultimo || (limpio ? {cuando: limpio.cuando, texto: sinPunto(limpio.texto)} : null));
     const hecha = resuelta(o);
     let toca = o.toca || (c && c.siguiente && sinPunto(c.siguiente.texto)) || '';
     if (o.cosa && hecha && c && c.estado === 'esperando') toca = 'Esperar su respuesta';
+    // en la lista, corto («Toca: esperar a Marta»); dentro de la operación, entero
+    let tocaCorto = null;
+    if (contestada) { toca = 'Esperar a que conteste ' + pila; tocaCorto = 'Esperar a ' + pila; }
     toca = toca.replace(/\bla llamas\b/, (quien === 'Alguien' ? 'se la llama' : quien + ' la llama'));
     if (id === 'joan-serra' && M().lee('marc-llama-joan', false)) toca = 'Marc le llama hoy';
     if (o.contacto && !lleva) toca = 'Elegir quién la lleva';
@@ -178,23 +187,27 @@
     if (!lleva && !o.contacto) aviso = {tipo: 'nadie', texto: 'No la lleva nadie'};
     if (aviso) { aviso.tono = ROJO.includes(aviso.tipo) ? 'rojo' : 'neutro'; if (deBaja) aviso.texto += ' · Teresa está de baja'; }
     const mirar = !!aviso && !deBaja && MIRAR.includes(aviso.tipo);
+    // nota gris en lugar del aviso rojo: «Laura le contestó hoy, 9:41»
+    const nota = contestada && !aviso ? quien + ' le contestó hoy, ' + contestada.hora : null;
     const pasos = (D.pasos || {})[o.tipo] || [];
     const fase = pasos[o.fase - 1] || '';
     const como = o.estado === 'cerrado' ? 'Cerrada' : o.estado === 'caida' ? 'Se cayó' : o.estado === 'parado' ? 'Parada · ' + fase : fase + ' · paso ' + o.fase + ' de 5';
     // en una línea, para la lista: «Contacto (1 de 5)»
     const comoCorto = o.estado === 'cerrado' ? 'Cerrada' : o.estado === 'caida' ? 'Se cayó' : (o.estado === 'parado' ? 'Parada en ' : '') + fase + ' (' + o.fase + ' de 5)';
     // lo ocurrido, en orden: lo del dato, lo que ha pasado hoy en la app de quien la lleva, y lo que ha hecho dirección
-    const hitos = o.hitos.slice();
+    // lo de hoy que contesta a quien esperaba va lo primero, para que se vea al abrir
+    const hitos = (contestada ? [{paso: 'Contestó ' + quien, texto: o.contesto || 'Le envió un mensaje', cuando: 'Hoy, ' + contestada.hora}] : []).concat(o.hitos);
     nuevos.slice().reverse().forEach(h => hitos.push({paso: 'Hecho', texto: hechoDe(h, quien), cuando: h.cuando}));
     const camb = X.lee('opLleva', {})[id]; if (camb) hitos.push({paso: 'Cambio', texto: 'Ahora la lleva ' + X.persona(camb.a).corto + '. Lo cambiaste tú', cuando: 'Hoy, ' + camb.hora});
     (X.lee('notasOp', {})[id] || []).forEach(n => hitos.push({paso: 'Tu nota', texto: n.texto, cuando: 'Hoy, ' + n.hora}));
     (X.lee('preguntasOp', {})[id] || []).forEach(n => hitos.push({paso: 'Preguntaste', texto: n.texto, cuando: 'Hoy, ' + n.hora}));
     return {id, base: o, nombre: (c && c.nombre) || o.nombre || id, texto: o.texto, lleva, persona: p, estado: o.estado, tipo: o.tipo, fase: o.fase,
-      como, comoCorto, ultimo, toca, aviso, mirar, deBaja, hitos, caso: o.caso || null, contacto: !!o.contacto, deTeresa: o.lleva === 'teresa'};
+      como, comoCorto, ultimo, toca, tocaCorto, aviso, nota, contestada: !!contestada, mirar, deBaja, hitos, caso: o.caso || null, contacto: !!o.contacto, deTeresa: o.lleva === 'teresa'};
   };
 
   // todas, primero las que hay que mirar hoy (las de rojo delante); luego las de Teresa de baja, las que van en marcha y, al final, cerradas y caídas
-  const peso = x => x.mirar ? (x.aviso.tono === 'rojo' ? 0 : 1) : x.deBaja ? 2 : (['cerrado', 'caida'].includes(x.estado) ? 4 : 3);
+  // la que se acaba de contestar hoy va la primera de las demás, para que se encuentre al abrir «Ver las otras» o «Todas»
+  const peso = x => x.mirar ? (x.aviso.tono === 'rojo' ? 0 : 1) : x.contestada ? 1.5 : x.deBaja ? 2 : (['cerrado', 'caida'].includes(x.estado) ? 4 : 3);
   const lista = () => ops.map(o => op(o.id)).map((x, k) => Object.assign(x, {k})).sort((a, b) => peso(a) - peso(b) || a.k - b.k);
 
   // las personas del equipo, por lo que pide atención y nunca por cifras: quien está de baja, quien tiene algo que mirar hoy y el resto; dentro, por nombre.
@@ -203,6 +216,7 @@
   const resumenDe = mias => {
     const n = t => mias.filter(x => x.aviso && x.aviso.tipo === t && !x.deBaja).length, partes = [];
     if (n('sin-contestar')) partes.push({texto: n('sin-contestar') + ' sin contestar', rojo: true});
+    else if (mias.some(x => x.contestada)) partes.push({texto: mias.length === 1 ? 'contestada' : 'todas contestadas'});   // había alguien esperando y ya no
     if (n('queja')) partes.push({texto: n('queja') + ' con una queja'});
     if (n('parada')) partes.push({texto: plural(n('parada'), 'parada', 'paradas')});
     if (n('papel')) partes.push({texto: plural(n('papel'), 'espera un papel', 'esperan un papel')});

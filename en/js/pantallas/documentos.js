@@ -1,7 +1,7 @@
 /* Veta demo · pantallas · documentos.js · paquete B (Clientes)
    - A6d · Documentos y fechas · #/cliente/<id>/documentos (P1): qué papeles faltan y qué fechas hay con este cliente.
-   Acción principal: «Pedírselo a <nombre>» (H14) con el primer papel que falta y se le puede pedir. Sin faltas, sin botón.
-   Estados: con faltas · «Recibido · … · Deshacer» · «Reabierta: … vuelve a Documentos · Deshacer» · todo recibido. */
+   Acción principal: “Pedírselo a <nombre>” (H14) con el primer papel que falta y se le puede pedir. Sin faltas, sin botón.
+   Estados: con faltas · “Recibido · … · Deshacer” · “Reabierta: … vuelve a Documentos · Deshacer” · todo recibido. */
 (function () {
   'use strict';
   const UI = VETA.UI, esc = VETA.esc, B = VETA.B, M = VETA.modelo;

@@ -6,9 +6,9 @@
   'use strict';
   const D = VETA.datos;
 
-  // ---- un chat más para citar la nota de voz de Pere (H01 lo abre con data-chat) ----
+  // ---- un chat más para citar el mensaje de Pere del sábado (H01 lo abre con data-chat; era una nota de voz: pulido 2) ----
   D.chats = D.chats || {};
-  if (!D.chats['pere-voz']) D.chats['pere-voz'] = {titulo: 'Nota de voz de Pere Soler · WhatsApp', mensajes: [{texto: 'Laura, si hace falta para cerrar, bajo a 385.000 €, pero no menos.', cuando: 'sáb 21, 21:10'}]};
+  if (!D.chats['pere-voz']) D.chats['pere-voz'] = {titulo: 'Chat de WhatsApp con Pere Soler', mensajes: [{texto: 'Laura, si hace falta para cerrar, bajo a 385.000 €, pero no menos.', cuando: 'sáb 21, 21:10'}]};
 
   const b = D.b = {};
 
@@ -75,15 +75,15 @@
     'acta-sergi-font': {tipo: 'acta', titulo: 'Nota de la visita · Sergi Font', cuando: 'Mar 17 · piso de Gràcia, c/ Verdi 42',
       gusta: 'La luz y la zona.', preocupa: 'Lo ve caro y sin ascensor.', siguiente: 'Por ahora no quiere volver.'},
     'informe-16': {tipo: 'informe', titulo: 'Informe enviado a Pere', cuando: 'Lun 16, 9:30 · WhatsApp',
-      texto: 'Hola, Pere. Esta semana: 2 visitas. Les gusta la terraza; el precio les parece alto. ¿Lo hablamos el jueves?'},
+      texto: 'Hola, Pere. La semana pasada: 2 visitas. Les gusta la terraza; el precio les parece alto. ¿Lo hablamos el jueves?'},
     'informe-hoy': {tipo: 'informe', titulo: 'Informe enviado a Pere', cuando: 'Hoy · WhatsApp',
-      texto: 'Hola, Pere. Esta semana: 3 visitas. A los 3 les parece alto el precio. Toni Ribas volverá con su arquitecto. ¿Hablamos del precio el jueves?'}
+      texto: 'Hola, Pere. La semana pasada: 3 visitas. A los 3 les parece alto el precio. Toni Ribas volverá con su arquitecto. ¿Hablamos del precio el jueves?'}
   };
 
   // ---- A16 · historia propia (sustituye a la corta de clientes.js en estos clientes; lo vivo del modelo va delante) ----
   b.historia = {
     pere: [
-      {cuando: 'Sáb 21', tipo: 'Nota de voz', titulo: 'Nota de voz de Pere · 0:48', texto: '«Si hace falta, bajo a 385.000 €»', hoja: 'h10'},
+      {cuando: 'Sáb 21', tipo: 'Mensaje', titulo: 'Mensaje de Pere', texto: '«Si hace falta, bajo a 385.000 €»', hoja: 'h10'},
       {cuando: 'Sáb 21', tipo: 'Acta', titulo: 'Nota de la visita · Família Casals', texto: 'Les gusta; lo ven caro', det: 'acta-casals'},
       {cuando: 'Jue 19', tipo: 'Acta', titulo: 'Nota de la visita · Toni Ribas', texto: 'Volverá con su arquitecto', det: 'acta-toni'},
       {cuando: 'Mar 17', tipo: 'Acta', titulo: 'Nota de la visita · Sergi Font', texto: 'Lo ve caro y sin ascensor', det: 'acta-sergi-font'},

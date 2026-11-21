@@ -3,7 +3,7 @@
    Los datos fijos están en VETA.datos (js/datos/); lo que cambia durante la demo, en VETA.est:
    - 'cosas': {id: {estado, hora, extra, orden, prev: [...]}} para cosas de la cola, de En espera, reglas (r-*) y decisiones (d-*)
    - 'flags': marcas sueltas de la tabla 6.8 ('carmen-asignada', 'marc-llama-joan', 'temas', 'tiempos', 'coste', 'chats-fuera'…)
-   Lo que se ve en otra pantalla se calcula al leer (alResolver de cada cosa), así «Deshacer» lo devuelve todo atrás solo. */
+   Lo que se ve en otra pantalla se calcula al leer (alResolver de cada cosa), así “Deshacer” lo devuelve todo atrás solo. */
 (function () {
   'use strict';
   const D = () => VETA.datos;
@@ -62,7 +62,8 @@
     return lista.filter(c => !f.includes(c.cliente)).map(mezcla);
   };
   M.pendientes = quien => M.cola(quien).filter(c => PENDIENTES.includes(c.estado));
-  M.contador = quien => M.pendientes(quien).length;
+  // el número de la pestaña Hoy: la misma cuenta que el título y el “1 de N” (VETA.r6.tocan, en datos/r6-dia.js)
+  M.contador = quien => VETA.r6 && VETA.r6.tocan ? VETA.r6.tocan(quien).quedan : M.pendientes(quien).length;
   M.hechas = quien => M.cola(quien).concat(M.espera(quien)).filter(c => HECHAS.includes(c.estado)).sort((a, b) => a.orden - b.orden);
   M.manana = quien => M.cola(quien).filter(c => c.estado === 'para-manana');
   M.ultima = quien => { const id = VETA.est.lee('ultima.' + quien, null); const c = id && M.cosa(id); return c && RESUELTOS.includes(c.estado) ? c : null; };
@@ -79,7 +80,7 @@
     avisa({que: 'cosa', id, estado});
     return M.cosa(id);
   };
-  // vuelve al estado anterior; se salta «¿Lo enviaste?» (No lo envié devuelve la tarjeta a por hacer)
+  // vuelve al estado anterior; se salta “¿Lo enviaste?” (No lo envié devuelve la tarjeta a por hacer)
   M.deshaz = id => {
     const todo = lee(), e = todo[id]; if (!e) return M.cosa(id);
     let prev = (e.prev || []).slice(), p = prev.pop();
@@ -150,7 +151,7 @@
     return n.nombres.map((nombre, k) => ({nombre, valor: v[k]}));
   };
 
-  // ---- tiempos y coste (solo con «Ejemplo») ----
+  // ---- tiempos y coste (solo con “Ejemplo”) ----
   // tiempos de Laura: {mensajes: 4, actas: 12, avisos: 2} minutos por tarea → minutos totales
   M.minutosLaura = t => (D().tiempos.laura || []).reduce((s, x) => s + x.n * (Number((t || {})[x.id]) || 0), 0);
   M.eurosEquipo = costeHora => Math.round(D().tiempos.equipo.minutos / 60 * (Number(costeHora) || 0));

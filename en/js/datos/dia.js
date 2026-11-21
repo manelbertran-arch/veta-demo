@@ -1,9 +1,9 @@
 /* Veta demo · datos · dia.js
-   6.4 · la cola de Laura (seis cosas), En espera (seis) y lo que se «dicta» (6.5).
-   Una «cosa» la pinta VETA.UI.tarjetaCosa. Campos: id, quien, tipo (mensaje · visita · informe · oportunidad · promesa ·
+   6.4 · la cola de Laura (seis cosas), En espera (seis) y lo que se “dicta” (6.5).
+   Una “cosa” la pinta VETA.UI.tarjetaCosa. Campos: id, quien, tipo (mensaje · visita · informe · oportunidad · promesa ·
    bloqueada · llamada · asunto · regla · reparto · queja · espera), cliente, titulo, corto, quienEs, etiqueta, cita, chat,
    momento, piso, pisoTexto, saber, encaja, resumen, borrador, bloqueo, nota, pie, boton, secundarios, sale (sale hacia fuera:
-   pregunta «¿Lo enviaste?» y dice «No lo envié»), fila/filaSub (la fila cuando espera turno), lineas (texto al resolver)
+   pregunta “¿Lo enviaste?” y dice “No lo envié”), fila/filaSub (la fila cuando espera turno), lineas (texto al resolver)
    y alResolver (lo que cambia en otras pantallas cuando se envía o se hace: tabla 6.8; lo aplica modelo.js). */
 (function () {
   'use strict';
@@ -26,9 +26,9 @@
       momento: 'Viewing with Elena Vives · today, 9:00', piso: 'verdi', pisoTexto: 'Gràcia flat · c/ Verdi 42, 3.º 2.ª',
       saber: 'What you know about her: looking for 2 bright bedrooms. She\'s worried about street noise.', deSusChats: true,
       pie: 'When you come out, tell me how it went.', nota: false,
-      boton: {texto: 'Dictate the notes', ir: 'dictar/acta'}, secundarios: [{texto: 'See the profile', ir: 'cliente/elena'}, otra],
-      fila: '9:00 · Viewing with Elena Vives', filaSub: 'Afterwards, dictate the notes',
-      lineas: {hecha: 'Saved · Elena\'s notes'},
+      boton: {texto: 'Tell me how it went', ir: 'dictar/acta'}, secundarios: [{texto: 'See the profile', ir: 'cliente/elena'}, otra],
+      fila: '9:00 · Viewing with Elena Vives', filaSub: 'Tell me how it went afterwards',
+      lineas: {hecha: 'Saved · Viewing notes for Elena'},
       alResolver: {estado: {elena: 'al-dia'}, siguiente: {elena: {texto: 'Up to date · you call her on Thursday 26'}},
         espera: [{id: 'e-llamar-elena', fechaISO: '2026-11-26', fecha: 'Thu 26', cliente: 'elena', titulo: 'Call Elena', texto: 'Confirm whether she\'s coming back on Saturday with her partner', etiqueta: 'tuya'}],
         historia: [{cliente: 'elena', cuando: 'Today', tipo: 'Notes', texto: 'Viewing at Verdi 42: she loves the light; worried about the noise'},
@@ -55,16 +55,16 @@
       alResolver: {estado: {nuria: 'esperando'}, historia: [{cliente: 'nuria', cuando: 'Today', tipo: 'You', texto: 'You told her about the Sant Antoni flat'}]}},
     {id: 'c-jordi', quien: 'laura', tipo: 'promesa', cliente: 'jordi', titulo: 'Jordi Ferrer', corto: 'Jordi', sale: true, chat: 'jordi',
       quienEs: 'Buyer · Sants flat', etiqueta: 'prometiste',
-      cita: {texto: 'Could you send me the dossier before Thursday? I want to show it to my sister', origen: 'Jordi · Fri 20, 12:05'},
-      borrador: 'Hi Jordi, it\'s Laura. Here\'s the dossier for the Olzinelles flat: floor plans and land registry extract.',
+      cita: {texto: 'Can you send me the flat report before Thursday? I want to show it to my sister', origen: 'Jordi · Fri 20, 12:05'},
+      borrador: 'Hi Jordi, it\'s Laura. Here is the report for the Olzinelles flat: plans and land registry extract.',
       pie: 'Attach the PDF yourself in WhatsApp',
       boton: {texto: 'Open WhatsApp with the message'}, secundarios: [{texto: 'Edit', ir: 'mensaje/c-jordi'}, otra],
       // el mensaje cambia una vez (el 409 del servidor): el paquete A pone esto en extra con VETA.modelo.marca
       cambio: {aviso: 'Jordi just wrote to you: “Can you add the community fees?”. I\'ve redone the message: take another look.',
-        borradorHtml: 'Hi Jordi, it\'s Laura. Here\'s the dossier for the Olzinelles flat: floor plans, land registry extract <mark>and community fees</mark>.'},
-      fila: 'Jordi Ferrer', filaSub: 'Dossier before Thursday',
+        borradorHtml: 'Hi Jordi, it\'s Laura. Here is the report for the Olzinelles flat: plans, land registry extract <mark>and community fees</mark>.'},
+      fila: 'Jordi Ferrer', filaSub: 'Flat report before Thursday',
       lineas: {enviada: 'Sent to Jordi'},
-      alResolver: {estado: {jordi: 'esperando'}, historia: [{cliente: 'jordi', cuando: 'Today', tipo: 'You', texto: 'Dossier sent: floor plans, land registry extract and community fees'}]}},
+      alResolver: {estado: {jordi: 'esperando'}, historia: [{cliente: 'jordi', cuando: 'Today', tipo: 'You', texto: 'Flat report sent: plans, land registry extract and community fees'}]}},
     {id: 'c-sergi', quien: 'laura', tipo: 'bloqueada', cliente: 'sergi', titulo: 'Sergi Mas', corto: 'Sergi', nota: false, chat: 'sergi', sinPrisa: true,
       quienEs: 'New contact · rental in Les Corts', etiqueta: 'no-se-puede',
       cita: {texto: 'Hi, does the Les Corts rental allow pets?', origen: 'Sergi · 9 Nov, 21:48'},
@@ -74,7 +74,7 @@
       lineas: {quitada: 'Removed · Sergi already had a reply'}}
   ];
 
-  // aparece en el Hoy de Laura cuando Montse le asigna a Carmen (flag «carmen-asignada»). Texto del borrador: inventado por el núcleo.
+  // aparece en el Hoy de Laura cuando Montse le asigna a Carmen (flag “carmen-asignada”). Texto del borrador: inventado por el núcleo.
   D.colaExtra = {
     'c-carmen': {id: 'c-carmen', quien: 'laura', tipo: 'mensaje', cliente: 'carmen', titulo: 'Carmen López', corto: 'Carmen', sale: true, chat: 'carmen',
       quienEs: 'Montse assigned her to you', etiqueta: 'sin-responder',
@@ -94,14 +94,14 @@
       boton: {texto: 'Prepare a reminder for Elena'}, secundarios: [{texto: 'It was kept', accion: 'se-cumplio'}, otra],
       lineas: {hecha: 'You\'ll have it in Today on Wednesday at 9:00'}},
     {id: 'e-pere', quien: 'laura', tipo: 'espera', fechaISO: '2026-11-27', fecha: 'Fri 27', cliente: 'pere', titulo: 'Pere Soler', texto: 'Energy certificate deadline',
-      resumen: 'If it\'s not in by Friday, management will see there\'s 1 stalled matter, without your name or the client\'s.', boton: {texto: 'Ask Pere for it', hoja: 'h14'}},
+      resumen: 'If it is not done by Friday, management will see 1 thing stalled, without your name or the client\'s.', boton: {texto: 'Ask Pere for it', hoja: 'h14'}},
     {id: 'e-jordi', quien: 'laura', tipo: 'espera', fechaISO: '2026-11-30', fecha: 'Mon 30', cliente: 'jordi', titulo: 'Jordi Ferrer', texto: 'Land registry extract requested from the Registry'},
     {id: 'e-laia', quien: 'laura', tipo: 'espera', fechaISO: '2026-12-01', fecha: 'Tue 1 Dec', cliente: 'laia', titulo: 'Laia Casas', texto: 'Signing at the notary, 12:00'},
     {id: 'e-pere-encargo', quien: 'laura', tipo: 'espera', fechaISO: '2026-12-02', fecha: 'Wed 2 Dec', cliente: 'pere', titulo: 'Pere Soler', texto: 'Sale mandate expires'},
     {id: 'e-nuria', quien: 'laura', tipo: 'espera', fechaISO: '2026-12-03', fecha: 'Thu 3 Dec', cliente: 'nuria', titulo: 'Núria Camps', texto: 'Said he\'d call you when he\'s back'}
   ];
 
-  // 6.5 · lo que se «dicta» (guiones de #/dictar/<guion>)
+  // 6.5 · lo que se “dicta” (guiones de #/dictar/<guion>)
   D.dictados = {
     acta: {frase: 'I\'ve just left the Verdi flat with Elena. She loved the light in the living room, the terrace and the renovated kitchen. She\'s worried about street noise at night and that there\'s no lift. She wants to come back on Saturday afternoon with her partner to hear the street. Call her on Thursday to confirm.', va: 'acta/elena'},
     tarea: {frase: 'Remind me to call Jordi on Thursday at ten.', va: 'entendido-dictado/tarea'},
@@ -117,7 +117,7 @@
   // H06 / H41 · el parte de las 19:30 de Laura (texto fijo de la sección 3.6)
   D.partes = D.partes || {};
   D.partes['1930'] = {titulo: 'The 19:30 wrap-up', bloques: [
-    {texto: 'Done 6 · Waiting 8 · Moved to tomorrow 0'},
+    {texto: 'Done 6 · Watching 8 · Moving to tomorrow 0'},
     {texto: 'Today you talked to Marta, Elena, Pere, Núria and Jordi.'},
     {titulo: 'You promised', texto: 'Call Elena on Thursday 26.'},
     {titulo: 'Due tomorrow', texto: 'Nothing.'},

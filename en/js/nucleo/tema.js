@@ -1,7 +1,7 @@
 /* Veta demo · núcleo · tema.js
    Tres ejes en <html>: data-modo (claro | oscuro, ya resuelto), data-color (una de las 12 paletas de temas.css)
    y data-mov (normal | reducido). El guion del <head> de index.html los pone antes del primer pintado;
-   aquí se cambian. Se guardan en localStorage (VETA.pref). «Reducir movimiento» se enciende también con
+   aquí se cambian. Se guardan en localStorage (VETA.pref). “Reducir movimiento” se enciende también con
    prefers-reduced-motion o con ?mov=reducido. */
 (function () {
   'use strict';

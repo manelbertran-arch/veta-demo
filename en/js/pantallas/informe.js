@@ -1,6 +1,6 @@
 /* Veta demo · pantallas · informe.js · paquete A (El día)
    A12 · Informe al propietario · #/informe/<cliente> (pere). La foto del piso viaja desde la tarjeta de Hoy (data-foco="piso").
-   Estados en el botón fijo: borrador · «¿Lo enviaste?» · enviado (No lo envié) · guardado sin enviar · copiado. */
+   Estados en el botón fijo: borrador · “¿Lo enviaste?” · enviado (No lo envié) · guardado sin enviar · copiado. */
 (function () {
   'use strict';
   const UI = VETA.UI, M = VETA.modelo, esc = VETA.esc, ic = VETA.ic;
@@ -18,12 +18,12 @@
       const c = M.cosa(i.cosa), e = est(p.id);
       let h = `<div class="a-inf-cab" data-i="0"><p class="a-para">${esc(i.para)}</p>` +
         `<button type="button" class="enlace" data-hoja="h01" data-de="${esc(i.cosa)}">Because you send it to him every Monday ›</button></div>`;
-      // la nota de voz se va cuando se marca «He escuchado» en H10 (paquete B pone la marca «nota-pere-escuchada»)
-      if (i.voz && !M.lee('nota-pere-escuchada')) h += `<button type="button" class="a-voz-av" data-hoja="h10" data-de="${esc(p.id)}" data-i="0">${ic('play', 20)}<span>${esc(i.voz)} · <b>Listen ›</b></span></button>`;
+      // el mensaje de Pere se va cuando se marca “Ya lo he leído” en H10 (paquete B pone la marca “nota-pere-escuchada”)
+      if (i.voz && !M.lee('nota-pere-escuchada')) h += `<button type="button" class="a-voz-av" data-hoja="h10" data-de="${esc(p.id)}" data-i="0">${ic('chat', 20)}<span>${esc(i.voz)} · <b>Read ›</b></span></button>`;
       if (e.pdf) h += `<div data-i="0">${UI.lineaHecho({texto: 'PDF ready. You send it.', boton: {texto: 'Undo', accion: 'sin-pdf'}})}</div>`;
       h += `<article class="tarjeta a-inf" data-i="1"><span class="a-inf-r">How it will look to ${esc((M.quien(p.id) || {}).corto || 'Pere')}</span>` +
         `<div class="a-inf-foto foto-encoge">${UI.foto(i.piso, {tam: 'ancha', foco: 'piso'})}</div>` +
-        `<h2 class="a-inf-t">${esc(i.titulo)}</h2>${UI.cifra({valor: i.visitas, unidad: 'visitas', periodo: 'week of 16 to 22', id: 'a-inf-cifra'})}` +
+        `<h2 class="a-inf-t">${esc(i.titulo)}</h2>${UI.cifra({valor: i.visitas, unidad: 'viewings', periodo: 'week of 16 to 22', id: 'a-inf-cifra'})}` +
         `<p class="a-inf-x">${esc(i.texto)}</p><p class="a-inf-firma">${esc(i.firma)}</p></article>`;
       h += `<section class="bloque" data-i="2"><h2 class="bloque-t">Your message</h2>` +
         `<div class="a-msg-llano"><p>${esc(mensaje(i, c))}</p></div>` +
@@ -57,7 +57,7 @@
     }
   });
 
-  // H42 · ¿Cómo quieres enviarlo? (la «Otra cosa…» del informe)
+  // H42 · ¿Cómo quieres enviarlo? (la “Otra cosa…” del informe)
   VETA.hojaAcciones('h42', {
     titulo: 'How do you want to send it?',
     opciones: d => {

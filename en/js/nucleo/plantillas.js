@@ -35,7 +35,7 @@
     }, o.acciones || {})
   }));
 
-  // ---- hoja de acciones: opciones como filas de 56 y «Cancelar» ----
+  // ---- hoja de acciones: opciones como filas de 56 y “Cancelar” ----
   // VETA.hojaAcciones('H11', {titulo: d => '…', texto, opciones: d => [{texto, sub, icono, hace: (d, el) => {}, ir, hoja, datos, peligro}], cancelar: 'Cancelar'})
   VETA.hojaAcciones = (id, o) => VETA.hojaDef(id, {
     titulo: o.titulo,
@@ -55,7 +55,7 @@
     alMontar: o.alMontar
   });
 
-  // ---- hoja de texto: bloques de texto y «Cerrar» ----
+  // ---- hoja de texto: bloques de texto y “Cerrar” ----
   // VETA.hojaTexto('H29', {titulo: d => '…', bloques: d => [{titulo, texto, lista: ['…'], html}], cerrar: 'Cerrar', boton: {texto, accion}})
   VETA.hojaTexto = (id, o) => VETA.hojaDef(id, {
     titulo: o.titulo,

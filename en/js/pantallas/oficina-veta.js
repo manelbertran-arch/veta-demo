@@ -46,7 +46,7 @@
     intro: '43 times by hand in six months.',
     bloques: () => [{filas: D().falta.map(([t, n]) => ({titulo: t, derecha: String(n), icono: 'mano'}))}],
     pie: 'Times someone in the office did it by hand, counted in the chats.',
-    boton: {texto: 'Teach it the first one', ir: 'dictar/orden'}
+    boton: {texto: 'Show me the first one', ir: 'dictar/orden'}
   });
 
   // ---- G13 · Un caso para aprender ----
@@ -57,7 +57,7 @@
       const hecha = C.lee('practicaClaudia', false);
       return (hecha ? UI.lineaHecho({texto: 'Proposal created: call within 48 hours anyone who asks for a viewing', hora: hecha, ir: 'oficina/practicas', boton: {texto: 'Undo', accion: 'deshacer'}, vt: 'c-caso', i: 0}) : '') +
         `<div class="c-caso-cab" data-i="0">${VETA.av('claudia', 64)}<div><p class="c-yo-n">Clàudia Ribas</p><p class="c-yo-p">Deal fell through · purchase of a flat in Sants</p></div></div>` +
-        UI.bloque({titulo: 'What happened', i: 1, html: `<ol class="c-tiempo">${VETA.datos.casoClaudia.map(x => `<li><span class="c-tiempo-f">${esc(x.cuando)}</span><span class="c-tiempo-t${/^«/.test(x.texto) ? ' c-tiempo-cita' : ''}">${esc(x.texto)}</span></li>`).join('')}</ol>`}) +
+        UI.bloque({titulo: 'What happened', i: 1, html: `<ol class="c-tiempo">${VETA.datos.casoClaudia.map(x => `<li><span class="c-tiempo-f">${esc(x.cuando)}</span><span class="c-tiempo-t${/^“/.test(x.texto) ? ' c-tiempo-cita' : ''}">${esc(x.texto)}</span></li>`).join('')}</ol>`}) +
         UI.bloque({titulo: 'What it teaches', i: 2, html: UI.nota({texto: 'Whoever asks to see a flat and doesn\'t get a call within 48 hours leaves.', icono: 'estrella', caja: true})});
     },
     botonFijo: () => (C.lee('practicaClaudia', false) ? '' : UI.boton({texto: 'Draw a practice from this case', accion: 'saca'})),
@@ -71,7 +71,7 @@
   VETA.pantalla('G14', {
     titulo: 'What your office knows',
     guia: ['Here you see what Veta has found in the chats of the whole office.', 'You read it: these are counts, not opinions.', 'That way you know what works in your area.'],
-    pinta: () => `<div class="c-cifra" data-i="0">${UI.cifra({valor: 212, unidad: 'of 301 contacts ended in a viewing', periodo: 'since 3 October'})}</div>` +
+    pinta: () => `<div class="c-cifra" data-i="0">${UI.cifra({valor: 212, unidad: 'of 301 contacts ended in a viewing', periodo: 'since we started'})}</div>` +
       UI.bloque({titulo: 'Three things that repeat', i: 1, html: D().sabe.map(([t, a, b], k) =>
         `<div class="c-sabe" style="--v:${a / b};--k:${k}"><p class="c-sabe-t">${esc(t)}</p><div class="c-sabe-l"><span class="c-barra-t" aria-hidden="true"><i></i></span><b>${a} of ${b}</b>${C.ejemplo()}</div></div>`).join('')}) +
       UI.nota({texto: 'Counts made from the office chats, without names. They\'re examples.', icono: 'info', clase: 'nota-gris'})

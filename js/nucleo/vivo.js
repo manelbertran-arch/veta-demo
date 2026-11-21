@@ -91,7 +91,7 @@
     return `<div class="v-aa" data-vivo="aa"><div class="v-aa-cols">${col(o.antes, false)}${col(o.ahora, true)}</div>` +
       (n > 1 ? `<div class="v-aa-g" role="img" aria-label="${esc(o.voz || 'De ' + s[0] + ' a ' + s[n - 1] + ' desde que empezamos')}"><svg viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><polyline pathLength="1" points="${pts.map(p => p[0].toFixed(1) + ',' + p[1].toFixed(1)).join(' ')}"/></svg>` +
         pts.map(p => `<i style="left:${p[0].toFixed(1)}%;top:${p[1].toFixed(1)}%"></i>`).join('') + `</div>` +
-        `<div class="v-aa-ejes"><span>${esc(o.ejeAntes || 'Cuando empezamos · ' + s[0])}</span><span>${esc(o.ejeAhora || 'Esta semana · ' + s[n - 1])}</span></div>` : '') + '</div>';
+        `<div class="v-aa-ejes"><span>${esc(o.ejeAntes || 'Cuando empezamos · ' + s[0])}</span><span>${esc(o.ejeAhora || 'La semana pasada · ' + s[n - 1])}</span></div>` : '') + '</div>';
   };
 
   // ---- 7 · escena «Veta lee» ----

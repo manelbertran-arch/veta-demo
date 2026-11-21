@@ -1,7 +1,7 @@
 /* Veta demo · hojas · clientes.js · paquete B (Clientes)
-   H10 Nota de voz · H11 Otras acciones · H12 Compartir resumen · H13 Fuera del radar · H14 Petición lista ·
+   H10 Mensaje de Pere · H11 Otras acciones · H12 Compartir resumen · H13 Fuera del radar · H14 Petición lista ·
    H15 ¿Qué pasó con…? · H16 Detalle de historia · H39 Anotar una queja.
-   data-de: un cliente («pere») o una cosa de la cola o de En espera («c-pere», «e-pere»); las hojas sacan de ahí el cliente. */
+   data-de: un cliente (“pere”) o una cosa de la cola o de En espera (“c-pere”, “e-pere”); las hojas sacan de ahí el cliente. */
 (function () {
   'use strict';
   const UI = VETA.UI, esc = VETA.esc, B = VETA.B, M = VETA.modelo, D = VETA.datos;
@@ -10,48 +10,28 @@
   const cosaDe = id => M.cosa(id) || espera(id);
   const cliDe = d => { if (M.cliente(d.de)) return d.de; const k = cosaDe(d.de); return (k && k.cliente) || 'pere'; };
 
-  // ---- H10 · Nota de voz de Pere · 0:48 ----
-  const DUR = 4000;
-  let reloj = null;
+  // ---- H10 · Mensaje de Pere (pulido 2: era una nota de voz; los audios de clientes no los leo, así que es un mensaje escrito) ----
+  // Mismas claves que antes ('h10', 'notaPere', 'nota-pere-escuchada'): al marcarlo como leído se va el aviso del informe.
   VETA.hojaDef('h10', {
-    titulo: 'Pere\'s voice note · 0:48',
-    pinta: d => {
-      const oida = B.lee('notaPere', null), fase = d.fase || '';
+    titulo: 'Message from Pere',
+    pinta: () => {
+      const leido = B.lee('notaPere', null);
       if (VETA.ajeno('pere')) return `<p class="hoja-x">${esc(VETA.chatAjenoTexto('pere'))}</p>` + cerrar('Close');
       return `<div class="b-voz"><p class="hoja-x"><b>What he says:</b> “Laura, if it's needed to close, I'll go down to €385,000, but no lower.”</p>` +
-        `<p class="hoja-x tenue">Pere · WhatsApp · Sat 21, 21:10</p>` +
-        `<div class="b-audio${fase === 'oido' ? ' end' : ''}" aria-hidden="true"><span class="b-audio-l"><i></i></span><span class="b-audio-t"><span class="b-audio-a">${fase === 'oido' ? '0:48' : '0:00'}</span> / 0:48</span></div>` +
-        UI.nota({texto: 'It doesn\'t play in this demo: this is the text of the note.', clase: 'nota-gris'}) + '</div>' +
-        (fase === 'oido' ? UI.boton({texto: 'I\'ve listened', icono: 'check', accion: 'oido'})
-          : oida ? UI.nota({texto: `You listened to it today at ${oida}.`, icono: 'check', caja: true}) + UI.boton({tipo: 'secundario', texto: 'Listen again', icono: 'play', accion: 'escuchar'})
-          : UI.boton({texto: 'Listen', icono: 'play', accion: 'escuchar'})) +
-        cerrar(oida || fase === 'oido' ? 'Close' : 'Not now');
+        `<p class="hoja-x tenue">Pere · WhatsApp · Sat 21, 21:10</p></div>` +
+        (leido ? UI.nota({texto: `You read it today at ${leido}.`, icono: 'check', caja: true}) : UI.boton({texto: 'I have read it', icono: 'check', accion: 'oido'})) +
+        cerrar(leido ? 'Close' : 'Not now');
     },
     acciones: {
-      escuchar(ev, el, d) {
-        const h = el.closest('#hoja'), a = h.querySelector('.b-audio'), t = h.querySelector('.b-audio-a');
-        el.disabled = true; el.querySelector('span').textContent = 'Escuchando…';
-        const fin = () => { reloj = null; if (VETA.hojaActual() && VETA.hojaActual().id === 'h10') VETA.hoja('h10', Object.assign({}, d, {fase: 'oido'})); };
-        if (VETA.reducido()) { fin(); return; }
-        a.style.setProperty('--dur', DUR + 'ms'); a.classList.add('on');
-        const t0 = performance.now();
-        const paso = now => {
-          const s = Math.min(48, Math.floor((now - t0) / DUR * 48));
-          t.textContent = '0:' + String(s).padStart(2, '0');
-          if (now - t0 < DUR) reloj = requestAnimationFrame(paso); else fin();
-        };
-        reloj = requestAnimationFrame(paso);
-      },
       oido() {
         B.pon('notaPere', VETA.ahora()); M.pon('nota-pere-escuchada', true);
         VETA.cierraHoja({foco: false}); VETA.repinta();
-        VETA.aviso('Noted: you\'ve already listened to Pere\'s note.', {deshacer: () => { B.pon('notaPere', null); M.deshazFlag('nota-pere-escuchada'); VETA.repinta(); }});
+        VETA.aviso('Noted: you have read Pere\'s message.', {deshacer: () => { B.pon('notaPere', null); M.deshazFlag('nota-pere-escuchada'); VETA.repinta(); }});
       }
-    },
-    alCerrar() { if (reloj) cancelAnimationFrame(reloj); reloj = null; }
+    }
   });
 
-  // ---- H11 · «Otras acciones» (título: el nombre del cliente) ----
+  // ---- H11 · “Otras acciones” (título: el nombre del cliente) ----
   const marca = (id, k, v) => { const m = Object.assign({}, B.mapa('marcas')[id] || {}); if (v == null) delete m[k]; else m[k] = v; B.ponEn('marcas', id, Object.keys(m).length ? m : null); VETA.repinta(); };
   VETA.hojaAcciones('h11', {
     titulo: d => (M.cliente(cliDe(d)) || {}).nombre || 'Other actions',
@@ -60,11 +40,11 @@
       // dirección con el cliente de otra persona: solo sus marcas (preguntar, resumir o dictar leerían su chat)
       const l = VETA.ajeno(id) ? [] : [
         {texto: `Ask about ${nom}`, sub: 'I\'ll answer with what\'s in their chats', icono: 'pregunta', ir: id === 'jordi' ? 'pregunta/jordi' : 'pregunta/' + id},
-        id === 'pere' ? {texto: 'Owner report', sub: 'This week\'s, as Pere will see it', icono: 'casa', ir: 'informe/pere'} : null,
+        id === 'pere' ? {texto: 'Owner report', sub: 'This Monday\'s one, as Pere will see it', icono: 'casa', ir: 'informe/pere'} : null,
         {texto: 'Share summary', sub: 'Five lines to copy or send', icono: 'compartir', hoja: 'h12'},
         {texto: 'Dictate a note', sub: `Whatever you want to note about ${nom}`, icono: 'mic', ir: 'dictar/nota'}];
       if (VETA.yo().papel === 'direccion') {
-        // sin «Seguir de cerca»: dirección no vigila las operaciones de nadie; «importante», solo en sus clientes
+        // sin “Seguir de cerca”: dirección no vigila las operaciones de nadie; “importante”, solo en sus clientes
         if (!VETA.ajeno(id)) l.push(m.importante ? {texto: 'Remove “important”', icono: 'aviso', hace: () => marca(id, 'importante', null)}
           : {texto: 'Mark as important', icono: 'aviso', hace: () => marca(id, 'importante', VETA.ahora())});
         l.push({texto: 'Log a complaint', icono: 'globo', hoja: 'h39'});
@@ -78,7 +58,7 @@
     const c = B.cli(id) || {}, h = B.historia(id)[0], et = UI.ETIQUETAS[c.estado];
     return [`${c.nombre}${c.tel ? ' · ' + c.tel : ''}`, c.quienEs || '', `Status: ${et ? et[2] : 'New contact'}${c.operacion && c.operacion.texto ? ' · ' + c.operacion.texto : ''}`,
       `Next step: ${c.siguiente && c.siguiente.texto ? c.siguiente.texto.replace(/\.$/, '') : 'nothing pending'}`,
-      h ? `Latest: ${h.cuando} · ${h.titulo}${h.texto ? ' · ' + h.texto.replace(/[«»]/g, '') : ''}` : 'Latest: nothing yet'].filter(Boolean).slice(0, 5);
+      h ? `Latest: ${h.cuando} · ${h.titulo}${h.texto ? ' · ' + h.texto.replace(/[“”]/g, '') : ''}` : 'Latest: nothing yet'].filter(Boolean).slice(0, 5);
   };
   VETA.hojaDef('h12', {
     titulo: 'Share summary',
@@ -86,11 +66,10 @@
       const id = cliDe(d);
       return `<div class="b-resumen">${resumen(id).map(l => `<p>${esc(l)}</p>`).join('')}</div>` +
         UI.nota({texto: 'If you change agent, the history stays with the office.', icono: 'info'}) +
-        UI.boton({texto: 'Copy', icono: 'copiar', accion: 'copia'}) + UI.botones([{texto: 'Send by email', accion: 'correo'}]) + cerrar();
+        UI.boton({texto: 'Copy', icono: 'copiar', accion: 'copia'}) + cerrar();   // pulido 2: fuera “Enviar por correo” (Veta solo tiene WhatsApp Business)
     },
     acciones: {
-      copia(ev, el, d) { VETA.copia(resumen(cliDe(d)).join('\n')); VETA.cierraHoja({foco: false}); VETA.aviso('Summary copied.'); },
-      correo(ev, el, d) { VETA.copia(resumen(cliDe(d)).join('\n')); VETA.cierraHoja({foco: false}); VETA.aviso('No email goes out in this demo. I\'ve copied it for you.'); }
+      copia(ev, el, d) { VETA.copia(resumen(cliDe(d)).join('\n')); VETA.cierraHoja({foco: false}); VETA.aviso('Summary copied.'); }
     }
   });
 
@@ -155,7 +134,7 @@
   // ---- H15 · ¿Qué pasó con…? ----
   const opcionesH15 = d => {
     const id = cliDe(d), c = M.cliente(id) || {}, nom = B.corto(c);
-    const prop = /^Propietari|^Vendedor|^Owner|^Seller/.test(c.quienEs || '');
+    const prop = /^Propietari|^Vendedor/.test(c.quienEs || '');
     return [{texto: 'Replied', linea: `Noted · ${nom} replied`},
       {texto: 'We arranged a viewing', linea: `Noted · viewing with ${nom}`},
       prop ? {texto: 'Signed the exclusive', linea: `Noted · ${nom} signed the exclusive`} : null,

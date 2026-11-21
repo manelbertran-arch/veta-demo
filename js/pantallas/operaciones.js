@@ -13,13 +13,15 @@
 
   // «Toca: contestar a Marta» (en minúscula, salvo si empieza por el nombre de alguien del equipo)
   const tocaDe = o => {
-    const t = String(o.toca || '').replace(/\.$/, '');
+    const t = String(o.tocaCorto || o.toca || '').replace(/\.$/, '');
     if (!t || /^Nada\b/.test(t)) return '';
     const propio = Object.keys(VETA.datos.personas || {}).some(id => t.indexOf(X.persona(id).corto + ' ') === 0);
     return 'Toca: ' + (propio ? t : t.charAt(0).toLowerCase() + t.slice(1));
   };
   // lo que pasa, solo en las que hay que mirar y en las de Teresa: rojo si alguien espera respuesta; lo demás, neutro
-  const pasa = (o, cls) => (o.mirar || o.deBaja) && o.aviso ? `<span class="${cls} d-tono-${o.aviso.tono}">${VETA.ic(o.aviso.tono === 'rojo' ? 'aviso' : 'reloj', 18)}<span>${esc(o.aviso.texto)}</span></span>` : '';
+  // si quien la lleva ya contestó, una nota gris en su lugar («Laura le contestó hoy, 9:41»): se ve que contestó y cuándo, nunca el mensaje
+  const pasa = (o, cls) => (o.mirar || o.deBaja) && o.aviso ? `<span class="${cls} d-tono-${o.aviso.tono}">${VETA.ic(o.aviso.tono === 'rojo' ? 'aviso' : 'reloj', 18)}<span>${esc(o.aviso.texto)}</span></span>`
+    : o.nota ? `<span class="${cls} d-tono-neutro d-op-nota">${VETA.ic('check', 18)}<span>${esc(o.nota)}</span></span>` : '';
 
   // móvil: dos líneas por operación (y una tercera, corta, solo si hay que mirarla)
   const linea = (o, conQuien) => {
@@ -39,7 +41,7 @@
       `<span class="d-op-c"><span class="d-op-v">${esc(o.como)}</span></span>` +
       `<span class="d-op-c"><span class="d-op-v">${o.ultimo ? `<b>${esc(o.ultimo.cuando)}</b> · ${esc(o.ultimo.texto)}` : '—'}</span></span>` +
       `<span class="d-op-c"><span class="d-op-v">${esc(o.toca || '—')}</span></span></span>` +
-      pasa(o, 'd-op-aviso') + `</button>`;
+      (o.nota ? '' : pasa(o, 'd-op-aviso')) + `</button>`;   // en la tabla, «Lo último que pasó» ya dice que contestó y cuándo
   };
   const cabecera = conQuien => `<div class="d-op-th" aria-hidden="true"><span>Operación</span>${conQuien !== false ? '<span>Quién la lleva</span>' : ''}<span>Cómo va</span><span>Lo último que pasó</span><span>Qué toca ahora</span></div>`;
   const lista = (l, conQuien) => {

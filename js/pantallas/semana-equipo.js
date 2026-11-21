@@ -8,7 +8,7 @@
   let ventana = '7d', editando = false;
 
   const N = () => D.numeros;
-  const RESUMEN = 'Semana del 16 al 22 de noviembre. Veta dejó listos 156 mensajes y tareas y completamos 132 (la anterior, 141 y 118). Hay 4 operaciones que llevan más de 7 días sin moverse: el lunes las repasamos. Esta semana Veta ha aprendido que en Gràcia casi todos piden ver el piso en sábado.';
+  const RESUMEN = 'Semana del 16 al 22 de noviembre. Veta dejó listos 156 mensajes y tareas y completamos 132 (la de antes, 141 y 118). Hay 4 operaciones que llevan más de 7 días sin moverse: el lunes las repasamos. Esa semana Veta aprendió que en Gràcia casi todos piden ver el piso en sábado.';
   const resumenTexto = () => X.lee('resumenTexto', RESUMEN);
   const enviado = () => X.lee('resumen', null);
 
@@ -29,15 +29,15 @@
       const corr = VETA.datos.r6.direccion.semanas.corregidos, nc = corr.length;
       let h = `<p class="d-periodo" data-i="0">Semana del 16 al 22 de noviembre</p>`;
       // arriba, el número que nadie tenía: lo que Veta dejó listo
-      h += `<div class="d-cifra-semana" data-i="0">${UI.cifra({valor: n['7d'][1], unidad: 'cosas que os dejé listas esta semana', id: 'd-cifra-156'})}` +
-        `<p class="d-antes">La semana anterior, ${n.semanaAnterior.preparados}. Antes de Veta, nadie las contaba.</p></div>`;
+      h += `<div class="d-cifra-semana" data-i="0">${UI.cifra({valor: n['7d'][1], unidad: 'cosas que os dejé listas la semana pasada', id: 'd-cifra-156'})}` +
+        `<p class="d-antes">La de antes, ${n.semanaAnterior.preparados}. Antes de Veta, nadie las contaba.</p></div>`;
       if (env) h += `<div data-i="0">${UI.lineaHecho({texto: 'Resumen enviado a 4 personas', hora: 'hoy, ' + env.hora, vt: 'd-resumen'})}</div>`;
       // 1 · trabajo que Veta ya hace por la oficina
       h += UI.bloque({titulo: 'Trabajo que Veta ya hace por la oficina', i: 1, html:
-        `<div class="d-comps" aria-label="Esta semana y la anterior">${compara('Lo que dejé listo', n['7d'][1], n.semanaAnterior.preparados)}${compara('Lo que terminasteis', n['7d'][2], n.semanaAnterior.completados)}` +
+        `<div class="d-comps" aria-label="La semana pasada y la de antes">${compara('Lo que dejé listo', n['7d'][1], n.semanaAnterior.preparados)}${compara('Lo que terminasteis', n['7d'][2], n.semanaAnterior.completados)}` +
         `<p class="d-leyenda"><i class="d-ley-a"></i>Del 16 al 22 nov <i class="d-ley-b"></i>Del 9 al 15 nov</p></div>` +
         `<ul class="d-sem-l"><li>Sigo yo sola <b>${n['7d'][6]}</b> tareas: miro si llega un papel o si alguien contesta.</li>` +
-        `<li>Me corregisteis <b>${corr[nc - 1]}</b> veces. La semana anterior, ${corr[nc - 2]}.</li>` +
+        `<li>Me corregisteis <b>${corr[nc - 1]}</b> veces. La de antes, ${corr[nc - 2]}.</li>` +
         `<li>Mensajes que envío yo sola: <b>ninguno</b>. Durante el piloto, Veta no envía nada sin vuestra aprobación.</li></ul>`});
       // 2 · tienes que decidir: lo que está parado y las decisiones que esperan
       h += UI.bloque({titulo: 'Tienes que decidir', i: 2, texto: `${par.length} operaciones llevan más de 7 días sin moverse.`, html: UI.lista(par.map(o => {
@@ -47,7 +47,7 @@
       // 3 · lo aprendido y lo que viene
       const sig = VETA.datos.r6.direccion.pide[0];
       h += UI.bloque({titulo: 'Lo que he aprendido y lo que viene', i: 3, html:
-        `<ul class="d-sem-l"><li>Esta semana he aprendido <b>7</b> cosas. Por ejemplo: en Gràcia casi todos piden ver el piso en sábado.</li>` +
+        `<ul class="d-sem-l"><li>La semana pasada aprendí <b>7</b> cosas. Por ejemplo: en Gràcia casi todos piden ver el piso en sábado.</li>` +
         `<li>Lo siguiente que puedo aprender: <b>${esc(sig.tema.toLowerCase())}</b>. Lo habéis hecho a mano ${sig.veces} veces.</li></ul>` +
         UI.boton({tipo: 'secundario', texto: 'Enseñarme el primero', ir: 'dictar/orden', icono: 'mic'})});
       h += UI.lista([

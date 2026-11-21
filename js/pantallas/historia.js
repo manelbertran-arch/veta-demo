@@ -1,6 +1,6 @@
 /* Veta demo · pantallas · historia.js · paquete B (Clientes)
    - A16 · Historia · #/cliente/<id>/historia (P1): todo lo que ha pasado con el cliente, por fecha. Existe para todos.
-   Selector «Todo · Actas». Las filas con detalle abren H16 (acta, informe enviado o mensaje) o H10 (nota de voz).
+   Selector «Todo · Actas». Las filas con detalle abren H16 (acta, informe enviado o mensaje) o H10 (el mensaje de Pere).
    Al final, «Lo que sé de…» con su cita. Estados: todo · solo actas · vacío. */
 (function () {
   'use strict';

@@ -9,25 +9,25 @@
 
   VETA.pantalla('A14', {
     titulo: 'Your week',
-    guia: ['Here you see what Veta did for you last week, in numbers.', 'You enter your times if you want to see hours; Veta doesn\'t make them up.', 'That way you know management sees the whole office, not yours separately.'],
+    guia: ['Here you see what I did for you last week, in numbers.', 'You enter your times if you want to see hours; Veta doesn\'t make them up.', 'This way you know what management sees about you, and what it does not.'],
     pinta: () => {
       const t = M.lee('tiempos', null), min = t ? M.minutosLaura(t) : 0;
       const s = C.semanaDe(), dir = VETA.yo().papel === 'direccion';
       const cab = `<p class="intro" data-i="0">Week of 16 to 22 November.</p>` +
-        `<div class="c-cifra" data-i="0">${UI.cifra({valor: s.preparados, unidad: 'messages I had ready for you', id: 'c-cifra-31'})}<p class="c-apoyo">You sent ${s.enviados} · you tweaked ${s.retocados}</p>`;
+        `<div class="c-cifra" data-i="0">${UI.cifra({valor: s.preparados, unidad: 'messages I wrote for you', id: 'c-cifra-31'})}<p class="c-apoyo">You sent ${s.enviados} · you tweaked ${s.retocados}</p>`;
       // dirección: solo lo suyo; lo del equipo está en Equipo › Semana
       if (dir) return cab + '</div>' +
-        UI.bloque({titulo: 'Also', i: 1, html: UI.lista([{titulo: `${s.actas} viewing notes saved`, icono: 'doc'}, {titulo: `${s.promesas} promises noted`, icono: 'mano'}])}) +
-        UI.bloque({titulo: 'What others see', i: 2, html: UI.nota({texto: 'Your figures are yours: in the team\'s week they show added up with everyone else\'s, never separately.', icono: 'escudo', caja: true})}) +
+        UI.bloque({titulo: 'Also', i: 1, html: UI.lista([{titulo: `Viewing notes saved: ${s.actas}`, icono: 'doc'}, {titulo: `${s.promesas} promises noted`, icono: 'mano'}])}) +
+        UI.bloque({titulo: 'What others see', i: 2, html: UI.nota({texto: 'In the team\'s week, your numbers appear next to each person\'s. Nobody sees what you write in your chats.', icono: 'escudo', caja: true})}) +
         UI.lista([{titulo: 'The team\'s week', sub: 'Figures for the whole office', icono: 'equipo', ir: 'semana-equipo'}], {i: 3});
       return cab +
-          (t ? `<p class="c-horas"><b id="c-horas">${esc(VETA.horas(min))}</b> this week · with your times ${C.ejemplo()}</p>` : '') + `</div>` +
+          (t ? `<p class="c-horas"><b id="c-horas">${esc(VETA.horas(min))}</b> last week · with your times ${C.ejemplo()}</p>` : '') + `</div>` +
         UI.bloque({titulo: 'Also', i: 1, html: UI.lista([{titulo: '3 viewing notes saved', icono: 'doc'}, {titulo: '4 promises noted', icono: 'mano'}])}) +
         // los ocho números de la oficina no van aquí: su número es el suyo (crítica 2.13)
-        UI.bloque({titulo: 'What management sees', i: 2, html: UI.nota({texto: 'The whole office\'s numbers, added up. It doesn\'t see yours separately, or your chats, or the ones you leave out. Nothing goes out without your approval.', icono: 'escudo', caja: true})}) +
+        C.direccionVe(2) +
         UI.lista([
           {titulo: 'Your times', sub: t ? C.tiemposTexto(t) : 'not set', icono: 'reloj', hoja: 'h24'},
-          {titulo: 'Your daily list', sub: 'from 46 cards per week to 21', icono: 'hoy', hoja: 'c-lista'},
+          {titulo: 'Before and now', sub: 'from 46 things per week to 21', icono: 'hoy', ir: 'antes-ahora'},
           {titulo: 'What you still do by hand', sub: '3 tasks', icono: 'mano', hoja: 'c-mano'},
           {titulo: 'Previous weeks', icono: 'cal', hoja: 'h25'}
         ], {i: 4});
@@ -50,5 +50,5 @@
       }
     }
   });
-  C.tiemposTexto = t => VETA.datos.c.tiempos.map(x => `${t[x.id]} min`).join(', ').replace(/, ([^,]*)$/, ' y $1');
+  C.tiemposTexto = t => VETA.datos.c.tiempos.map(x => `${t[x.id]} min`).join(', ').replace(/, ([^,]*)$/, ' and $1');
 })();

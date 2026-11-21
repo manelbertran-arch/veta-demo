@@ -18,8 +18,8 @@
       const c = M.cosa(i.cosa), e = est(p.id);
       let h = `<div class="a-inf-cab" data-i="0"><p class="a-para">${esc(i.para)}</p>` +
         `<button type="button" class="enlace" data-hoja="h01" data-de="${esc(i.cosa)}">Porque se lo envías cada lunes ›</button></div>`;
-      // la nota de voz se va cuando se marca «He escuchado» en H10 (paquete B pone la marca «nota-pere-escuchada»)
-      if (i.voz && !M.lee('nota-pere-escuchada')) h += `<button type="button" class="a-voz-av" data-hoja="h10" data-de="${esc(p.id)}" data-i="0">${ic('play', 20)}<span>${esc(i.voz)} · <b>Escuchar ›</b></span></button>`;
+      // el mensaje de Pere se va cuando se marca «Ya lo he leído» en H10 (paquete B pone la marca «nota-pere-escuchada»)
+      if (i.voz && !M.lee('nota-pere-escuchada')) h += `<button type="button" class="a-voz-av" data-hoja="h10" data-de="${esc(p.id)}" data-i="0">${ic('chat', 20)}<span>${esc(i.voz)} · <b>Leer ›</b></span></button>`;
       if (e.pdf) h += `<div data-i="0">${UI.lineaHecho({texto: 'PDF preparado. Lo envías tú.', boton: {texto: 'Deshacer', accion: 'sin-pdf'}})}</div>`;
       h += `<article class="tarjeta a-inf" data-i="1"><span class="a-inf-r">Así lo verá ${esc((M.quien(p.id) || {}).corto || 'Pere')}</span>` +
         `<div class="a-inf-foto foto-encoge">${UI.foto(i.piso, {tam: 'ancha', foco: 'piso'})}</div>` +

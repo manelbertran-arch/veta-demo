@@ -1,6 +1,6 @@
 /* Veta demo · núcleo · rutas.js
    El mapa entero (sección 2), el registro de pantallas, la navegación y el armazón (barra, barra lateral, columnas).
-   - Toda ruta del mapa queda registrada al cargar con una pantalla «pendiente» que dice su código; el paquete que la
+   - Toda ruta del mapa queda registrada al cargar con una pantalla “pendiente” que dice su código; el paquete que la
      construye la sustituye con VETA.pantalla('<código>', {...}) y hereda del mapa lo que no diga (ruta, destino, completa…).
    - Pila propia con el nombre real de la anterior, almohadilla (#/hoy) y botón atrás del navegador, dirección de la
      transición, memoria del desplazamiento, destino marcado, pantallas completas sin barra, dos columnas en ordenador.
@@ -21,7 +21,7 @@
     ['A3', 'dictar/:guion', 'Dictate', null, 'A', 'dictar.js', 'A1', 'dictar/libre', {completa: true, grupo: G.A}],
     ['A4', 'acta/:id', 'Viewing notes', 'hoy', 'A', 'acta.js', 'A1', 'acta/elena', {completa: true, grupo: G.A}],
     ['A4b', 'entendido-dictado/:id', 'What I\'ve understood', 'hoy', 'A', 'dictado.js', 'A1', 'entendido-dictado/tarea', {completa: true, grupo: G.A}],
-    ['A7', 'espera', 'Waiting', 'hoy', 'A', 'espera.js', 'A1', null, {grupo: G.A}],
+    ['A7', 'espera', 'What I\'m watching for you', 'hoy', 'A', 'espera.js', 'A1', null, {grupo: G.A}],
     ['A12', 'informe/:id', 'Owner report', 'hoy', 'A', 'informe.js', 'A1', 'informe/pere', {grupo: G.A}],
     ['A5', 'clientes', 'Clients', 'clientes', 'B', 'clientes.js', null, null, {grupo: G.B}],
     ['A5b', 'clientes/al-dia', 'The ones who don\'t need you today', 'clientes', 'B', 'clientes.js', 'A5', null, {grupo: G.B}],
@@ -32,7 +32,7 @@
     ['A8', 'veta', 'Veta', 'veta', 'C', 'veta.js', null, null, {grupo: G.C}],
     ['A9', 'reglas', 'What I do for you', 'veta', 'C', 'reglas.js', 'A8', null, {grupo: G.C}],
     ['A9b', 'reglas/semana-pasada', 'Last week', 'veta', 'C', 'reglas.js', 'A9', null, {grupo: G.C}],
-    ['A10', 'regla/:id', 'A rule', 'veta', 'C', 'regla.js', 'A9', 'regla/r-valoraciones', {grupo: G.C}],
+    ['A10', 'regla/:id', 'A job', 'veta', 'C', 'regla.js', 'A9', 'regla/r-valoraciones', {grupo: G.C}],
     ['A10b', 'regla/:id/nivel', 'How far it goes', 'veta', 'C', 'regla.js', 'A10', 'regla/r-valoraciones/nivel', {grupo: G.C}],
     ['A11', 'entendido/:id', 'This is how I understood it', 'veta', 'C', 'entendido.js', 'A9', 'entendido/recordatorios', {grupo: G.C}],
     ['A13', 'aprendido', 'What I\'ve learned', 'veta', 'C', 'aprendido.js', 'A8', null, {grupo: G.C}],
@@ -42,21 +42,28 @@
     ['A15b', 'cuenta/chats', 'Chats I don\'t read', 'veta', 'C', 'cuenta.js', 'A15', null, {grupo: G.C}],
     ['A15c', 'cuenta/seguridad', 'Security', 'veta', 'C', 'cuenta.js', 'A15', null, {grupo: G.C}],
     ['G1', 'equipo', 'Team', 'equipo', 'D', 'equipo.js', null, null, {grupo: G.D}],
-    ['G2', 'asunto/:id', 'A matter', 'equipo', 'D', 'asunto.js', 'G1', 'asunto/carmen', {grupo: G.D}],
-    ['G2b', 'regla-oficina/:id', 'A rule for the office', 'equipo', 'D', 'regla-oficina.js', 'G1', 'regla-oficina/dossier', {grupo: G.D}],
+    ['G2', 'asunto/:id', 'What happened', 'equipo', 'D', 'asunto.js', 'G1', 'asunto/carmen', {grupo: G.D}],
+    ['G2b', 'regla-oficina/:id', 'A job for the office', 'equipo', 'D', 'regla-oficina.js', 'G1', 'regla-oficina/dossier', {grupo: G.D}],
     ['G3', 'semana-equipo', 'Week', 'equipo', 'D', 'semana-equipo.js', 'G1', null, {grupo: G.D}],
     ['G3b', 'semana-equipo/resumen', 'Send the summary', 'equipo', 'D', 'semana-equipo.js', 'G3', null, {grupo: G.D}],
     ['G3c', 'reunion', 'For Monday\'s meeting', 'equipo', 'D', 'semana-equipo.js', 'G3', null, {grupo: G.D}],
     ['G3d', 'oficinas', 'By office', 'equipo', 'D', 'semana-equipo.js', 'G3', null, {grupo: G.D}],
     ['G3e', 'tiempo-equipo', 'The time the team saves', 'equipo', 'D', 'semana-equipo.js', 'G3', null, {grupo: G.D}],
     ['G5', 'reparto', 'Allocation', 'equipo', 'D', 'reparto.js', 'G1', null, {grupo: G.D}],
-    ['G5b', 'reparto/confirmar', 'Hand over the portfolio', 'equipo', 'D', 'reparto.js', 'G5', null, {grupo: G.D}],
+    ['G5b', 'reparto/confirmar', 'Handing over their clients', 'equipo', 'D', 'reparto.js', 'G5', null, {grupo: G.D}],
     ['G6', 'avisos', 'Alerts', 'equipo', 'D', 'avisos.js', 'G1', null, {grupo: G.D}],
     ['G7', 'conexiones', 'Connections and settings', 'equipo', 'D', 'conexiones.js', 'G1', null, {grupo: G.D}],
     ['G7b', 'confianza', 'What you see and what each person sees', 'equipo', 'D', 'conexiones.js', 'G7', null, {grupo: G.D}],
     ['G7c', 'piloto', 'Daily pilot wrap-up', 'equipo', 'D', 'conexiones.js', 'G7', null, {grupo: G.D}],
     ['G8', 'informe-completo', 'Full report', 'equipo', 'D', 'informe-completo.js', 'G3', null, {grupo: G.D}],
     ['G9', 'entra', 'What\'s coming in', 'equipo', 'D', 'entra.js', 'G1', null, {grupo: G.D}],
+    ['A19', 'que-hace', 'What Veta does for you', 'veta', 'C', 'que-hace.js', 'A8', null, {grupo: G.C}],
+    ['A20', 'antes-ahora', 'Before and now', 'veta', 'C', 'antes-ahora.js', 'A8', null, {grupo: G.C}],
+    ['G15', 'oficina-que-hace', 'What Veta does for your office', 'equipo', 'D', 'oficina-que-hace.js', 'G1', null, {grupo: G.D}],
+    ['G16', 'oficina-antes-ahora', 'Office before and now', 'equipo', 'D', 'oficina-antes-ahora.js', 'G1', null, {grupo: G.D}],
+    ['G17', 'operaciones', 'Deals', 'equipo', 'D', 'operaciones.js', 'G1', null, {grupo: G.D}],
+    ['G18', 'operacion/:id', 'A deal', 'equipo', 'D', 'operacion.js', 'G17', 'operacion/marta', {grupo: G.D}],
+    ['G19', 'persona/:id', 'A person on the team', 'equipo', 'D', 'persona.js', 'G1', 'persona/laura', {grupo: G.D}],
     ['G10', 'oficina/practicas', 'How we work', 'veta', 'C', 'oficina-veta.js', 'A8', null, {grupo: G.O}],
     ['G11', 'oficina/aprende', 'What the office learns', 'veta', 'C', 'oficina-veta.js', 'A8', null, {grupo: G.O}],
     ['G12', 'oficina/falta', 'What Veta doesn\'t do yet', 'veta', 'C', 'oficina-veta.js', 'A8', null, {grupo: G.O}],
@@ -73,10 +80,10 @@
   const H = [
     ['H01', 'Where it comes from', 'N', 'comunes.js'], ['H02', 'Something else…', 'N', 'comunes.js'], ['H03', 'Log', 'A', 'dia.js'], ['H04', 'What I\'ve read', 'A', 'dia.js'],
     ['H05', 'Done today', 'A', 'dia.js'], ['H06', 'Day closed', 'A', 'dia.js'], ['H07', 'What you said', 'A', 'dia.js'], ['H08', 'What can I say?', 'A', 'dia.js'],
-    ['H09', 'That\'s not it', 'A', 'dia.js'], ['H10', 'Voice note', 'B', 'clientes.js'], ['H11', 'Other actions', 'B', 'clientes.js'], ['H12', 'Share summary', 'B', 'clientes.js'],
+    ['H09', 'That\'s not it', 'A', 'dia.js'], ['H10', 'Message from Pere', 'B', 'clientes.js'], ['H11', 'Other actions', 'B', 'clientes.js'], ['H12', 'Share summary', 'B', 'clientes.js'],
     ['H13', 'Off the radar', 'B', 'clientes.js'], ['H14', 'Request ready', 'B', 'clientes.js'], ['H15', 'What happened with…?', 'B', 'clientes.js'], ['H16', 'History detail', 'B', 'clientes.js'],
     ['H17', 'Enlarged photo', 'N', 'comunes.js'], ['H18', 'A case', 'C', 'veta.js'], ['H19', 'The 11 cases like me', 'C', 'veta.js'], ['H20', 'Something else…', 'C', 'veta.js'],
-    ['H21', 'How I understood it, step by step', 'C', 'veta.js'], ['H22', 'Raise one level', 'C', 'veta.js'], ['H23', 'An office practice', 'C', 'veta.js'], ['H24', 'Your time on this task', 'C', 'veta.js'],
+    ['H21', 'What I understood', 'C', 'veta.js'], ['H22', 'Raise one level', 'C', 'veta.js'], ['H23', 'An office practice', 'C', 'veta.js'], ['H24', 'Your time on this task', 'C', 'veta.js'],
     ['H25', 'A previous week', 'C', 'veta.js'], ['H26', 'Appearance', 'N', 'comunes.js'], ['H28', 'No signal', 'C', 'veta.js'],
     ['H29', 'Legal text', 'N', 'comunes.js'], ['H30', 'Which chat are you deleting?', 'C', 'veta.js'], ['H31', 'Add Veta to your home screen', 'C', 'veta.js'], ['H32', 'A finding from the map', 'C', 'veta.js'],
     ['H33', 'Calendar', 'C', 'veta.js'], ['H34', 'Today\'s 3 topics', 'D', 'direccion.js'], ['H35', 'Who do you assign it to?', 'D', 'direccion.js'], ['H36', 'How it would have gone', 'D', 'direccion.js'],
@@ -168,7 +175,7 @@
   }
   const scrollDe = ruta => { const x = pila.slice().reverse().find(y => y.ruta === ruta); return x ? x.scroll || 0 : 0; };
 
-  // ruta del padre (para entrar en frío y para el «‹»)
+  // ruta del padre (para entrar en frío y para el “‹”)
   function padreDe(e) {
     const m = MAPA[e.def.cod];
     if (m && m.padre && MAPA[m.padre]) {
@@ -196,9 +203,18 @@
       return `<header class="cab cab-panel"><nav class="miga" aria-label="Where you are">${raizMiga}${migas.map(o => `<button type="button" class="miga-b" data-atras-a="${o.k}">${esc(o.x.titulo || '')}</button><span class="miga-s" aria-hidden="true">›</span>`).join('')}<h1 class="cab-t">${t}</h1></nav>${e.def.cabDerecha ? `<span class="cab-der">${e.def.cabDerecha(e.p)}</span>` : ''}</header>`;
     }
     const ant = pila.length > 1 ? pila[pila.length - 2].titulo : (() => { const r = resuelve(padreDe(e)); return r ? titulo(r) : 'Today'; })();
-    return `<header class="cab cab-detalle"><button type="button" class="cab-atras" data-atras aria-label="Back to ${esc(ant)}">${VETA.ic('atras', 20)}<span>${esc(ant)}</span></button>` +
+    return `<header class="cab cab-detalle"><button type="button" class="cab-atras" data-atras aria-label="Back to ${esc(ant)}">${VETA.ic('atras', 20)}</button>` +
       `<h1 class="cab-t">${e.def.cabTitulo ? e.def.cabTitulo(e.p) : t}</h1><span class="cab-der">${e.def.cabDerecha ? e.def.cabDerecha(e.p) : ''}</span></header>`;
   }
+
+  // el título de una cabecera de detalle nunca parte en dos líneas: si no cabe, la letra baja de 20 a 16 px como mucho
+  function ajustaTitulo(col) {
+    const t = col.querySelector('.cab-detalle .cab-t'); if (!t || !t.isConnected) return;
+    t.style.fontSize = '';
+    const un = parseFloat(getComputedStyle(t).lineHeight) || 22; let fs = parseFloat(getComputedStyle(t).fontSize) || 20;
+    while (t.getBoundingClientRect().height > un * 1.5 && fs > 16) { fs -= 1; t.style.fontSize = fs + 'px'; }
+  }
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => VETA.$$('#marco .col').forEach(ajustaTitulo));
 
   // ---- montar una pantalla en una columna ----
   function monta(col, e, modo, o) {
@@ -214,6 +230,7 @@
     col.innerHTML = cabecera(e, modo) + (navigator.onLine === false ? UI.sinRed() : '') +
       `<div class="desplaza" tabindex="-1"><section class="pant pant-${esc(e.def.cod)}${e.def.pendiente ? ' pant-pendiente' : ''}" data-pant="${esc(e.def.cod)}" aria-label="${esc(titulo(e))}"><div class="pant-cuerpo">${cuerpo}</div></section></div>` +
       (fijo ? `<div class="fijo">${fijo}</div>` : '');
+    ajustaTitulo(col);
     const d = col.querySelector('.desplaza');
     if (o.scroll) d.scrollTop = o.scroll;
     VETA.mov.vigilaDesplazamiento(d, col);
@@ -292,10 +309,13 @@
 
   // ---- navegar ----
   // VETA.ir('cliente/pere', {foco: el, reemplaza: false, pestana: false, dir: 'adelante'})
+  // al cambiar de ruta no se queda nada de la pantalla anterior: ni hoja abierta ni aviso negro
+  const sueltaTodo = () => { if (VETA.cierraHoja) VETA.cierraHoja({foco: false}); if (VETA.quitaAviso) VETA.quitaAviso(); };
   VETA.ir = (ruta, o) => {
     o = o || {};
     ruta = String(ruta).replace(/^#?\/?/, '');
     if (!resuelve(ruta)) { VETA.aviso('That screen doesn\'t exist yet.'); return; }
+    sueltaTodo();
     if (vedada(ruta)) { ruta = entrada(); o = {pestana: true}; }
     guardaScroll();
     let dir = o.dir || 'adelante';
@@ -311,7 +331,7 @@
     pinta(dir, o.foco);
   };
   VETA.atras = () => {
-    guardaScroll();
+    sueltaTodo(); guardaScroll();
     if (pila.length > 1) {
       const st = history.state;
       if (st && st.veta && st.n === pila.length - 1) { history.back(); return; }
@@ -323,22 +343,45 @@
   // volver a un punto de la pila (migas del panel en ordenador)
   VETA.atrasA = n => {
     n = Number(n); if (!(n >= 0 && n < pila.length - 1)) return;
+    sueltaTodo();
     const pasos = pila.length - 1 - n; const st = history.state;
     if (st && st.veta && st.n === pila.length - 1) { history.go(-pasos); return; }
     pila = pila.slice(0, n + 1); pon(pila[n].ruta, n, true); pinta('atras');
   };
-  // repinta la pantalla actual (después de cambiar el modelo); {hecho: id} hace el «hecho en el sitio» (efecto 7)
+  // repinta la pantalla actual (después de cambiar el modelo); {hecho: id} hace el “hecho en el sitio” (efecto 7)
   VETA.repinta = o => {
     o = o || {}; guardaScroll();
-    if (o.hecho && !VETA.reducido() && VETA.mov.hayVT()) { pinta('cambia', null, true); return; }
+    if ((o.hecho || o.paso) && !VETA.reducido() && VETA.mov.hayVT()) { pinta('cambia', null, true); return; }   // {paso: true}: lo que lleve data-vt viaja a su sitio
     pinta(null, null, true);
   };
   VETA.actual = () => actual;
   VETA.pila = () => pila.slice();
 
+  // “atrás” del navegador con una hoja abierta: cierra la hoja y la pantalla se queda donde está
+  // (el navegador ya retrocedió una entrada: se le hace avanzar y se ignoran los dos avisos de ese ir y venir)
+  let restaura = null;
+  const SIN_SESION = ['E1', 'E2'];
   function alVolverNavegador() {
     const ruta = rutaHash();
+    if (restaura) {
+      if (ruta === restaura.ruta) restaura = null;
+      return;
+    }
     if (ignora === ruta) { ignora = null; return; }
+    if (VETA.hojaActual && VETA.hojaActual() && actual) {
+      VETA.cierraHoja({foco: false}); if (VETA.quitaAviso) VETA.quitaAviso();
+      if (ruta !== actual.ruta) {
+        restaura = {ruta: actual.ruta}; setTimeout(() => { restaura = null; }, 800);
+        try { history.forward(); } catch (e) { restaura = null; }
+      }
+      return;
+    }
+    sueltaTodo();
+    // dentro de la app, “atrás” no vuelve a la portada ni a entrar: se queda en tu primera pantalla
+    const e0 = resuelve(ruta);
+    if (e0 && SIN_SESION.indexOf(e0.def.cod) >= 0 && VETA.est.lee('dentro', false) && history.state && history.state.veta) {   // solo al volver con el botón del navegador, no al escribir la dirección
+      pila = [{ruta: entrada()}]; pon(entrada(), 0, true); pinta(null, null, true); return;
+    }
     if (vedada(ruta)) { VETA.ir(entrada(), {pestana: true}); return; }
     if (actual && ruta === actual.ruta && pila.length && pila[pila.length - 1].ruta === ruta) return;
     guardaScroll();
@@ -376,7 +419,7 @@
     el.dataset.firma = firma;
     el.innerHTML = `<div class="lat-marca"><img src="assets/veta-symbol-gold.png" alt="" width="30" height="24"><b>VETA</b></div>` +
       `<div class="lat-dest">${papel().destinos.map(d => `<button type="button" class="lat-d${d === marcado ? ' on' : ''}" data-tab="${d}"${d === marcado ? ' aria-current="page"' : ''}>${VETA.ic(DESTINOS[d].icono, 22)}<span>${DESTINOS[d].texto}</span>${d === 'hoy' && n ? `<span class="lat-n">${n}</span>` : ''}</button>`).join('')}</div>` +
-      `<button type="button" class="lat-mic" data-ir="dictar/libre"><span class="mic-c">${VETA.ic('mic', 22)}</span><span>Dictar</span></button>` +
+      `<button type="button" class="lat-mic" data-ir="dictar/libre"><span class="mic-c">${VETA.ic('mic', 22)}</span><span>Dictate</span></button>` +
       `<button type="button" class="lat-yo" data-ir="cuenta">${VETA.av(yo.id, 40)}<span class="lat-yo-c"><span class="lat-yo-n">${esc(yo.nombre)}</span><span class="lat-yo-p">${esc(yo.papelTexto)}</span></span></button>`;
   }
   VETA.pintaBarra = () => { ['barra', 'lateral'].forEach(id => { const el = document.getElementById(id); if (el) delete el.dataset.firma; }); pintaBarra(); pintaLateral(); };
@@ -390,7 +433,7 @@
     pintaLateral();
   });
 
-  // ---- entrar con una cuenta (E2): la barra gana o pierde «Equipo», se abre el primer destino. No hay cambio de perfil dentro de la app ----
+  // ---- entrar con una cuenta (E2): la barra gana o pierde “Equipo”, se abre el primer destino. No hay cambio de perfil dentro de la app ----
   VETA.cambiaPerfil = id => {
     if (!VETA.modelo.persona(id)) return;
     VETA.est.pon('perfil', id);
@@ -444,6 +487,8 @@
   function arranca() {
     const rol = VETA.param('rol');
     if (rol === 'direccion') VETA.est.pon('perfil', 'montse'); else if (rol === 'agente') VETA.est.pon('perfil', 'laura');
+    // el atajo ?rol= entra ya con esa cuenta (Hoy o Equipo), sin pasar por la portada; con ?nuevo se ve la entrada entera
+    if ((rol === 'direccion' || rol === 'agente') && !VETA.tieneParam('nuevo')) VETA.est.pon('dentro', true);
     if (VETA.param('momento') === 'fin') VETA.modelo.momentoFin();
     const nuevo = VETA.tieneParam('nuevo');
     // se quitan de la dirección los atajos ya aplicados (se queda ?error=1, que es para revisar)
@@ -452,7 +497,8 @@
       const s = q.toString(); history.replaceState(history.state, '', location.pathname + (s ? '?' + s : '') + location.hash);
     } catch (e) {}
     let ruta = nuevo ? 'portada' : rutaHash();
-    if (!ruta || !resuelve(ruta)) ruta = VETA.est.lee('portadaVista', false) ? entrada() : 'portada';
+    // sin sesión (nadie ha entrado aún, o cerró sesión) se empieza siempre por la marca y el idioma (E1)
+    if (!ruta || !resuelve(ruta)) ruta = VETA.est.lee('dentro', false) ? entrada() : 'portada';
     if (vedada(ruta)) ruta = entrada();
     const top = pila.length ? pila[pila.length - 1] : null;
     if (!top || top.ruta !== ruta || nuevo) pila = [{ruta}];

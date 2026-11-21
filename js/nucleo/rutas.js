@@ -80,7 +80,7 @@
   const H = [
     ['H01', 'De dónde sale', 'N', 'comunes.js'], ['H02', 'Otra cosa…', 'N', 'comunes.js'], ['H03', 'Registro', 'A', 'dia.js'], ['H04', 'Lo que he leído', 'A', 'dia.js'],
     ['H05', 'Hechas hoy', 'A', 'dia.js'], ['H06', 'Día cerrado', 'A', 'dia.js'], ['H07', 'Lo que dijiste', 'A', 'dia.js'], ['H08', '¿Qué puedo decir?', 'A', 'dia.js'],
-    ['H09', 'No es eso', 'A', 'dia.js'], ['H10', 'Nota de voz', 'B', 'clientes.js'], ['H11', 'Otras acciones', 'B', 'clientes.js'], ['H12', 'Compartir resumen', 'B', 'clientes.js'],
+    ['H09', 'No es eso', 'A', 'dia.js'], ['H10', 'Mensaje de Pere', 'B', 'clientes.js'], ['H11', 'Otras acciones', 'B', 'clientes.js'], ['H12', 'Compartir resumen', 'B', 'clientes.js'],
     ['H13', 'Fuera del radar', 'B', 'clientes.js'], ['H14', 'Petición lista', 'B', 'clientes.js'], ['H15', '¿Qué pasó con…?', 'B', 'clientes.js'], ['H16', 'Detalle de historia', 'B', 'clientes.js'],
     ['H17', 'Foto ampliada', 'N', 'comunes.js'], ['H18', 'Un caso', 'C', 'veta.js'], ['H19', 'Los 11 casos como yo', 'C', 'veta.js'], ['H20', 'Otra cosa…', 'C', 'veta.js'],
     ['H21', 'Qué he entendido', 'C', 'veta.js'], ['H22', 'Subir un nivel', 'C', 'veta.js'], ['H23', 'Una práctica de la oficina', 'C', 'veta.js'], ['H24', 'Tu tiempo en esta tarea', 'C', 'veta.js'],

@@ -17,7 +17,7 @@
         {titulo: 'Leo el WhatsApp de la oficina y os aviso de cada contacto nuevo', sub: sin ? `Ahora hay ${sin} que no lleva nadie` : 'Ahora todos tienen quien los lleve', icono: 'entra', ir: 'entra'},
         {titulo: 'Apunto lo que se promete y aviso si no llega', sub: 'Jordi Ferrer espera el informe del piso antes del jueves', icono: 'mano', ir: 'operacion/jordi'},
         {titulo: 'Vigilo las operaciones que se paran', sub: `${par} llevan más de 7 días sin moverse`, icono: 'pausa', ir: 'operaciones'},
-        {titulo: 'Os dejo listos los mensajes y las tareas', sub: `${n['7d'][1]} esta semana`, icono: 'check', ir: 'semana-equipo'}]);
+        {titulo: 'Os dejo listos los mensajes y las tareas', sub: `${n['7d'][1]} la semana pasada`, icono: 'check', ir: 'semana-equipo'}]);
       h += grupo('Esto lo hacemos entre los dos', 2, [
         {titulo: 'Te propongo quién lleva cada contacto nuevo', sub: 'Tú eliges. Carmen López: te propongo a Laura', icono: 'usuario', ir: 'asunto/carmen'},
         {titulo: 'Te propongo cosas que hacer igual en toda la oficina', sub: 'El informe del piso al día siguiente. Lo decides tú', icono: 'aprende', ir: 'regla-oficina/dossier'},

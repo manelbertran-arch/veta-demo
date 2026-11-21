@@ -21,13 +21,13 @@
       const ofiMovil = pares([['Gràcia · prepared', '92 (before 84)'], ['Gràcia · completed', '78 (before 70)'], ['Gràcia · stalled', '3'],
         ['Sant Gervasi · prepared', '64 (before 57)'], ['Sant Gervasi · completed', '54 (before 48)'], ['Sant Gervasi · stalled', '1']]);
       return `<header class="d-inf-cab" data-i="0"><p class="d-periodo">Week of 16 to 22 November · Gràcia and Sant Gervasi</p>` +
-        `<p class="bloque-sub">Office report. Team figures, never per person.</p></header>` +
+        `<p class="bloque-sub">Office report. What each deal and person is doing is in Deals and in Team.</p></header>` +
         sec('The eight numbers', ocho, 1) +
         `<div class="d-inf-dos" data-i="2">${sec('New business', pares(I.captacion), 2)}${sec('X-ray', pares(I.radiografia), 2)}</div>` +
         sec('By office', `<div class="d-solo-movil">${ofiMovil}</div><div class="d-solo-ord">${ofi}</div>`, 3) +
         sec('What\'s stalled · ' + par.length + ' deals', `<ul class="d-inf-l">${par.map(o => `<li>${esc(o.texto)} · ${esc(o.estadoTexto.replace('Stalled · ', ''))}</li>`).join('')}</ul>`, 3) +
         sec('What was learned · 7 things', `<ul class="d-inf-l">${D.aprendidoSemana.map(t => `<li>${esc(t)}</li>`).join('')}</ul>`, 4) +
-        sec('Team decisions', pares([I.decisiones[0], ['To decide today', String(VETA.modelo.decisiones().filter(X.pendiente).length)]]), 4) +
+        sec('Team decisions', pares([I.decisiones[0], ['You have to decide today', String(VETA.modelo.decisiones().filter(X.pendiente).length)]]), 4) +
         `<p class="pie d-inf-pie" data-i="4">Veta · example with made-up data · ${esc(D.fecha.hoyTexto)}</p>`;
     },
     botonFijo: () => UI.boton({texto: 'Print', accion: 'imprimir', icono: 'papel'}),

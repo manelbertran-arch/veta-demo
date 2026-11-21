@@ -1,6 +1,6 @@
 /* Veta demo · pantallas · avisos.js · paquete D (Dirección)
-   G6 · Avisos · #/avisos — «Avísame cuando…»: ejemplos con «Usar este», los avisos puestos (cada uno abre H37) y los que han saltado.
-   El botón principal «Crear aviso» aparece al elegir o escribir uno. */
+   G6 · Avisos · #/avisos — “Avísame cuando…”: ejemplos con “Usar este”, los avisos puestos (cada uno abre H37) y los que han saltado.
+   El botón principal “Crear aviso” aparece al elegir o escribir uno. */
 (function () {
   'use strict';
   const UI = VETA.UI, esc = VETA.esc, X = VETA.dir, D = VETA.datos;
@@ -8,7 +8,7 @@
 
   const puestos = () => {
     const off = X.lee('avisosOff', {});
-    return X.lee('avisos', []).map(a => Object.assign({salto: 'hasn\'t triggered', nuevo: true}, a)).concat(D.avisos.puestos).map(a => Object.assign({}, a, {off: !!off[a.id]}));
+    return X.lee('avisos', []).map(a => Object.assign({salto: 'hasn\'t alerted you yet', nuevo: true}, a)).concat(D.avisos.puestos).map(a => Object.assign({}, a, {off: !!off[a.id]}));
   };
 
   VETA.pantalla('G6', {
@@ -19,11 +19,11 @@
       let h = `<div class="d-avisame" data-i="0"><span class="d-avisame-ic">${VETA.ic('campana', 24)}</span>` +
         `<label class="d-avisame-c" for="d-aviso-t"><span>Alert me when…</span><input id="d-aviso-t" class="d-avisame-i" type="text" value="${esc(texto)}" placeholder="type here, or use an example" enterkeyhint="done"></label></div>`;
       if (ult) h += `<div data-i="0">${UI.lineaHecho({texto: 'Alert created · When it triggers, you\'ll see it in Team.', hora: ult.hora, vt: 'aviso-' + ult.id, boton: {texto: 'Undo', accion: 'deshacer-aviso', de: ult.id}})}</div>`;
-      if (texto.trim()) h += UI.lista([{titulo: 'How it would have gone', sub: 'The times it would have triggered this past month', icono: 'reloj', hoja: 'h36', datos: {ejemplo: ejemplo || ''}}], {i: 1});
+      if (texto.trim()) h += UI.lista([{titulo: 'How it would have gone', sub: 'The times I would have alerted you this last month', icono: 'reloj', hoja: 'h36', datos: {ejemplo: ejemplo || ''}}], {i: 1});
       h += UI.bloque({titulo: 'Examples', i: 1, html: `<div class="lista">${D.avisos.ejemplos.map(e => `<div class="fila fila-quieta d-ej${ejemplo === e.id ? ' marcada' : ''}"><span class="fila-c"><span class="fila-t">${esc(e.texto)}</span></span>` +
         UI.boton({tipo: 'secundario', texto: ejemplo === e.id ? 'Chosen' : 'Use this one', accion: 'usar', de: e.id, ancho: false, clase: 'd-usar'}) + '</div>').join('')}</div>`});
-      h += UI.bloque({titulo: 'Set · ' + ps.filter(a => !a.off).length, i: 2, html: UI.lista(ps.map(a => ({titulo: a.texto, sub: a.off ? 'apagado' : a.salto, icono: a.off ? 'pausa' : 'campana', hoja: 'h37', datos: {aviso: a.id}, vt: 'aviso-' + a.id})))});
-      h += UI.bloque({titulo: 'Triggered · 1', i: 3, html: UI.lista([{titulo: 'Complaint from Joan Serra', sub: 'An owner complains · Saturday 21, 20:05', av: 'joan-serra', ir: 'asunto/joan-serra'}])});
+      h += UI.bloque({titulo: 'Your alerts · ' + ps.filter(a => !a.off).length, i: 2, html: UI.lista(ps.map(a => ({titulo: a.texto, sub: a.off ? 'off' : a.salto, icono: a.off ? 'pausa' : 'campana', hoja: 'h37', datos: {aviso: a.id}, vt: 'aviso-' + a.id})))});
+      h += UI.bloque({titulo: 'You were alerted · 1', i: 3, html: UI.lista([{titulo: 'Complaint from Joan Serra', sub: 'An owner complains · Saturday 21, 20:05', av: 'joan-serra', ir: 'asunto/joan-serra'}])});
       h += `<p class="pie" data-i="4">1 case has gone 5 days with no record. The agent has already been alerted; if it's the same on Thursday, you'll see the count, without name or client.</p>`;
       return h;
     },

@@ -16,14 +16,27 @@
     const cl = d.de && M.cliente(d.de); if (cl && cl.chat) return M.chat(cl.chat);
     return null;
   };
+  // ronda 6: la frase literal de la que sale la cosa va subrayada en oro (se dibuja al subir la hoja) y su fecha, en una pastilla.
+  // La frase es la cita de la cosa (o de la cosa del cliente); con data-frase="…" se puede decir otra.
+  const fraseDe = d => {
+    if (d.frase) return d.frase;
+    const c = d.de && cosaDe(d.de); if (c && c.cita) return c.cita.texto;
+    const cl = d.de && M.cliente(d.de); return cl && cl.cosa && cl.cosa.cita ? cl.cosa.cita.texto : '';
+  };
   VETA.hojaDef('h01', {
     titulo: 'Where it comes from',
     pinta: d => {
       const ch = chatDe(d), dueno = VETA.duenoDe({chat: d.chat, de: d.de});
       if (dueno && VETA.ajeno(dueno)) return `<p class="hoja-x">${esc(VETA.chatAjenoTexto(dueno))}</p>${cerrar()}`;
       if (!ch) return `<p class="hoja-x">I can't find the source chat.</p>${cerrar()}`;
-      return `<p class="hoja-x tenue">${esc(ch.titulo)}</p>${UI.burbujas(ch.mensajes)}${cerrar()}`;
-    }
+      const frase = fraseDe(d), k = frase ? ch.mensajes.findIndex(m => String(m.texto).indexOf(frase) >= 0) : -1;
+      if (k < 0) return `<p class="hoja-x tenue">${esc(ch.titulo)}</p>${UI.burbujas(ch.mensajes)}${cerrar()}`;
+      return `<p class="hoja-x tenue">${esc(ch.titulo)}</p><div class="burbujas">` + ch.mensajes.map((m, i) => i === k
+        ? `<div class="burbuja v-clave ${m.tu ? 'b-tu' : 'b-otro'}"><p>${VETA.vivo.marca(m.texto, frase)}</p>${VETA.vivo.pastilla((m.tu ? 'You · ' : '') + (m.cuando || ''), 'reloj')}</div>`
+        : `<div class="burbuja ${m.tu ? 'b-tu' : 'b-otro'}"><p>${esc(m.texto)}</p><span>${esc((m.tu ? 'You · ' : '') + (m.cuando || ''))}</span></div>`).join('') +
+        `</div><p class="v-h01-pie">${VETA.ic('check', 18)}<span>This sentence is where what I prepared for you comes from. It is word for word: I have not changed it.</span></p>${cerrar()}`;
+    },
+    alMontar(el) { const c = el.querySelector('.v-clave'); if (c && c.scrollIntoView) setTimeout(() => { try { c.scrollIntoView({block: 'nearest'}); } catch (e) {} }, 60); }
   });
 
   // ---- H02 · Otra cosa… (título: el nombre del asunto) ----
@@ -55,7 +68,7 @@
         if (o.hoja) { VETA.hoja(o.hoja, {de: d.de}); return; }
         VETA.cierraHoja({foco: false});
         if (o.ir) { VETA.ir(o.ir); return; }
-        // «Lo llevo yo»: se asigna a quien mira (Montse: queda suyo y no llega al Hoy de Laura; Laura: pasa a su Hoy)
+        // “Lo llevo yo”: se asigna a quien mira (Montse: queda suyo y no llega al Hoy de Laura; Laura: pasa a su Hoy)
         if (o.llevoYo) {
           const c = cosaDe(d.de), yo = VETA.yo().id;
           if (VETA.dir && VETA.dir.asigna && c && c.cliente) VETA.dir.asigna(c.cliente, yo);
@@ -113,7 +126,7 @@
   // ---- acciones de la tarjeta de la cola (data-de = id de la cosa) ----
   const hecho = id => VETA.repinta({hecho: id});
   const de = el => el.dataset.de;
-  // «principal»: si la cosa trae «El mensaje ha cambiado» (Jordi), la primera vez cambia el borrador en vez de enviarlo; vale en Hoy, A2 y la ficha
+  // “principal”: si la cosa trae “El mensaje ha cambiado” (Jordi), la primera vez cambia el borrador en vez de enviarlo; vale en Hoy, A2 y la ficha
   VETA.accionGlobal('principal', (ev, el) => {
     const c = M.cosa(de(el)); if (!c) return;
     if (c.cambio && !(c.extra || {}).cambiado) { M.marca(c.id, 'por-hacer', {cambiado: true, aviso: c.cambio.aviso, borradorHtml: c.cambio.borradorHtml}); hecho(c.id); return; }

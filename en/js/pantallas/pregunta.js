@@ -1,7 +1,7 @@
 /* Veta demo · pantallas · pregunta.js · paquete B (Clientes)
    - A5p · Pregunta a Veta · #/pregunta/<id> (P0): responde con lo que está escrito en los chats, con la frase y su fecha.
-   <id> = una de las tres preguntas preparadas (jordi · sant-antoni · verdi), un cliente («¿Qué sé de…?») o el texto
-   escrito. Lo que no está preparado se dice: «No lo encuentro en tus chats». */
+   <id> = una de las tres preguntas preparadas (jordi · sant-antoni · verdi), un cliente (“¿Qué sé de…?”) o el texto
+   escrito. Lo que no está preparado se dice: “No lo encuentro en tus chats”. */
 (function () {
   'use strict';
   const UI = VETA.UI, esc = VETA.esc, B = VETA.B, M = VETA.modelo, D = VETA.datos;
@@ -26,7 +26,7 @@
         respuesta: (c.quienEs ? c.quienEs + '.' : c.nombre + '.') + (h ? ` Latest: ${h.cuando.toLowerCase()}, ${String(h.titulo || h.tipo).toLowerCase()}.` : ''),
         cita: m ? {texto: m.texto, origen: `${B.corto(c)} · ${m.cuando} · chat with ${c.nombre}`, chat: c.chat} : null};
     }
-    // dirección pregunta por el cliente de otra persona escribiéndolo («¿Qué le prometí a Jordi?»): lo dice, sin leer su chat
+    // dirección pregunta por el cliente de otra persona escribiéndolo (“¿Qué le prometí a Jordi?”): lo dice, sin leer su chat
     const nn = ' ' + n + ' ';
     const nombrado = Object.keys(D.clientes).map(M.cliente).find(x => x && (nn.includes(' ' + B.norm(x.nombre) + ' ') || nn.includes(' ' + B.norm(B.corto(x)) + ' ')));
     if (nombrado && VETA.ajeno(nombrado.id)) return {pregunta: id, ajeno: true, cliente: nombrado.id};
@@ -58,7 +58,7 @@
       const acta = M.cosa('c-elena');
       if (r.hoy && acta && acta.estado === 'hecha') l.push(r.hoy);
       filas = UI.lista(l.map(f => { const c = M.cliente(f.cliente) || {}; return {titulo: `${f.cuando} · ${c.nombre}`, sub: f.texto, av: f.cliente, ir: 'cliente/' + f.cliente}; }));
-      if (l.length > r.filas.length) extra = UI.nota({texto: 'And today, Elena Vives\'s viewing: it\'s already in her notes.', icono: 'info'});
+      if (l.length > r.filas.length) extra = UI.nota({texto: 'And today, Elena Vives\'s viewing: it is already in the viewing notes.', icono: 'info'});
     }
     return `<div class="b-resp" data-i="1">${UI.tarjeta(`<span class="b-resp-r">${VETA.ic('pregunta', 18)}<span>Veta answers</span></span>` +
       `<p class="b-resp-t b-escribe">${esc(r.respuesta)}</p>` +
@@ -108,7 +108,7 @@
     }
   });
 
-  // las filas de «Otras preguntas» cambian la pregunta en el sitio (sin apilar una pantalla por pregunta)
+  // las filas de “Otras preguntas” cambian la pregunta en el sitio (sin apilar una pantalla por pregunta)
   document.addEventListener('click', e => {
     const f = e.target.closest && e.target.closest('.pant-A5p [data-ir][data-reemplaza]');
     if (!f) return;

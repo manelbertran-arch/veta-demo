@@ -1,6 +1,6 @@
 /* Veta demo · pantallas · asunto.js · paquete D (Dirección)
    G2 · Un asunto · #/asunto/<id> — un contacto sin dueño (Carmen López, Pau Ríos, Lucía Gómez) o una queja (Joan Serra).
-   Acción principal fija abajo (en ordenador, al pie del panel): «Asignar a Laura» o «Pedir a Marc que le llame hoy». */
+   Acción principal fija abajo (en ordenador, al pie del panel): “Asignar a Laura” o “Pedir a Marc que le llame hoy”. */
 (function () {
   'use strict';
   const UI = VETA.UI, esc = VETA.esc, M = VETA.modelo, X = VETA.dir;
@@ -21,13 +21,13 @@
   VETA.pantalla('G2', {
     titulo: p => nombre(p.id),
     cabDerecha: p => VETA.av(p.id, 32, {foco: 'foto'}),
-    guia: ['Here Veta gathers everything about a matter: what they ask for, what has happened and who can handle it.', 'You choose who handles it or take it yourself.', 'That way nobody is left waiting for a reply.'],
+    guia: ['Here you see what has happened: what this person asks for and who can handle it.', 'You choose who handles it or take it yourself.', 'That way nobody is left waiting for a reply.'],
     pinta: p => {
       const a = A(p.id), r = resuelto(p.id), nom = nombre(p.id);
       let h = `<div class="d-asunto-cab" data-i="0">${UI.etiqueta('por-decidir', a.etiqueta)}</div>`;
       if (r) h += `<div data-i="0">${UI.lineaHecho({texto: r.linea, hora: r.hora, vt: 'asunto-' + p.id, boton: {texto: 'Undo', accion: 'deshacer-asunto'}})}</div>`;
       // el cliente de otra persona (la queja de Joan, de Marc): dirección no lee su chat; lo sabe por su aviso
-      if (VETA.ajeno(a.contacto)) h += UI.bloque({titulo: 'Why you\'re seeing this', i: 1, html: UI.nota({texto: `Your alert “An owner complains” triggered · ${a.pide.origen.replace('WhatsApp · ', '')}. What they write in the chat with ${(VETA.datos.personas[a.lleva] || {}).corto || 'their agent'} doesn't show in management.`, icono: 'campana', caja: true})});
+      if (VETA.ajeno(a.contacto)) h += UI.bloque({titulo: 'Why you\'re seeing this', i: 1, html: UI.nota({texto: `I alerted you, as you asked: an owner is complaining · ${a.pide.origen.replace('WhatsApp · ', '')}. What they write in ${(VETA.datos.personas[a.lleva] || {}).corto || 'their agent'}'s chat does not show in Management.`, icono: 'campana', caja: true})});
       else h += UI.bloque({titulo: a.tipo === 'queja' ? 'What they said' : 'What they\'re asking for', i: 1, html: UI.cita({texto: a.pide.texto, origen: nom.split(' ')[0] + ' · ' + a.pide.origen, chat: a.contacto})});
       h += UI.bloque({titulo: 'What has happened', i: 2, html: pasos(a)});
       if (a.encaja) {
@@ -40,8 +40,8 @@
           {titulo: a.operacion, icono: 'pausa'}])});
       } else {
         h += UI.bloque({titulo: 'Who can handle it', i: 4, html: UI.lista(a.pueden.map(q => ({titulo: q.tu ? 'You' : X.persona(q.id).nombre, sub: q.sub, av: q.id,
-          etiqueta: q.id === a.propone ? 'propuesta' : null, etiquetaTexto: q.id === a.propone ? 'Veta suggests' : null})))});
-        h += UI.nota({texto: 'Veta doesn\'t write to anyone: whoever handles it decides when and what to reply.', icono: 'candado'});
+          etiqueta: q.id === a.propone ? 'propuesta' : null, etiquetaTexto: q.id === a.propone ? 'I would give it to them' : null})))});
+        h += UI.nota({texto: 'I do not write to anyone: whoever handles it decides when to reply and what to say.', icono: 'candado'});
       }
       return h;
     },
@@ -49,7 +49,7 @@
       const a = A(p.id); if (resuelto(p.id)) return '';
       if (a.tipo === 'queja') return UI.boton({texto: 'Ask Marc to call him today', accion: 'pedir'}) +
         UI.botones([{texto: 'I\'ll call him', accion: 'yo'}, {texto: 'Something else…', hoja: 'h02', de: 'd-joan'}]);
-      return UI.boton({texto: 'Assign to ' + X.persona(a.propone).corto, accion: 'asignar'}) +
+      return UI.boton({texto: 'Give it to ' + X.persona(a.propone).corto, accion: 'asignar'}) +
         UI.botones([{texto: 'I\'ll handle it', accion: 'yo'}, {texto: 'Someone else', hoja: 'h35', datos: {para: p.id}}]);
     },
     acciones: {

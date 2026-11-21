@@ -1,7 +1,7 @@
 /* Veta demo · datos · extra-d.js · paquete D (Dirección)
    Datos que el paquete D necesita y no están en js/datos/ (base, dia, clientes, veta, oficina).
    Se añaden a VETA.datos sin pisar lo que ya hay, y cada dato nuevo se apunta en ESTADO_D.md.
-   Al final, VETA.dir: utilidades que comparten las pantallas y hojas de Dirección (estado propio con prefijo «d.»). */
+   Al final, VETA.dir: utilidades que comparten las pantallas y hojas de Dirección (estado propio con prefijo “d.”). */
 (function () {
   'use strict';
   const D = VETA.datos;
@@ -11,31 +11,31 @@
   pon('asuntos', {
     carmen: {
       contacto: 'carmen', tipo: 'contacto', zona: 'Gràcia', decision: 'd-carmen', propone: 'laura',
-      etiqueta: 'To decide · unowned contact · Gràcia',
+      etiqueta: 'Nobody is handling her · Gràcia',
       pide: {texto: 'Looking for a 3-bedroom flat in Gràcia, up to €450,000', origen: 'Office WhatsApp · yesterday, 19:10'},
       paso: [{cuando: 'Yesterday 19:10', texto: 'Writes to the office WhatsApp'}, {cuando: 'Yesterday 19:11', texto: 'Nobody handles contacts that arrive out of hours'}, {cuando: 'Today 8:00', texto: 'Still no reply: 13 hours'}],
       encaja: {piso: 'verdi', texto: 'Verdi 42 · 3 bedrooms · €395,000', pega: 'No lift'},
-      pueden: [{id: 'laura', sub: 'Gràcia · Veta\'s proposal'}, {id: 'anna', sub: 'Gràcia'}, {id: 'montse', sub: 'Sant Gervasi', tu: true}]
+      pueden: [{id: 'laura', sub: 'Gràcia · I would give it to her'}, {id: 'anna', sub: 'Gràcia'}, {id: 'montse', sub: 'Sant Gervasi', tu: true}]
     },
     'pau-rios': {
       contacto: 'pau-rios', tipo: 'contacto', zona: 'Eixample', propone: 'david',
-      etiqueta: 'To decide · unowned contact · Eixample',
+      etiqueta: 'Nobody is handling it · Eixample',
       pide: {texto: 'Do you have any commercial unit to rent in the Eixample?', origen: 'Office WhatsApp · Saturday 21, 13:20'},
       paso: [{cuando: 'Sat 21, 13:20', texto: 'Writes to the office WhatsApp'}, {cuando: 'Sat 21, 13:21', texto: 'Nobody handles weekend contacts'}, {cuando: 'Today 8:00', texto: 'Still no reply: 2 days'}],
       noHay: 'You don\'t have any commercial unit in the Eixample. It\'s logged in “Asked for what you don\'t have”.',
-      pueden: [{id: 'david', sub: 'Sant Gervasi · Veta\'s proposal'}, {id: 'marc', sub: 'Sant Gervasi'}, {id: 'montse', sub: 'Sant Gervasi', tu: true}]
+      pueden: [{id: 'david', sub: 'Sant Gervasi · I would give it to him'}, {id: 'marc', sub: 'Sant Gervasi'}, {id: 'montse', sub: 'Sant Gervasi', tu: true}]
     },
     lucia: {
       contacto: 'lucia', tipo: 'contacto', zona: 'Sant Gervasi', propone: 'marc',
-      etiqueta: 'To decide · unowned contact · Sant Gervasi',
+      etiqueta: 'Nobody is handling her · Sant Gervasi',
       pide: {texto: 'I want to sell my parents\' flat in Sant Gervasi. How do you work?', origen: 'Office WhatsApp · today, 7:40'},
       paso: [{cuando: 'Today 7:40', texto: 'Writes to the office WhatsApp'}, {cuando: 'Today 7:41', texto: 'Arrives before the office opens'}, {cuando: 'Today 8:00', texto: 'Still no reply'}],
-      noHay: 'Wants to sell: it\'s a new flat for the Sant Gervasi portfolio.',
-      pueden: [{id: 'marc', sub: 'Sant Gervasi · Veta\'s proposal'}, {id: 'david', sub: 'Sant Gervasi'}, {id: 'montse', sub: 'Sant Gervasi', tu: true}]
+      noHay: 'Wants to sell: it is a new flat for Sant Gervasi.',
+      pueden: [{id: 'marc', sub: 'Sant Gervasi · I would give it to him'}, {id: 'david', sub: 'Sant Gervasi'}, {id: 'montse', sub: 'Sant Gervasi', tu: true}]
     },
     'joan-serra': {
       contacto: 'joan-serra', tipo: 'queja', decision: 'd-joan', lleva: 'marc',
-      etiqueta: 'To decide · owner complaint',
+      etiqueta: 'Owner complaint',
       pide: {texto: 'Ten days without news about the flat. If nobody tells me anything, I\'m going to another agency.', origen: 'WhatsApp · Saturday 21, 20:05'},
       paso: [{cuando: 'Thu 12 Nov', texto: 'The sale of his Sant Cugat house stalls at the offer stage'}, {cuando: 'Sat 21, 20:05', texto: 'Writes on WhatsApp: complains'}, {cuando: 'Today 8:00', texto: 'Still open since Saturday'}],
       operacion: 'Sale of the Sant Cugat house · stalled · 10 days · Offer stage'
@@ -44,15 +44,15 @@
 
   // ---- G2b · reglas y prácticas de la oficina (dossier es del plan; las otras dos frases, inventadas por D) ----
   pon('reglasOficina', {
-    dossier: {titulo: 'Dossier the next day', decision: 'd-regla', get propone() { return VETA.dir.proponeRegla(); },
-      frase: 'When someone asks for a valuation, Veta prepares the dossier the next day and the agent sends it.',
+    dossier: {titulo: 'Flat report the next day', decision: 'd-regla', get propone() { return VETA.dir.proponeRegla(); },
+      frase: 'When someone asks for a valuation, I prepare the flat report for the next day and the agent sends it.',
       desde: '23 valuation requests.'},
-    'mismo-dia': {titulo: 'Reply the same day', propone: 'Came with Veta', estado: 'a-prueba', dia: 9,
-      frase: 'When a new contact writes, Veta has the reply ready the same day and the agent sends it.',
-      desde: '301 new contacts since 3 October.'},
-    actas: {titulo: 'Notes dictated on the way out of the viewing', propone: 'Proposed by Anna Costa', estado: 'en-marcha', usan: '4 of 6',
-      frase: 'On leaving a viewing, the agent dictates for a minute and Veta writes up the notes.',
-      desde: '212 viewings since 3 October.'}
+    'mismo-dia': {titulo: 'Reply the same day', propone: 'I was already doing this', estado: 'a-prueba', dia: 9,
+      frase: 'When a new contact writes, I write the reply the same day and the agent sends it.',
+      desde: '301 new contacts since we started.'},
+    actas: {titulo: 'Tell me about the viewing when you leave', propone: 'Anna Costa suggested it', estado: 'en-marcha', usan: '4 of 6',
+      frase: 'When you leave a viewing, the agent tells me about it in a minute and I write the viewing notes.',
+      desde: '212 viewings since we started.'}
   });
 
   // ---- G3 · lo que está parado y lo aprendido ----
@@ -69,7 +69,7 @@
   });
 
   // ---- G3e · semana a semana (casos preparados); 16 nov = 156 del cuadro de ocho ----
-  pon('semanas', [{id: '26-oct', texto: '26 Oct', n: 118}, {id: '2-nov', texto: '2 Nov', n: 129}, {id: '9-nov', texto: '9 Nov', n: 141}, {id: '16-nov', texto: '16 Nov', n: 156}]);
+  pon('semanas', [{id: '26-oct', texto: '26 Oct', n: 118}, {id: '2-nov', texto: '2 Nov', n: 127}, {id: '9-nov', texto: '9 Nov', n: 141}, {id: '16-nov', texto: '16 Nov', n: 156}]);
 
   // ---- G6 · avisos ----
   pon('avisos', {
@@ -79,25 +79,24 @@
       {id: 'ej-parada', texto: 'A deal stays stalled for more than 10 days', casos: ['Today · a sale in Gràcia, 12 days in Viewings', 'Today · the Sant Cugat house, 10 days in Offer', 'Fri 13 · a commercial unit, 6 weeks in Contact', 'Mon 2 · a purchase in Sants, 11 days', 'Wed 21 Oct · a sale in Horta, 14 days']}
     ],
     puestos: [
-      {id: 'av-queja', texto: 'An owner complains', salto: 'triggered on Saturday 21, 20:05', saltoLargo: 'Triggered on Saturday 21 at 20:05: complaint from Joan Serra.'},
-      {id: 'av-sabado', texto: 'A Saturday viewing is cancelled', salto: 'hasn\'t triggered'},
-      {id: 'av-valoracion', texto: 'Someone asks for a valuation out of hours', salto: 'hasn\'t triggered'}
+      {id: 'av-queja', texto: 'An owner complains', salto: 'alerted you on Saturday 21, 20:05', saltoLargo: 'Alerted you on Saturday 21 at 20:05: complaint from Joan Serra.'},
+      {id: 'av-sabado', texto: 'A Saturday viewing is cancelled', salto: 'hasn\'t alerted you yet'},
+      {id: 'av-valoracion', texto: 'Someone asks for a valuation out of hours', salto: 'hasn\'t alerted you yet'}
     ],
     generico: ['Sun 22 · a similar case in Gràcia', 'Fri 20 · a similar case in Sant Gervasi', 'Tue 17 · a similar case in Sants']
   });
 
   // ---- G7 · lo que escucha Veta ----
   pon('escucha', [
-    {id: 'whatsapp', texto: 'WhatsApp Business'}, {id: 'voz', texto: 'Voice notes', sub: '3 audio clips not understood this week'},
-    {id: 'llamadas', texto: 'Office calls'}, {id: 'correo', texto: 'Office email'}, {id: 'calendario', texto: 'Calendar'}
+    {id: 'whatsapp', texto: 'WhatsApp Business'}, {id: 'calendario', texto: 'Calendar'}
   ]);
 
   // ---- G7c · parte diario del piloto y los cinco anteriores (inventados por D) ----
   pon('partesPiloto', [
     {dia: 'Friday 20', texto: 'Read 38 chats. Detected 24 cases; prepared 21; completed 18. Awaiting approval: 3.'},
-    {dia: 'Thursday 19', texto: 'Read 44 chats. Detected 29 cases; prepared 25; completed 22. Not understood: 1 audio clip.'},
+    {dia: 'Thursday 19', texto: 'Read 44 chats. Found 29 cases; prepared 25; completed 22.'},
     {dia: 'Wednesday 18', texto: 'Read 35 chats. Detected 22 cases; prepared 19; completed 17.'},
-    {dia: 'Tuesday 17', texto: 'Read 41 chats. Detected 27 cases; prepared 23; completed 19. Not understood: 1 audio clip.'},
+    {dia: 'Tuesday 17', texto: 'Read 41 chats. Found 27 cases; prepared 23; completed 19.'},
     {dia: 'Monday 16', texto: 'Read 47 chats. Detected 31 cases; prepared 26; completed 21.'}
   ]);
 
@@ -105,11 +104,11 @@
   pon('informeSemana', {
     captacion: [['Want to sell', '9'], ['New contacts', '14'], ['Unanswered', '5']],
     radiografia: [['Promises found', '12'], ['Promises with no record', '7'], ['Relationships going cold', '6'], ['Profiles without a phone', '4']],
-    decisiones: [['Decided last week', '6'], ['To decide today', '4']],
+    decisiones: [['Decided last week', '6'], ['You have to decide today', '4']],
     paradasOficina: {gracia: 3, santgervasi: 1}
   });
 
-  // ---- G9 · lo que entra (los dos «escriben dos veces» y el «parking», inventados por D) ----
+  // ---- G9 · lo que entra (los dos “escriben dos veces” y el “parking”, inventados por D) ----
   pon('entra', {
     dosVeces: [{id: 'ramon', texto: 'Ramon Pujol · 2 messages since yesterday'}, {id: 'sin-nombre', texto: 'Unnamed number · 2 messages today'}],
     noTenemos: [{texto: 'Commercial unit in the Eixample, to rent', sub: 'Pau Ríos · Saturday 21'}, {texto: 'Flat with parking in Sant Gervasi', sub: 'A buyer · Thursday 19'}]
@@ -174,7 +173,7 @@
     // filas de la oficina con su número
     // la regla del dossier lleva el nombre de Laura solo si ella la propuso a la oficina (H20, donde se le dice que Montse la verá con su nombre)
     laPropuso: () => !!(VETA.est.lee('c.aOficina', {}) || {})['r-valoraciones'],
-    proponeRegla: () => VETA.dir.laPropuso() ? 'Proposed by Laura Martí' : 'Proposed by Veta, which spotted it in the office',
+    proponeRegla: () => VETA.dir.laPropuso() ? 'Laura Martí suggests it' : 'I suggest it: I saw it in the office',
     paradas: () => M().operaciones().filter(o => o.estado === 'parado'),
     sinResponder: () => (D.contactos || []).filter(c => !VETA.dir.asignado(c.id)),
     sinDueno: () => (D.contactos || []).filter(c => c.sinDueno && !VETA.dir.asignado(c.id))

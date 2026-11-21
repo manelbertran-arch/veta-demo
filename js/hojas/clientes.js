@@ -1,5 +1,5 @@
 /* Veta demo · hojas · clientes.js · paquete B (Clientes)
-   H10 Nota de voz · H11 Otras acciones · H12 Compartir resumen · H13 Fuera del radar · H14 Petición lista ·
+   H10 Mensaje de Pere · H11 Otras acciones · H12 Compartir resumen · H13 Fuera del radar · H14 Petición lista ·
    H15 ¿Qué pasó con…? · H16 Detalle de historia · H39 Anotar una queja.
    data-de: un cliente («pere») o una cosa de la cola o de En espera («c-pere», «e-pere»); las hojas sacan de ahí el cliente. */
 (function () {
@@ -10,45 +10,25 @@
   const cosaDe = id => M.cosa(id) || espera(id);
   const cliDe = d => { if (M.cliente(d.de)) return d.de; const k = cosaDe(d.de); return (k && k.cliente) || 'pere'; };
 
-  // ---- H10 · Nota de voz de Pere · 0:48 ----
-  const DUR = 4000;
-  let reloj = null;
+  // ---- H10 · Mensaje de Pere (pulido 2: era una nota de voz; los audios de clientes no los leo, así que es un mensaje escrito) ----
+  // Mismas claves que antes ('h10', 'notaPere', 'nota-pere-escuchada'): al marcarlo como leído se va el aviso del informe.
   VETA.hojaDef('h10', {
-    titulo: 'Nota de voz de Pere · 0:48',
-    pinta: d => {
-      const oida = B.lee('notaPere', null), fase = d.fase || '';
+    titulo: 'Mensaje de Pere',
+    pinta: () => {
+      const leido = B.lee('notaPere', null);
       if (VETA.ajeno('pere')) return `<p class="hoja-x">${esc(VETA.chatAjenoTexto('pere'))}</p>` + cerrar('Cerrar');
       return `<div class="b-voz"><p class="hoja-x"><b>Lo que dice:</b> «Laura, si hace falta para cerrar, bajo a 385.000 €, pero no menos.»</p>` +
-        `<p class="hoja-x tenue">Pere · WhatsApp · sáb 21, 21:10</p>` +
-        `<div class="b-audio${fase === 'oido' ? ' fin' : ''}" aria-hidden="true"><span class="b-audio-l"><i></i></span><span class="b-audio-t"><span class="b-audio-a">${fase === 'oido' ? '0:48' : '0:00'}</span> / 0:48</span></div>` +
-        UI.nota({texto: 'En esta demo no suena: es el texto de la nota.', clase: 'nota-gris'}) + '</div>' +
-        (fase === 'oido' ? UI.boton({texto: 'He escuchado', icono: 'check', accion: 'oido'})
-          : oida ? UI.nota({texto: `La escuchaste hoy a las ${oida}.`, icono: 'check', caja: true}) + UI.boton({tipo: 'secundario', texto: 'Escuchar otra vez', icono: 'play', accion: 'escuchar'})
-          : UI.boton({texto: 'Escuchar', icono: 'play', accion: 'escuchar'})) +
-        cerrar(oida || fase === 'oido' ? 'Cerrar' : 'Ahora no');
+        `<p class="hoja-x tenue">Pere · WhatsApp · sáb 21, 21:10</p></div>` +
+        (leido ? UI.nota({texto: `Lo leíste hoy a las ${leido}.`, icono: 'check', caja: true}) : UI.boton({texto: 'Ya lo he leído', icono: 'check', accion: 'oido'})) +
+        cerrar(leido ? 'Cerrar' : 'Ahora no');
     },
     acciones: {
-      escuchar(ev, el, d) {
-        const h = el.closest('#hoja'), a = h.querySelector('.b-audio'), t = h.querySelector('.b-audio-a');
-        el.disabled = true; el.querySelector('span').textContent = 'Escuchando…';
-        const fin = () => { reloj = null; if (VETA.hojaActual() && VETA.hojaActual().id === 'h10') VETA.hoja('h10', Object.assign({}, d, {fase: 'oido'})); };
-        if (VETA.reducido()) { fin(); return; }
-        a.style.setProperty('--dur', DUR + 'ms'); a.classList.add('on');
-        const t0 = performance.now();
-        const paso = now => {
-          const s = Math.min(48, Math.floor((now - t0) / DUR * 48));
-          t.textContent = '0:' + String(s).padStart(2, '0');
-          if (now - t0 < DUR) reloj = requestAnimationFrame(paso); else fin();
-        };
-        reloj = requestAnimationFrame(paso);
-      },
       oido() {
         B.pon('notaPere', VETA.ahora()); M.pon('nota-pere-escuchada', true);
         VETA.cierraHoja({foco: false}); VETA.repinta();
-        VETA.aviso('Anotado: ya has escuchado la nota de Pere.', {deshacer: () => { B.pon('notaPere', null); M.deshazFlag('nota-pere-escuchada'); VETA.repinta(); }});
+        VETA.aviso('Anotado: ya has leído el mensaje de Pere.', {deshacer: () => { B.pon('notaPere', null); M.deshazFlag('nota-pere-escuchada'); VETA.repinta(); }});
       }
-    },
-    alCerrar() { if (reloj) cancelAnimationFrame(reloj); reloj = null; }
+    }
   });
 
   // ---- H11 · «Otras acciones» (título: el nombre del cliente) ----
@@ -60,7 +40,7 @@
       // dirección con el cliente de otra persona: solo sus marcas (preguntar, resumir o dictar leerían su chat)
       const l = VETA.ajeno(id) ? [] : [
         {texto: `Preguntar sobre ${nom}`, sub: 'Te contesto con lo que está en sus chats', icono: 'pregunta', ir: id === 'jordi' ? 'pregunta/jordi' : 'pregunta/' + id},
-        id === 'pere' ? {texto: 'Informe al propietario', sub: 'El de esta semana, como lo verá Pere', icono: 'casa', ir: 'informe/pere'} : null,
+        id === 'pere' ? {texto: 'Informe al propietario', sub: 'El de este lunes, como lo verá Pere', icono: 'casa', ir: 'informe/pere'} : null,
         {texto: 'Compartir resumen', sub: 'Cinco líneas para copiar o enviar', icono: 'compartir', hoja: 'h12'},
         {texto: 'Dictar una nota', sub: `Lo que quieras apuntar de ${nom}`, icono: 'mic', ir: 'dictar/nota'}];
       if (VETA.yo().papel === 'direccion') {
@@ -86,11 +66,10 @@
       const id = cliDe(d);
       return `<div class="b-resumen">${resumen(id).map(l => `<p>${esc(l)}</p>`).join('')}</div>` +
         UI.nota({texto: 'Si cambias de agente, la historia se queda en la oficina.', icono: 'info'}) +
-        UI.boton({texto: 'Copiar', icono: 'copiar', accion: 'copia'}) + UI.botones([{texto: 'Enviar por correo', accion: 'correo'}]) + cerrar();
+        UI.boton({texto: 'Copiar', icono: 'copiar', accion: 'copia'}) + cerrar();   // pulido 2: fuera «Enviar por correo» (Veta solo tiene WhatsApp Business)
     },
     acciones: {
-      copia(ev, el, d) { VETA.copia(resumen(cliDe(d)).join('\n')); VETA.cierraHoja({foco: false}); VETA.aviso('Resumen copiado.'); },
-      correo(ev, el, d) { VETA.copia(resumen(cliDe(d)).join('\n')); VETA.cierraHoja({foco: false}); VETA.aviso('En esta demo no sale ningún correo. Te lo he copiado.'); }
+      copia(ev, el, d) { VETA.copia(resumen(cliDe(d)).join('\n')); VETA.cierraHoja({foco: false}); VETA.aviso('Resumen copiado.'); }
     }
   });
 

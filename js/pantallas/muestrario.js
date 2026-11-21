@@ -166,7 +166,7 @@
     cabDerecha: () => VETA.av('pere', 32, {foco: 'foto'}),
     guia: ['Aquí ves una pantalla hecha solo con datos.', 'Tú tocas una fila.', 'Así se hacen las de prioridad 2.'],
     intro: 'Una pantalla de lista: bloques con título y filas. La foto de la cabecera es la que ha viajado desde la fila.',
-    bloques: [{titulo: 'Lo último', filas: [{titulo: 'Informe enviado', sub: 'Lun 16', icono: 'papel', hoja: 'h41', datos: {parte: 'socios'}}, {titulo: 'Nota de voz', sub: 'Sáb 21, 21:10', icono: 'mic'}]},
+    bloques: [{titulo: 'Lo último', filas: [{titulo: 'Informe enviado', sub: 'Lun 16', icono: 'papel', hoja: 'h41', datos: {parte: 'socios'}}, {titulo: 'Mensaje', sub: 'Sáb 21, 21:10', icono: 'chat'}]},
       {titulo: 'Más', filas: [{titulo: 'Ir a la confirmación', ir: 'muestrario/confirma', icono: 'check'}]}],
     pie: 'Ejemplo con datos inventados.'
   });

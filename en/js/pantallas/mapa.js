@@ -8,7 +8,7 @@
   C.mapaHtml = desde => `<p class="intro" data-i="${desde}">From 23 May to 23 November.</p>` +
     VETA.datos.c.mapa.map((b, k) => UI.bloque({titulo: `${b.titulo} · ${b.filas.length}`, i: Math.min(4, desde + 1 + k),
       html: UI.lista(b.filas.map(f => ({titulo: f.titulo, sub: f.sub, hoja: 'h32', datos: {hallazgo: f.id}})))})).join('') +
-    `<p class="c-pista" data-i="4">${VETA.ic('estrella', 18)}<span>Start with the dossiers: 14 cases in six months.</span></p>`;
+    `<p class="c-pista" data-i="4">${VETA.ic('estrella', 18)}<span>Start with the flat reports: 14 cases in six months.</span></p>`;
   C.hallazgo = id => { let x = null; VETA.datos.c.mapa.forEach(b => b.filas.forEach(f => { if (f.id === id) x = f; })); return x; };
 
   VETA.pantalla('A18m', {

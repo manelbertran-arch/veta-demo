@@ -49,7 +49,7 @@
     const cols = s.etiquetas.map((e, k) => `<span class="d-4s-c${k === n - 1 ? ' d-4s-hoy' : ''}"><b class="d-4s-n">${s.listos[k]}</b>` +
       `<span class="d-4s-a" style="--v:${(s.listos[k] / maxL).toFixed(3)}"></span><span class="d-4s-e">${esc(e)}</span></span>`).join('');
     return `<section class="bloque d-trabajo" data-i="${i}"><h2 class="bloque-t">Trabajo que Veta ya hace por la oficina</h2>` +
-      `<p class="d-4s-t">Esta semana os dejé listas <b>${VETA.vivo.cuenta({de: s.listos[0], a: s.listos[n - 1], clave: 'd-4s'})}</b> cosas. Hace un mes, ${s.listos[0]}.</p>` +
+      `<p class="d-4s-t">La semana pasada os dejé listas <b>${VETA.vivo.cuenta({de: s.listos[0], a: s.listos[n - 1], clave: 'd-4s'})}</b> cosas. Hace un mes, ${s.listos[0]}.</p>` +
       `<div class="d-4s" role="img" aria-label="Cosas que os dejé listas cada semana, las cuatro últimas: de ${s.listos[0]} a ${s.listos[n - 1]}">${cols}</div>` +
       `<p class="d-4s-t">Me corregisteis <b>${s.corregidos[n - 1]}</b> veces. Hace un mes, ${s.corregidos[0]}.</p>` +
       UI.boton({tipo: 'texto', texto: 'Ver la semana', ir: 'semana-equipo', ancho: false}) + '</section>';

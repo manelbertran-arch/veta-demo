@@ -2,7 +2,7 @@
    6.3 · los 18 clientes de Laura (8 con ficha completa, 10 con ficha corta) y Sergi Mas, contacto nuevo que no es
    de su cartera (cartera: false; no cuenta en los 18). Además, los clientes de Montse y los de la oficina (6.6).
    Estados: te-toca · oportunidad · parado · esperando · al-dia · cerrado. La foto es assets/perfiles/<foto>.webp.
-   VETA.datos.chats: lo que enseña H01 «De dónde sale» (mensajes literales; tu: true = lo escribió quien usa la app). */
+   VETA.datos.chats: lo que enseña H01 “De dónde sale” (mensajes literales; tu: true = lo escribió quien usa la app). */
 (function () {
   'use strict';
   const D = VETA.datos;
@@ -15,18 +15,18 @@
       encajan: {titulo: 'Flats that fit her · 1', pisos: ['verdi']},
       historia: [{cuando: 'Yesterday, 18:42', tipo: 'Message', texto: 'Wants to see the Gràcia flat'}], chat: 'marta'}),
     elena: c('elena', {nombre: 'Elena Vives', corto: 'Elena', tel: '655 21 70 34', foto: 'elena', quienEs: 'Buyer; looking for 2 bright bedrooms', estado: 'te-toca',
-      operacion: {tipo: 'compra', fase: 2, texto: 'Purchase · Viewings · step 2 of 5'}, siguiente: {texto: 'Viewing today at 9:00 at Verdi 42', boton: {texto: 'Dictate the notes', ir: 'dictar/acta'}, cosa: 'c-elena'},
+      operacion: {tipo: 'compra', fase: 2, texto: 'Purchase · Viewings · step 2 of 5'}, siguiente: {texto: 'Viewing today at 9:00 at Verdi 42', boton: {texto: 'Tell me how it went', ir: 'dictar/acta'}, cosa: 'c-elena'},
       documentos: [{texto: 'Payslip, for the bank', estado: 'falta', fecha: 'Wed 25'}],
       historia: [{cuando: 'Mon 16', tipo: 'Message', texto: '“I\'ll send you the payslip on Wednesday”'}, {cuando: '28 Oct', tipo: 'Message', texto: '“I\'m swamped this week, I\'ll get back to you.”'}], chat: 'elena'}),
     pere: c('pere', {nombre: 'Pere Soler', corto: 'Pere', tel: '612 48 39 07', foto: 'pere', quienEs: 'Owner of the Verdi 42 flat', estado: 'te-toca', piso: 'verdi',
       operacion: {tipo: 'venta', fase: 3, texto: 'Sale · Viewings · step 3 of 5'}, siguiente: {texto: 'Send him the weekly report.', boton: {texto: 'See the report for Pere', ir: 'informe/pere'}, cosa: 'c-pere'},
       encajan: {titulo: 'Matching buyers · 2', clientes: ['marta', 'toni']},
       documentos: [{texto: 'Energy certificate', estado: 'falta', fecha: 'Fri 27'}],
-      historia: [{cuando: 'Sat 21, 21:10', tipo: 'Voice note', texto: 'Voice note, 0:48'}, {cuando: 'Mon 16', tipo: 'Report', texto: 'Weekly report sent'}], chat: 'pere'}),
+      historia: [{cuando: 'Sat 21, 21:10', tipo: 'Message', texto: '“If I need to, to close, I\'ll go down to €385,000, but no lower.”'}, {cuando: 'Mon 16', tipo: 'Report', texto: 'Weekly report sent'}], chat: 'pere'}),
     jordi: c('jordi', {nombre: 'Jordi Ferrer', corto: 'Jordi', tel: '609 77 14 52', foto: 'jordi', quienEs: 'Buyer; Sants flat, c/ Olzinelles', estado: 'te-toca', piso: 'olzinelles',
-      operacion: {tipo: 'compra', fase: 2, texto: 'Purchase · Viewings · step 2 of 5'}, siguiente: {texto: 'Send him the dossier before Thursday', cosa: 'c-jordi'},
+      operacion: {tipo: 'compra', fase: 2, texto: 'Purchase · Viewings · step 2 of 5'}, siguiente: {texto: 'Send him the flat report before Thursday', cosa: 'c-jordi'},
       documentos: [{texto: 'Land registry extract for Olzinelles', estado: 'falta', fecha: 'Mon 30', nota: 'Requested from the Registry'}],
-      historia: [{cuando: 'Fri 20, 12:05', tipo: 'Message', texto: 'Asks for the dossier'}, {cuando: 'Fri 20, 12:20', tipo: 'You', texto: '“Sure, I\'ll send it before Thursday.”'}], chat: 'jordi'}),
+      historia: [{cuando: 'Fri 20, 12:05', tipo: 'Message', texto: 'Asks for the flat report'}, {cuando: 'Fri 20, 12:20', tipo: 'You', texto: '“Sure, I\'ll send it before Thursday.”'}], chat: 'jordi'}),
     nuria: c('nuria', {nombre: 'Núria Camps', corto: 'Núria', tel: '678 03 92 15', foto: 'nuria', quienEs: 'Buyer; looking in Sant Antoni, with a balcony', estado: 'oportunidad',
       operacion: {tipo: 'compra', fase: 1, texto: 'Purchase · Contact · step 1 of 5'}, siguiente: {texto: 'Tell her about the Sant Antoni flat', cosa: 'c-nuria'},
       encajan: {titulo: 'Flats that fit her · 1', pisos: ['santantoni']},
@@ -88,7 +88,7 @@
     'elena-nomina': {titulo: 'WhatsApp chat with Elena Vives', mensajes: [{texto: 'I\'ll send you the payslip on Wednesday', cuando: 'Mon 16, 19:02'}]},
     pere: {titulo: 'WhatsApp chat with Pere Soler', mensajes: [{texto: 'Laura, could you update me every Monday on how it\'s going? That way I won\'t call you so much.', cuando: '2 Oct, 19:20'}]},
     nuria: {titulo: 'WhatsApp chat with Núria Camps', mensajes: [{texto: 'In the end Poble-sec doesn\'t convince us. If something comes up in Sant Antoni with a balcony, let me know, please.', cuando: '3 Nov, 20:15'}]},
-    jordi: {titulo: 'WhatsApp chat with Jordi Ferrer', mensajes: [{texto: 'Could you send me the dossier before Thursday? I want to show it to my sister', cuando: 'Fri 20, 12:05'}, {texto: 'Sure, I\'ll send it before Thursday.', cuando: 'Fri 20, 12:20', tu: true}]},
+    jordi: {titulo: 'WhatsApp chat with Jordi Ferrer', mensajes: [{texto: 'Can you send me the flat report before Thursday? I want to show it to my sister', cuando: 'Fri 20, 12:05'}, {texto: 'Sure, I\'ll send it before Thursday.', cuando: 'Fri 20, 12:20', tu: true}]},
     sergi: {titulo: 'WhatsApp chat with Sergi Mas', mensajes: [{texto: 'Hi, does the Les Corts rental allow pets?', cuando: '9 Nov, 21:48'}]},
     albert: {titulo: 'WhatsApp chat with Albert Roca', mensajes: [{texto: 'If any unit comes up in the centre, let me know', cuando: '3 Oct'}]},
     carmen: {titulo: 'Office WhatsApp · Carmen López', mensajes: [{texto: 'Looking for a 3-bedroom flat in Gràcia, up to €450,000', cuando: 'yesterday, 19:10'}]},

@@ -11,7 +11,7 @@
     {id: 'm-ruben', quien: 'montse', tipo: 'mensaje', cliente: 'ruben', titulo: 'Rubén Gil', corto: 'Rubén', sale: true, chat: 'ruben',
       quienEs: 'Vendedor · ático de Sant Gervasi', etiqueta: 'sin-responder',
       cita: {texto: '¿Ha venido alguien a ver el ático esta semana?', origen: 'Rubén · ayer, 20:15'},
-      borrador: 'Hola, Rubén, soy Montse. Esta semana han visto el ático dos parejas; una quiere volver el sábado. Te llamo el viernes con lo que digan.',
+      borrador: 'Hola, Rubén, soy Montse. La semana pasada vieron el ático dos parejas; una quiere volver el sábado. Te llamo el viernes con lo que digan.',
       boton: {texto: 'Abrir WhatsApp con el mensaje'}, secundarios: [{texto: 'Editar', ir: 'mensaje/m-ruben'}, otra],
       fila: 'Rubén Gil', filaSub: 'Pregunta por las visitas del ático', lineas: {enviada: 'Enviado a Rubén'}},
     {id: 'm-guillem', quien: 'montse', tipo: 'mensaje', cliente: 'guillem', titulo: 'Guillem Roig', corto: 'Guillem', sale: true, chat: 'guillem',

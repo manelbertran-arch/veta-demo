@@ -157,7 +157,7 @@ html:not([data-mov=reducido]) .a-fin-ic{animation:a-sello var(--t-largo) var(--c
 .a-r6-mas-av{display:flex;flex:none}
 .a-r6-mas-av>*{margin-left:-10px;box-shadow:0 0 0 2px var(--s1);border-radius:50%}
 .a-r6-mas-av>*:first-child{margin-left:0}
-.a-r6-mas-t{flex:1;min-width:0;font:600 var(--f-apoyo)/1.3 var(--body);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.a-r6-mas-t{flex:1;min-width:0;font:600 var(--f-apoyo)/1.3 var(--body)}
 .a-r6-mas .chev-gira{color:var(--t3);display:grid;place-items:center;flex:none;transform:rotate(90deg)}
 .a-r6-mas[aria-expanded=true] .chev-gira{transform:rotate(-90deg)}
 .a-r6-lista{background:var(--s1);border:1px solid var(--borde);border-radius:var(--r-3);box-shadow:var(--somb);overflow:hidden}
@@ -205,8 +205,8 @@ html:not([data-mov=reducido]) .a-fin-ic{animation:a-sello var(--t-largo) var(--c
 .a-r6-tira-t{flex:1;min-width:0;font:600 var(--f-apoyo)/1.25 var(--body)}
 .a-r6-tira-t b{font-weight:700}
 .a-r6-tuyas{margin-top:-4px}
-.a-r6-fila .a-r6-f-t{overflow:hidden;text-overflow:ellipsis}
-.a-r6-cerrada .a-r6-f-t,.a-r6-cerrada .a-r6-f-s{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+/* pulido 2: las frases se leen enteras; si no caben en una línea, pasan a dos (nunca «…») */
+.a-r6-fila .a-r6-f-t,.a-r6-fila .a-r6-f-s{overflow-wrap:break-word}
 .a-r6-mira{align-self:flex-start;min-height:var(--toque);text-align:left;font:600 var(--f-cuerpo)/1.3 var(--body)}
 .a-msg .campo-caja{position:relative}
 .a-msg .campo-i{position:relative}

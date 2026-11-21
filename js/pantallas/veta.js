@@ -53,7 +53,7 @@
         {titulo: 'Lo que llevas', sub: (x.ops.length ? x.resumen : 'Ahora no llevas ninguna operación.'), icono: 'casa'},
         {titulo: 'Lo que tienes pendiente', sub: x.pendientes ? VETA.dir.tocanTexto(x, true) : 'Hoy no tienes nada pendiente.', icono: 'hoy'},
         {titulo: 'Cuánto tardas en contestar', sub: x.tarda ? VETA.dir.tardaTexto(x, true) + ' · Ejemplo' : 'Todavía no lo sé.', icono: 'reloj'},
-        {titulo: 'Lo que Veta ya hace por ti', sub: `${x.total} cosas que te dejé listas esta semana: ${h.mensajes} mensajes, ${h.actas} notas de visita y ${h.avisos} avisos`, icono: 'aprende'},
+        {titulo: 'Lo que Veta ya hace por ti', sub: `${x.total} cosas que te dejé listas la semana pasada: ${h.mensajes} mensajes, ${h.actas} notas de visita y ${h.avisos} avisos`, icono: 'aprende'},
         {titulo: 'Lo que he aprendido de ti', sub: `${apr} ${apr === 1 ? 'cosa' : 'cosas'}`, icono: 'estrella'}]) +
       UI.nota({texto: 'No ve lo que escribes en tus chats ni tus notas. Tampoco los chats que dejas fuera.', icono: 'candado', caja: true}) + '</section>';
   };
@@ -84,7 +84,7 @@
     if (VETA.yo().papel === 'direccion') return miasDir();
     const s = C.semanaDe(), aa = C.r6().antesAhora, res = M.resumenReglas(), vis = C.visitas();
     const cifra = (n, t, k) => `<li><b>${VETA.vivo.cuenta({de: 0, a: n, clave: 'c-veta-' + k})}</b><span>${esc(t)}</span></li>`;
-    const cab = `<section class="c-ya" data-i="0"><h2 class="c-ya-h">Lo que ya preparo yo</h2><p class="c-ya-s">Esta semana, sin que me lo pidas:</p>` +
+    const cab = `<section class="c-ya" data-i="0"><h2 class="c-ya-h">Lo que ya preparo yo</h2><p class="c-ya-s">La semana pasada, sin que me lo pidas:</p>` +
       `<ul class="c-ya-n">${cifra(s.preparados, 'mensajes te dejé escritos', 'm')}${cifra(s.promesas, 'promesas apunté', 'p')}${cifra(s.actas, 'notas de visita guardé', 'a')}</ul>` +
       `<a class="c-ya-aa" data-ir="antes-ahora" href="#/antes-ahora"><span>Cuando empezamos te tocaban <b>${aa.antes.valor}</b> cosas por semana. Ahora, <b>${aa.ahora.valor}</b>.</span>${VETA.ic('chev', 16)}</a></section>`;
     const que = `<a class="c-qh-entra" data-i="1" data-ir="que-hace" href="#/que-hace"><span class="c-qh-ic">${VETA.ic('aprende', 26)}</span>` +

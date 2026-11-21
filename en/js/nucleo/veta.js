@@ -14,7 +14,7 @@
 
   // hora de la demo: el reloj arranca a las 9:41 del lunes 23 al abrir la app y corre con el tiempo real
   // (como mucho 20 minutos, lo que dura el guion). Así cuadra con los datos se enseñe a la hora que se enseñe.
-  // Con desfase en minutos («Leído hasta las…» es la hora menos 3).
+  // Con desfase en minutos (“Leído hasta las…” es la hora menos 3).
   const INICIO = 9 * 60 + 41, T0 = Date.now();
   VETA.ahora = (desfaseMin) => {
     const corre = Math.min(20, Math.floor((Date.now() - T0) / 60000));
@@ -22,7 +22,7 @@
     return Math.floor(m / 60) + ':' + String(m % 60).padStart(2, '0');
   };
 
-  // privacidad de dirección: un cliente es «ajeno» si quien mira es dirección y lo lleva otra persona.
+  // privacidad de dirección: un cliente es “ajeno” si quien mira es dirección y lo lleva otra persona.
   // De un cliente ajeno no se enseña nunca el texto de su chat (ni citas ni burbujas): solo quién lo lleva y los hitos.
   VETA.ajeno = id => {
     const yo = VETA.yo && VETA.yo(); if (!yo || yo.papel !== 'direccion') return false;
@@ -32,7 +32,7 @@
     const lleva = c && (c.lleva || (asig && asig.a));
     return !!(lleva && lleva !== yo.id);
   };
-  // el cliente dueño de un chat («pere-voz» → pere) o de una cosa de la cola («c-marta» → marta)
+  // el cliente dueño de un chat (“pere-voz” → pere) o de una cosa de la cola (“c-marta” → marta)
   VETA.duenoDe = ({chat, de} = {}) => {
     const cl = VETA.datos.clientes || {};
     if (chat) { const c = Object.values(cl).find(x => x.chat === chat) || cl[chat] || cl[String(chat).split('-')[0]]; return c ? c.id : null; }
@@ -43,10 +43,10 @@
     }
     return null;
   };
-  // «Está en el chat de Laura con Jordi»: la frase que sustituye a una cita ajena
+  // “Está en el chat de Laura con Jordi”: la frase que sustituye a una cita ajena
   VETA.chatAjenoTexto = id => {
     const c = (VETA.datos.clientes || {})[id] || {}, p = (VETA.datos.personas || {})[c.lleva] || {};
-    return `It's in the chat of ${p.corto || 'another person'} with ${c.corto || c.nombre || 'their client'}. Management doesn't read each person's chats.`;
+    return `It is in ${p.corto || 'another person'}'s chat with ${c.corto || c.nombre || 'their client'}. Management does not read each person's chats.`;
   };
 
   // cifras con punto de miles a la española (1.196), también en números de 4 cifras
@@ -60,6 +60,6 @@
   VETA.reducido = () => document.documentElement.dataset.mov === 'reducido';
   VETA.ordenador = () => !!(window.matchMedia && matchMedia('(min-width: 900px)').matches);
 
-  // iniciales de un nombre: «Montse Ribas» → «MR»
-  VETA.iniciales = nombre => String(nombre || '?').replace(/^Família\s+/, '').replace(/\s+family$/, '').split(/\s+/).filter(Boolean).slice(0, 2).map(p => p[0]).join('').toUpperCase();
+  // iniciales de un nombre: “Montse Ribas” → “MR”
+  VETA.iniciales = nombre => String(nombre || '?').replace(/\s+family$/, '').split(/\s+/).filter(Boolean).slice(0, 2).map(p => p[0]).join('').toUpperCase();
 })();

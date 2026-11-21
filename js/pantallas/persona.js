@@ -21,7 +21,7 @@
         `<div data-i="0">${UI.boton({texto: 'Pasar sus clientes a otra persona', ir: 'reparto'})}</div>`;
       // lo que lleva
       const filas = x.ops.map(o => ({titulo: o.nombre, sub: o.texto + ' · ' + o.como, av: o.id, ir: 'operacion/' + o.id,
-        etiqueta: o.aviso ? etq(o.aviso) : null, etiquetaTexto: o.aviso ? o.aviso.texto.replace(' · Teresa está de baja', '') : null}));
+        etiqueta: o.aviso ? etq(o.aviso) : o.nota ? 'al-dia' : null, etiquetaTexto: o.aviso ? o.aviso.texto.replace(' · Teresa está de baja', '') : o.nota || null}));
       h += UI.bloque({titulo: 'Lo que lleva', texto: x.ops.length ? x.resumen : 'Ahora no lleva ninguna operación.',
         i: 1, html: x.ops.length ? UI.lista(filas) : ''});
       // lo que tiene pendiente
@@ -29,13 +29,13 @@
       h += UI.bloque({titulo: 'Lo que tiene pendiente', i: 2, html: `<p class="d-per-p">${esc(pend)}</p>`});
       // cuánto tarda en contestar: lo que decimos y lo que pasa
       if (x.tarda) h += UI.bloque({titulo: 'Cuánto tarda en contestar', i: 2, html: `<p class="d-per-p"><b>${esc(X.tardaTexto(x, yo))}</b></p>` +
-        `<p class="d-per-pie">${UI.etiqueta('ejemplo')} Decimos «Contestamos en el día». Cuento desde que el cliente escribe hasta que ${yo ? 'contestas' : 'contesta'}, esta semana.</p>`});
+        `<p class="d-per-pie">${UI.etiqueta('ejemplo')} Decimos «Contestamos en el día». Cuento desde que el cliente escribe hasta que ${yo ? 'contestas' : 'contesta'}, la semana pasada.</p>`});
       // lo que Veta ya hace por ella
       const hace = x.hace;
       h += UI.bloque({titulo: 'Lo que Veta ya hace por ' + (yo ? 'ti' : ella), i: 3, html: x.total
-        ? `<p class="d-per-cifra">${VETA.vivo.cuenta({de: 0, a: x.total, clave: 'd-per-' + p.id})}<span>cosas que ${yo ? 'te' : 'le'} dejé listas esta semana</span></p>` +
+        ? `<p class="d-per-cifra">${VETA.vivo.cuenta({de: 0, a: x.total, clave: 'd-per-' + p.id})}<span>cosas que ${yo ? 'te' : 'le'} dejé listas la semana pasada</span></p>` +
           `<p class="d-per-p">${hace.mensajes} mensajes, ${hace.actas} ${hace.actas === 1 ? 'nota de visita' : 'notas de visita'} y ${hace.avisos} avisos.</p>`
-        : `<p class="d-per-p">Esta semana no, porque está de baja.</p>`});
+        : `<p class="d-per-p">La semana pasada no, porque está de baja.</p>`});
       // lo que Veta ha aprendido de ella
       const ap = x.aprendido.map(([id, t]) => {
         const r = id ? M.regla(id) : null, est = r ? r.estado : 'activa';

@@ -27,7 +27,7 @@
         UI.lista(filas, {i: 1, clase: 'c-reglas'}) +
         UI.bloque({i: 2, html: UI.lista([
           {titulo: 'Enséñame algo nuevo', sub: 'Dímelo hablando. Yo te lo propongo y tú decides.', icono: 'mic', ir: 'dictar/orden'},
-          {titulo: 'La semana pasada', sub: C.lee('semanaConfirmada', null) ? 'Me dijiste que está bien' : '27 mensajes y 2 notas de visita · míralo y dime si está bien', icono: 'cal', ir: 'reglas/semana-pasada'}
+          {titulo: 'La semana pasada', sub: C.lee('semanaConfirmada', null) ? 'Me dijiste que está bien' : '31 mensajes y 3 notas de visita · míralo y dime si está bien', icono: 'cal', ir: 'reglas/semana-pasada'}
         ])});
     }
   });
@@ -39,7 +39,7 @@
     pinta: () => {
       const hecha = C.lee('semanaConfirmada', null);
       return (hecha ? UI.lineaHecho({texto: 'Me dijiste que está bien', hora: hecha, boton: {texto: 'Deshacer', accion: 'deshacer'}, i: 0}) : '') +
-        `<p class="intro" data-i="0">Semana del 9 al 15 de noviembre.</p>` +
+        `<p class="intro" data-i="0">Semana del 16 al 22 de noviembre.</p>` +
         UI.lista(VETA.datos.c.semanaPasada.map(f => ({titulo: f.titulo, sub: f.sub, derecha: f.derecha})), {i: 1, clase: 'c-cuentas'}) +
         UI.nota({texto: 'Todo lo que salió lo enviaste tú desde tu WhatsApp.', icono: 'candado', clase: 'nota-gris'});
     },

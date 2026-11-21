@@ -1,5 +1,5 @@
 /* Veta demo · pantallas · acta.js · paquete A (El día)
-   A4 · Acta de la visita · #/acta/<cliente> (elena). Pantalla completa. «Guardar el acta de Elena» (fijo) vuelve a Hoy
+   A4 · Acta de la visita · #/acta/<cliente> (elena). Pantalla completa. “Guardar el acta de Elena” (fijo) vuelve a Hoy
    con las dos líneas en el sitio. Estados: borrador · corrigiendo a mano · PDF preparado · guardada. */
 (function () {
   'use strict';
@@ -15,20 +15,20 @@
 
   VETA.pantalla('A4', {
     titulo: 'Viewing notes',
-    guia: ['Here\'s how I understood the viewing: what she liked, what worries her and the next step.', 'You review it, correct it by hand if needed and save it.', 'That way the notes stay on her profile and the call is logged.'],
+    guia: ['Here\'s how I understood the viewing: what she liked, what worries her and the next step.', 'You review it, correct it by hand if needed and save it.', 'This way the notes stay in their profile and the call is written down.'],
     pinta: p => {
       const a = acta(p);
-      if (!a) return UI.vacio({titulo: 'There are no notes for this viewing', texto: 'Dictate how it went and I\'ll prepare them.', icono: 'mic', boton: {texto: 'Dictate the notes', ir: 'dictar/acta'}});
+      if (!a) return UI.vacio({titulo: 'No notes for this viewing', texto: 'Tell me how it went and I\'ll write the notes.', icono: 'mic', boton: {texto: 'Tell me how it went', ir: 'dictar/acta'}});
       const e = est(p.id), c = M.cosa(a.cosa), guardada = c && c.estado === 'hecha';
       const texto = e.textos || {};
       let h = `<div class="a-ent" data-i="0"><p class="a-ent-t"><b>${esc(a.entendido)}</b><span>${esc(a.donde)}</span></p>` +
         (guardada ? '' : UI.boton({tipo: 'texto', texto: 'That\'s not it', hoja: 'h09', datos: {guion: 'acta'}, ancho: false})) + '</div>';
       if (e.pdf) h += `<div data-i="0">${UI.lineaHecho({texto: 'PDF ready. You send it.', boton: {texto: 'Undo', accion: 'sin-pdf'}})}</div>`;
       if (e.corrige && !guardada) {
-        h += `<div class="borrador a-acta a-corrige" data-i="1"><span class="borrador-r">Veta's draft · you correct it</span>` +
+        h += `<div class="borrador a-acta a-corrige" data-i="1"><span class="borrador-r">I wrote this for you · you can correct it</span>` +
           a.bloques.map(b => UI.campo({etiqueta: b.titulo, area: true, filas: 2, valor: texto[b.id] != null ? texto[b.id] : b.texto, id: 'a-acta-' + b.id})).join('') + '</div>';
       } else {
-        h += `<div class="borrador a-acta" data-i="1"><span class="borrador-r">${guardada ? 'Notes saved' : 'Veta\'s draft'}</span>` +
+        h += `<div class="borrador a-acta" data-i="1"><span class="borrador-r">${guardada ? 'Notes saved' : 'I wrote this for you'}</span>` +
           a.bloques.map(b => `<section class="a-acta-b"><h3 class="a-acta-t">${esc(b.titulo)}</h3><p class="a-acta-x">${esc(texto[b.id] != null ? texto[b.id] : b.texto)}</p></section>`).join('') + '</div>';
       }
       h += `<div class="a-tarea" data-i="2"><span class="a-tarea-ic">${ic('cal', 22)}</span><div class="a-tarea-c"><span class="a-tarea-r">${guardada ? 'I\'ve logged this task' : 'When you save, I\'ll log this task'}</span>` +
@@ -40,8 +40,8 @@
     botonFijo: p => {
       const a = acta(p); if (!a) return '';
       const c = M.cosa(a.cosa);
-      if (c && c.estado === 'hecha') return UI.lineaHecho({texto: 'Saved · Notes for ' + a.nombre, hora: c.hora, boton: {texto: 'Undo', accion: 'deshacer', de: c.id}, vt: 'cola-' + c.id});
-      return UI.boton({texto: 'Save the notes for ' + a.nombre, accion: 'guardar', g: 'Save the notes|I\'ll leave them on her profile and log Thursday\'s call.'});
+      if (c && c.estado === 'hecha') return UI.lineaHecho({texto: 'Saved · Viewing notes for ' + a.nombre, hora: c.hora, boton: {texto: 'Undo', accion: 'deshacer', de: c.id}, vt: 'cola-' + c.id});
+      return UI.boton({texto: 'Save the notes for ' + a.nombre, accion: 'guardar', g: 'Save the notes|I put them in their profile and write down the call on Thursday.'});
     },
     acciones: {
       seguir() { const u = VETA.est.lee('a.ultimoDictado', null); VETA.est.pon('a.dictado', {guion: 'acta', seg: u && u.guion === 'acta' ? u.seg : 0}); VETA.ir('dictar/acta', {reemplaza: true}); },
@@ -63,9 +63,9 @@
     ponEst(p.id, {textos: t});
   }
 
-  // hoja «Acta de Elena» (la «Otra cosa…» del acta)
+  // hoja “Acta de Elena” (la “Otra cosa…” del acta)
   VETA.hojaAcciones('a-acta', {
-    titulo: d => 'Notes for ' + ((acta({id: d.acta || 'elena'}) || {}).nombre || 'the viewing'),
+    titulo: d => 'Viewing notes for ' + ((acta({id: d.acta || 'elena'}) || {}).nombre || 'the viewing'),
     opciones: d => [
       {texto: 'Correct them by hand', icono: 'editar', hace: () => { ponEst(d.acta || 'elena', {corrige: true}); VETA.repinta(); }},
       {texto: 'Save as PDF', icono: 'doc', hace: () => { ponEst(d.acta || 'elena', {pdf: true}); VETA.repinta(); }},

@@ -34,7 +34,7 @@
       }
       h += '</div>';
       h += UI.bloque({titulo: 'Contactos que nadie lleva · ' + quedan, i: 2, html: `<div class="lista">${sin.map(contactoFila).join('')}</div>`});
-      h += UI.lista([{titulo: 'Clientes con dos chats', sub: '2 unidos esta semana', icono: 'chat', hoja: 'h40'}], {i: 3});
+      h += UI.lista([{titulo: 'Clientes con dos chats', sub: '2 unidos la semana pasada', icono: 'chat', hoja: 'h40'}], {i: 3});
       return h;
     },
     botonFijo: () => {

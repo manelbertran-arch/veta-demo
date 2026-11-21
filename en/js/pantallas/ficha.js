@@ -1,7 +1,7 @@
 /* Veta demo · pantallas · ficha.js · paquete B (Clientes)
    - A6 · Ficha de cliente · #/cliente/<id> (P0). Una sola ficha por cliente, para todos los del reparto.
-   De arriba abajo: estado y quién es · teléfono una vez con llamar y WhatsApp · «Siguiente paso» · barra de la operación ·
-   Historia, Documentos y fechas, Otras acciones (H11) · cruces («Pisos que le encajan», «Compradores que encajan»).
+   De arriba abajo: estado y quién es · teléfono una vez con llamar y WhatsApp · “Siguiente paso” · barra de la operación ·
+   Historia, Documentos y fechas, Otras acciones (H11) · cruces (“Pisos que le encajan”, “Compradores que encajan”).
    Estados: te toca con mensaje (la misma tarjeta de Hoy) · te toca, llamar (Albert) · esperando respuesta · al día ·
    cerrado (Carme) · asignado por dirección · lo lleva otra persona (dirección mirando la ficha de un agente). */
 (function () {
@@ -15,13 +15,13 @@
 
   // la cosa de la cola de este cliente que se pinta como tarjeta aquí (solo si es de quien mira)
   const cosaMia = c => c.cosa && (c.cosa.quien === VETA.yo().id) ? c.cosa : null;
-  // la tarjeta de Hoy, sin «Ver la ficha» (ya estás en ella)
+  // la tarjeta de Hoy, sin “Ver la ficha” (ya estás en ella)
   const sinFicha = (x, id) => (x || []).filter(s => s.ir !== 'cliente/' + id);
   const tarjetaHoy = (k, c) => UI.tarjetaCosa(Object.assign({}, k, {secundarios: sinFicha(k.secundarios, c.id),
     extra: Object.assign({}, k.extra, k.extra && k.extra.secundarios ? {secundarios: sinFicha(k.extra.secundarios, c.id)} : {})}));
 
-  // ---- el «Siguiente paso» según el estado: {html, fijo, contacto: 'llamar'|'escribir'|null} ----
-  // «Siguiente paso» enseña primero lo que falta; lo ya hecho («Enviado a Pere») va debajo, en una línea
+  // ---- el “Siguiente paso” según el estado: {html, fijo, contacto: 'llamar'|'escribir'|null} ----
+  // “Siguiente paso” enseña primero lo que falta; lo ya hecho (“Enviado a Pere”) va debajo, en una línea
   function paso(c) {
     const r = paso0(c), k = cosaMia(c), linea = k && RES.includes(k.estado) ? UI.lineaCosa(k) : '';
     if (linea && r.html.startsWith(linea) && r.html.length > linea.length) r.html = r.html.slice(linea.length) + `<div class="b-ya">${linea}</div>`;
@@ -71,7 +71,7 @@
         `<p class="hoja-x">${esc(t)} If there's no reply, I'll let you know on Thursday.</p>` + UI.botones([{texto: 'Already replied…', hoja: 'h15', de: c.id}]))};
     }
 
-    // cerrado (Carme): pedir una recomendación, con su «¿Lo enviaste?»
+    // cerrado (Carme): pedir una recomendación, con su “¿Lo enviaste?”
     if (c.estado === 'cerrado') {
       const r = D.b.recomendacion[c.id], e = B.mapa('reco')[c.id] || {};
       const base = texto(r ? r.texto : 'Deal closed.');
@@ -84,7 +84,7 @@
       return {html: tarjeta(base + UI.botones([{texto: 'Prepare a message asking her for a referral', accion: 'reco-prepara'}]))};
     }
 
-    // «Ya respondió…» anotado
+    // “Ya respondió…” anotado
     if (c.bResp) {
       return {html: UI.lineaHecho({texto: c.bResp.texto, hora: c.bResp.hora, vt: 'b-paso-' + c.id, boton: {texto: 'Undo', accion: 'resp-deshaz'}}) + tarjeta(texto(nada), {clase: 'b-paso'})};
     }
@@ -97,7 +97,7 @@
         const f = B.faltan(c.id).find(d => d.pedir), ped = f && f.pedido;
         if (!f) return {html: linea + tarjeta(texto(nada), {clase: 'b-paso'})};
         if (ped) return {html: linea + tarjeta(`<span class="b-paso-r">${VETA.ic('reloj', 18)}<span>Waiting for the document</span></span>` +
-          `<p class="hoja-x">You asked them for ${esc(f.falta.replace(/ is missing$/, '').replace(/^\w/, m => m.toLowerCase()))} · today, ${esc(ped.hora)}. ${esc(f.plazo || '')}.</p>`)};
+          `<p class="hoja-x">You asked them for ${esc(f.falta.replace(/^Missing: /, ''))} · today, ${esc(ped.hora)}. ${esc(f.plazo || '')}.</p>`)};
         return {html: linea + tarjeta(texto(f.falta + '.') + `<p class="hoja-x">${esc(f.plazo || '')}</p>` + piso), fijo: UI.boton({texto: bt.texto, hoja: 'h14', de: c.id})};
       }
       const sig = c.siguiente.texto;
@@ -126,7 +126,7 @@
     return `<div class="b-arriba" data-i="0">${h}</div>`;
   }
 
-  // ---- marcas de dirección (Seguir de cerca, Importante, Queja) con su línea y «Deshacer» ----
+  // ---- marcas de dirección (Seguir de cerca, Importante, Queja) con su línea y “Deshacer” ----
   function marcas(c) {
     const m = B.mapa('marcas')[c.id] || {};
     const l = [];
@@ -154,14 +154,14 @@
   }
 
   // ---- dirección con el cliente de otra persona: quién lo lleva, el asunto por el que lo abres y, con asunto, la operación ----
-  // nada de actas, notas, chats, «Te toca» ni días sin hablar
+  // nada de actas, notas, chats, “Te toca” ni días sin hablar
   function asuntoDe(c) {
     const m = B.mapa('marcas')[c.id] || {}, a = (D.asuntos || {})[c.id], X = VETA.dir;
     const ir = a && a.decision ? 'asunto/' + c.id : null;
     if (m.queja) return {titulo: 'Complaint logged', texto: `You logged it today, at ${m.queja.hora}: ${m.queja.texto}.`, ir};
     if (a && a.tipo === 'queja') return {titulo: 'Owner complaint', texto: `Your alert “An owner complains” triggered · ${a.pide.origen.replace('WhatsApp · ', '')}.`, ir};
     const asig = a && a.tipo === 'contacto' && X ? X.asignado(c.id) : null;
-    if (asig) return {titulo: 'Unowned contact', texto: `You assigned it today to ${(M.persona(asig.a) || {}).corto || asig.a}.`, ir: a ? 'asunto/' + c.id : null};
+    if (asig) return {titulo: 'Nobody is handling this', texto: `You assigned it today to ${(M.persona(asig.a) || {}).corto || asig.a}.`, ir: a ? 'asunto/' + c.id : null};
     if (c.lleva === 'teresa' && X && X.cartera()) return {titulo: 'Teresa\'s portfolio', texto: `Teresa is on leave; you passed her portfolio to ${X.carteraTexto(X.carteraA())} today.`, ir: 'reparto'};
     return null;
   }
@@ -170,12 +170,12 @@
     const p = M.persona(lleva) || {}, a = asuntoDe(c), o = M.operaciones().find(x => x.cliente === c.id);
     let h = UI.bloque({titulo: 'Who handles it', i: 0, html: UI.lista([{titulo: p.nombre || lleva, sub: VETA.dir ? VETA.dir.zona(lleva) : null, av: lleva}])});
     if (a) {
-      h += UI.bloque({titulo: 'Why you\'re opening this', i: 1, html: UI.nota({texto: `${a.titulo}. ${a.texto}`, icono: 'info', caja: true}) + (a.ir ? UI.lista([{titulo: 'See the matter', icono: 'tarea', ir: a.ir}]) : '')});
+      h += UI.bloque({titulo: 'Why you\'re opening this', i: 1, html: UI.nota({texto: `${a.titulo}. ${a.texto}`, icono: 'info', caja: true}) + (a.ir ? UI.lista([{titulo: 'See what happened', icono: 'tarea', ir: a.ir}]) : '')});
       if (o) h += UI.bloque({titulo: 'The deal', i: 2, html: UI.lista([{titulo: o.texto, sub: o.estadoTexto, icono: o.estado === 'parado' ? 'pausa' : 'casa'}])});
     } else {
-      h += UI.bloque({titulo: 'Why you\'re opening this', i: 1, html: UI.nota({texto: 'You don\'t have any open matter with this client. If one comes up (a complaint, an allocation), I\'ll bring it to Team.', icono: 'info', caja: true})});
+      h += UI.bloque({titulo: 'Why you\'re opening this', i: 1, html: UI.nota({texto: 'You have nothing open with this client. If something comes up (a complaint, an allocation), I will bring it to Team.', icono: 'info', caja: true})});
     }
-    h += `<div data-i="3">${UI.nota({texto: `What ${p.corto || 'their agent'} talks about with this client, their notes and viewing notes don't show in management.`, icono: 'candado'})}</div>`;
+    h += `<div data-i="3">${UI.nota({texto: `What ${p.corto || 'their agent'} says to this client, their notes and their viewing notes do not show in Management.`, icono: 'candado'})}</div>`;
     return `<div class="b-ficha b-ficha-ajena">${h}</div>`;
   }
 
@@ -207,14 +207,14 @@
       'reco-si'(ev, el, p) { B.ponEn('reco', p.id, {estado: 'enviada', hora: VETA.ahora()}); hecho('b-paso-' + p.id); },
       'reco-todavia'(ev, el, p) { B.ponEn('reco', p.id, {estado: 'borrador'}); hecho('b-paso-' + p.id); },
       'reco-no'(ev, el, p) { B.ponEn('reco', p.id, {estado: 'borrador'}); hecho('b-paso-' + p.id); },
-      // «Ya respondió…»
+      // “Ya respondió…”
       'resp-deshaz'(ev, el, p) { B.ponEn('resp', p.id, null); hecho('b-paso-' + p.id); },
       // marcas de dirección
       'marca-deshaz'(ev, el, p) { const m = Object.assign({}, B.mapa('marcas')[p.id] || {}); delete m[el.dataset.marca]; B.ponEn('marcas', p.id, Object.keys(m).length ? m : null); VETA.repinta(); }
     }
   });
 
-  // ---- hoja de cruces: «Pisos que le encajan» / «Compradores que encajan» (sin código en el mapa; nace de la fila 6 de A6) ----
+  // ---- hoja de cruces: “Pisos que le encajan” / “Compradores que encajan” (sin código en el mapa; nace de la fila 6 de A6) ----
   VETA.hojaDef('b-encajan', {
     titulo: d => ((M.cliente(d.de) || {}).encajan || {}).titulo || 'What fits',
     pinta: d => {
