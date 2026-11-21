@@ -17,7 +17,10 @@
     pinta: () => {
       const yo = VETA.yo(), desc = C.lee('desconectado', false), cal = C.calendario();
       const aspecto = `${VETA.tema.MODOS[VETA.tema.modo()]}, paleta ${VETA.tema.NOMBRES[VETA.tema.color()]}`;
-      return `<div class="c-yo" data-i="0">${VETA.av(yo.id, 64)}<div><p class="c-yo-n">${esc(yo.nombre)}</p><p class="c-yo-p">${esc(yo.papelTexto)} · ${esc((VETA.datos.oficinas[yo.oficina] || {}).nombre || '')}</p></div></div>` +
+      // «Tu acceso»: lo decide la cuenta (un acceso = una cuenta); solo informa, no se toca
+      const acceso = yo.papel === 'direccion' ? 'Dirección y agente' : 'Agente', inicio = C.inicio();
+      return `<div class="c-yo" data-i="0">${VETA.av(yo.id, 64)}<div><p class="c-yo-n">${esc(yo.nombre)}</p><p class="c-yo-p">${esc((VETA.datos.oficinas[yo.oficina] || {}).nombre || '')}</p>` +
+          `<p class="c-yo-acc">Tu acceso: <b>${acceso}</b></p>${yo.papel === 'direccion' ? '<p class="c-yo-p">Lo decide quien administra la oficina al darte de alta.</p>' : ''}</div></div>` +
         UI.bloque({titulo: 'Lo que leo', i: 1, html: UI.lista([
           {titulo: 'Chats que no leo', sub: desc ? 'Desconectado · no leo nada' : C.lecturaTexto(), icono: 'chat', ir: 'cuenta/chats', g: 'Chats que no leo|Eliges qué chats quedan fuera.'},
           {titulo: 'Calendario', sub: cal ? cal + ' · leo tus citas' : 'sin conectar', icono: 'cal', hoja: 'h33'},
@@ -32,15 +35,15 @@
           // el primer día y el mapa salen de los chats de Laura: en dirección no se enseñan
           yo.papel === 'direccion' ? null : {titulo: 'Ver el primer día otra vez', icono: 'play', ir: 'primer-dia/0'},
           yo.papel === 'direccion' ? null : {titulo: 'Mi mapa de trabajo', icono: 'mapa', ir: 'mapa'},
-          {titulo: 'Añadir a la pantalla de inicio', icono: 'compartir', hoja: 'h31'}])}) +
+          // ya abierta desde el icono, o en ordenador: la fila no sale
+          inicio === 'hecho' || inicio === 'ordenador' ? null : {titulo: 'Poner Veta en la pantalla de inicio', sub: 'Para abrirla como una app', icono: 'compartir', hoja: 'h31'}])}) +
         UI.bloque({titulo: 'Demo', i: 3, html: UI.lista([
-          {titulo: 'Cambiar de perfil', sub: `Ahora: ${yo.nombre} · ${yo.papelTexto}`, icono: 'cambiar', hoja: 'h27', g: 'Cambiar de perfil|Pasas de agente a dirección, o al revés.'},
           confirma === 'reinicio' ? enSitio('¿Volver a empezar? Se borra lo que has hecho en la demo.', 'Volver a empezar', 'reinicia') : {titulo: 'Volver a empezar la demo', icono: 'borrar', accion: 'pide-reinicio', chev: false}])}) +
         `<div class="c-salidas" data-i="4">` +
           (desc ? UI.lineaHecho({texto: 'WhatsApp desconectado', hora: desc, boton: {texto: 'Deshacer', accion: 'reconecta'}, vt: 'c-confirma'})
             : confirma === 'desconectar' ? enSitio('¿Desconectar? Veta dejará de leer tus chats.', 'Desconectar', 'desconecta')
             : UI.boton({tipo: 'texto', texto: 'Desconectar WhatsApp', accion: 'pide-desconectar', vt: 'c-confirma'})) +
-          UI.boton({tipo: 'texto', texto: 'Salir de Veta', ir: 'entrar'}) +
+          UI.boton({tipo: 'texto', texto: 'Cerrar sesión', accion: 'cierra-sesion', g: 'Cerrar sesión|Vuelves a la entrada; ahí entras con otra cuenta.'}) +
         `</div><p class="pie" data-i="4">Ejemplo con datos inventados.</p>`;
     },
     acciones: {
@@ -104,7 +107,7 @@
       return `<div class="lista" data-i="0">${abrir}${caja}</div>` +
         `<div class="lista" data-i="1">${dir ? UI.fila({titulo: 'Verificación en dos pasos', sub: 'Activada · obligatoria para dirección', icono: 'escudo'})
           : UI.interruptor({texto: 'Verificación en dos pasos', sub: 'Te pido un código de tu app al entrar', on: C.lee('dosPasos', false), accion: 'dos-pasos'})}</div>` +
-        UI.lista([{titulo: 'Salir de Veta en este móvil', icono: 'entra', ir: 'entrar'}], {i: 2}) +
+        UI.lista([{titulo: 'Cerrar sesión en este móvil', icono: 'entra', accion: 'cierra-sesion'}], {i: 2}) +
         UI.nota({texto: 'En esta demo no se guarda ninguna contraseña.', icono: 'info', clase: 'nota-gris'});
     },
     acciones: {

@@ -1,5 +1,5 @@
 /* Veta demo · hojas · comunes.js (núcleo)
-   Las 7 hojas comunes: H01 De dónde sale · H02 Otra cosa… · H17 Foto ampliada · H26 Aspecto · H27 Cambiar de perfil ·
+   Las 6 hojas comunes: H01 De dónde sale · H02 Otra cosa… · H17 Foto ampliada · H26 Aspecto ·
    H29 Texto legal · H41 Texto de un parte. Y las acciones de la tarjeta de la cola, que valen en cualquier pantalla
    (una pantalla puede sustituirlas definiendo una acción con el mismo nombre). */
 (function () {
@@ -96,14 +96,6 @@
       color(ev, el) { VETA.tema.pon({color: el.dataset.color}); VETA.hoja('h26', {}); },
       mov(ev, el) { VETA.tema.pon({mov: el.getAttribute('aria-checked') === 'true' ? 'reducido' : 'normal'}); }
     }
-  });
-
-  // ---- H27 · Cambiar de perfil ----
-  VETA.hojaElegir('h27', {
-    titulo: 'Cambiar de perfil',
-    opciones: () => [{id: 'laura', texto: 'Laura Martí · agente', av: 'laura'}, {id: 'montse', texto: 'Montse Ribas · dirección', av: 'montse'}],
-    valor: () => VETA.yo().id,
-    alElegir: op => { if (op.id !== VETA.yo().id) VETA.cambiaPerfil(op.id); }
   });
 
   // ---- H29 · Texto legal ----  data-hoja="h29" data-texto="acuerdo | resumen | borrado | ver | leido | consentimientos"

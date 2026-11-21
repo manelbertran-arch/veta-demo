@@ -221,6 +221,8 @@ textarea.campo-i{resize:vertical;line-height:1.4}
 .port-marca b{font:600 var(--f-cuerpo)/1 var(--display);letter-spacing:.2em;color:var(--port-t)}
 .port-h{margin-top:auto;font:600 var(--f-titulo)/1.08 var(--display);letter-spacing:-.02em;color:var(--port-t);text-wrap:balance}
 .port-h span{display:block}
+.port-h .oro{color:var(--port-3)}
+.port-que{margin-top:var(--e4);font:500 var(--f-cuerpo)/1.45 var(--body);color:var(--port-t)}
 .port-dice{margin-top:var(--e3);font:500 var(--f-cuerpo)/1.4 var(--body);color:var(--port-t2)}
 .port-acc{margin-top:var(--e7);display:flex;flex-direction:column;gap:var(--e2)}
 .port-acc .btn-texto{align-self:center;color:var(--port-3)}

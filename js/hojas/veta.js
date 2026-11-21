@@ -1,7 +1,7 @@
 /* Veta demo · hojas · veta.js · paquete C (Veta, cuenta y entrada)
    H18 Un caso · H19 Los casos como yo · H20 Otra cosa… de la regla · H21 Cómo la he entendido · H22 Subir un nivel ·
    H23 Una práctica · H24 Tus tiempos · H25 Una semana anterior · H28 Sin señal · H30 ¿Qué chat borras? ·
-   H31 Añadir a la pantalla de inicio · H32 Un hallazgo del mapa · H33 Calendario.
+   H31 Poner Veta en la pantalla de inicio · H32 Un hallazgo del mapa · H33 Calendario.
    Y cuatro hojas propias de C: c-lista (tu lista de cada día), c-mano (lo que aún haces a mano), c-avisos, c-anadir (añadir un chat a la lista).
    Datos que reciben (data-* del botón): h18 regla, caso · h19 regla · h20 de (regla) · h22 de (regla) · h23 practica ·
    h25 semana (26-oct | 2-nov | 9-nov | 16-nov; sin ella, elige) · h30 de (nombre ya borrado: enseña su recibo) · h32 hallazgo. */
@@ -206,11 +206,35 @@
     }
   });
 
-  // ---- H31 · Añadir a la pantalla de inicio ----
+  // ---- H31 · Poner Veta en la pantalla de inicio ----
+  // Son instrucciones, no botones: pasos numerados sin marco. Lo único tocable hace algo («Copiar la dirección», «Cerrar»).
+  // C.inicio(): 'hecho' (ya abierta desde el icono) · 'ios-safari' · 'ios-otro' (navegador de dentro de otra app, Chrome…) · 'android' · 'ordenador'
+  C.inicio = () => {
+    try { if (navigator.standalone || (window.matchMedia && matchMedia('(display-mode: standalone)').matches)) return 'hecho'; } catch (e) {}
+    const ua = navigator.userAgent || '';
+    const ios = /iPhone|iPad|iPod/.test(ua) || (/Macintosh/.test(ua) && navigator.maxTouchPoints > 1);
+    if (ios) return /Safari\//.test(ua) && !/CriOS|FxiOS|EdgiOS|OPiOS|GSA\/|DuckDuckGo|FBAN|FBAV|FB_IAB|Instagram|LinkedInApp|Line\/|Twitter|WhatsApp|Telegram|Snapchat|Pinterest/.test(ua) ? 'ios-safari' : 'ios-otro';
+    return /Android/.test(ua) ? 'android' : 'ordenador';
+  };
+  const compartir = `<span class="c-paso-ic" aria-label="Compartir">${VETA.ic('compartir', 20)}</span>`;
+  const pasosH = l => `<ol class="c-pasos-h">${l.map((t, k) => `<li><span class="c-paso-n" aria-hidden="true">${k + 1}</span><span class="c-paso-t">${t}</span></li>`).join('')}</ol>`;
+  const copiarDir = UI.boton({tipo: 'secundario', texto: 'Copiar la dirección', icono: 'copiar', accion: 'copia-dir'});
   VETA.hojaDef('h31', {
-    titulo: 'Añadir a la pantalla de inicio',
-    pinta: () => `<ol class="c-pasos-h"><li>${VETA.ic('compartir', 24)}<span>Toca Compartir</span></li><li>${VETA.ic('mas', 24)}<span>Toca «Añadir a pantalla de inicio»</span></li></ol>` +
-      `<p class="hoja-x">Así Veta se abre como una app, sin barras.</p>` + cerrar(null, 'secundario')
+    titulo: () => C.inicio() === 'hecho' ? 'Veta ya está en tu pantalla de inicio' : 'Poner Veta en la pantalla de inicio',
+    pinta: () => {
+      const v = C.inicio();
+      if (v === 'hecho') return `<p class="hoja-x">Ya está hecho: has abierto Veta desde su icono, a pantalla completa.</p>` + cerrar(null, 'secundario');
+      const gana = `<p class="hoja-x">Tendrás el icono de Veta en tu móvil y se abrirá a pantalla completa, sin la barra del navegador.</p>`;
+      if (v === 'ios-safari') return gana + pasosH([`Toca Compartir ${compartir} en la barra de Safari. Si no lo ves, toca antes «···».`,
+        'Baja en la lista y toca «Añadir a pantalla de inicio».', 'Toca «Añadir». El icono de Veta aparece en tu pantalla de inicio.']) + cerrar(null, 'secundario');
+      if (v === 'android') return gana + pasosH(['Toca el menú ⋮ de Chrome, arriba a la derecha.', 'Toca «Añadir a pantalla de inicio» y luego «Añadir».']) +
+        `<p class="hoja-x tenue">¿No ves ese menú? Abre esta dirección en Chrome.</p>` + copiarDir + cerrar();
+      const donde = v === 'ordenador' ? 'Abre esta dirección en Safari, en tu iPhone.' : 'Abre esta dirección en Safari. Desde aquí no se puede: es el navegador de otra app.';
+      return gana + pasosH([esc(donde), `En Safari, toca Compartir ${compartir}.`, 'Toca «Añadir a pantalla de inicio» y luego «Añadir».']) + copiarDir + cerrar();
+    },
+    acciones: {
+      'copia-dir'() { VETA.copia(location.href.split('#')[0]); VETA.aviso('Dirección copiada. Pégala en Safari.'); }
+    }
   });
 
   // ---- H32 · Un hallazgo del mapa ----

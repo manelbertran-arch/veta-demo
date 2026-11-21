@@ -68,7 +68,7 @@
           ['1 · Apretar', 'toca'], ['2 · Ir adelante', 'ir-lista'], ['3 · Cambiar de pestaña', 'pestana'], ['4 · Foto que viaja', 'foco'],
           ['5 · Cascada', 'cascada'], ['6 · Hoja', 'hoja'], ['7 · Hecho en el sitio', 'hecho'], ['8 · Aviso negro', 'aviso'],
           ['9 · Cifra que rueda', 'rueda'], ['10 · Sombra al bajar', 'baja'], ['11 · Foto que se encoge', 'encoge'], ['12 · Silueta', 'carga'],
-          ['13 · Onda', 'onda'], ['14 · Portada', 'portada'], ['15 · Interruptor', 'guia-demo'], ['16 · Tema y perfil', 'tema']
+          ['13 · Onda', 'onda'], ['14 · Portada', 'portada'], ['15 · Interruptor', 'guia-demo'], ['16 · Tema', 'tema']
         ].map(([t, a]) => UI.boton({tipo: 'secundario', texto: t, accion: a})).join('') + '</div>' +
           `<div class="mu-informe" id="mu-informe"><p>Baja dentro de este recuadro: la foto se encoge al salir (efecto 11).</p>${UI.foto('verdi', {tam: 'ancha'}).replace('class="foto foto-ancha', 'class="foto foto-ancha foto-encoge')}<p>Texto del informe que sigue debajo de la foto.</p><p>Más texto.</p><p>Y más texto para poder bajar.</p><p>Fin.</p></div>`),
         sec('Plantillas', UI.lista([
@@ -95,7 +95,7 @@
       pestana() { VETA.ir('clientes', {pestana: true}); },
       foco() { const f = VETA.$('.col.activa .fila[data-ir="muestrario/lista"]'); if (f) f.click(); },
       cascada() { VETA.mov.cascada(VETA.$('.col.activa .pant')); },
-      hoja() { VETA.hoja('h27'); },
+      hoja() { VETA.hoja('h26'); },
       hecho() { const b = VETA.$('.col.activa .tc [data-accion="principal"]'); if (b) { b.scrollIntoView({block: 'center'}); b.click(); } },
       aviso() { VETA.aviso('Texto copiado.', {deshacer: () => VETA.aviso('Deshecho.')}); },
       rueda() { cifra = cifra === 156 ? 1012 : 156; VETA.rueda(document.getElementById('mu-cifra'), cifra); },

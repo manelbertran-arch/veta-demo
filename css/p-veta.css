@@ -89,6 +89,8 @@ html:not([data-mov=reducido]) .c-nivel.on .c-nivel-n{animation:c-late var(--t-la
 .c-yo,.c-caso-cab{display:flex;align-items:center;gap:var(--e4)}
 .c-yo-n{font:600 var(--f-hoja)/1.2 var(--display)}
 .c-yo-p{font:500 var(--f-apoyo)/1.35 var(--body);color:var(--t2);margin-top:2px}
+.c-yo-acc{font:500 var(--f-apoyo)/1.35 var(--body);color:var(--t1);margin-top:var(--e2)}
+.c-yo-acc b{font-weight:600}
 .c-confirma{display:flex;flex-direction:column;gap:var(--e3);padding:var(--e4);background:var(--tinte);border-radius:var(--r-2)}
 .lista>.c-confirma{border-radius:0}
 .c-confirma p{font:600 var(--f-cuerpo)/1.35 var(--body)}
@@ -118,6 +120,16 @@ html:not([data-mov=reducido]) .c-nivel.on .c-nivel-n{animation:c-late var(--t-la
 .c-cuenta[aria-pressed=true]{background:color-mix(in srgb,var(--port-3) 14%,transparent);box-shadow:inset 0 0 0 2px var(--port-3)}
 .c-cuenta[aria-pressed=true] .c-cuenta-m{opacity:1;transform:none}
 .c-entrar .port-acc{margin-top:var(--e2)}
+/* E2 · paso del papel: dos opciones grandes; y en el formulario, con qué papel entras */
+.c-papel{min-height:88px;padding:var(--e3) var(--e4)}
+.c-papel-ic{flex:none;display:flex;color:var(--port-3)}
+.c-papel .c-cuenta-t{display:flex;flex-direction:column;gap:var(--e1)}
+.c-papel-t{font:600 var(--f-hoja)/1.2 var(--display)}
+.c-papel-s{font:500 var(--f-apoyo)/1.4 var(--body);color:var(--port-t2)}
+.c-papel-chev{flex:none;display:flex;color:var(--port-t2)}
+.c-papel-nota{font:500 var(--f-apoyo)/1.4 var(--body);color:var(--port-t2)}
+.c-entrar-papel{display:flex;align-items:center;gap:var(--e2);font:600 var(--f-apoyo)/1.35 var(--body);color:var(--port-3)}
+.c-entrar-papel svg{flex:none}
 
 /* A18 · primer día */
 .c-pd{display:flex;flex-direction:column;gap:var(--e5)}
@@ -198,9 +210,14 @@ html:not([data-mov=reducido]) .c-barra-t i{animation:c-crece var(--t-largo) var(
 .c-recibo{display:flex;flex-direction:column;gap:var(--e2);padding:var(--e4);background:var(--tinte);border-radius:var(--r-2);font:500 var(--f-cuerpo)/1.4 var(--body)}
 .c-recibo-t{display:flex;align-items:center;gap:var(--e2);color:var(--acento)}
 .c-recibo-t b{color:var(--t1);font:600 var(--f-hoja)/1.2 var(--display)}
-.c-pasos-h{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:var(--e3);counter-reset:p}
-.c-pasos-h li{display:flex;align-items:center;gap:var(--e3);padding:var(--e3) var(--e4);background:var(--s1);border:1px solid var(--borde);border-radius:var(--r-2);font:600 var(--f-cuerpo)/1.3 var(--body)}
-.c-pasos-h li svg{flex:none;color:var(--acento)}
+/* H31: pasos para leer, no para tocar (sin marco de tarjeta) */
+.c-pasos-h{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:var(--e4)}
+.c-pasos-h li{display:flex;align-items:flex-start;gap:var(--e3);font:500 var(--f-cuerpo)/1.45 var(--body)}
+.c-paso-n{flex:none;min-width:1.4em;font:600 var(--f-cuerpo)/1.45 var(--display);color:var(--acento)}
+.c-paso-ic{display:inline-flex;vertical-align:-4px;color:var(--acento)}
+/* en las hojas, una lista que solo informa no lleva marco de tarjeta: así no parece tocable */
+#hoja .lista:not(:has(button,a,[role=switch],[data-ir],[data-hoja],[data-accion])),#hoja .a-canales{background:none;border:0;border-radius:0;box-shadow:none;padding-left:0;padding-right:0}
+#hoja .lista:not(:has(button,a,[role=switch],[data-ir],[data-hoja],[data-accion]))>.fila{padding-left:0;padding-right:0}
 
 /* A15b · cada chat fuera, con su «Quitar de la lista» a la derecha */
 .c-chat-f{display:flex;align-items:center;gap:var(--e2);padding-right:var(--e2)}

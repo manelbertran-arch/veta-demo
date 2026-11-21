@@ -42,7 +42,7 @@
       UI.bloque({titulo: 'Avisos', texto: 'Te aviso solo de lo que no puede esperar.', i: 2,
         html: av ? UI.lineaHecho({texto: 'Avisos permitidos', hora: av, boton: {texto: 'Deshacer', accion: 'sin-avisos'}, vt: 'c-pd-av'})
           : `<div data-vt="c-pd-av">${UI.boton({tipo: 'secundario', texto: 'Permitir avisos', icono: 'campana', accion: 'avisos'})}</div>`}) +
-      `<div data-i="3">${UI.boton({tipo: 'texto', texto: 'Añadir a la pantalla de inicio', hoja: 'h31', icono: 'compartir'})}</div>`;
+      (['hecho', 'ordenador'].includes(C.inicio()) ? '' : `<div data-i="3">${UI.boton({tipo: 'texto', texto: 'Poner Veta en la pantalla de inicio', hoja: 'h31', icono: 'compartir'})}</div>`);
   }
 
   VETA.pantalla('A18', {

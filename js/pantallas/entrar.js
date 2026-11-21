@@ -1,46 +1,57 @@
 /* Veta demo · pantallas · entrar.js · paquete C (Veta, cuenta y entrada)
-   - E2 · Entrar · #/entrar (completa, sin cabecera: se quitó «‹ Cuenta y privacidad»)
-   El papel sale de la cuenta: con la de dirección hay un segundo paso (código de la app de verificación).
+   - E2 · Entrar · #/entrar (completa, sin cabecera)
+   Un acceso = una cuenta, y cada papel tiene su propio acceso. Tres pasos:
+   0 · «¿Qué papel tienes en tu oficina?»: «Soy agente» o «Soy de dirección».
+   1 · correo y contraseña, ya rellenos con la cuenta de ejemplo de ese papel (Laura Martí; Montse Ribas, que además lleva clientes).
+   2 · solo dirección: el código de la app de verificación.
+   No hay cambio de perfil dentro de la app: se cambia de persona con Cuenta › «Cerrar sesión», que vuelve al paso 0.
    Las cuentas y la contraseña son de ejemplo; nada sale del navegador. */
 (function () {
   'use strict';
   const UI = VETA.UI, esc = VETA.esc;
-  let paso = 1, correo = null, error = false;
+  let paso = 0, correo = '', error = false;
   const CU = () => VETA.datos.c.cuentas;
   const quien = c => Object.keys(CU()).find(k => CU()[k] === String(c || '').trim().toLowerCase());
+  const PAPELES = [
+    {id: 'laura', titulo: 'Soy agente', sub: 'Llevo mis clientes. Veta me prepara el día.', icono: 'clientes', entras: 'Entras como agente'},
+    {id: 'montse', titulo: 'Soy de dirección', sub: 'Llevo la oficina. Veo cómo va el equipo y decido lo que nadie ha cogido.', icono: 'equipo', entras: 'Entras como dirección · también llevas tus clientes'}
+  ];
+  const aviso = `<p class="port-aviso">Ejemplo con datos inventados. No sale ningún mensaje.</p>`;
+  const marca = `<div class="port-marca" data-i="0"><img src="assets/veta-symbol-gold.png" alt="" width="30" height="24"><b>VETA</b></div>`;
+  const cambiar = UI.boton({tipo: 'texto', texto: 'Cambiar de papel', accion: 'otra'});
 
   VETA.pantalla('E2', {
     titulo: 'Entrar', completa: true, sinCabecera: true, area: 'marca',
-    guia: ['Aquí vuelves a entrar después de salir.', 'Tú eliges una cuenta de ejemplo y entras.', 'Así se ve que el papel, agente o dirección, sale de la cuenta.'],
+    guia: ['Aquí eliges tu papel en la oficina y entras con tu correo.', 'Tú tocas «Soy agente» o «Soy de dirección» y luego «Entrar».', 'Así se ve que cada papel tiene su propio acceso y que lo que ves lo decide tu cuenta.'],
     pinta: () => {
-      if (correo === null) correo = CU()[VETA.yo().id] || CU().laura;
-      const marca = `<div class="port-marca" data-i="0"><img src="assets/veta-symbol-gold.png" alt="" width="30" height="24"><b>VETA</b></div>`;
+      if (paso === 0) {
+        return `<div class="portada c-entrar">${marca}<div class="c-entrar-c">` +
+          `<h1 class="c-entrar-h" data-i="1">¿Qué papel tienes en tu oficina?</h1>` +
+          `<div class="c-entrar-cuentas" data-i="2">${PAPELES.map(p =>
+            `<button type="button" class="c-cuenta c-papel" data-accion="papel" data-de="${p.id}"><span class="c-papel-ic">${VETA.ic(p.icono, 24)}</span>` +
+            `<span class="c-cuenta-t"><span class="c-papel-t">${esc(p.titulo)}</span><span class="c-papel-s">${esc(p.sub)}</span></span><span class="c-papel-chev">${VETA.ic('chev', 16)}</span></button>`).join('')}</div>` +
+          `<p class="c-papel-nota" data-i="3">Cada papel tiene su propio acceso. Lo da quien administra la oficina.</p>` +
+          `</div>${aviso}</div>`;
+      }
       if (paso === 2) {
         return `<div class="portada c-entrar">${marca}<div class="c-entrar-c">` +
           `<h1 class="c-entrar-h" data-i="1">Un paso más</h1><p class="port-dice" data-i="1">Dirección entra con un código de su app de verificación.</p>` +
           `<div data-i="2">${UI.campo({etiqueta: 'Código de 6 cifras de tu app de verificación', id: 'c-codigo', valor: '482 913', tipo: 'text'})}</div>` +
-          `<div class="port-acc" data-i="3">${UI.boton({tipo: 'claro', texto: 'Entrar', accion: 'codigo'})}${UI.boton({tipo: 'texto', texto: 'Usar otra cuenta', accion: 'otra'})}</div>` +
-          `</div><p class="port-aviso">Ejemplo con datos inventados. No sale ningún mensaje.</p></div>`;
+          `<div class="port-acc" data-i="3">${UI.boton({tipo: 'claro', texto: 'Entrar', accion: 'codigo'})}${cambiar}</div>` +
+          `</div>${aviso}</div>`;
       }
-      const elegida = quien(correo);
+      const p = PAPELES.find(x => CU()[x.id] === correo) || PAPELES[0];
       return `<div class="portada c-entrar">${marca}<div class="c-entrar-c">` +
+        `<p class="c-entrar-papel" data-i="1">${VETA.ic(p.icono, 20)}<span>${esc(p.entras)}</span></p>` +
         `<h1 class="c-entrar-h" data-i="1">Entra en Veta</h1>` +
-        `<div class="c-entrar-campos" data-i="2">${UI.campo({etiqueta: 'Correo', id: 'c-correo', valor: correo, tipo: 'email'})}${UI.campo({etiqueta: 'Contraseña', id: 'c-clave-e', valor: 'ejemplo-veta', tipo: 'password'})}</div>` +
+        `<div class="c-entrar-campos" data-i="2">${UI.campo({etiqueta: 'Correo', id: 'c-correo', valor: correo, tipo: 'email'})}${UI.campo({etiqueta: 'Contraseña', id: 'c-clave-e', valor: correo ? 'ejemplo-veta' : '', tipo: 'password'})}</div>` +
         (error ? `<p class="c-entrar-err" role="alert" data-i="2">${VETA.ic('aviso', 18)}<span>El correo o la contraseña no coinciden.</span></p>` : '') +
-        `<div class="c-entrar-cuentas" data-i="3"><p class="c-entrar-e">Cuentas de ejemplo</p>` +
-          [['laura', 'Laura Martí · agente'], ['montse', 'Montse Ribas · dirección']].map(([id, t]) =>
-            `<button type="button" class="c-cuenta" data-accion="cuenta" data-de="${id}" aria-pressed="${elegida === id}">${VETA.av(id, 40)}<span class="c-cuenta-t">${esc(t)}</span><i class="c-cuenta-m">${VETA.ic('check', 20)}</i></button>`).join('') +
-        `</div><div class="port-acc" data-i="4">${UI.boton({tipo: 'claro', texto: 'Entrar', accion: 'entrar'})}</div>` +
-        `</div><p class="port-aviso">Ejemplo con datos inventados. No sale ningún mensaje.</p></div>`;
+        `<p class="c-papel-nota" data-i="3">Cuenta de ejemplo de ${esc(VETA.modelo.persona(p.id).nombre)}.</p>` +
+        `<div class="port-acc" data-i="4">${UI.boton({tipo: 'claro', texto: 'Entrar', accion: 'entrar'})}${cambiar}</div>` +
+        `</div>${aviso}</div>`;
     },
     acciones: {
-      cuenta(ev, el) {
-        correo = CU()[el.dataset.de]; error = false;
-        const i = document.getElementById('c-correo'); if (i) i.value = correo;
-        const k = document.getElementById('c-clave-e'); if (k) k.value = 'ejemplo-veta';
-        VETA.$$('.c-cuenta').forEach(b => b.setAttribute('aria-pressed', b === el));
-        const e = document.querySelector('.c-entrar-err'); if (e) e.remove();
-      },
+      papel(ev, el) { correo = CU()[el.dataset.de]; error = false; paso = 1; VETA.repinta(); },
       entrar() {
         const i = document.getElementById('c-correo'), k = document.getElementById('c-clave-e');
         correo = i ? i.value : correo;
@@ -55,8 +66,14 @@
         if (!c || c.value.replace(/\D/g, '').length !== 6) { c && c.focus(); VETA.aviso('El código tiene 6 cifras.'); return; }
         fin('montse');
       },
-      otra() { paso = 1; error = false; VETA.repinta(); }
+      otra() { paso = 0; error = false; VETA.repinta(); }
     }
   });
-  function fin(id) { paso = 1; correo = null; error = false; VETA.cambiaPerfil(id); }
+  const deCero = () => { paso = 0; correo = ''; error = false; };
+  function fin(id) { deCero(); VETA.cambiaPerfil(id); }
+  // portada › «Entrar»: siempre empieza por el papel
+  VETA.entraDeCero = () => { deCero(); VETA.ir('entrar'); };
+  // Cuenta › «Cerrar sesión» (y Seguridad): vuelve a la entrada; ahí se elige el otro papel
+  VETA.cierraSesion = () => { deCero(); if (VETA.cierraHoja) VETA.cierraHoja({foco: false}); VETA.ir('entrar', {pestana: true}); };
+  VETA.accionGlobal('cierra-sesion', () => VETA.cierraSesion());
 })();

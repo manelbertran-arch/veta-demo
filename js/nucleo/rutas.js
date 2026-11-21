@@ -77,8 +77,8 @@
     ['H13', 'Fuera del radar', 'B', 'clientes.js'], ['H14', 'Petición lista', 'B', 'clientes.js'], ['H15', '¿Qué pasó con…?', 'B', 'clientes.js'], ['H16', 'Detalle de historia', 'B', 'clientes.js'],
     ['H17', 'Foto ampliada', 'N', 'comunes.js'], ['H18', 'Un caso', 'C', 'veta.js'], ['H19', 'Los 11 casos como yo', 'C', 'veta.js'], ['H20', 'Otra cosa…', 'C', 'veta.js'],
     ['H21', 'Cómo la he entendido, por partes', 'C', 'veta.js'], ['H22', 'Subir un nivel', 'C', 'veta.js'], ['H23', 'Una práctica de la oficina', 'C', 'veta.js'], ['H24', 'Tu tiempo en esta tarea', 'C', 'veta.js'],
-    ['H25', 'Una semana anterior', 'C', 'veta.js'], ['H26', 'Aspecto', 'N', 'comunes.js'], ['H27', 'Cambiar de perfil', 'N', 'comunes.js'], ['H28', 'Sin señal', 'C', 'veta.js'],
-    ['H29', 'Texto legal', 'N', 'comunes.js'], ['H30', '¿Qué chat borras?', 'C', 'veta.js'], ['H31', 'Añadir a la pantalla de inicio', 'C', 'veta.js'], ['H32', 'Un hallazgo del mapa', 'C', 'veta.js'],
+    ['H25', 'Una semana anterior', 'C', 'veta.js'], ['H26', 'Aspecto', 'N', 'comunes.js'], ['H28', 'Sin señal', 'C', 'veta.js'],
+    ['H29', 'Texto legal', 'N', 'comunes.js'], ['H30', '¿Qué chat borras?', 'C', 'veta.js'], ['H31', 'Poner Veta en la pantalla de inicio', 'C', 'veta.js'], ['H32', 'Un hallazgo del mapa', 'C', 'veta.js'],
     ['H33', 'Calendario', 'C', 'veta.js'], ['H34', 'Los 3 temas de hoy', 'D', 'direccion.js'], ['H35', '¿A quién se lo asignas?', 'D', 'direccion.js'], ['H36', 'Cómo habría ido', 'D', 'direccion.js'],
     ['H37', 'Un aviso puesto', 'D', 'direccion.js'], ['H38', 'Coste por hora', 'D', 'direccion.js'], ['H39', 'Anotar una queja', 'B', 'clientes.js'], ['H40', 'Clientes con dos chats', 'D', 'direccion.js'],
     ['H41', 'Texto de un parte', 'N', 'comunes.js'], ['H42', '¿Cómo quieres enviarlo?', 'A', 'dia.js']
@@ -142,6 +142,9 @@
   const papel = () => VETA.datos.papeles[VETA.yo().papel] || VETA.datos.papeles.agente;
   const entrada = () => papel().entrada;
   VETA.entrada = entrada;
+  // una pantalla de un destino que tu cuenta no tiene (Equipo, con la de agente) no se abre ni escribiendo la dirección: vas a tu entrada
+  const vedada = ruta => { const e = resuelve(ruta); return !!(e && e.def.destino && !papel().destinos.includes(e.def.destino)); };
+  VETA.vedada = vedada;
   const DESTINOS = {hoy: {texto: 'Hoy', icono: 'hoy'}, clientes: {texto: 'Clientes', icono: 'clientes'}, equipo: {texto: 'Equipo', icono: 'equipo'}, veta: {texto: 'Veta', icono: 'aprende'}};
   const AREA = {hoy: 'hoy', clientes: 'clientes', veta: 'aprende', equipo: 'direccion'};
   const esRaiz = e => !!(e && e.def.destino && e.def.ruta === e.def.destino);
@@ -293,6 +296,7 @@
     o = o || {};
     ruta = String(ruta).replace(/^#?\/?/, '');
     if (!resuelve(ruta)) { VETA.aviso('Esa pantalla no existe todavía.'); return; }
+    if (vedada(ruta)) { ruta = entrada(); o = {pestana: true}; }
     guardaScroll();
     let dir = o.dir || 'adelante';
     if (o.pestana || (resuelve(ruta).def.destino === ruta && !o.dir)) {
@@ -335,6 +339,7 @@
   function alVolverNavegador() {
     const ruta = rutaHash();
     if (ignora === ruta) { ignora = null; return; }
+    if (vedada(ruta)) { VETA.ir(entrada(), {pestana: true}); return; }
     if (actual && ruta === actual.ruta && pila.length && pila[pila.length - 1].ruta === ruta) return;
     guardaScroll();
     const st = history.state; let dir = 'adelante';
@@ -385,7 +390,7 @@
     pintaLateral();
   });
 
-  // ---- cambiar de perfil (H27): la barra gana o pierde «Equipo», se abre el primer destino ----
+  // ---- entrar con una cuenta (E2): la barra gana o pierde «Equipo», se abre el primer destino. No hay cambio de perfil dentro de la app ----
   VETA.cambiaPerfil = id => {
     if (!VETA.modelo.persona(id)) return;
     VETA.est.pon('perfil', id);
@@ -448,6 +453,7 @@
     } catch (e) {}
     let ruta = nuevo ? 'portada' : rutaHash();
     if (!ruta || !resuelve(ruta)) ruta = VETA.est.lee('portadaVista', false) ? entrada() : 'portada';
+    if (vedada(ruta)) ruta = entrada();
     const top = pila.length ? pila[pila.length - 1] : null;
     if (!top || top.ruta !== ruta || nuevo) pila = [{ruta}];
     pon(ruta, pila.length - 1, true);
