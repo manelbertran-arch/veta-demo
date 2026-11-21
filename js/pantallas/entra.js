@@ -5,22 +5,22 @@
   const UI = VETA.UI, X = VETA.dir, D = VETA.datos;
 
   VETA.pantalla('G9', {
-    titulo: 'What\'s coming in',
-    guia: ['Here Veta shows you what reaches the office and nobody has replied to.', 'You open each group and allocate what has no owner.', 'That way no new contact goes cold waiting.'],
+    titulo: 'Lo que entra',
+    guia: ['Aquí Veta te enseña lo que llega a la oficina y nadie ha contestado.', 'Tú abres cada grupo y repartes lo que no tiene dueño.', 'Así ningún contacto nuevo se enfría esperando.'],
     pinta: () => {
       const sin = X.sinResponder().length, sd = X.sinDueno().length;
-      return `<p class="intro" data-i="0">What has come in through the office channels and still has no reply.</p>` +
+      return `<p class="intro" data-i="0">Lo que ha entrado por los canales de la oficina y sigue sin respuesta.</p>` +
         `<div class="d-entra" data-i="1">${[
-          ['Contacts without a reply', sin, 'contactos', 'entra'],
-          ['Write twice or more without a reply', D.entra.dosVeces.length, 'dos', 'chat'],
-          ['Asked for what you don\'t have', D.entra.noTenemos.length, 'no', 'pregunta'],
-          ['Want what you already have', 1, 'si', 'rayo']
+          ['Contactos sin responder', sin, 'contactos', 'entra'],
+          ['Escriben dos veces o más sin respuesta', D.entra.dosVeces.length, 'dos', 'chat'],
+          ['Piden lo que no tenéis', D.entra.noTenemos.length, 'no', 'pregunta'],
+          ['Quieren lo que ya tenéis', 1, 'si', 'rayo']
         ].map(([t, n, k, ic]) => `<button type="button" class="d-entra-c" data-hoja="d-entra" data-lista="${k}"><span class="d-entra-ic">${VETA.ic(ic, 22)}</span><b>${n}</b><span>${t}</span></button>`).join('')}</div>` +
-        (sd ? '' : `<div data-i="2">${UI.lineaHecho({texto: 'The unowned contacts now have someone handling them'})}</div>`);
+        (sd ? '' : `<div data-i="2">${UI.lineaHecho({texto: 'Los contactos sin dueño ya tienen quien los lleve'})}</div>`);
     },
     botonFijo: () => {
       const sd = X.sinDueno().length;
-      return sd ? UI.boton({texto: sd === 3 ? 'Allocate the 3 nobody handles' : sd === 1 ? 'Allocate the one nobody handles' : 'Allocate the ' + sd + ' nobody handles', ir: 'reparto'}) : '';
+      return sd ? UI.boton({texto: sd === 3 ? 'Repartir los 3 que nadie lleva' : sd === 1 ? 'Repartir el que nadie lleva' : 'Repartir los ' + sd + ' que nadie lleva', ir: 'reparto'}) : '';
     }
   });
 })();

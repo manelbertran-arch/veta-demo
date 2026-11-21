@@ -9,20 +9,20 @@
   const ICONO = {'Acta': 'tarea', 'Nota de voz': 'mic', 'Informe': 'casa', 'Mensaje': 'chat', 'Tú': 'enviar', 'Encargo': 'sello', 'Notaría': 'sello', 'Arras': 'sello', 'Visita': 'casa'};
 
   VETA.pantalla('A16', {
-    titulo: 'History',
-    guia: ['Here\'s everything that has happened with this client, by date.', 'You open viewing notes, a report or a message to read it in full.', 'That way you know what it\'s about before calling.'],
+    titulo: 'Historia',
+    guia: ['Aquí está todo lo que ha pasado con este cliente, por fecha.', 'Tú abres un acta, un informe o un mensaje para leerlo entero.', 'Así sabes de qué va antes de llamar.'],
     pinta: p => {
       const c = M.cliente(p.id);
-      if (!c) return UI.vacio({titulo: 'I can\'t find this client.', icono: 'pregunta', boton: {texto: 'Back', atras: true}});
-      if (VETA.ajeno(c.id)) return UI.vacio({titulo: `Handled by ${(M.persona(c.lleva) || {}).corto || 'another person'}.`, texto: 'Their history with this client, viewing notes and notes: none of that shows in management.', icono: 'candado', boton: {texto: 'Back', atras: true}});
+      if (!c) return UI.vacio({titulo: 'No encuentro a este cliente.', icono: 'pregunta', boton: {texto: 'Volver', atras: true}});
+      if (VETA.ajeno(c.id)) return UI.vacio({titulo: `Lo lleva ${(M.persona(c.lleva) || {}).corto || 'otra persona'}.`, texto: 'Su historia con este cliente, sus actas y sus notas: nada de eso no sale en dirección.', icono: 'candado', boton: {texto: 'Volver', atras: true}});
       if (st.id !== c.id) { st.id = c.id; st.filtro = 'todo'; }
       const todo = B.historia(c.id);
-      const l = st.filtro === 'actas' ? todo.filter(h => h.tipo === 'Notes') : todo;
+      const l = st.filtro === 'actas' ? todo.filter(h => h.tipo === 'Acta') : todo;
       const anima = st.anima ? ' b-entra' : ''; st.anima = false;
       // dirección mirando el cliente de otra persona: los hitos, sin el texto del chat y sin abrir nada
-      const ajeno = VETA.ajeno(c.id), CHAT = ['Message', 'You', 'Voice note', 'Report'];
+      const ajeno = VETA.ajeno(c.id), CHAT = ['Mensaje', 'Tú', 'Nota de voz', 'Informe'];
       const filas = l.map(h => ajeno ? {
-        titulo: h.tipo === 'You' ? `Message from ${(M.persona(c.lleva) || {}).corto || 'their agent'}` : h.tipo === 'Message' ? `Message from ${B.corto(c)}` : h.tipo === 'Voice note' ? `Voice note from ${B.corto(c)}` : h.tipo === 'Report' ? 'Report sent' : h.titulo,
+        titulo: h.tipo === 'Tú' ? `Mensaje de ${(M.persona(c.lleva) || {}).corto || 'su agente'}` : h.tipo === 'Mensaje' ? `Mensaje de ${B.corto(c)}` : h.tipo === 'Nota de voz' ? `Nota de voz de ${B.corto(c)}` : h.tipo === 'Informe' ? 'Informe enviado' : h.titulo,
         sub: CHAT.includes(h.tipo) ? null : h.texto, derecha: h.cuando, icono: ICONO[h.tipo] || 'reloj', clase: 'b-hfila'} : {
         titulo: h.titulo, sub: h.texto, derecha: h.cuando, icono: ICONO[h.tipo] || 'reloj',
         hoja: h.hoja || null, de: h.hoja ? c.id : null, datos: h.hoja ? {k: h.k} : null, clase: 'b-hfila'});
@@ -30,12 +30,12 @@
         const ch = c.chat && M.chat(c.chat), m = ch && ch.mensajes.find(x => !x.tu);
         return m ? [{texto: c.quienEs ? c.quienEs + '.' : '', cita: m.texto, origen: `${B.corto(c)} · ${m.cuando}`, chat: c.chat}] : [];
       })();
-      const aviso = ajeno ? UI.nota({texto: `Handled by ${(M.persona(c.lleva) || {}).corto || 'another person'}. You see the milestones; what they talk about in their chat doesn't show in management.`, icono: 'candado', caja: true}) : '';
-      return aviso + `<div data-i="0">${UI.selector({etiqueta: 'What to see', opciones: [{id: 'todo', texto: 'All'}, {id: 'actas', texto: 'Notes'}], valor: st.filtro, accion: 'filtro'})}</div>` +
+      const aviso = ajeno ? UI.nota({texto: `Lo lleva ${(M.persona(c.lleva) || {}).corto || 'otra persona'}. Ves los hitos; lo que hablan en su chat no sale en dirección.`, icono: 'candado', caja: true}) : '';
+      return aviso + `<div data-i="0">${UI.selector({etiqueta: 'Qué ver', opciones: [{id: 'todo', texto: 'Todo'}, {id: 'actas', texto: 'Actas'}], valor: st.filtro, accion: 'filtro'})}</div>` +
         (l.length ? `<div class="b-hist${anima}" data-i="1">${UI.lista(filas)}</div>`
-          : UI.vacio({i: 1, titulo: st.filtro === 'actas' ? 'There are no viewing notes with this client yet.' : 'There\'s nothing with this client yet.',
-            texto: st.filtro === 'actas' ? 'When you dictate a viewing, the notes show here.' : 'Whatever happens in their chats and whatever you dictate will show here, by date.', icono: 'libro'})) +
-        (sabe.length ? UI.bloque({titulo: `What I know about ${B.corto(c)}`, i: 2, html: sabe.map(s => `<div class="b-sabe">${s.texto ? `<p class="b-sabe-t">${esc(s.texto)}</p>` : ''}` +
+          : UI.vacio({i: 1, titulo: st.filtro === 'actas' ? 'Todavía no hay actas con este cliente.' : 'Todavía no hay nada con este cliente.',
+            texto: st.filtro === 'actas' ? 'Cuando dictes una visita, el acta sale aquí.' : 'Lo que pase en sus chats y lo que dictes saldrá aquí, por fecha.', icono: 'libro'})) +
+        (sabe.length ? UI.bloque({titulo: `Lo que sé de ${B.corto(c)}`, i: 2, html: sabe.map(s => `<div class="b-sabe">${s.texto ? `<p class="b-sabe-t">${esc(s.texto)}</p>` : ''}` +
           UI.cita({texto: s.cita, origen: s.origen, chat: s.chat}) + '</div>').join('')}) : '');
     },
     acciones: {

@@ -14,11 +14,11 @@
   // estado de esta grabación (se rehace al montar)
   let rec = null;
 
-  const reloj = () => `${rec && rec.pausa ? 'Paused' : 'Recording'} · ${VETA.A.mmss(rec ? rec.seg : 0)}`;
+  const reloj = () => `${rec && rec.pausa ? 'En pausa' : 'Grabando'} · ${VETA.A.mmss(rec ? rec.seg : 0)}`;
   function ejemplo(g) {
     const d = VETA.datos.dictados[g] || {};
-    return `<span class="a-ej-r">Example of what you can say</span><p class="a-ej-t">“${esc(d.frase || '')}”</p>` +
-      `<p class="nota nota-gris a-ej-n">Your microphone isn't used in this demo.</p>`;
+    return `<span class="a-ej-r">Ejemplo de lo que puedes decir</span><p class="a-ej-t">«${esc(d.frase || '')}»</p>` +
+      `<p class="nota nota-gris a-ej-n">En esta demo no se usa tu micrófono.</p>`;
   }
   function pintaEstado(el) {
     if (!el || !rec) return;
@@ -28,18 +28,18 @@
   }
 
   VETA.pantalla('A3', {
-    guia: ['Here you talk the way you\'d tell a colleague.', 'You say how it went, what needs doing or what you want it to learn.', 'That way Veta sorts it: viewing notes, a task, a note or a rule.'],
+    guia: ['Aquí hablas como se lo contarías a un compañero.', 'Tú dices cómo ha ido, qué hay que hacer o qué quieres que aprenda.', 'Así Veta lo ordena: un acta, una tarea, una nota o una regla.'],
     pinta: p => {
       const g = guionDe(p), ctx = (DA().contexto || {})[g];
-      return `<div class="a-rec" data-i="0"><span class="a-punto" aria-hidden="true"></span><span class="a-rec-t" role="timer" aria-live="off">Recording · 0:00</span></div>` +
+      return `<div class="a-rec" data-i="0"><span class="a-punto" aria-hidden="true"></span><span class="a-rec-t" role="timer" aria-live="off">Grabando · 0:00</span></div>` +
         `<div class="a-voz" data-i="1">${UI.onda()}</div>` +
         (ctx ? `<p class="a-ctx" data-i="1">${esc(ctx)}</p>` : '') +
         `<div class="tarjeta a-ej" data-i="2">${ejemplo(g)}</div>` +
-        `<p class="a-senal" data-i="3">${ic('sinred', 18)}<span>If there's no signal, it's saved on your phone and sorted when it's back.</span></p>` +
-        `<button type="button" class="enlace a-que" data-hoja="h08" data-i="3">What can I say?</button>`;
+        `<p class="a-senal" data-i="3">${ic('sinred', 18)}<span>Si no hay señal, se guarda en tu móvil y se ordena cuando vuelva.</span></p>` +
+        `<button type="button" class="enlace a-que" data-hoja="h08" data-i="3">¿Qué puedo decir?</button>`;
     },
-    botonFijo: () => UI.boton({texto: 'Finish', accion: 'terminar', g: 'Finish|I turn what you said into text and show you how I understood it.'}) +
-      UI.botones([{texto: 'Pause', accion: 'pausar', icono: 'pausa', clase: 'a-pausar'}, {texto: 'Type', accion: 'escribir', icono: 'editar', clase: 'a-escribir'}]),
+    botonFijo: () => UI.boton({texto: 'Terminar', accion: 'terminar', g: 'Terminar|Paso a texto lo que has dicho y te enseño cómo lo he entendido.'}) +
+      UI.botones([{texto: 'Pausar', accion: 'pausar', icono: 'pausa', clase: 'a-pausar'}, {texto: 'Escribir', accion: 'escribir', icono: 'editar', clase: 'a-escribir'}]),
     alMontar: (el, p) => {
       const g = guionDe(p), d = VETA.A.dictado();
       rec = {g, seg: d && d.guion === g ? d.seg : 0, pausa: false, texto: '', escribe: false, el};
@@ -56,18 +56,18 @@
     acciones: {
       pausar(ev, el) {
         if (!rec) return; rec.pausa = !rec.pausa;
-        const b = el.closest('.btn'); if (b) b.innerHTML = `${ic(rec.pausa ? 'play' : 'pausa', 20)}<span>${rec.pausa ? 'Continue' : 'Pause'}</span>`;
+        const b = el.closest('.btn'); if (b) b.innerHTML = `${ic(rec.pausa ? 'play' : 'pausa', 20)}<span>${rec.pausa ? 'Seguir' : 'Pausar'}</span>`;
         pintaEstado(rec.el);
       },
       escribir(ev, el) {
         if (!rec) return; rec.escribe = !rec.escribe;
         const voz = rec.el.querySelector('.a-voz');
         if (rec.escribe) {
-          voz.innerHTML = `<div class="campo a-escribe"><label class="campo-e" for="a-texto">Type what you wanted to say</label><div class="campo-caja"><textarea id="a-texto" class="campo-i" rows="4" placeholder="For example: call Jordi on Thursday"></textarea></div></div>`;
+          voz.innerHTML = `<div class="campo a-escribe"><label class="campo-e" for="a-texto">Escribe lo que querías decir</label><div class="campo-caja"><textarea id="a-texto" class="campo-i" rows="4" placeholder="Por ejemplo: llamar a Jordi el jueves"></textarea></div></div>`;
           const t = voz.querySelector('textarea'); t.value = rec.texto || ''; t.addEventListener('input', () => { rec.texto = t.value; });
           try { t.focus({preventScroll: true}); } catch (x) {}
         } else voz.innerHTML = UI.onda({pausada: rec.pausa});
-        const b = el.closest('.btn'); if (b) b.innerHTML = `${ic(rec.escribe ? 'mic' : 'editar', 20)}<span>${rec.escribe ? 'Talk' : 'Type'}</span>`;
+        const b = el.closest('.btn'); if (b) b.innerHTML = `${ic(rec.escribe ? 'mic' : 'editar', 20)}<span>${rec.escribe ? 'Hablar' : 'Escribir'}</span>`;
       },
       terminar() {
         if (!rec || rec.fin) return;
@@ -80,7 +80,7 @@
         const fijo = rec.el.closest('.col') && rec.el.closest('.col').querySelector('.fijo');
         if (fijo) fijo.querySelectorAll('button').forEach(b => { b.disabled = true; });
         const o = rec.el.querySelector('.onda'); if (o) o.classList.add('pausada');
-        if (cuerpo) cuerpo.innerHTML = `<p class="a-pasando" role="status">Turning it into text…</p>${UI.silueta(4)}`;
+        if (cuerpo) cuerpo.innerHTML = `<p class="a-pasando" role="status">Lo paso a texto…</p>${UI.silueta(4)}`;
         setTimeout(() => {
           if (VETA.actual() && VETA.actual().def.cod !== 'A3') return;
           const va = d.va || 'entendido-dictado/tarea';
@@ -93,14 +93,14 @@
 
   // H08 · «¿Qué puedo decir?»: cambia el guion en el sitio y sigue grabando
   VETA.hojaDef('h08', {
-    titulo: 'What can I say?',
+    titulo: '¿Qué puedo decir?',
     pinta: () => {
       const dir = VETA.yo().papel === 'direccion';
       // dirección ve sus propios ejemplos (los de la agente hablan de los clientes de Laura)
       const ops = (DA().queDecir || []).filter(o => dir ? o.papel === 'direccion' : !o.papel);
       return `<div class="ops">${ops.map(o => `<button type="button" class="op op-elige" role="radio" aria-checked="${!!rec && rec.g === o.guion}" data-accion="guion" data-guion="${esc(o.guion)}">` +
-        `<span class="op-c"><span class="op-t">${esc(o.texto)}</span><span class="op-s">“${esc((VETA.datos.dictados[o.guion] || {}).frase || '')}”</span></span><span class="op-marca">${ic('check', 20)}</span></button>`).join('')}</div>` +
-        UI.boton({tipo: 'texto', texto: 'Cancel', datos: {cierra: '1'}, clase: 'hoja-cancela'});
+        `<span class="op-c"><span class="op-t">${esc(o.texto)}</span><span class="op-s">«${esc((VETA.datos.dictados[o.guion] || {}).frase || '')}»</span></span><span class="op-marca">${ic('check', 20)}</span></button>`).join('')}</div>` +
+        UI.boton({tipo: 'texto', texto: 'Cancelar', datos: {cierra: '1'}, clase: 'hoja-cancela'});
     },
     acciones: {
       guion(ev, el) {

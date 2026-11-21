@@ -99,8 +99,8 @@
     if (ef.siguiente[id]) c.siguiente = Object.assign({}, ef.siguiente[id]);
     const nuevas = ef.historia.filter(h => h.cliente === id).sort((a, b2) => b2.orden - a.orden);
     c.historia = nuevas.concat(c.historia || []);
-    if (id === 'carmen' && flag('carmen-asignada', false)) { c.lleva = 'laura'; c.cartera = true; c.asignada = 'Montse assigned her to you'; }
-    if (id === 'joan-serra' && flag('marc-llama-joan', false)) c.aviso = 'Marc calls him today';
+    if (id === 'carmen' && flag('carmen-asignada', false)) { c.lleva = 'laura'; c.cartera = true; c.asignada = 'Te la ha asignado Montse'; }
+    if (id === 'joan-serra' && flag('marc-llama-joan', false)) c.aviso = 'Marc le llama hoy';
     c.fuera = fuera().includes(id);
     // la cosa de la cola de este cliente, si la tiene (para pintar su tarjeta en la ficha)
     const cs = todasBase().filter(x => x.cliente === id && x.tipo !== 'espera' && x.quien !== 'equipo').map(mezcla);
@@ -142,7 +142,7 @@
   M.decisiones = () => M.cola('equipo');
   M.operaciones = () => (D().operaciones || []).map(o => {
     const x = Object.assign({}, o);
-    if (o.cliente === 'joan-serra' && flag('marc-llama-joan', false)) x.estadoTexto += ' · Marc calls him today';
+    if (o.cliente === 'joan-serra' && flag('marc-llama-joan', false)) x.estadoTexto += ' · Marc le llama hoy';
     return x;
   });
   M.numeros = ventana => {

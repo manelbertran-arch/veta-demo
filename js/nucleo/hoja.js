@@ -21,10 +21,10 @@
   function provisional(id) {
     const h = (VETA.HOJAS || {})[id];
     return {
-      titulo: () => h ? h.titulo : 'Sheet',
-      pinta: () => `<p class="hoja-x">${h ? `${h.cod} · pending from package ${h.paq}` : 'This sheet doesn\'t exist yet.'}</p>` +
-        (h ? `<p class="hoja-x tenue">Goes in js/hojas/${h.archivo}.</p>` : '') +
-        VETA.UI.boton({tipo: 'secundario', texto: 'Close', datos: {cierra: '1'}})
+      titulo: () => h ? h.titulo : 'Hoja',
+      pinta: () => `<p class="hoja-x">${h ? `${h.cod} · pendiente del paquete ${h.paq}` : 'Esta hoja no existe todavía.'}</p>` +
+        (h ? `<p class="hoja-x tenue">Va en js/hojas/${h.archivo}.</p>` : '') +
+        VETA.UI.boton({tipo: 'secundario', texto: 'Cerrar', datos: {cierra: '1'}})
     };
   }
 

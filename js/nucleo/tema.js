@@ -7,8 +7,8 @@
   'use strict';
   const raiz = document.documentElement;
   const COLORES = ['veta', 'joya', 'medianoche', 'nube', 'lima', 'coral', 'lavanda', 'mocha', 'cobalto', 'zafiro', 'aurora', 'salvia'];
-  const NOMBRES = {veta: 'Veta', joya: 'Jewel', medianoche: 'Midnight', nube: 'Cloud and petrol', lima: 'Forest and lime', coral: 'Coral', lavanda: 'Lavanda', mocha: 'Mocha and moss', cobalto: 'Cobalt and lime', zafiro: 'Sapphire and amber', aurora: 'Aurora', salvia: 'Sage and terracotta'};
-  const MODOS = {claro: 'Light', oscuro: 'Dark', auto: 'Automatic'};
+  const NOMBRES = {veta: 'Veta', joya: 'Joya', medianoche: 'Medianoche', nube: 'Nube y petróleo', lima: 'Bosque y lima', coral: 'Coral', lavanda: 'Lavanda', mocha: 'Mocha y musgo', cobalto: 'Cobalto y lima', zafiro: 'Zafiro y ámbar', aurora: 'Aurora', salvia: 'Salvia y terracota'};
+  const MODOS = {claro: 'Claro', oscuro: 'Oscuro', auto: 'Automático'};
   const mm = q => !!(window.matchMedia && matchMedia(q).matches);
 
   if (VETA.param('mov') === 'reducido') VETA.est.pon('mov', 'reducido');

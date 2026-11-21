@@ -128,6 +128,13 @@ html:not([data-mov=reducido]) .c-nivel.on .c-nivel-n{animation:c-late var(--t-la
 .c-papel-s{font:500 var(--f-apoyo)/1.4 var(--body);color:var(--port-t2)}
 .c-papel-chev{flex:none;display:flex;color:var(--port-t2)}
 .c-papel-nota{font:500 var(--f-apoyo)/1.4 var(--body);color:var(--port-t2)}
+/* paso 2 de la entrada: el lema y el papel en una sola pantalla (mismo fondo que la portada) */
+.c-lema .c-entrar-c{gap:var(--e3)}
+.c-lema .port-h,.c-lema .port-que{margin-top:0}
+.c-papel-h{margin-top:var(--e4);font:600 var(--f-hoja)/1.2 var(--display);letter-spacing:-.01em;color:var(--port-t)}
+.c-primer{display:flex;justify-content:center}
+.c-primer .btn-texto{color:var(--port-3)}
+@media (max-height:700px){.c-lema .port-que{display:none}.c-lema .c-papel-h{margin-top:var(--e2)}}
 .c-entrar-papel{display:flex;align-items:center;gap:var(--e2);font:600 var(--f-apoyo)/1.35 var(--body);color:var(--port-3)}
 .c-entrar-papel svg{flex:none}
 

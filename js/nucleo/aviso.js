@@ -18,7 +18,7 @@
     o = o || {};
     const el = document.getElementById('aviso'); if (!el) return;
     deshacer = typeof o.deshacer === 'function' ? o.deshacer : null;
-    el.innerHTML = `<span class="aviso-t">${VETA.esc(texto)}</span>` + (deshacer ? '<button type="button" class="btn btn-texto aviso-d">Undo</button>' : '');
+    el.innerHTML = `<span class="aviso-t">${VETA.esc(texto)}</span>` + (deshacer ? '<button type="button" class="btn btn-texto aviso-d">Deshacer</button>' : '');
     sitio(el);
     el.hidden = false; void el.offsetWidth; el.classList.add('on');
     clearTimeout(t); t = setTimeout(VETA.quitaAviso, o.ms || 5000);

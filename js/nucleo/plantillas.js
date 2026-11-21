@@ -25,7 +25,7 @@
     pinta: p => `<p class="intro" data-i="0">${esc(val(o.texto, p) || '')}</p>` +
       (o.filas ? UI.lista(val(o.filas, p), {i: 1}) : '') +
       (o.nota ? UI.nota({texto: val(o.nota, p), icono: 'info', clase: 'nota-gris'}) : ''),
-    botonFijo: p => UI.boton(Object.assign({accion: 'confirmar'}, val(o.boton, p))) + UI.boton({tipo: 'texto', texto: 'Cancel', atras: true}),
+    botonFijo: p => UI.boton(Object.assign({accion: 'confirmar'}, val(o.boton, p))) + UI.boton({tipo: 'texto', texto: 'Cancelar', atras: true}),
     acciones: Object.assign({
       confirmar(ev, el, p) {
         const r = (o.alConfirmar && o.alConfirmar(p)) || {};
@@ -42,7 +42,7 @@
     pinta: d => (o.texto ? `<p class="hoja-x">${esc(val(o.texto, d))}</p>` : '') +
       `<div class="ops">${(val(o.opciones, d) || []).map((op, k) => `<button type="button" class="op${op.peligro ? ' op-peligro' : ''}" data-accion="op" data-n="${k}">` +
         `${op.icono ? VETA.ic(op.icono, 22) : ''}<span class="op-c"><span class="op-t">${esc(op.texto)}</span>${op.sub ? `<span class="op-s">${esc(op.sub)}</span>` : ''}</span></button>`).join('')}</div>` +
-      (o.cancelar === false ? '' : UI.boton({tipo: 'texto', texto: o.cancelar || 'Cancel', datos: {cierra: '1'}, clase: 'hoja-cancela'})),
+      (o.cancelar === false ? '' : UI.boton({tipo: 'texto', texto: o.cancelar || 'Cancelar', datos: {cierra: '1'}, clase: 'hoja-cancela'})),
     acciones: Object.assign({
       op(ev, el, d) {
         const op = (val(o.opciones, d) || [])[Number(el.dataset.n)]; if (!op) return;
@@ -62,7 +62,7 @@
     pinta: d => `<div class="hoja-texto">${(val(o.bloques, d) || []).map(b => `<section class="ht-b">${b.titulo ? `<h3 class="ht-t">${esc(b.titulo)}</h3>` : ''}` +
       (b.texto ? `<p>${esc(b.texto)}</p>` : '') + (b.lista ? `<ul>${b.lista.map(x => `<li>${esc(x)}</li>`).join('')}</ul>` : '') + (b.html || '') + '</section>').join('')}</div>` +
       (o.boton ? UI.boton(val(o.boton, d)) : '') +
-      UI.boton({tipo: o.boton ? 'texto' : 'secundario', texto: o.cerrar || 'Close', datos: {cierra: '1'}, clase: 'hoja-cancela'}),
+      UI.boton({tipo: o.boton ? 'texto' : 'secundario', texto: o.cerrar || 'Cerrar', datos: {cierra: '1'}, clase: 'hoja-cancela'}),
     acciones: o.acciones || {},
     alMontar: o.alMontar
   });
@@ -77,7 +77,7 @@
         `<div class="ops" role="radiogroup">${(val(o.opciones, d) || []).map((op, k) => `<button type="button" class="op op-elige" role="radio" aria-checked="${op.id === v}" data-accion="elige" data-n="${k}">` +
           `${op.av ? VETA.av(op.av, 40) : ''}<span class="op-c"><span class="op-t">${esc(op.texto)}</span>${op.sub ? `<span class="op-s">${esc(op.sub)}</span>` : ''}</span>` +
           `<span class="op-marca">${VETA.ic('check', 20)}</span></button>`).join('')}</div>` +
-        UI.boton({tipo: 'texto', texto: o.cancelar || 'Cancel', datos: {cierra: '1'}, clase: 'hoja-cancela'});
+        UI.boton({tipo: 'texto', texto: o.cancelar || 'Cancelar', datos: {cierra: '1'}, clase: 'hoja-cancela'});
     },
     acciones: {
       elige(ev, el, d) {

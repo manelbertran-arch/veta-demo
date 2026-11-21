@@ -4,7 +4,7 @@
 (function () {
   'use strict';
   const UI = VETA.UI, M = VETA.modelo, esc = VETA.esc;
-  const AJ = [{id: 'corto', texto: 'Shorter'}, {id: 'cercano', texto: 'Warmer'}, {id: 'otroDia', texto: 'Suggest another day'}];
+  const AJ = [{id: 'corto', texto: 'Más corto'}, {id: 'cercano', texto: 'Más cercano'}, {id: 'otroDia', texto: 'Proponer otro día'}];
   const limpio = s => String(s || '').replace(/<[^>]+>/g, '');
   const informe = c => c && c.tipo === 'informe' ? ((VETA.datos.diaA || {}).informe || {})[c.cliente] : null;
   // el texto de Veta: el borrador de la cosa (o el que rehízo tras el cambio, o el mensaje del informe)
@@ -18,33 +18,33 @@
   function crece(t) { if (!t) return; t.style.height = 'auto'; t.style.height = t.scrollHeight + 2 + 'px'; }
 
   VETA.pantalla('A2', {
-    guia: ['Here you see the message Veta has prepared for you.', 'You change it however you like, or ask it to shorten it or make it warmer.', 'That way it goes out in your words, and only when you send it.'],
+    guia: ['Aquí ves el mensaje que te ha preparado Veta.', 'Tú lo cambias como quieras, o le pides que lo acorte o lo haga más cercano.', 'Así sale con tus palabras, y solo cuando tú lo envías.'],
     pinta: p => {
       const c = M.cosa(p.id);
-      if (!c) return UI.vacio({titulo: 'This message is no longer here', texto: 'Go back to Today to see what\'s left.', icono: 'chat', boton: {texto: 'Back', atras: true}});
+      if (!c) return UI.vacio({titulo: 'Este mensaje ya no está', texto: 'Vuelve a Hoy para ver lo que queda.', icono: 'chat', boton: {texto: 'Volver', atras: true}});
       const texto = actual(c), veta = deVeta(c), e = ed(c.id) || {};
       const aj = ((VETA.datos.diaA || {}).ajustes || {})[c.id];
-      const para = 'For ' + c.titulo + ' · WhatsApp';
+      const para = 'Para ' + c.titulo + ' · WhatsApp';
       let h = `<p class="a-para" data-i="0">${esc(para)}</p>`;
       if (c.cita) h += `<div data-i="0">${UI.cita({texto: c.cita.texto, origen: c.cita.origen, de: c.id})}</div>`;
-      h += `<div class="campo a-msg" data-i="1"><label class="campo-e" for="a-msg">Your message</label><div class="campo-caja">` +
+      h += `<div class="campo a-msg" data-i="1"><label class="campo-e" for="a-msg">Tu mensaje</label><div class="campo-caja">` +
         `<textarea id="a-msg" class="campo-i" rows="3">${esc(texto)}</textarea></div></div>`;
       if (texto.trim() && texto !== veta) {
-        h += `<div class="hecho a-cambiado" data-i="1"><div class="hecho-a"><span class="hecho-txt">You've changed the message</span></div>` +
-          (e.antes != null ? UI.boton({tipo: 'texto', texto: 'Undo the change', accion: 'deshacer-cambio', ancho: false}) : '') +
-          UI.boton({tipo: 'texto', texto: 'Back to Veta\'s', accion: 'al-de-veta', ancho: false}) + '</div>';
+        h += `<div class="hecho a-cambiado" data-i="1"><div class="hecho-a"><span class="hecho-txt">Has cambiado el mensaje</span></div>` +
+          (e.antes != null ? UI.boton({tipo: 'texto', texto: 'Deshacer el cambio', accion: 'deshacer-cambio', ancho: false}) : '') +
+          UI.boton({tipo: 'texto', texto: 'Volver al de Veta', accion: 'al-de-veta', ancho: false}) + '</div>';
       } else if (!texto.trim()) {
-        h += `<p class="nota a-vacio" data-i="1">Type the message or go back to Veta's.</p>` + UI.boton({tipo: 'texto', texto: 'Back to Veta\'s', accion: 'al-de-veta', ancho: false});
+        h += `<p class="nota a-vacio" data-i="1">Escribe el mensaje o vuelve al de Veta.</p>` + UI.boton({tipo: 'texto', texto: 'Volver al de Veta', accion: 'al-de-veta', ancho: false});
       }
-      if (aj) h += `<div class="a-ajustes" data-i="2" role="group" aria-label="Message settings">${AJ.map(a => UI.boton({tipo: 'secundario', texto: a.texto, accion: 'ajusta', datos: {aj: a.id}, ancho: false, clase: 'a-aj' + (e.ajuste === a.id ? ' on' : '')})).join('')}</div>`;
-      if (!copia24(c)) h += `<div data-i="3">${UI.botones([{texto: 'Copy the text', accion: 'copiar-a2'}])}</div>`;
+      if (aj) h += `<div class="a-ajustes" data-i="2" role="group" aria-label="Ajustes del mensaje">${AJ.map(a => UI.boton({tipo: 'secundario', texto: a.texto, accion: 'ajusta', datos: {aj: a.id}, ancho: false, clase: 'a-aj' + (e.ajuste === a.id ? ' on' : '')})).join('')}</div>`;
+      if (!copia24(c)) h += `<div data-i="3">${UI.botones([{texto: 'Copiar el texto', accion: 'copiar-a2'}])}</div>`;
       else h += `<div data-i="3">${UI.nota({texto: c.bloqueo, icono: 'candado', caja: true})}</div>`;
-      h += `<div data-i="3">${UI.nota({texto: 'It doesn\'t go out until you send it', icono: 'candado'})}</div>`;
+      h += `<div data-i="3">${UI.nota({texto: 'No sale hasta que tú lo envíes', icono: 'candado'})}</div>`;
       return h;
     },
     botonFijo: p => {
       const c = M.cosa(p.id); if (!c || !actual(c).trim()) return '';
-      return copia24(c) ? UI.boton({texto: 'Copy the text', accion: 'copiar-a2'}) : UI.boton({texto: c.tipo === 'informe' ? 'Open WhatsApp with the report' : 'Open WhatsApp with the message', accion: 'enviar'});
+      return copia24(c) ? UI.boton({texto: 'Copiar el texto', accion: 'copiar-a2'}) : UI.boton({texto: c.tipo === 'informe' ? 'Abrir WhatsApp con el informe' : 'Abrir WhatsApp con el mensaje', accion: 'enviar'});
     },
     alMontar: (el, p) => {
       const t = el.querySelector('#a-msg'); if (!t) return;
@@ -74,8 +74,8 @@
       'al-de-veta'(ev, el, p) { const c = M.cosa(p.id); ponEd(p.id, {texto: deVeta(c), antes: actual(c)}); VETA.repinta(); },
       'copiar-a2'(ev, el, p) {
         const c = M.cosa(p.id); if (!c) return; const t = actual(c);
-        VETA.copia(t); VETA.aviso('Text copied. Send it from your WhatsApp.');
-        M.marca(c.id, 'por-hacer', {borrador: t, borradorHtml: null, copiado: true, boton: {texto: 'I\'ve sent it', accion: 'ya-lo-envie'}, secundarios: [{texto: 'Copy again', accion: 'copiar'}]});
+        VETA.copia(t); VETA.aviso('Texto copiado. Envíalo desde tu WhatsApp.');
+        M.marca(c.id, 'por-hacer', {borrador: t, borradorHtml: null, copiado: true, boton: {texto: 'Ya lo envié', accion: 'ya-lo-envie'}, secundarios: [{texto: 'Copiar otra vez', accion: 'copiar'}]});
         VETA.est.pon('a.edita.' + c.id, null);
         VETA.A.aHoy();
       },
@@ -84,7 +84,7 @@
         // Jordi: si aún no ha llegado su mensaje nuevo, el borrador cambia aquí también
         if (c.cambio && !(c.extra || {}).cambiado) {
           M.marca(c.id, 'por-hacer', {cambiado: true, aviso: c.cambio.aviso, borradorHtml: c.cambio.borradorHtml});
-          ponEd(c.id, null); VETA.repinta(); VETA.aviso('Jordi just wrote to you. I\'ve redone the message: take another look.'); return;
+          ponEd(c.id, null); VETA.repinta(); VETA.aviso('Jordi te acaba de escribir. He rehecho el mensaje: míralo otra vez.'); return;
         }
         M.marca(c.id, 'pregunta-envio', t !== deVeta(c) ? {borrador: t, borradorHtml: null} : {});
         ponEd(c.id, null);

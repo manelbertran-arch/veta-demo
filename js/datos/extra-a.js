@@ -10,81 +10,81 @@
     // A2 · los tres ajustes del borrador (texto entero). Inventados por el paquete A.
     ajustes: {
       'c-marta': {
-        corto: 'Hi Marta. Does Saturday at 11:00 work for you to see the Gràcia flat?',
-        cercano: 'Hi Marta! It\'s Laura. Yes, it\'s still available. Does Saturday at 11:00 work for you? I\'ll send you the address and we\'ll meet at the door.',
-        otroDia: 'Hi Marta, it\'s Laura. Saturday is tricky for me: does Friday at 18:00 work for you to see the Gràcia flat? I\'ll send you the address.'},
+        corto: 'Hola, Marta. ¿Os va bien el sábado a las 11:00 para ver el piso de Gràcia?',
+        cercano: '¡Hola, Marta! Soy Laura. Sí, sigue disponible. ¿Os va bien el sábado a las 11:00? Te paso la dirección y nos vemos en el portal.',
+        otroDia: 'Hola, Marta, soy Laura. El sábado lo tengo complicado: ¿os va bien el viernes a las 18:00 para ver el piso de Gràcia? Te paso la dirección.'},
       'c-jordi': {
-        corto: 'Hi Jordi. Here\'s the Olzinelles dossier: floor plans, land registry extract and community fees.',
-        cercano: 'Hi Jordi! It\'s Laura. Here\'s the Olzinelles dossier to show your sister: floor plans, land registry extract and community fees.',
-        otroDia: 'Hi Jordi, it\'s Laura. I\'ll send you the Olzinelles dossier on Wednesday, with floor plans, land registry extract and community fees. Does that work?'},
+        corto: 'Hola, Jordi. Te paso el dossier de Olzinelles: planos, nota simple y gastos de comunidad.',
+        cercano: '¡Hola, Jordi! Soy Laura. Aquí tienes el dossier de Olzinelles para enseñárselo a tu hermana: planos, nota simple y gastos de comunidad.',
+        otroDia: 'Hola, Jordi, soy Laura. Te paso el dossier de Olzinelles el miércoles, con planos, nota simple y gastos de comunidad. ¿Te va bien?'},
       'c-nuria': {
-        corto: 'Hi Núria. A flat has come in in Sant Antoni with a balcony: 2 bedrooms, €289,000. Shall I send you photos?',
-        cercano: 'Hi Núria! It\'s Laura. You asked me to let you know and here it is: Sant Antoni, with a balcony, 2 bedrooms, €289,000. Shall I send you photos?',
-        otroDia: 'Hi Núria, it\'s Laura. A flat has come in in Sant Antoni with a balcony. Does Thursday afternoon work for you to see it?'},
+        corto: 'Hola, Núria. Ha entrado un piso en Sant Antoni con balcón: 2 habitaciones, 289.000 €. ¿Te paso fotos?',
+        cercano: '¡Hola, Núria! Soy Laura. Me pediste que te avisara y aquí está: Sant Antoni, con balcón, 2 habitaciones, 289.000 €. ¿Te paso fotos?',
+        otroDia: 'Hola, Núria, soy Laura. Ha entrado un piso en Sant Antoni con balcón. ¿Te va bien verlo el jueves por la tarde?'},
       'c-carmen': {
-        corto: 'Hi Carmen, it\'s Laura. We have a 3-bedroom flat in Gràcia that fits. Shall we see it this week?',
-        cercano: 'Hi Carmen! It\'s Laura, from the agency. Sorry for the wait. We have a 3-bedroom flat on Verdi street that fits what you\'re looking for. Does it suit you to see it this week?',
-        otroDia: 'Hi Carmen, it\'s Laura, from the agency. We have a 3-bedroom flat in Gràcia that fits. Does Thursday at 18:00 work for you to see it?'},
+        corto: 'Hola, Carmen, soy Laura. Tenemos en Gràcia un piso de 3 habitaciones que encaja. ¿Lo vemos esta semana?',
+        cercano: '¡Hola, Carmen! Soy Laura, de la agencia. Perdona la espera. Tenemos en la calle Verdi un piso de 3 habitaciones que encaja con lo que buscas. ¿Te va bien verlo esta semana?',
+        otroDia: 'Hola, Carmen, soy Laura, de la agencia. Tenemos en Gràcia un piso de 3 habitaciones que encaja. ¿Te va bien verlo el jueves a las 18:00?'},
       'c-pere': {
-        corto: 'Hi Pere. This week: 3 viewings. All 3 think the price is high. Shall we talk on Thursday?',
-        cercano: 'Hi Pere. Here\'s how it went: 3 viewings this week and all 3 think the price is high. Toni Ribas will come back with his architect. Shall I call you on Thursday and we talk it through calmly?',
-        otroDia: 'Hi Pere. This week: 3 viewings. All 3 think the price is high. Toni Ribas will come back with his architect. Shall we talk about the price on Friday?'}
+        corto: 'Hola, Pere. Esta semana: 3 visitas. A los 3 les parece alto el precio. ¿Hablamos el jueves?',
+        cercano: 'Hola, Pere. Te cuento cómo ha ido: 3 visitas esta semana y a los 3 les parece alto el precio. Toni Ribas volverá con su arquitecto. ¿Te llamo el jueves y lo hablamos con calma?',
+        otroDia: 'Hola, Pere. Esta semana: 3 visitas. A los 3 les parece alto el precio. Toni Ribas volverá con su arquitecto. ¿Hablamos del precio el viernes?'}
     },
 
     // A12 · informe al propietario (el mensaje es el texto del plan; «texto» de la tarjeta con foto, inventado por el paquete A)
     informe: {
-      pere: {cosa: 'c-pere', para: 'For Pere Soler · week of 16 to 22 November', piso: 'verdi', titulo: 'How your Gràcia flat is doing', visitas: 3,
-        texto: '3 people came to see it. All 3 like the light and all 3 think the price is high. Toni Ribas will come back with his architect.',
-        firma: 'Prepared by Laura Martí',
-        mensaje: 'Hi Pere. This week: 3 viewings. All 3 think the price is high. Toni Ribas will come back with his architect. Shall we talk about the price on Thursday?',
-        voz: 'Pere left you a voice note on Saturday'}
+      pere: {cosa: 'c-pere', para: 'Para Pere Soler · semana del 16 al 22 de noviembre', piso: 'verdi', titulo: 'Así va tu piso de Gràcia', visitas: 3,
+        texto: 'Han venido 3 personas a verlo. A las 3 les gusta la luz y a las 3 les parece alto el precio. Toni Ribas volverá con su arquitecto.',
+        firma: 'Preparado por Laura Martí',
+        mensaje: 'Hola, Pere. Esta semana: 3 visitas. A los 3 les parece alto el precio. Toni Ribas volverá con su arquitecto. ¿Hablamos del precio el jueves?',
+        voz: 'Pere te dejó una nota de voz el sábado'}
     },
 
     // A4 · acta de la visita (textos del plan)
     acta: {
-      elena: {cosa: 'c-elena', cliente: 'elena', nombre: 'Elena', entendido: 'Understood: notes from the viewing with Elena', donde: 'Today, 9:00 · Gràcia flat, c/ Verdi 42',
+      elena: {cosa: 'c-elena', cliente: 'elena', nombre: 'Elena', entendido: 'He entendido: acta de la visita con Elena', donde: 'Hoy, 9:00 · piso de Gràcia, c/ Verdi 42',
         bloques: [
-          {id: 'gusto', titulo: 'What she liked', texto: 'The light in the living room, the terrace and the renovated kitchen.'},
-          {id: 'preocupa', titulo: 'What worries her', texto: 'Street noise at night. That there\'s no lift: it\'s a third floor.'},
-          {id: 'siguiente', titulo: 'Next step', texto: 'Second viewing on Saturday afternoon, with her partner, to hear the street.'}],
-        tarea: 'Call Elena on Thursday 26 to confirm Saturday\'s viewing', tareaPie: 'I\'ll put it in your calendar.',
-        lineaTarea: 'Noted: call Elena on Thursday 26', propietario: 'pere'}
+          {id: 'gusto', titulo: 'Lo que le gustó', texto: 'La luz del salón, la terraza y la cocina reformada.'},
+          {id: 'preocupa', titulo: 'Lo que le preocupa', texto: 'El ruido de la calle por la noche. Que no haya ascensor: es un tercero.'},
+          {id: 'siguiente', titulo: 'Siguiente paso', texto: 'Segunda visita el sábado por la tarde, con su pareja, para oír la calle.'}],
+        tarea: 'Llamar a Elena el jueves 26 para confirmar la visita del sábado', tareaPie: 'La pongo en tu calendario.',
+        lineaTarea: 'He apuntado: llamar a Elena el jueves 26', propietario: 'pere'}
     },
 
     // A4b · tarea o nota (textos del plan)
     entendido: {
-      tarea: {tipo: 'tarea', entendido: 'Understood: a task', que: 'Call Jordi Ferrer', cliente: 'jordi',
-        dias: [{id: 'jue', texto: 'Thursday 26, 10:00', fecha: 'Thu 26', fechaISO: '2026-11-26'},
-          {id: 'vie', texto: 'Friday 27, 10:00', fecha: 'Fri 27', fechaISO: '2026-11-27'},
-          {id: 'lun', texto: 'Monday 30, 10:00', fecha: 'Mon 30', fechaISO: '2026-11-30'}],
-        pie: 'I\'ll put it in Waiting and in your calendar.', boton: 'Save the task', linea: 'Saved · Call Jordi'},
-      nota: {tipo: 'nota', entendido: 'Understood: a note for Pere Soler\'s profile', texto: 'Pere prefers me to call him in the afternoon, after 16:00.', cliente: 'pere',
-        pie: 'It stays in his History.', boton: 'Save the note', linea: 'Saved · Note on Pere\'s profile'}
+      tarea: {tipo: 'tarea', entendido: 'He entendido: una tarea', que: 'Llamar a Jordi Ferrer', cliente: 'jordi',
+        dias: [{id: 'jue', texto: 'Jueves 26, 10:00', fecha: 'Jue 26', fechaISO: '2026-11-26'},
+          {id: 'vie', texto: 'Viernes 27, 10:00', fecha: 'Vie 27', fechaISO: '2026-11-27'},
+          {id: 'lun', texto: 'Lunes 30, 10:00', fecha: 'Lun 30', fechaISO: '2026-11-30'}],
+        pie: 'La pongo en En espera y en tu calendario.', boton: 'Guardar la tarea', linea: 'Guardada · Llamar a Jordi'},
+      nota: {tipo: 'nota', entendido: 'He entendido: una nota para la ficha de Pere Soler', texto: 'Pere prefiere que le llame por la tarde, después de las 16:00.', cliente: 'pere',
+        pie: 'Queda en su Historia.', boton: 'Guardar la nota', linea: 'Guardada · Nota en la ficha de Pere'}
     },
 
     // A3 · contexto de cada guion y H08 · «¿Qué puedo decir?»
-    contexto: {acta: 'After the viewing with Elena Vives', nota: 'A note for Pere Soler\'s profile'},
+    contexto: {acta: 'Después de la visita con Elena Vives', nota: 'Una nota para la ficha de Pere Soler'},
     queDecir: [
-      {guion: 'acta', texto: 'How a viewing went'}, {guion: 'tarea', texto: 'A task'},
-      {guion: 'orden', texto: 'An instruction for Veta'}, {guion: 'pregunta', texto: 'A question about a client'},
-      {guion: 'aviso', texto: 'An alert', papel: 'direccion'}, {guion: 'operacion', texto: 'A question about a deal', papel: 'direccion'},
-      {guion: 'queja', texto: 'A client complaint', papel: 'direccion'}, {guion: 'mejorar', texto: 'What to improve', papel: 'direccion'}],
+      {guion: 'acta', texto: 'Cómo ha ido una visita'}, {guion: 'tarea', texto: 'Una tarea'},
+      {guion: 'orden', texto: 'Una orden para Veta'}, {guion: 'pregunta', texto: 'Una pregunta sobre un cliente'},
+      {guion: 'aviso', texto: 'Un aviso', papel: 'direccion'}, {guion: 'operacion', texto: 'Una pregunta sobre una operación', papel: 'direccion'},
+      {guion: 'queja', texto: 'Una queja de un cliente', papel: 'direccion'}, {guion: 'mejorar', texto: 'Qué mejorar', papel: 'direccion'}],
     // duración por defecto de «Lo que dijiste» si se entra sin dictar (segundos)
     duracion: {acta: 72, tarea: 4, nota: 5, orden: 6, pregunta: 2},
 
     // H09 · «No es eso»
     noEsEso: [
-      {guion: 'acta', texto: 'Viewing notes'}, {guion: 'tarea', texto: 'A task'}, {guion: 'nota', texto: 'A note'},
-      {guion: 'orden', texto: 'An instruction for Veta'}, {guion: 'pregunta', texto: 'A question'}],
+      {guion: 'acta', texto: 'Un acta de visita'}, {guion: 'tarea', texto: 'Una tarea'}, {guion: 'nota', texto: 'Una nota'},
+      {guion: 'orden', texto: 'Una orden para Veta'}, {guion: 'pregunta', texto: 'Una pregunta'}],
 
     // H04 · lo que he leído (Detectado hoy y Ya no está aquí)
-    detectado: ['Marta Puig wants to see the flat', 'The Sant Antoni flat fits Núria Camps', 'Pere Soler left a voice note'],
-    yaNo: {cosa: 'c-sergi', texto: 'Sergi Mas: Anna replied to him on Friday'},
+    detectado: ['Marta Puig pide ver el piso', 'El piso de Sant Antoni encaja con Núria Camps', 'Pere Soler dejó una nota de voz'],
+    yaNo: {cosa: 'c-sergi', texto: 'Sergi Mas: Anna le contestó el viernes'},
 
     // A1 vacía · «¿Me enseñas esto?»
-    ensenas: {regla: 'r-valoraciones', titulo: 'Will you show me this?', texto: 'I\'ve noticed that when someone asks for a valuation you send the dossier the next day. Shall I prepare it?', ir: 'regla/r-valoraciones'},
+    ensenas: {regla: 'r-valoraciones', titulo: '¿Me enseñas esto?', texto: 'He visto que cuando alguien pide una valoración envías el dossier al día siguiente. ¿Lo preparo yo?', ir: 'regla/r-valoraciones'},
 
     // A7 · pie
-    esperaPie: 'Your family and friends never show up here. Veta only follows your work.'
+    esperaPie: 'Tu familia y tus amigos nunca salen aquí. Veta solo sigue tu trabajo.'
   };
 })();

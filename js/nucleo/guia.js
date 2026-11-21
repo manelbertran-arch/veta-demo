@@ -13,7 +13,7 @@
 
   function frases(def) {
     const f = (def && def.guia) || [];
-    return f.length ? `<ol class="guia-f">${f.map(x => `<li>${esc(x)}</li>`).join('')}</ol>` : '<p class="guia-f">This screen doesn\'t have its sentences yet.</p>';
+    return f.length ? `<ol class="guia-f">${f.map(x => `<li>${esc(x)}</li>`).join('')}</ol>` : '<p class="guia-f">Esta pantalla aún no tiene sus frases.</p>';
   }
   function indice() {
     const grupos = {};
@@ -24,8 +24,8 @@
     const c = $c(); if (!c) return;
     document.getElementById('app').classList.toggle('guia-on', on());
     if (!on()) { c.innerHTML = ''; return; }
-    c.innerHTML = `<div class="cajon-c"><div class="cajon-cab"><h2>Guide</h2>${VETA.UI.boton({tipo: 'texto', texto: 'Turn off', accion: 'guia-apaga'})}</div>` +
-      `<div class="guia-toque" id="guia-toque"></div><h3 class="guia-pt">${esc(def ? (typeof def.titulo === 'function' ? def.titulo((VETA.actual() || {}).p || {}) : def.titulo) : '')}</h3>${frases(def)}<h3 class="guia-pt">Index</h3>${indice()}</div>`;
+    c.innerHTML = `<div class="cajon-c"><div class="cajon-cab"><h2>Guía</h2>${VETA.UI.boton({tipo: 'texto', texto: 'Apagar', accion: 'guia-apaga'})}</div>` +
+      `<div class="guia-toque" id="guia-toque"></div><h3 class="guia-pt">${esc(def ? (typeof def.titulo === 'function' ? def.titulo((VETA.actual() || {}).p || {}) : def.titulo) : '')}</h3>${frases(def)}<h3 class="guia-pt">Índice</h3>${indice()}</div>`;
   }
 
   VETA.guia = {
@@ -39,7 +39,7 @@
       pintaCajon(null);
       if (!g) return;
       if (!on() || !def || def.cod === 'E1') { g.hidden = true; g.innerHTML = ''; return; }
-      g.innerHTML = `<div class="guia-c">${frases(def)}</div><button type="button" class="btn btn-texto guia-x" data-accion="guia-calla">Close</button>`;
+      g.innerHTML = `<div class="guia-c">${frases(def)}</div><button type="button" class="btn btn-texto guia-x" data-accion="guia-calla">Cerrar</button>`;
       g.hidden = false;
     },
     // al tocar algo con data-g
@@ -49,7 +49,7 @@
       const html = `<p class="guia-tt"><b>${esc(t)}</b>${f ? ' · ' + esc(f) : ''}</p>`;
       if (VETA.ordenador()) { const el = document.getElementById('guia-toque'); if (el) el.innerHTML = html; return; }
       const el = $g(); if (!el) return;
-      el.innerHTML = `<div class="guia-c">${html}</div><button type="button" class="btn btn-texto guia-x" data-accion="guia-calla">Close</button>`;
+      el.innerHTML = `<div class="guia-c">${html}</div><button type="button" class="btn btn-texto guia-x" data-accion="guia-calla">Cerrar</button>`;
       el.hidden = false;
     },
     calla() { const g = $g(); if (g) { g.hidden = true; g.innerHTML = ''; } }

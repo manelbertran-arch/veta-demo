@@ -8,7 +8,7 @@
   let ventana = '7d', editando = false;
 
   const N = () => D.numeros;
-  const RESUMEN = 'Week of 16 to 22 November. Veta had 156 messages and tasks ready and we completed 132 (the previous week, 141 and 118). There are 4 deals that haven\'t moved for more than 7 days: we\'ll go over them on Monday. This week Veta has learned that in Gràcia almost everyone asks to see the flat on a Saturday.';
+  const RESUMEN = 'Semana del 16 al 22 de noviembre. Veta dejó listos 156 mensajes y tareas y completamos 132 (la anterior, 141 y 118). Hay 4 operaciones que llevan más de 7 días sin moverse: el lunes las repasamos. Esta semana Veta ha aprendido que en Gràcia casi todos piden ver el piso en sábado.';
   const resumenTexto = () => X.lee('resumenTexto', RESUMEN);
   const enviado = () => X.lee('resumen', null);
 
@@ -22,30 +22,30 @@
 
   // ---------------- G3 · Semana ----------------
   VETA.pantalla('G3', {
-    titulo: 'Week',
-    guia: ['Here Veta summarises the closed week with team figures, not each person\'s.', 'You go over it and send the summary to the team.', 'That way everyone sees the same thing and nobody makes up hours or euros.'],
+    titulo: 'Semana',
+    guia: ['Aquí Veta resume la semana cerrada con cifras del equipo, no de cada persona.', 'Tú la repasas y envías el resumen al equipo.', 'Así todos ven lo mismo y nadie inventa horas ni euros.'],
     pinta: () => {
       const n = N(), env = enviado(), par = X.paradas();
-      let h = `<p class="d-periodo" data-i="0">Week of 16 to 22 November</p>`;
-      h += `<div class="d-cifra-semana" data-i="0">${UI.cifra({valor: n['7d'][1], unidad: 'messages and tasks Veta had ready', id: 'd-cifra-156'})}` +
-        `<p class="d-antes">The previous week: ${n.semanaAnterior.preparados}</p></div>`;
-      h += `<div class="d-comps" data-i="1" aria-label="This week and the previous one">${compara('Prepared', n['7d'][1], n.semanaAnterior.preparados)}${compara('Completed', n['7d'][2], n.semanaAnterior.completados)}` +
-        `<p class="d-leyenda"><i class="d-ley-a"></i>16 to 22 Nov <i class="d-ley-b"></i>9 to 15 Nov</p></div>`;
-      if (env) h += `<div data-i="1">${UI.lineaHecho({texto: 'Summary sent to 4 people', hora: 'today, ' + env.hora, vt: 'd-resumen'})}</div>`;
-      h += UI.bloque({titulo: 'The office, in eight numbers', i: 2, html: UI.selector({etiqueta: 'Period', opciones: [{id: '7d', texto: 'Last 7 days'}, {id: 'desde', texto: 'Since 3 Oct'}], valor: ventana, accion: 'ventana'}) + UI.ochoNumeros(ventana)});
+      let h = `<p class="d-periodo" data-i="0">Semana del 16 al 22 de noviembre</p>`;
+      h += `<div class="d-cifra-semana" data-i="0">${UI.cifra({valor: n['7d'][1], unidad: 'mensajes y tareas que Veta dejó listos', id: 'd-cifra-156'})}` +
+        `<p class="d-antes">La semana anterior: ${n.semanaAnterior.preparados}</p></div>`;
+      h += `<div class="d-comps" data-i="1" aria-label="Esta semana y la anterior">${compara('Preparados', n['7d'][1], n.semanaAnterior.preparados)}${compara('Completados', n['7d'][2], n.semanaAnterior.completados)}` +
+        `<p class="d-leyenda"><i class="d-ley-a"></i>Del 16 al 22 nov <i class="d-ley-b"></i>Del 9 al 15 nov</p></div>`;
+      if (env) h += `<div data-i="1">${UI.lineaHecho({texto: 'Resumen enviado a 4 personas', hora: 'hoy, ' + env.hora, vt: 'd-resumen'})}</div>`;
+      h += UI.bloque({titulo: 'La oficina, en ocho números', i: 2, html: UI.selector({etiqueta: 'Periodo', opciones: [{id: '7d', texto: 'Últimos 7 días'}, {id: 'desde', texto: 'Desde el 3 oct'}], valor: ventana, accion: 'ventana'}) + UI.ochoNumeros(ventana)});
       h += `<div class="d-tres-lineas" data-i="3">` +
-        `<p><b>What Veta already does.</b> It had 156 messages and tasks ready; the team completed 132.</p>` +
-        `<div class="d-parado"><button type="button" class="d-parado-b" data-accion="paradas" aria-expanded="false"><span><b>What's stalled.</b> ${par.length} deals haven't moved for more than 7 days</span><span class="fila-chev chev-gira">${VETA.ic('abajo', 16)}</span></button>` +
-        `<div class="lista d-parado-l" hidden>${par.map(o => UI.fila({titulo: o.texto, sub: o.estadoTexto.replace('Stalled · ', '').replace(' · complaint', ''), icono: 'pausa'})).join('')}</div></div>` +
-        `<p><b>What was learned.</b> 7 new things; for example, that in Gràcia almost everyone asks to see the flat on a Saturday.</p></div>`;
+        `<p><b>Lo que Veta ya hace.</b> Dejó listos 156 mensajes y tareas; el equipo completó 132.</p>` +
+        `<div class="d-parado"><button type="button" class="d-parado-b" data-accion="paradas" aria-expanded="false"><span><b>Lo que está parado.</b> ${par.length} operaciones llevan más de 7 días sin moverse</span><span class="fila-chev chev-gira">${VETA.ic('abajo', 16)}</span></button>` +
+        `<div class="lista d-parado-l" hidden>${par.map(o => UI.fila({titulo: o.texto, sub: o.estadoTexto.replace('Parada · ', '').replace(' · queja', ''), icono: 'pausa'})).join('')}</div></div>` +
+        `<p><b>Lo aprendido.</b> 7 cosas nuevas; por ejemplo, que en Gràcia casi todos piden ver el piso en sábado.</p></div>`;
       h += UI.lista([
-        {titulo: 'For Monday\'s meeting', sub: '3 topics', icono: 'tarea', ir: 'reunion'},
-        {titulo: 'By office', sub: 'Gràcia and Sant Gervasi', icono: 'casa', ir: 'oficinas'},
-        {titulo: 'The time the team saves', icono: 'reloj', ir: 'tiempo-equipo'},
-        {titulo: 'Full report', icono: 'libro', ir: 'informe-completo'}], {i: 4});
+        {titulo: 'Para la reunión del lunes', sub: '3 temas', icono: 'tarea', ir: 'reunion'},
+        {titulo: 'Por oficina', sub: 'Gràcia y Sant Gervasi', icono: 'casa', ir: 'oficinas'},
+        {titulo: 'El tiempo que gana el equipo', icono: 'reloj', ir: 'tiempo-equipo'},
+        {titulo: 'Informe completo', icono: 'libro', ir: 'informe-completo'}], {i: 4});
       return h;
     },
-    botonFijo: () => enviado() ? '' : UI.boton({texto: 'Send the summary to the team', ir: 'semana-equipo/resumen', icono: 'enviar'}),
+    botonFijo: () => enviado() ? '' : UI.boton({texto: 'Enviar el resumen al equipo', ir: 'semana-equipo/resumen', icono: 'enviar'}),
     alMontar: el => {
       // la cifra rueda desde la de la semana anterior
       const c = el.querySelector('#d-cifra-156');
@@ -63,27 +63,27 @@
 
   // ---------------- G3b · Enviar el resumen ----------------
   VETA.pantalla('G3b', {
-    titulo: 'Send the summary',
-    guia: ['Here Veta shows you the email exactly as the team will receive it.', 'You read it, change it if you want and send it.', 'That way you\'ve seen what reaches the team first.'],
+    titulo: 'Enviar el resumen',
+    guia: ['Aquí Veta te enseña el correo tal como lo recibirá el equipo.', 'Tú lo lees, lo cambias si quieres y lo envías.', 'Así lo que llega al equipo lo has visto antes.'],
     pinta: () => {
       const env = enviado();
-      let h = `<p class="intro" data-i="0">4 people will receive it, by email: Laura, Anna, Marc and David. Teresa, on leave, doesn't get it.</p>`;
-      if (env) h += `<div data-i="0">${UI.lineaHecho({texto: 'Summary sent to 4 people', hora: 'today, ' + env.hora})}</div>`;
+      let h = `<p class="intro" data-i="0">Lo recibirán 4 personas, por correo: Laura, Anna, Marc y David. Teresa, de baja, no lo recibe.</p>`;
+      if (env) h += `<div data-i="0">${UI.lineaHecho({texto: 'Resumen enviado a 4 personas', hora: 'hoy, ' + env.hora})}</div>`;
       h += `<div class="tarjeta d-correo" data-i="1">` +
-        `<div class="d-correo-cab"><span class="d-correo-f"><span>From</span><b>Montse Ribas</b></span>` +
-        `<span class="d-correo-f"><span>To</span><span class="d-para">${['laura', 'anna', 'marc', 'david'].map(id => VETA.av(id, 32)).join('')}</span><b>4 people</b></span>` +
-        `<span class="d-correo-f"><span>Subject</span><b>The week of 16 to 22 November</b></span></div>` +
+        `<div class="d-correo-cab"><span class="d-correo-f"><span>De</span><b>Montse Ribas</b></span>` +
+        `<span class="d-correo-f"><span>Para</span><span class="d-para">${['laura', 'anna', 'marc', 'david'].map(id => VETA.av(id, 32)).join('')}</span><b>4 personas</b></span>` +
+        `<span class="d-correo-f"><span>Asunto</span><b>La semana del 16 al 22 de noviembre</b></span></div>` +
         (editando
-          ? `<div class="campo"><label class="campo-e" for="d-resumen-t">Veta's draft · you're changing it</label><div class="campo-caja"><textarea id="d-resumen-t" class="campo-i" rows="8">${esc(resumenTexto())}</textarea></div></div>`
-          : UI.borrador({texto: resumenTexto(), rotulo: resumenTexto() === RESUMEN ? 'Veta\'s draft' : 'Veta\'s draft · changed by you'})) +
+          ? `<div class="campo"><label class="campo-e" for="d-resumen-t">Borrador de Veta · lo estás cambiando</label><div class="campo-caja"><textarea id="d-resumen-t" class="campo-i" rows="8">${esc(resumenTexto())}</textarea></div></div>`
+          : UI.borrador({texto: resumenTexto(), rotulo: resumenTexto() === RESUMEN ? 'Borrador de Veta' : 'Borrador de Veta · cambiado por ti'})) +
         `</div>`;
-      h += UI.nota({texto: 'It carries no per-person figures.', icono: 'candado'});
+      h += UI.nota({texto: 'No lleva cifras por persona.', icono: 'candado'});
       return h;
     },
     botonFijo: () => {
       if (enviado()) return '';
-      return UI.boton({texto: 'Send to the 4 people on the team', accion: 'enviar', icono: 'enviar'}) +
-        UI.botones([{texto: editando ? 'Done' : 'Edit', accion: 'editar', icono: editando ? 'check' : 'editar'}]);
+      return UI.boton({texto: 'Enviar a las 4 personas del equipo', accion: 'enviar', icono: 'enviar'}) +
+        UI.botones([{texto: editando ? 'Listo' : 'Editar', accion: 'editar', icono: editando ? 'check' : 'editar'}]);
     },
     alMontar: el => { if (editando) { const t = el.querySelector('#d-resumen-t'); if (t) try { t.focus({preventScroll: true}); } catch (e) {} } },
     acciones: {
@@ -101,58 +101,58 @@
 
   // ---------------- G3c · Para la reunión del lunes ----------------
   VETA.pantalla('G3c', {
-    titulo: 'For Monday\'s meeting',
-    guia: ['Here Veta prepares the agenda with the three topics you chose.', 'You go over it and send it to the team.', 'That way the meeting starts with what matters, without anyone\'s names.'],
+    titulo: 'Para la reunión del lunes',
+    guia: ['Aquí Veta prepara el orden del día con los tres temas que elegiste.', 'Tú lo repasas y lo envías al equipo.', 'Así la reunión empieza por lo que importa, sin nombres de nadie.'],
     pinta: () => {
       const env = X.lee('reunion', null);
-      let h = `<p class="intro" data-i="0">The three topics you chose in “How the office is doing today”. Each one opens its cases, without agent names.</p>`;
-      if (env) h += `<div data-i="0">${UI.lineaHecho({texto: 'Sent to 4 people', hora: 'today, ' + env.hora})}</div>`;
-      h += UI.bloque({titulo: 'Agenda', i: 1, html: UI.lista(X.temas().map((t, k) => ({titulo: t.texto, sub: 'Topic ' + (k + 1), derecha: t.cifra, icono: 'tarea', hoja: 'd-tema', datos: {tema: t.id}})))});
-      h += UI.lista([{titulo: 'Change the topics', icono: 'cambiar', hoja: 'h34'}], {i: 2});
-      h += UI.bloque({titulo: 'To read beforehand', i: 3, html: UI.lista([
-        {titulo: 'The 19:30 wrap-up', sub: 'Yesterday, on one page', icono: 'papel', hoja: 'h41', datos: {parte: '1930'}},
-        {titulo: 'Partners report · November', icono: 'libro', hoja: 'h41', datos: {parte: 'socios'}}])});
+      let h = `<p class="intro" data-i="0">Los tres temas que elegiste en «Cómo va la oficina hoy». Cada uno abre sus casos, sin nombres de agentes.</p>`;
+      if (env) h += `<div data-i="0">${UI.lineaHecho({texto: 'Enviado a 4 personas', hora: 'hoy, ' + env.hora})}</div>`;
+      h += UI.bloque({titulo: 'Orden del día', i: 1, html: UI.lista(X.temas().map((t, k) => ({titulo: t.texto, sub: 'Tema ' + (k + 1), derecha: t.cifra, icono: 'tarea', hoja: 'd-tema', datos: {tema: t.id}})))});
+      h += UI.lista([{titulo: 'Cambiar los temas', icono: 'cambiar', hoja: 'h34'}], {i: 2});
+      h += UI.bloque({titulo: 'Para leer antes', i: 3, html: UI.lista([
+        {titulo: 'El parte de las 19:30', sub: 'Lo de ayer, en una página', icono: 'papel', hoja: 'h41', datos: {parte: '1930'}},
+        {titulo: 'Informe a socios · noviembre', icono: 'libro', hoja: 'h41', datos: {parte: 'socios'}}])});
       return h;
     },
-    botonFijo: () => X.lee('reunion', null) ? '' : UI.boton({texto: 'Send the agenda to the team', accion: 'enviar', icono: 'enviar'}),
+    botonFijo: () => X.lee('reunion', null) ? '' : UI.boton({texto: 'Enviar el orden del día al equipo', accion: 'enviar', icono: 'enviar'}),
     acciones: { enviar() { X.guarda('reunion', {hora: VETA.ahora()}); VETA.repinta(); } }
   });
 
   // ---------------- G3d · Por oficina ----------------
   VETA.pantalla('G3d', {
-    titulo: 'By office',
-    guia: ['Here Veta compares each office with itself, week against week.', 'You see where things move forward and where they stall.', 'That way there\'s no winner or loser: only the trend.'],
+    titulo: 'Por oficina',
+    guia: ['Aquí Veta compara cada oficina consigo misma, semana contra semana.', 'Tú ves dónde se avanza y dónde se para.', 'Así no hay ganadora ni perdedora: solo la tendencia.'],
     pinta: () => {
       const ofs = [
-        {nombre: 'Gràcia', quien: 'Anna, Laura and Teresa', p: [92, 84], c: [78, 70], par: 3},
-        {nombre: 'Sant Gervasi', quien: 'David, Marc and you', p: [64, 57], c: [54, 48], par: 1}];
+        {nombre: 'Gràcia', quien: 'Anna, Laura y Teresa', p: [92, 84], c: [78, 70], par: 3},
+        {nombre: 'Sant Gervasi', quien: 'David, Marc y tú', p: [64, 57], c: [54, 48], par: 1}];
       const tarjetas = ofs.map((o, k) => `<div class="tarjeta d-ofi" data-i="${k}"><h2 class="bloque-t">${esc(o.nombre)}</h2><p class="bloque-sub">${esc(o.quien)}</p>` +
-        `<div class="d-tres">${[[o.p[0], 'Cases prepared', 'before ' + o.p[1]], [o.c[0], 'Completed', 'before ' + o.c[1]], [o.par, 'Stalled deals', '']].map(([n, t, a]) => `<div class="d-tres-c"><b>${n}</b><span>${t}</span>${a ? `<span class="d-tres-a">${a}</span>` : ''}</div>`).join('')}</div></div>`).join('');
-      const tabla = `<table class="d-tabla" data-i="0"><caption class="solo-lector">By office</caption><thead><tr><th scope="col">Office</th><th scope="col">Cases prepared</th><th scope="col">Completed</th><th scope="col">Stalled deals</th></tr></thead><tbody>` +
-        ofs.map(o => `<tr><th scope="row">${esc(o.nombre)}<span>${esc(o.quien)}</span></th><td>${o.p[0]} <span>before ${o.p[1]}</span></td><td>${o.c[0]} <span>before ${o.c[1]}</span></td><td>${o.par}</td></tr>`).join('') + '</tbody></table>';
+        `<div class="d-tres">${[[o.p[0], 'Casos preparados', 'antes ' + o.p[1]], [o.c[0], 'Completados', 'antes ' + o.c[1]], [o.par, 'Operaciones paradas', '']].map(([n, t, a]) => `<div class="d-tres-c"><b>${n}</b><span>${t}</span>${a ? `<span class="d-tres-a">${a}</span>` : ''}</div>`).join('')}</div></div>`).join('');
+      const tabla = `<table class="d-tabla" data-i="0"><caption class="solo-lector">Por oficina</caption><thead><tr><th scope="col">Oficina</th><th scope="col">Casos preparados</th><th scope="col">Completados</th><th scope="col">Operaciones paradas</th></tr></thead><tbody>` +
+        ofs.map(o => `<tr><th scope="row">${esc(o.nombre)}<span>${esc(o.quien)}</span></th><td>${o.p[0]} <span>antes ${o.p[1]}</span></td><td>${o.c[0]} <span>antes ${o.c[1]}</span></td><td>${o.par}</td></tr>`).join('') + '</tbody></table>';
       return `<div class="d-solo-movil">${tarjetas}</div><div class="d-solo-ord">${tabla}</div>` +
-        `<p class="pie" data-i="2">Each office is only compared with itself. There's no winner.</p>`;
+        `<p class="pie" data-i="2">Cada oficina se compara solo consigo misma. No hay ganadora.</p>`;
     }
   });
 
   // ---------------- G3e · El tiempo que gana el equipo ----------------
   VETA.pantalla('G3e', {
-    titulo: 'The time the team saves',
-    guia: ['Here Veta counts hours only with the times each person enters.', 'You ask for the missing ones and, if you want, enter your cost per hour.', 'That way no figure is made up: they all say where they come from.'],
+    titulo: 'El tiempo que gana el equipo',
+    guia: ['Aquí Veta cuenta horas solo con los tiempos que pone cada persona.', 'Tú pides los que faltan y, si quieres, pones tu coste por hora.', 'Así ninguna cifra es inventada: todas dicen de dónde salen.'],
     pinta: () => {
       const t = D.tiempos.equipo, coste = M.lee('coste', null), pedido = X.lee('pedidoTiempos', null);
       const sem = D.semanas, max = Math.max.apply(null, sem.map(s => s.n));
-      let h = `<p class="intro" data-i="0">Veta doesn't make up hours. They come from the times each person enters.</p>`;
-      h += `<p class="d-dato" data-i="0"><b>${t.conTiempos} of ${t.personas}</b> people have entered their times.</p>`;
-      if (pedido) h += `<div data-i="0">${UI.lineaHecho({texto: 'Asked 2 people', hora: pedido.hora, vt: 'd-pedido', boton: {texto: 'Undo', accion: 'deshacer-pedido'}})}</div>`;
-      h += `<div class="tarjeta d-horas" data-i="1">${UI.etiqueta('ejemplo')}${UI.cifra({valor: VETA.horas(t.minutos), unidad: 'week of 16 to 22, with those times'})}` +
-        (coste ? `<p class="d-euros"><span>about</span> <b id="d-euros">${VETA.num(M.eurosEquipo(coste))}</b> <span>€ · a ${coste} € per hour · Example</span></p>` : '') + '</div>';
-      h += UI.bloque({titulo: 'Week by week', texto: 'Messages and tasks ready', i: 2, html: `<div class="d-semanas">${sem.map((s, k) => `<button type="button" class="d-sem" data-hoja="h25" data-semana="${esc(s.id)}" style="--v:${(s.n / max).toFixed(3)};--k:${k}" aria-label="Week of ${esc(s.texto)}: ${s.n} cases prepared"><b>${s.n}</b><i></i><span>${esc(s.texto)}</span></button>`).join('')}</div>`});
-      h += UI.lista([{titulo: 'Cost per hour', sub: coste ? coste + ' € per hour' : 'not set', icono: 'sello', hoja: 'h38'}], {i: 3});
-      h += UI.bloque({titulo: 'Before and now', i: 4, html: `<div class="d-antes-ahora">${UI.etiqueta('ejemplo')}<ul><li>Viewing notes the same day: from none to 4 of 4</li><li>Daily list: from 46 cards per week to 21</li></ul></div>`});
+      let h = `<p class="intro" data-i="0">Veta no inventa horas. Salen de los tiempos que pone cada persona.</p>`;
+      h += `<p class="d-dato" data-i="0"><b>${t.conTiempos} de ${t.personas}</b> personas han puesto sus tiempos.</p>`;
+      if (pedido) h += `<div data-i="0">${UI.lineaHecho({texto: 'Pedido a 2 personas', hora: pedido.hora, vt: 'd-pedido', boton: {texto: 'Deshacer', accion: 'deshacer-pedido'}})}</div>`;
+      h += `<div class="tarjeta d-horas" data-i="1">${UI.etiqueta('ejemplo')}${UI.cifra({valor: VETA.horas(t.minutos), unidad: 'semana del 16 al 22, con esos tiempos'})}` +
+        (coste ? `<p class="d-euros"><span>unos</span> <b id="d-euros">${VETA.num(M.eurosEquipo(coste))}</b> <span>€ · a ${coste} € la hora · Ejemplo</span></p>` : '') + '</div>';
+      h += UI.bloque({titulo: 'Semana a semana', texto: 'Mensajes y tareas listos', i: 2, html: `<div class="d-semanas">${sem.map((s, k) => `<button type="button" class="d-sem" data-hoja="h25" data-semana="${esc(s.id)}" style="--v:${(s.n / max).toFixed(3)};--k:${k}" aria-label="Semana del ${esc(s.texto)}: ${s.n} casos preparados"><b>${s.n}</b><i></i><span>${esc(s.texto)}</span></button>`).join('')}</div>`});
+      h += UI.lista([{titulo: 'Coste por hora', sub: coste ? coste + ' € la hora' : 'sin poner', icono: 'sello', hoja: 'h38'}], {i: 3});
+      h += UI.bloque({titulo: 'Antes y ahora', i: 4, html: `<div class="d-antes-ahora">${UI.etiqueta('ejemplo')}<ul><li>Actas el mismo día: de ninguna a 4 de 4</li><li>Lista de cada día: de 46 tarjetas por semana a 21</li></ul></div>`});
       return h;
     },
-    botonFijo: () => X.lee('pedidoTiempos', null) ? '' : UI.boton({texto: 'Ask the 2 missing people for their times', accion: 'pedir'}),
+    botonFijo: () => X.lee('pedidoTiempos', null) ? '' : UI.boton({texto: 'Pedir sus tiempos a las 2 personas que faltan', accion: 'pedir'}),
     alMontar: el => {
       const e = el.querySelector('#d-euros');
       if (e && X.lee('rodarEuros', false)) { X.guarda('rodarEuros', false); if (!VETA.reducido()) { e.dataset.rueda = '0'; VETA.rueda(e, Number(e.textContent.replace(/\./g, ''))); } }

@@ -7,60 +7,60 @@
   const D = VETA.datos;
 
   D.reglas = [
-    {id: 'r-valoraciones', texto: 'I prepare the dossier when a valuation is requested', estadoInicial: 'propuesta', estadoTexto: 'to decide', pruebaDias: 14,
+    {id: 'r-valoraciones', texto: 'Preparo el dossier cuando piden una valoración', estadoInicial: 'propuesta', estadoTexto: 'por decidir', pruebaDias: 14,
       casos: {
-        comoYo: [['13 Nov', 'Rosa Vidal'], ['5 Nov', 'Casals family'], ['29 Oct', 'Sergi Font'], ['22 Oct', 'Anna Bosch'], ['15 Oct', 'Pau Mir'], ['8 Oct', 'Carme Roca'],
-          ['30 Sep', 'Lluís Pons'], ['24 Sep', 'Marta Puig'], ['16 Sep', 'Joan Vila'], ['5 Sep', 'Elena Vives'], ['27 Aug', 'Pere Soler']].map(([cuando, nombre]) => ({cuando, nombre})),
-        distinto: [{cuando: '6 Nov', nombre: 'Jordi Ferrer', cliente: 'jordi', texto: 'How much could I ask for my mother\'s flat?'},
-          {cuando: '21 Oct', nombre: 'Núria Camps', cliente: 'nuria', texto: 'First of all, can you come and see it?'},
-          {cuando: '2 Sep', nombre: 'Toni Ribas', cliente: 'toni', texto: 'No need for a report, just give me a rough figure.'}]
+        comoYo: [['13 nov', 'Rosa Vidal'], ['5 nov', 'Família Casals'], ['29 oct', 'Sergi Font'], ['22 oct', 'Anna Bosch'], ['15 oct', 'Pau Mir'], ['8 oct', 'Carme Roca'],
+          ['30 sep', 'Lluís Pons'], ['24 sep', 'Marta Puig'], ['16 sep', 'Joan Vila'], ['5 sep', 'Elena Vives'], ['27 ago', 'Pere Soler']].map(([cuando, nombre]) => ({cuando, nombre})),
+        distinto: [{cuando: '6 nov', nombre: 'Jordi Ferrer', cliente: 'jordi', texto: '¿Cuánto podría pedir por el piso de mi madre?'},
+          {cuando: '21 oct', nombre: 'Núria Camps', cliente: 'nuria', texto: 'Antes de nada, ¿puedes venir a verlo?'},
+          {cuando: '2 sep', nombre: 'Toni Ribas', cliente: 'toni', texto: 'No hace falta informe, dime una cifra aproximada.'}]
       }},
-    {id: 'r-cancelaciones', texto: 'I suggest another date when a viewing is cancelled', estadoInicial: 'a-prueba', dia: 5, pruebaDias: 14},
-    {id: 'r-actas', texto: 'I ask you for the notes after each viewing', estadoInicial: 'activa', desde: '3 Sep',
-      ultimo: ['Sat 21 · Casals family', 'Thu 19 · Toni Ribas', 'Tue 17 · Sergi Font']},
-    {id: 'r-promesas', texto: 'I note what you\'re promised and let you know if it doesn\'t arrive', estadoInicial: 'activa', desde: '3 Sep',
-      ultimo: ['Fri 20 · Jordi (you, the dossier)', 'Mon 16 · Elena (the payslip)', 'Fri 13 · Pere (the certificate)']},
-    {id: 'r-informes', texto: 'I prepare each owner\'s report on Mondays', estadoInicial: 'activa', desde: '7 Oct',
-      ultimo: ['Mon 16 · Pere Soler · sent', 'Mon 9 · Pere Soler · sent', 'Mon 2 · Pere Soler · sent']},
-    {id: 'r-contestado', texto: 'I mark who has replied to you', estadoInicial: 'activa', desde: '3 Sep',
-      ultimo: ['Fri 20 · Jordi', 'Thu 19 · Toni', 'Wed 18 · Anna Bosch']},
-    {id: 'r-firmas', texto: 'I alert you the day before a signing', estadoInicial: 'activa', desde: '3 Sep',
-      ultimo: ['Mon 30 · I\'ll alert you about Laia Casas\'s signing', 'Mon 9 · deposit for the Sants flat', '15 Oct · deposit for the Pujades flat']}
+    {id: 'r-cancelaciones', texto: 'Propongo otra fecha cuando se cancela una visita', estadoInicial: 'a-prueba', dia: 5, pruebaDias: 14},
+    {id: 'r-actas', texto: 'Te pido el acta después de cada visita', estadoInicial: 'activa', desde: '3 sep',
+      ultimo: ['Sáb 21 · Família Casals', 'Jue 19 · Toni Ribas', 'Mar 17 · Sergi Font']},
+    {id: 'r-promesas', texto: 'Apunto lo que te prometen y te aviso si no llega', estadoInicial: 'activa', desde: '3 sep',
+      ultimo: ['Vie 20 · Jordi (tú, el dossier)', 'Lun 16 · Elena (la nómina)', 'Vie 13 · Pere (el certificado)']},
+    {id: 'r-informes', texto: 'Preparo el informe de cada propietario los lunes', estadoInicial: 'activa', desde: '7 oct',
+      ultimo: ['Lun 16 · Pere Soler · enviado', 'Lun 9 · Pere Soler · enviado', 'Lun 2 · Pere Soler · enviado']},
+    {id: 'r-contestado', texto: 'Marco quién te ha contestado', estadoInicial: 'activa', desde: '3 sep',
+      ultimo: ['Vie 20 · Jordi', 'Jue 19 · Toni', 'Mié 18 · Anna Bosch']},
+    {id: 'r-firmas', texto: 'Te aviso el día antes de una firma', estadoInicial: 'activa', desde: '3 sep',
+      ultimo: ['Lun 30 · te avisaré de la firma de Laia Casas', 'Lun 9 · arras del piso de Sants', '15 oct · arras del piso de Pujades']}
   ];
   // la regla que nace en A11 al dictar la orden; entra en la lista cuando se marca 'a-prueba'
-  D.reglaNueva = {id: 'r-recordatorios', texto: 'I prepare a reminder when a buyer doesn\'t reply in three days', estadoInicial: 'nueva', pruebaDias: 14,
-    casos: [['9 Nov', 'Marta Puig'], ['30 Oct', 'Toni Ribas'], ['28 Oct', 'Elena Vives'], ['19 Oct', 'Sergi Font'], ['15 Oct', 'Jordi Ferrer'], ['2 Oct', 'Anna Bosch']].map(([cuando, nombre]) => ({cuando, nombre}))};
+  D.reglaNueva = {id: 'r-recordatorios', texto: 'Preparo un recordatorio cuando un comprador no contesta en tres días', estadoInicial: 'nueva', pruebaDias: 14,
+    casos: [['9 nov', 'Marta Puig'], ['30 oct', 'Toni Ribas'], ['28 oct', 'Elena Vives'], ['19 oct', 'Sergi Font'], ['15 oct', 'Jordi Ferrer'], ['2 oct', 'Anna Bosch']].map(([cuando, nombre]) => ({cuando, nombre}))};
 
   // A15, A15b, H13 · lo que lee Veta
   D.lectura = {chats: 212, canales: [
-    {nombre: 'WhatsApp Business', hace: '4 min ago'}, {nombre: 'Office email', hace: '9 min ago'}, {nombre: 'Office calls', hace: '12 min ago'}],
+    {nombre: 'WhatsApp Business', hace: 'hace 4 min'}, {nombre: 'Correo de la oficina', hace: 'hace 9 min'}, {nombre: 'Llamadas de la oficina', hace: 'hace 12 min'}],
     hoy: {chats: 8, audios: 10, porEscuchar: 1},
-    fuera: ['Mum', 'Javi (brother)', 'Friday dinner group']};
+    fuera: ['Mamá', 'Javi (hermano)', 'Grupo de la cena del viernes']};
 
   // lo mismo, de Montse (dirección también vende: sus chats y sus personales; no ve los de nadie más)
   D.lecturaPor = {montse: {chats: 64, canales: D.lectura.canales, hoy: {chats: 5, audios: 2, porEscuchar: 0},
-    fuera: ['Ribas family', 'Thursday padel']}};
+    fuera: ['Familia Ribas', 'Pádel de los jueves']}};
 
   // H29 · textos legales (resúmenes inventados para la demo; no son textos jurídicos)
   D.textos = {
-    acuerdo: {titulo: 'Data agreement', bloques: [
-      {texto: 'Veta reads the work chats you choose and uses them to prepare your day. It sends nothing without your approval.'},
-      {titulo: 'What it doesn\'t read', texto: 'Your personal groups and the chats you leave out. They don\'t appear on any screen.'},
-      {titulo: 'If you leave the agency', texto: 'Your clients\' profiles and history stay with the office. Your personal chats were never brought in.'}]},
-    agencia: {titulo: 'If you leave the agency', bloques: [
-      {texto: 'Your clients\' profiles and history stay with the office. Your personal chats were never brought in.'}]},
-    resumen: {titulo: 'How Veta looks after data', bloques: [
-      {lista: ['It only reads the channels the office has connected.', 'Every message that goes out is approved by a person.', 'Management sees team figures, never per person.', 'You can leave out any chat whenever you want.']}]},
-    borrado: {titulo: 'What\'s kept and what\'s deleted', bloques: [
-      {texto: 'When you leave a chat out, Veta deletes what it had read from it and leaves a receipt with the date and time.'},
-      {texto: 'Whatever is already part of a client\'s profile (a viewing, viewing notes) stays on the profile.'}]},
-    ver: {titulo: 'What you can and can\'t see', bloques: [
-      {texto: 'Each person sees their own: their clients, their day and their rules.'},
-      {texto: 'Management sees the team\'s numbers and the office\'s decisions. It doesn\'t see each person\'s numbers separately.'}]},
-    leido: {titulo: 'What has been read and what has gone out', bloques: [
-      {texto: 'Read since 3 October: 128 office conversations.'},
-      {texto: 'Gone out: only what a person approved and sent from their WhatsApp. Veta hasn\'t sent anything on its own.'}]},
-    consentimientos: {titulo: 'Consents', bloques: [
-      {texto: '128 chats, since 3 October. Every new contact receives the agency\'s privacy notice in their first message.'}]}
+    acuerdo: {titulo: 'Acuerdo de datos', bloques: [
+      {texto: 'Veta lee los chats de trabajo que tú eliges y los usa para prepararte el día. No envía nada sin que tú lo apruebes.'},
+      {titulo: 'Lo que no lee', texto: 'Tus grupos personales y los chats que dejas fuera. No salen en ninguna pantalla.'},
+      {titulo: 'Si dejas la agencia', texto: 'Las fichas y la historia de tus clientes se quedan en la oficina. Tus chats personales nunca han entrado.'}]},
+    agencia: {titulo: 'Si dejas la agencia', bloques: [
+      {texto: 'Las fichas y la historia de tus clientes se quedan en la oficina. Tus chats personales nunca han entrado.'}]},
+    resumen: {titulo: 'Cómo cuida Veta los datos', bloques: [
+      {lista: ['Lee solo los canales conectados por la oficina.', 'Cada mensaje que sale lo aprueba una persona.', 'Dirección ve cifras de equipo, nunca por persona.', 'Puedes dejar fuera cualquier chat cuando quieras.']}]},
+    borrado: {titulo: 'Qué se guarda y qué se borra', bloques: [
+      {texto: 'Cuando dejas un chat fuera, Veta borra lo que había leído de él y deja un recibo con la fecha y la hora.'},
+      {texto: 'Lo que ya forma parte de la ficha de un cliente (una visita, un acta) se queda en la ficha.'}]},
+    ver: {titulo: 'Qué puedes ver y qué no', bloques: [
+      {texto: 'Cada persona ve lo suyo: sus clientes, su día y sus reglas.'},
+      {texto: 'Dirección ve los números del equipo y las decisiones de la oficina. No ve los números de cada persona por separado.'}]},
+    leido: {titulo: 'Qué se ha leído y qué ha salido', bloques: [
+      {texto: 'Leído desde el 3 de octubre: 128 conversaciones de la oficina.'},
+      {texto: 'Salido: solo lo que una persona aprobó y envió desde su WhatsApp. Veta no ha enviado nada sola.'}]},
+    consentimientos: {titulo: 'Los consentimientos', bloques: [
+      {texto: '128 chats, desde el 3 de octubre. Cada contacto nuevo recibe el aviso de privacidad de la agencia en su primer mensaje.'}]}
   };
 })();
