@@ -17,7 +17,7 @@
     marta: {inicial: 'sin responder desde ayer', esperando: 'le propusiste el sábado a las 11:00'},
     elena: {inicial: 'visita hoy, 9:00'},
     pere: {inicial: 'informe de la semana', tras: 'pedirle el certificado energético', pedido: 'le pediste el certificado'},
-    jordi: {inicial: 'dossier antes del jueves', esperando: 'le pasaste el dossier'},
+    jordi: {inicial: 'el informe del piso antes del jueves', esperando: 'le pasaste el informe del piso'},
     nuria: {inicial: 'le encaja un piso en Sant Antoni', esperando: 'le contaste el piso de Sant Antoni'},
     albert: {inicial: '7 semanas sin hablar'},
     carmen: {inicial: 'te la ha asignado Montse', esperando: 'le escribiste por el piso de Verdi'},
@@ -32,7 +32,7 @@
   b.espera = {
     marta: 'Le propusiste ver el piso el sábado a las 11:00',
     nuria: 'Le contaste el piso de Sant Antoni',
-    jordi: 'Le pasaste el dossier de Olzinelles',
+    jordi: 'Le pasaste el informe del piso de Olzinelles',
     carmen: 'Le propusiste ver el piso de Verdi'
   };
   // ---- A6 · cerrado (Carme): el mensaje para pedirle una recomendación (inventado por B) ----
@@ -57,7 +57,7 @@
       fechas: [{cuando: 'Mié 25 nov', texto: 'Quedó en pasarte la nómina'}]},
     jordi: {
       docs: [{k: 'nota', texto: 'Nota simple de Olzinelles', falta: 'Falta la nota simple', estado: 'falta', fecha: 'lun 30', plazo: 'Pedida al Registro · llega el lun 30', pedir: false}],
-      fechas: [{cuando: 'Jue 26 nov', texto: 'Le prometiste el dossier'}, {cuando: 'Lun 30 nov', texto: 'Llega la nota simple del Registro'}]},
+      fechas: [{cuando: 'Jue 26 nov', texto: 'Le prometiste el informe del piso'}, {cuando: 'Lun 30 nov', texto: 'Llega la nota simple del Registro'}]},
     laia: {
       docs: [{k: 'arras', texto: 'Contrato de arras', estado: 'recibido', cuando: 'Firmado el 9 nov'}],
       fechas: [{cuando: 'Mar 1 dic, 12:00', texto: 'Firma en notaría'}]}
@@ -65,14 +65,14 @@
 
   // ---- A16 / H16 · actas e informes que se abren en detalle ----
   b.detalles = {
-    'acta-elena': {tipo: 'acta', titulo: 'Acta · Elena Vives', cuando: 'Hoy, 9:00 · piso de Gràcia, c/ Verdi 42',
+    'acta-elena': {tipo: 'acta', titulo: 'Nota de la visita · Elena Vives', cuando: 'Hoy, 9:00 · piso de Gràcia, c/ Verdi 42',
       gusta: 'La luz del salón, la terraza y la cocina reformada.', preocupa: 'El ruido de la calle por la noche. Que no haya ascensor: es un tercero.',
       siguiente: 'Segunda visita el sábado por la tarde, con su pareja, para oír la calle.'},
-    'acta-casals': {tipo: 'acta', titulo: 'Acta · Família Casals', cuando: 'Sáb 21 · piso de Gràcia, c/ Verdi 42',
+    'acta-casals': {tipo: 'acta', titulo: 'Nota de la visita · Família Casals', cuando: 'Sáb 21 · piso de Gràcia, c/ Verdi 42',
       gusta: 'El piso en general y la terraza.', preocupa: 'El precio: lo ven caro.', siguiente: 'Lo hablan entre ellos y te dicen algo esta semana.'},
-    'acta-toni': {tipo: 'acta', titulo: 'Acta · Toni Ribas', cuando: 'Jue 19 · piso de Gràcia, c/ Verdi 42',
+    'acta-toni': {tipo: 'acta', titulo: 'Nota de la visita · Toni Ribas', cuando: 'Jue 19 · piso de Gràcia, c/ Verdi 42',
       gusta: 'La distribución y la terraza.', preocupa: 'El precio le parece alto. Quiere saber si se puede abrir la cocina al salón.', siguiente: 'Volverá con su arquitecto.'},
-    'acta-sergi-font': {tipo: 'acta', titulo: 'Acta · Sergi Font', cuando: 'Mar 17 · piso de Gràcia, c/ Verdi 42',
+    'acta-sergi-font': {tipo: 'acta', titulo: 'Nota de la visita · Sergi Font', cuando: 'Mar 17 · piso de Gràcia, c/ Verdi 42',
       gusta: 'La luz y la zona.', preocupa: 'Lo ve caro y sin ascensor.', siguiente: 'Por ahora no quiere volver.'},
     'informe-16': {tipo: 'informe', titulo: 'Informe enviado a Pere', cuando: 'Lun 16, 9:30 · WhatsApp',
       texto: 'Hola, Pere. Esta semana: 2 visitas. Les gusta la terraza; el precio les parece alto. ¿Lo hablamos el jueves?'},
@@ -84,19 +84,19 @@
   b.historia = {
     pere: [
       {cuando: 'Sáb 21', tipo: 'Nota de voz', titulo: 'Nota de voz de Pere · 0:48', texto: '«Si hace falta, bajo a 385.000 €»', hoja: 'h10'},
-      {cuando: 'Sáb 21', tipo: 'Acta', titulo: 'Acta · Família Casals', texto: 'Les gusta; lo ven caro', det: 'acta-casals'},
-      {cuando: 'Jue 19', tipo: 'Acta', titulo: 'Acta · Toni Ribas', texto: 'Volverá con su arquitecto', det: 'acta-toni'},
-      {cuando: 'Mar 17', tipo: 'Acta', titulo: 'Acta · Sergi Font', texto: 'Lo ve caro y sin ascensor', det: 'acta-sergi-font'},
+      {cuando: 'Sáb 21', tipo: 'Acta', titulo: 'Nota de la visita · Família Casals', texto: 'Les gusta; lo ven caro', det: 'acta-casals'},
+      {cuando: 'Jue 19', tipo: 'Acta', titulo: 'Nota de la visita · Toni Ribas', texto: 'Volverá con su arquitecto', det: 'acta-toni'},
+      {cuando: 'Mar 17', tipo: 'Acta', titulo: 'Nota de la visita · Sergi Font', texto: 'Lo ve caro y sin ascensor', det: 'acta-sergi-font'},
       {cuando: 'Lun 16', tipo: 'Informe', titulo: 'Informe enviado a Pere', texto: '2 visitas', det: 'informe-16'},
       {cuando: '2 sep', tipo: 'Encargo', titulo: 'Encargo de venta firmado', texto: 'Vence el 2 de diciembre'}],
-    toni: [{cuando: 'Jue 19', tipo: 'Acta', titulo: 'Acta · visita a Verdi 42', texto: 'Volverá con su arquitecto', det: 'acta-toni'}],
-    casals: [{cuando: 'Sáb 21', tipo: 'Acta', titulo: 'Acta · visita a Verdi 42', texto: 'Les gusta; lo ven caro', det: 'acta-casals'}],
-    'sergi-font': [{cuando: 'Mar 17', tipo: 'Acta', titulo: 'Acta · visita a Verdi 42', texto: 'Lo ve caro y sin ascensor', det: 'acta-sergi-font'}]
+    toni: [{cuando: 'Jue 19', tipo: 'Acta', titulo: 'Nota de la visita · Verdi 42', texto: 'Volverá con su arquitecto', det: 'acta-toni'}],
+    casals: [{cuando: 'Sáb 21', tipo: 'Acta', titulo: 'Nota de la visita · Verdi 42', texto: 'Les gusta; lo ven caro', det: 'acta-casals'}],
+    'sergi-font': [{cuando: 'Mar 17', tipo: 'Acta', titulo: 'Nota de la visita · Verdi 42', texto: 'Lo ve caro y sin ascensor', det: 'acta-sergi-font'}]
   };
   // lo que añade el modelo al resolver (cliente|cosa): cómo se lee en la historia
   b.vivo = {
-    'pere|c-elena': {tipo: 'Acta', titulo: 'Acta · Elena Vives', texto: 'Le gustó la luz; le preocupa el ruido', det: 'acta-elena'},
-    'elena|c-elena': {tipo: 'Acta', titulo: 'Acta · visita a Verdi 42', texto: 'Le gustó la luz; le preocupa el ruido', det: 'acta-elena'},
+    'pere|c-elena': {tipo: 'Acta', titulo: 'Nota de la visita · Elena Vives', texto: 'Le gustó la luz; le preocupa el ruido', det: 'acta-elena'},
+    'elena|c-elena': {tipo: 'Acta', titulo: 'Nota de la visita · Verdi 42', texto: 'Le gustó la luz; le preocupa el ruido', det: 'acta-elena'},
     'pere|c-pere': {tipo: 'Informe', titulo: 'Informe enviado a Pere', texto: '3 visitas', det: 'informe-hoy'}
   };
   // «Lo que sé de…»: dos líneas como mucho, cada una con su cita
@@ -110,7 +110,7 @@
   // ---- A5p · las tres preguntas preparadas (el resto, «no lo encuentro») ----
   b.preguntas = {
     jordi: {pregunta: '¿Qué le prometí a Jordi?', claves: [['jordi', 'promet']], cliente: 'jordi',
-      respuesta: 'Le prometiste el dossier antes del jueves 26.',
+      respuesta: 'Le prometiste el informe del piso antes del jueves 26.',
       cita: {texto: 'Claro, te lo paso antes del jueves.', origen: 'Tú · vie 20 nov, 12:20 · chat con Jordi Ferrer', chat: 'jordi'}},
     'sant-antoni': {pregunta: '¿Quién busca en Sant Antoni?', claves: [['sant antoni']], cliente: 'nuria',
       respuesta: 'Núria Camps busca en Sant Antoni, con balcón.',

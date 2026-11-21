@@ -145,3 +145,71 @@ html:not([data-mov=reducido]) .a-fin-ic{animation:a-sello var(--t-largo) var(--c
 .a-abierta .tc-encaja .foto-mini{width:48px;height:48px}
 .a-abierta .nota-caja{padding:var(--e2) var(--e3)}
 .a-abierta .tc-encaja{padding:var(--e2) var(--e3)}
+
+/* ---- ronda 6 · Hoy: lo que Veta aprende y hace sola (prefijo .a-r6-) ---- */
+.a-r6-hoy{display:flex;align-items:center;justify-content:space-between;gap:var(--e2);width:100%;min-height:var(--toque);margin-top:calc(-1*var(--e2));text-align:left;color:var(--t1)}
+.a-r6-hoy-t{font:700 var(--f-cuerpo)/1.25 var(--body);letter-spacing:-.005em}
+.a-r6-hoy-a{color:var(--t2);font-weight:600;white-space:nowrap}
+.a-r6-ch{color:var(--t3);display:grid;place-items:center;flex:none}
+.a-r6-desde{display:block;width:100%;min-height:var(--toque);margin-top:calc(-1*var(--e3));padding:0 0 var(--e1);text-align:left;font:500 var(--f-apoyo)/1.35 var(--body);color:var(--t2)}
+.a-r6-desde b{color:var(--t1);font-weight:700}
+.a-r6-mas{display:flex;align-items:center;gap:var(--e3);width:100%;min-height:var(--toque);padding:var(--e1) var(--e4);text-align:left;color:var(--t1);background:var(--s1);border:1px solid var(--borde);border-radius:var(--r-3)}
+.a-r6-mas-av{display:flex;flex:none}
+.a-r6-mas-av>*{margin-left:-10px;box-shadow:0 0 0 2px var(--s1);border-radius:50%}
+.a-r6-mas-av>*:first-child{margin-left:0}
+.a-r6-mas-t{flex:1;min-width:0;font:600 var(--f-apoyo)/1.3 var(--body);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.a-r6-mas .chev-gira{color:var(--t3);display:grid;place-items:center;flex:none;transform:rotate(90deg)}
+.a-r6-mas[aria-expanded=true] .chev-gira{transform:rotate(-90deg)}
+.a-r6-lista{background:var(--s1);border:1px solid var(--borde);border-radius:var(--r-3);box-shadow:var(--somb);overflow:hidden}
+.a-r6-fila{position:relative;display:flex;align-items:center;gap:var(--e3);width:100%;min-height:64px;padding:var(--e3) var(--e4);text-align:left;color:var(--t1)}
+.a-r6-fila+.a-r6-fila{border-top:1px solid var(--borde)}
+.a-r6-f-i{flex:none;width:40px;display:grid;place-items:center;color:var(--t2)}
+.a-r6-de-veta .a-r6-f-i{color:var(--oro)}
+.a-r6-f-c{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+.a-r6-f-t{font:600 var(--f-cuerpo)/1.3 var(--body)}
+.a-r6-f-s{font:500 var(--f-apoyo)/1.35 var(--body);color:var(--t2)}
+.a-r6-f-e{font:600 var(--f-apoyo)/1.3 var(--body);color:var(--acento);margin-top:2px}
+.a-r6-f-ch{color:var(--t3);display:grid;place-items:center;flex:none}
+.a-r6-fila .btn{width:auto;flex:none;min-width:var(--toque);min-height:var(--toque);padding:0 var(--e1)}
+.a-r6-en{align-self:flex-start}
+.a-r6-apr{border-color:var(--oro);box-shadow:0 0 0 3px var(--oro-suave),var(--somb)}
+.a-r6-apr-t{font:700 var(--f-hoja)/1.15 var(--display);letter-spacing:-.01em}
+.a-r6-apr-x{font:500 var(--f-apoyo)/1.35 var(--body);color:var(--t2);margin-top:calc(-1*var(--e2))}
+.a-r6-dif{display:flex;flex-direction:column;gap:var(--e2)}
+.a-r6-dif p{font:500 var(--f-cuerpo)/1.45 var(--body)}
+.a-r6-dif-r{display:block;font:600 var(--f-apoyo)/1.3 var(--body);color:var(--t2)}
+.a-r6-quita{color:var(--t3);text-decoration:line-through;text-decoration-thickness:1.5px}
+.a-r6-ok-t{display:flex;gap:var(--e2);align-items:flex-start;font:500 var(--f-cuerpo)/1.4 var(--body)}
+.a-r6-ok-t svg{flex:none;color:var(--oro);margin-top:1px}
+.a-r6-apl{font:600 var(--f-apoyo)/1.35 var(--body);color:var(--t2)}
+.a-r6-ok .btn{align-self:flex-start;width:auto;min-width:var(--toque);padding:0}
+.borrador .v-oro,.a-r6-dif .v-oro{padding:0 1px}
+.a-ej-p{font:500 var(--f-apoyo)/1.4 var(--body);color:var(--t2)}
+/* arriba, apretado: la tarjeta entera y el arranque de «Esto lo hago yo» caben sin desplazar a 390×844 */
+.a-r6-hoy{margin-top:calc(-1*var(--e3));align-items:flex-start;padding-top:12px}
+.a-r6-desde{margin-top:-28px}
+.a-r6-mas{margin-top:-4px}
+.a-r6-mas+.bloque .bloque-t,.a-abierta+.bloque .bloque-t{margin-top:0}
+.a-cambiado{flex-wrap:wrap}
+.a-cambiado .hecho-a{flex:1 0 100%}
+
+/* P4 · en pantallas bajas (iPhone SE, 667) la línea «Desde ayer…» se esconde: si no, el botón de la tarjeta queda bajo el micro */
+@media (max-width:899px) and (max-height:700px){.a-r6-desde{display:none}}
+
+/* ---- pulido ronda 6 · Hoy al abrir: la cuenta a tamaño de título, la tira dorada de lo cerrado y la tarjeta sin aire de más ---- */
+.a-r6-hoy{margin-top:calc(-1*var(--e2));padding-top:0;align-items:center;min-height:56px}
+.a-r6-hoy-t{font:700 1.5rem/1.14 var(--display);letter-spacing:-.015em}
+.a-r6-hoy-a{display:block;color:var(--t2);font-weight:700;white-space:nowrap}
+.a-r6-tira{display:flex;align-items:center;gap:var(--e2);width:100%;min-height:var(--toque);margin-top:calc(-1*var(--e2));padding:var(--e1) var(--e3);text-align:left;color:var(--t1);background:var(--oro-suave);box-shadow:inset 0 0 0 1px var(--oro-trazo);border-radius:var(--r-2)}
+.a-r6-tira>svg{flex:none;color:var(--oro)}
+.a-r6-tira-t{flex:1;min-width:0;font:600 var(--f-apoyo)/1.25 var(--body)}
+.a-r6-tira-t b{font-weight:700}
+.a-r6-tuyas{margin-top:-4px}
+.a-r6-fila .a-r6-f-t{overflow:hidden;text-overflow:ellipsis}
+.a-r6-cerrada .a-r6-f-t,.a-r6-cerrada .a-r6-f-s{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.a-r6-mira{align-self:flex-start;min-height:var(--toque);text-align:left;font:600 var(--f-cuerpo)/1.3 var(--body)}
+.a-msg .campo-caja{position:relative}
+.a-msg .campo-i{position:relative}
+.a-msg-oro{position:absolute;color:transparent;white-space:pre-wrap;overflow-wrap:break-word;pointer-events:none;box-sizing:border-box}
+.a-h-aun{color:var(--t2)}
+.a-r6-tira-t>span{display:block}

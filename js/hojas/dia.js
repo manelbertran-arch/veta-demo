@@ -27,8 +27,8 @@
       h += sec('¿Llegó?', llego
         ? UI.lineaHecho({texto: llego === 'si' ? 'Llegó · queda apuntado' : 'No llegó · queda apuntado', boton: {texto: 'Cambiar', accion: 'llego-borra'}})
         : UI.botones([{texto: 'Sí', accion: 'llego', datos: {v: 'si'}}, {texto: 'No llegó', accion: 'llego', datos: {v: 'no'}}]));
-      h += rec ? UI.lista([{titulo: 'Recordatorio preparado', sub: 'Está en En espera, ' + rec.fecha.toLowerCase(), icono: 'reloj'}])
-        : UI.lista([{titulo: 'Preparar un recordatorio si no contesta', sub: 'Lo dejo en En espera', icono: 'reloj', accion: 'recordatorio'}]);
+      h += rec ? UI.lista([{titulo: 'Recordatorio preparado', sub: 'Lo vigilo yo: ' + rec.fecha.toLowerCase(), icono: 'reloj'}])
+        : UI.lista([{titulo: 'Preparar un recordatorio si no contesta', sub: 'Lo vigilo yo', icono: 'reloj', accion: 'recordatorio'}]);
       return h + cerrar();
     },
     acciones: {
@@ -49,13 +49,14 @@
       const L = M.lectura() || {}, hoy = L.hoy || {}, dir = VETA.yo().papel === 'direccion', equipo = dir && d && d.quien === 'equipo';
       const sergi = dir ? null : M.cosa((DA().yaNo || {}).cosa);
       let h = `<p class="hoja-x">Leído hasta hoy, ${esc(VETA.ahora(-3))}</p>`;
-      h += `<ul class="a-canales">${(L.canales || []).map(c => `<li><span class="a-verde" aria-hidden="true"></span><span class="a-can-n">${esc(c.nombre)}</span><span class="a-can-h">${esc(c.hace)}</span></li>`).join('')}</ul>`;
-      h += `<p class="a-h-txt">${esc(equipo ? '46 chats de trabajo leídos hoy en la oficina · 14 audios pasados a texto · 3 por escuchar' : hoy.chats + ' chats leídos hoy · ' + hoy.audios + ' audios pasados a texto · ' + hoy.porEscuchar + ' por escuchar')}</p>`;
+      h += `<ul class="a-canales">${(L.canales || []).filter(c => /whatsapp/i.test(c.nombre)).map(c => `<li><span class="a-verde" aria-hidden="true"></span><span class="a-can-n">${esc(c.nombre)}</span><span class="a-can-h">${esc(c.hace)}</span></li>`).join('')}</ul>`;
+      h += `<p class="a-h-txt">${esc(equipo ? '46 chats de trabajo leídos hoy en la oficina' : hoy.chats + ' chats leídos hoy')}</p>`;
       // dirección: en Equipo, lo de la oficina (sin chats de nadie); en lo suyo, sus clientes
       const det = equipo ? ['Carmen López escribe al WhatsApp de la oficina y nadie le contesta', 'Joan Serra se queja: lleva diez días sin noticias', 'Teresa está de baja: 34 conversaciones sin atender']
         : dir ? ['Rubén Gil pregunta por las visitas del ático', 'Guillem Roig pide que le confirmes la visita del miércoles', 'Sílvia Prat espera respuesta a su oferta'] : (DA().detectado || []);
       h += sec('Detectado hoy · ' + det.length, `<ul class="a-h-lista">${det.map(t => `<li>${esc(t)}</li>`).join('')}</ul>`);
       if (sergi && sergi.estado === 'quitada') h += sec('Ya no está aquí · 1', `<ul class="a-h-lista"><li>${esc(DA().yaNo.texto)}</li></ul>`);
+      h += `<p class="a-h-gris a-h-aun"><span><b>Todavía no:</b> el correo, las llamadas y los audios no los leo.</span></p>`;
       h += `<p class="a-h-gris">${ic('candado', 18)} ${equipo ? 'Aquí solo sale lo de la oficina: los chats de cada persona no salen en dirección.' : 'Tus grupos personales y los chats que dejaste fuera no los leo.'}</p>`;
       return h + cerrar();
     }
@@ -89,7 +90,7 @@
       const hecho = cola.filter(c => ['enviada', 'hecha', 'quitada'].includes(c.estado)).length;
       const espera = VETA.A.esperaPend(q).length, man = M.manana(q).length;
       const parte = ((VETA.datos.partes || {})['1930'] || {}).bloques || [];
-      let h = `<div class="a-h-cifras">${[['Hecho', hecho], ['En espera', espera], ['Pasan a mañana', man]].map(([t, n]) => `<div><b>${n}</b><span>${esc(t)}</span></div>`).join('')}</div>`;
+      let h = `<div class="a-h-cifras">${[['Hecho', hecho], ['Vigilo', espera], ['Pasan a mañana', man]].map(([t, n]) => `<div><b>${n}</b><span>${esc(t)}</span></div>`).join('')}</div>`;
       h += `<div class="hoja-texto">${parte.slice(1).map(b => `<section class="ht-b">${b.titulo ? `<h3 class="ht-t">${esc(b.titulo)}</h3>` : ''}${b.texto ? `<p>${esc(b.texto)}</p>` : ''}${b.lista ? `<ul>${b.lista.map(x => `<li>${esc(x)}</li>`).join('')}</ul>` : ''}</section>`).join('')}</div>`;
       h += UI.lista([{titulo: 'Ver el parte completo', icono: 'doc', hoja: 'h41', datos: {parte: '1930'}}]);
       return h + UI.boton({texto: 'Volver a Hoy', datos: {cierra: '1'}});

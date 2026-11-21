@@ -19,7 +19,7 @@
     VETA.$$('[' + attr + ']', contenedor).forEach(el => {
       const k = prefijo + String(el.getAttribute(attr)).replace(/[^A-Za-z0-9_-]/g, '_');
       if (vistos.has(k)) return; vistos.add(k);
-      el.style.viewTransitionName = k; if (prefijo === 'vt-') el.style.viewTransitionClass = 'sitio'; hechos.push(el);
+      el.style.viewTransitionName = k; if (prefijo === 'vt-') el.style.viewTransitionClass = el.hasAttribute('data-muda') ? 'muda' : 'sitio'; hechos.push(el);   // data-muda: viaja sin fundido (la fila que se muda de bloque)
     });
     return hechos;
   }
@@ -47,6 +47,8 @@
     const claves = [];
     if (foco && foco.nodeType === 1 && dir === 'adelante') {
       const lista = foco.matches('[data-foco]') ? [foco] : [];
+      // la tarjeta se abre desde su sitio: si lo tocado está dentro de una tarjeta con data-foco="tarjeta", viaja la tarjeta entera
+      const tj = foco.closest('[data-foco="tarjeta"]'); if (tj && tj !== foco) lista.push(tj);
       lista.push(...VETA.$$('[data-foco]', foco));
       lista.forEach(el => {
         const v = el.dataset.foco; if (claves.includes(v)) return; claves.push(v);

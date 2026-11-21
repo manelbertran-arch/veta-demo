@@ -72,11 +72,12 @@ mark{background:var(--tinte);color:inherit;border-radius:4px;padding:0 2px}
 .cab-banda{background:var(--top-b);color:var(--top-t);justify-content:space-between}
 .cab-banda .cab-t{font-size:var(--f-titulo);letter-spacing:-.02em}
 .cab-yo{width:var(--toque);height:var(--toque);display:grid;place-items:center;border-radius:50%;margin-right:-6px}
-/* el «‹ anterior» no se recorta (hasta 11em): si no cabe todo, el título pasa a dos líneas */
+/* el «volver» es solo la flecha (con su aria-label): el título tiene todo el ancho y no parte en dos líneas por culpa suya */
 .cab-detalle{display:grid;grid-template-columns:minmax(min-content,1fr) minmax(0,auto) minmax(min-content,1fr);padding:0 var(--e2)}
 .cab-detalle .cab-t{text-align:center;white-space:normal;line-height:1.08;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2}
 .cab-detalle .cab-atras span{max-width:11em}
 .cab-detalle .cab-der{min-width:48px}
+.cab-detalle .cab-der:empty{min-width:0}
 .cab-atras{display:flex;align-items:center;gap:2px;min-height:var(--toque);min-width:var(--toque);padding:0 var(--e2) 0 0;color:var(--t2);font:600 var(--f-apoyo)/1.2 var(--body);overflow:hidden;justify-self:start;max-width:100%}
 .cab-atras span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .cab-der{justify-self:end;display:flex;align-items:center}
@@ -88,8 +89,8 @@ mark{background:var(--tinte);color:inherit;border-radius:4px;padding:0 2px}
 .fijo>*{width:100%;max-width:var(--col-max)}
 /* en móvil, con barra, el micro sube 26 px sobre ella: el botón fijo deja ese hueco para que no lo tape */
 .app[data-vista=movil] .col-movil .fijo{padding-bottom:calc(var(--e3) + var(--mic-sube))}
-/* y la lista deja debajo la altura del micro más 16 px: lo último de la pantalla nunca queda debajo del micro */
-.app[data-vista=movil]:not([data-completa=si]) .col-movil .pant{padding-bottom:calc(var(--mic) + var(--e4))}
+/* y la lista deja debajo 96 px (el micro más aire): lo último de la pantalla nunca queda debajo del micro */
+.app[data-vista=movil]:not([data-completa=si]) .col-movil .pant{padding-bottom:calc(96px + env(safe-area-inset-bottom,0px))}
 
 /* ---- barra de abajo ---- */
 .barra{flex:none;position:relative;z-index:4;height:calc(var(--tab-h) + env(safe-area-inset-bottom,0px));padding:0 var(--e2) env(safe-area-inset-bottom,0px);background:var(--tab-b);border-top:1px solid var(--borde);display:flex;align-items:stretch;justify-content:space-between}

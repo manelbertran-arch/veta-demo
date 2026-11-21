@@ -11,7 +11,7 @@
   const contactoFila = c => {
     const as = X.asignado(c.id);
     if (as) return UI.lineaHecho({texto: as.linea, hora: as.hora, vt: 'contacto-' + c.id, boton: {texto: 'Deshacer', accion: 'deshacer-contacto', de: c.id}});
-    return UI.fila({titulo: c.nombre, sub: 'Veta propone a ' + X.persona(c.propone).corto + ' · ' + c.cuando.replace('hoy, ', 'hoy ').replace('ayer, ', 'ayer ').replace(', 13:20', ''),
+    return UI.fila({titulo: c.nombre, sub: 'Yo se lo daría a ' + X.persona(c.propone).corto + ' · ' + c.cuando.replace('hoy, ', 'hoy ').replace('ayer, ', 'ayer ').replace(', 13:20', ''),
       av: c.id, ir: 'asunto/' + c.id, vt: 'contacto-' + c.id, focoFoto: true});
   };
 
@@ -22,7 +22,7 @@
       const hecha = X.cartera(), a = X.carteraA();
       const sin = (VETA.datos.contactos || []).filter(c => c.sinDueno);
       const quedan = sin.filter(c => !X.asignado(c.id)).length;
-      let h = `<h2 class="bloque-t d-sec" data-i="0">Cartera sin atender</h2>`;
+      let h = `<h2 class="bloque-t d-sec" data-i="0">Clientes de Teresa, sin atender</h2>`;
       h += `<div class="tarjeta d-cartera" data-i="1" data-vt="cola-d-teresa">` +
         `<div class="d-persona">${VETA.av('teresa', 64)}<span class="d-persona-c"><b>Teresa Gil</b><span>de baja desde el lunes 16</span></span></div>` +
         `<div class="d-tres">${[['34', 'Chats abiertos'], ['12', 'Clientes activos'], ['3', 'Visitas esta semana']].map(([n, t]) => `<div class="d-tres-c"><b>${n}</b><span>${t}</span></div>`).join('')}</div>`;
@@ -30,7 +30,7 @@
         h += UI.lineaHecho({texto: (hecha.extra && hecha.extra.linea) || lineaCartera(a), hora: hecha.hora, boton: {texto: 'Deshacer', accion: 'deshacer-cartera'}}) +
           `<p class="bloque-sub">${esc(destino((hecha.extra && hecha.extra.a) || a))} las verá mañana en su Hoy. Cuando Teresa vuelva, se las devuelves desde aquí.</p>`;
       } else {
-        h += `<p class="d-propone">${VETA.ic('rayo', 20)}<span>${a === 'laura' ? 'Veta propone a Laura Martí: misma oficina.' : a === 'anna' ? 'Has elegido a Anna Costa: misma oficina.' : 'Has elegido repartirla entre Laura y Anna: 17 y 17.'}</span></p>`;
+        h += `<p class="d-propone">${VETA.ic('rayo', 20)}<span>${a === 'laura' ? 'Yo se los pasaría a Laura Martí: misma oficina.' : a === 'anna' ? 'Has elegido a Anna Costa: misma oficina.' : 'Has elegido repartirla entre Laura y Anna: 17 y 17.'}</span></p>`;
       }
       h += '</div>';
       h += UI.bloque({titulo: 'Contactos que nadie lleva · ' + quedan, i: 2, html: `<div class="lista">${sin.map(contactoFila).join('')}</div>`});
@@ -40,7 +40,7 @@
     botonFijo: () => {
       if (X.cartera()) return '';
       const a = X.carteraA();
-      return UI.boton({texto: a === 'dos' ? 'Repartir la cartera entre Laura y Anna' : 'Pasar la cartera de Teresa a ' + destino(a), ir: 'reparto/confirmar'}) +
+      return UI.boton({texto: a === 'dos' ? 'Repartir sus clientes entre Laura y Anna' : 'Pasar los clientes de Teresa a ' + destino(a), ir: 'reparto/confirmar'}) +
         UI.botones([{texto: 'Elegir a otra persona', hoja: 'h35', datos: {para: 'cartera'}}]);
     },
     acciones: {
@@ -50,7 +50,7 @@
   });
 
   VETA.pantalla('G5b', {
-    titulo: 'Pasar la cartera',
+    titulo: 'Pasar sus clientes',
     guia: ['Aquí Veta te dice exactamente qué va a pasar antes de tocar el trabajo de otra persona.', 'Tú lo lees y confirmas, o cancelas.', 'Así nadie se lleva una sorpresa: ni el equipo ni los clientes.'],
     pinta: () => {
       const a = X.carteraA(), dos = a === 'dos';

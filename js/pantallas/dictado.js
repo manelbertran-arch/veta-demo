@@ -18,10 +18,10 @@
         (guardada ? '' : UI.boton({tipo: 'texto', texto: 'No es eso', hoja: 'h09', datos: {guion: e.tipo}, ancho: false})) + '</div>';
       if (e.tipo === 'tarea') {
         const d = diaElegido(e);
-        h += `<div class="borrador a-cosa" data-i="1"><span class="borrador-r">Borrador de Veta</span><p class="a-cosa-t">${esc(e.que)}</p>` +
+        h += `<div class="borrador a-cosa" data-i="1"><span class="borrador-r">Te lo he escrito yo</span><p class="a-cosa-t">${esc(e.que)}</p>` +
           `<p class="a-cosa-d">${ic('cal', 20)}<span>${esc(d.texto.replace(/^./, m => m.toLowerCase()))}</span></p></div>`;
       } else {
-        h += `<div class="borrador a-cosa" data-i="1"><span class="borrador-r">Borrador de Veta</span><p class="a-cosa-t a-cosa-nota">${esc(e.texto)}</p></div>`;
+        h += `<div class="borrador a-cosa" data-i="1"><span class="borrador-r">Te lo he escrito yo</span><p class="a-cosa-t a-cosa-nota">${esc(e.texto)}</p></div>`;
       }
       h += `<p class="a-pie" data-i="2">${esc(e.pie)}</p>`;
       h += UI.lista([{titulo: 'Lo que dijiste · ' + dijiste(e.tipo), icono: 'mic', hoja: 'h07', datos: {guion: e.tipo}}], {i: 3});

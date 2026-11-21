@@ -31,13 +31,13 @@
     guia: ['Aquí está lo que depende de otros o tiene fecha, por orden.', 'Tú preparas el recordatorio cuando toca, o lo das por cumplido.', 'Así nada de lo que te prometen se queda olvidado.'],
     pinta: () => {
       const q = VETA.A.q(), pend = VETA.A.esperaPend(q);
-      let h = `<p class="a-cuantas" data-i="0">${pend.length === 1 ? '1 cosa, por fecha' : pend.length + ' cosas, por fecha'}</p>`;
+      let h = `<p class="a-cuantas" data-i="0">Lo que vigilo por ti · ${pend.length === 1 ? '1 cosa' : pend.length + ' cosas'}</p>`;
       const u = M.ultima(q);
       if (u && u.tipo === 'espera' && u.orden === VETA.A.seq()) {
         h += `<div class="a-sitio" data-i="1">${UI.lineaCosa(u)}` +
           (u.id === 'e-elena' && u.borrador ? UI.borrador({texto: u.borrador}) + UI.nota({texto: 'No sale hasta que tú lo envíes', icono: 'candado'}) : '') + '</div>';
       }
-      if (!pend.length) return h + UI.vacio({titulo: 'Nada en espera', texto: 'Nada en espera. Lo que prometan, lo apunto yo.', icono: 'reloj', i: 1});
+      if (!pend.length) return h + UI.vacio({titulo: 'Ahora no vigilo nada', texto: 'Lo que te prometan, lo apunto yo.', icono: 'reloj', i: 1});
       h += `<div class="a-abierta" data-i="1">${UI.tarjetaCosa(abierta(pend[0]))}</div>`;
       if (pend.length > 1) h += `<div data-i="2">${UI.lista(pend.slice(1).map(fila))}</div>`;
       h += `<p class="pie" data-i="3">${esc((VETA.datos.diaA || {}).esperaPie || '')}</p>`;

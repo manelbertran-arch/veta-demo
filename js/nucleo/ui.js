@@ -34,8 +34,8 @@
     'sin-responder': ['rojo', 'aviso', 'Sin responder desde ayer'], 'vencida': ['rojo', 'reloj', 'Vencida'], 'no-se-puede': ['rojo', 'candado', 'No se puede enviar'],
     'prometiste': ['ambar', 'mano', 'Lo prometiste'], 'parado': ['ambar', 'pausa', 'Parado'], 'para-manana': ['ambar', 'luna', 'Para mañana'], 'falta': ['ambar', 'papel', 'Falta'],
     'oportunidad': ['verde', 'rayo', 'Oportunidad'], 'recibido': ['verde', 'check', 'Recibido'], 'en-marcha': ['verde', 'check', 'En marcha'],
-    'a-prueba': ['azul', 'probeta', 'A prueba'], 'ejemplo': ['azul', 'info', 'Ejemplo'], 'tuya': ['azul', 'usuario', 'Tuya'],
-    'propuesta': ['oro', 'estrella', 'Propuesta'], 'por-decidir': ['oro', 'estrella', 'Por decidir']
+    'a-prueba': ['azul', 'probeta', 'Lo estoy probando'], 'ejemplo': ['azul', 'info', 'Ejemplo'], 'tuya': ['azul', 'usuario', 'Tuya'],
+    'propuesta': ['oro', 'estrella', 'Te lo propongo'], 'por-decidir': ['oro', 'estrella', 'Tienes que decidir']
   };
 
   // ---- avatar: foto o iniciales; si la foto falla, quedan las iniciales ----
@@ -90,7 +90,7 @@
       (o.etiqueta ? `<span class="fila-e">${UI.etiqueta(o.etiqueta, o.etiquetaTexto)}</span>` : '') + '</span>' +
       (o.derecha ? `<span class="fila-d">${esc(o.derecha)}</span>` : '') + (chev ? `<span class="fila-chev">${ic('chev', 16)}</span>` : '');
     const cls = 'fila' + (o.marcada ? ' marcada' : '') + (o.clase ? ' ' + o.clase : '');
-    return interactivo(o) ? `<button type="button" class="${cls}"${attrs(o)}>${cuerpo}</button>` : `<div class="${cls} fila-quieta"${attrs({vt: o.vt, i: o.i})}>${cuerpo}</div>`;
+    return interactivo(o) ? `<button type="button" class="${cls}"${attrs(o)}>${cuerpo}</button>` : `<div class="${cls} fila-quieta"${attrs({vt: o.vt, i: o.i, datos: o.datos})}>${cuerpo}</div>`;
   };
   UI.lista = (filas, o) => { o = o || {}; return `<div class="lista${o.clase ? ' ' + o.clase : ''}"${o.i != null ? ` data-i="${o.i}"` : ''}>${(filas || []).filter(Boolean).map(f => typeof f === 'string' ? f : UI.fila(f)).join('')}</div>`; };
 
@@ -102,7 +102,7 @@
     return `<button type="button" class="cita" data-hoja="h01"${o.de ? ` data-de="${esc(o.de)}"` : ''}${o.chat ? ` data-chat="${esc(o.chat)}"` : ''}>` +
       `<span class="cita-t">«${esc(o.texto)}»</span><span class="cita-o">${esc(o.origen)} ›</span></button>`;
   };
-  UI.borrador = o => `<div class="borrador"${o.id ? ` id="${esc(o.id)}"` : ''}><span class="borrador-r">${esc(o.rotulo || 'Borrador de Veta')}</span>` +
+  UI.borrador = o => `<div class="borrador"${o.id ? ` id="${esc(o.id)}"` : ''}><span class="borrador-r">${esc(o.rotulo || 'Te lo he escrito yo')}</span>` +
     `<p class="borrador-t">${o.html || esc(o.texto)}</p></div>`;
   UI.nota = o => `<p class="nota${o.caja ? ' nota-caja' : ''}${o.clase ? ' ' + o.clase : ''}">${o.icono ? ic(o.icono, 18) : ''}<span>${o.html || esc(o.texto)}</span></p>`;
 

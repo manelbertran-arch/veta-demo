@@ -62,7 +62,8 @@
     return lista.filter(c => !f.includes(c.cliente)).map(mezcla);
   };
   M.pendientes = quien => M.cola(quien).filter(c => PENDIENTES.includes(c.estado));
-  M.contador = quien => M.pendientes(quien).length;
+  // el número de la pestaña Hoy: la misma cuenta que el título y el «1 de N» (VETA.r6.tocan, en datos/r6-dia.js)
+  M.contador = quien => VETA.r6 && VETA.r6.tocan ? VETA.r6.tocan(quien).quedan : M.pendientes(quien).length;
   M.hechas = quien => M.cola(quien).concat(M.espera(quien)).filter(c => HECHAS.includes(c.estado)).sort((a, b) => a.orden - b.orden);
   M.manana = quien => M.cola(quien).filter(c => c.estado === 'para-manana');
   M.ultima = quien => { const id = VETA.est.lee('ultima.' + quien, null); const c = id && M.cosa(id); return c && RESUELTOS.includes(c.estado) ? c : null; };

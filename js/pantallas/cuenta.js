@@ -13,7 +13,7 @@
   // ---- A15 · Cuenta y privacidad ----
   VETA.pantalla('A15', {
     titulo: 'Cuenta y privacidad',
-    guia: ['Aquí decides qué lee Veta y cómo la ves.', 'Tú puedes dejar fuera cualquier chat o desconectar WhatsApp.', 'Así dirección no ve tus chats ni tus cifras.'],
+    guia: ['Aquí decides qué lee Veta y cómo la ves.', 'Tú puedes dejar fuera cualquier chat o desconectar WhatsApp.', 'Así sabes qué ve dirección de ti y qué no.'],
     pinta: () => {
       const yo = VETA.yo(), desc = C.lee('desconectado', false), cal = C.calendario();
       const aspecto = `${VETA.tema.MODOS[VETA.tema.modo()]}, paleta ${VETA.tema.NOMBRES[VETA.tema.color()]}`;
@@ -22,11 +22,12 @@
       return `<div class="c-yo" data-i="0">${VETA.av(yo.id, 64)}<div><p class="c-yo-n">${esc(yo.nombre)}</p><p class="c-yo-p">${esc((VETA.datos.oficinas[yo.oficina] || {}).nombre || '')}</p>` +
           `<p class="c-yo-acc">Tu acceso: <b>${acceso}</b></p>${yo.papel === 'direccion' ? '<p class="c-yo-p">Lo decide quien administra la oficina al darte de alta.</p>' : ''}</div></div>` +
         UI.bloque({titulo: 'Lo que leo', i: 1, html: UI.lista([
-          {titulo: 'Chats que no leo', sub: desc ? 'Desconectado · no leo nada' : C.lecturaTexto(), icono: 'chat', ir: 'cuenta/chats', g: 'Chats que no leo|Eliges qué chats quedan fuera.'},
+          {titulo: 'Chats que no leo', sub: desc ? 'Desconectado · no leo nada' : C.lecturaTexto(), icono: 'chat', ir: 'cuenta/chats', g: 'Chats que no leo|Eliges qué chats no leo.'},
           {titulo: 'Calendario', sub: cal ? cal + ' · leo tus citas' : 'sin conectar', icono: 'cal', hoja: 'h33'},
           {titulo: 'Acuerdo de datos', icono: 'doc', hoja: 'h29', datos: {texto: 'acuerdo'}},
           {titulo: 'Usarlo sin conexión', icono: 'wifi', hoja: 'h28'},
           {titulo: 'Si dejas la agencia', icono: 'escudo', hoja: 'h29', datos: {texto: 'agencia'}}])}) +
+        (yo.papel === 'direccion' ? '' : C.direccionVe(2)) +
         UI.bloque({titulo: 'Tu cuenta · ' + yo.nombre, i: 2, html: UI.lista([
           {titulo: 'Aspecto', sub: aspecto, icono: 'paleta', hoja: 'h26'},
           UI.interruptor({texto: 'Guía', sub: 'explica lo que tocas', on: VETA.guia.on(), accion: 'guia'}),
@@ -34,6 +35,7 @@
           {titulo: 'Seguridad', icono: 'candado', ir: 'cuenta/seguridad'},
           // el primer día y el mapa salen de los chats de Laura: en dirección no se enseñan
           yo.papel === 'direccion' ? null : {titulo: 'Ver el primer día otra vez', icono: 'play', ir: 'primer-dia/0'},
+          yo.papel === 'direccion' ? null : {titulo: 'Qué hace Veta', sub: 'Todo lo que hago por ti', icono: 'aprende', ir: 'que-hace'},
           yo.papel === 'direccion' ? null : {titulo: 'Mi mapa de trabajo', icono: 'mapa', ir: 'mapa'},
           // ya abierta desde el icono, o en ordenador: la fila no sale
           inicio === 'hecho' || inicio === 'ordenador' ? null : {titulo: 'Poner Veta en la pantalla de inicio', sub: 'Para abrirla como una app', icono: 'compartir', hoja: 'h31'}])}) +
@@ -69,8 +71,8 @@
       const fila = (titulo, sub, boton) => `<div class="c-chat-f">${UI.fila({titulo, sub, icono: 'candado'})}${UI.boton(Object.assign({tipo: 'texto', ancho: false}, boton))}</div>`;
       const filas = C.personales().map((n, k) => dentro.includes(n)
           ? fila(n, 'Lo vuelvo a leer', {texto: 'Dejar fuera otra vez', accion: 'personal', datos: {n: k}})
-          : fila(n, 'Fuera desde el 3 de octubre', {texto: 'Quitar de la lista', accion: 'personal', datos: {n: k}}))
-        .concat(clientes.map(id => fila((M.quien(id) || {}).nombre || id, 'Cliente · fuera desde hoy', {texto: 'Quitar de la lista', accion: 'cliente', de: id})));
+          : fila(n, 'No lo leo · desde el 3 de septiembre', {texto: 'Quitar de la lista', accion: 'personal', datos: {n: k}}))
+        .concat(clientes.map(id => fila((M.quien(id) || {}).nombre || id, 'Cliente · no lo leo desde hoy', {texto: 'Quitar de la lista', accion: 'cliente', de: id})));
       return `<p class="intro" id="c-intro-chats" data-i="0">${esc(intro())}</p>` +
         `<div class="lista c-chats" data-i="1">${filas.join('')}</div>` +
         UI.lista([{titulo: 'Añadir un chat a esta lista', icono: 'mas', hoja: 'c-anadir'}, {titulo: 'Borrar un chat', icono: 'borrar', hoja: 'h30'}], {i: 2}) +
@@ -82,7 +84,7 @@
         const n = C.personales()[Number(el.dataset.n)], entra = !C.dentro().includes(n);
         const d = C.dentro().filter(x => x !== n); if (entra) d.push(n); C.pon('dentro', d);
         VETA.repinta();
-        VETA.aviso(entra ? `${n} sale de la lista. Veta vuelve a leerlo.` : `${n} queda fuera otra vez.`, {deshacer: () => { C.pon('dentro', entra ? d.filter(x => x !== n) : d.concat(n)); VETA.repinta(); }});
+        VETA.aviso(entra ? `${n} sale de la lista. Veta vuelve a leerlo.` : `${n}: no lo leo otra vez.`, {deshacer: () => { C.pon('dentro', entra ? d.filter(x => x !== n) : d.concat(n)); VETA.repinta(); }});
       },
       cliente(ev, el) {
         const id = el.dataset.de, nombre = (M.quien(id) || {}).nombre || id;

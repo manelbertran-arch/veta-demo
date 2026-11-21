@@ -6,7 +6,7 @@
             «Soy agente» o «Soy de dirección». Mismo fondo y luz que la portada (VETA.fondoMarca). La veta de oro
             de antes se quitó: cruzaba el lema y las opciones. A 375×667 se quita la línea de qué hace Veta (nunca el lema ni las opciones).
    paso 1 · correo y contraseña, ya rellenos con la cuenta de ejemplo de ese papel (Laura Martí; Montse Ribas, que además lleva clientes).
-   paso 2 · solo dirección: el código de la app de verificación.
+   paso 2 · solo dirección: el código de 6 números del móvil.
    No hay cambio de perfil dentro de la app: se cambia de persona con Cuenta › «Cerrar sesión», que vuelve al paso 0.
    Las cuentas y la contraseña son de ejemplo; nada sale del navegador. */
 (function () {
@@ -17,7 +17,7 @@
   const quien = c => Object.keys(CU()).find(k => CU()[k] === String(c || '').trim().toLowerCase());
   const PAPELES = [
     {id: 'laura', titulo: 'Soy agente', sub: 'Llevo mis clientes. Veta me prepara el día.', icono: 'clientes', entras: 'Entras como agente'},
-    {id: 'montse', titulo: 'Soy de dirección', sub: 'Llevo la oficina. Veo cómo va el equipo y reparto lo que nadie ha cogido.', icono: 'equipo', entras: 'Entras como dirección · también llevas tus clientes'}
+    {id: 'montse', titulo: 'Soy de dirección', sub: 'Llevo la oficina. Veo cada operación y a cada persona, el trabajo que Veta le quita al equipo y lo que tengo que decidir.', icono: 'equipo', entras: 'Entras como dirección · también llevas tus clientes'}
   ];
   const aviso = `<p class="port-aviso">Ejemplo con datos inventados. No sale ningún mensaje.</p>`;
   const marca = `<div class="port-marca" data-i="0"><img src="assets/veta-symbol-gold.png" alt="" width="30" height="24"><b>VETA</b></div>`;
@@ -30,7 +30,7 @@
       if (paso === 0) {
         return `<div class="portada c-entrar c-lema">${VETA.fondoMarca()}${marca}<div class="c-entrar-c">` +
           `<h1 class="port-h" data-i="1"><span>Tú trabajas.</span><span class="oro">Veta aprende.</span><span class="oro">Después lo hace por ti.</span></h1>` +
-          `<p class="port-que" data-i="1">Veta convierte tus conversaciones de trabajo en acciones preparadas y automatizaciones que aprenden de ti.</p>` +
+          `<p class="port-que" data-i="1">Veta lee tus chats de trabajo, te deja listo lo que toca y aprende a hacerlo sola.</p>` +
           `<h2 class="c-papel-h" data-i="2">¿Qué papel tienes en tu oficina?</h2>` +
           `<div class="c-entrar-cuentas" data-i="2">${PAPELES.map(p =>
             `<button type="button" class="c-cuenta c-papel" data-accion="papel" data-de="${p.id}"><span class="c-papel-ic">${VETA.ic(p.icono, 24)}</span>` +
@@ -41,8 +41,8 @@
       }
       if (paso === 2) {
         return `<div class="portada c-entrar">${VETA.fondoMarca()}${marca}<div class="c-entrar-c">` +
-          `<h1 class="c-entrar-h" data-i="1">Un paso más</h1><p class="port-dice" data-i="1">Dirección entra con un código de su app de verificación.</p>` +
-          `<div data-i="2">${UI.campo({etiqueta: 'Código de 6 cifras de tu app de verificación', id: 'c-codigo', valor: '482 913', tipo: 'text'})}</div>` +
+          `<h1 class="c-entrar-h" data-i="1">Un paso más</h1><p class="port-dice" data-i="1">Escribe el código de 6 números de tu móvil.</p>` +
+          `<div data-i="2">${UI.campo({etiqueta: 'Código de 6 números', id: 'c-codigo', valor: '482 913', tipo: 'text'})}</div>` +
           `<div class="port-acc" data-i="3">${UI.boton({tipo: 'claro', texto: 'Entrar', accion: 'codigo'})}${cambiar}</div>` +
           `</div>${aviso}</div>`;
       }
@@ -69,7 +69,7 @@
       },
       codigo() {
         const c = document.getElementById('c-codigo');
-        if (!c || c.value.replace(/\D/g, '').length !== 6) { c && c.focus(); VETA.aviso('El código tiene 6 cifras.'); return; }
+        if (!c || c.value.replace(/\D/g, '').length !== 6) { c && c.focus(); VETA.aviso('El código tiene 6 números.'); return; }
         fin('montse');
       },
       otra() { paso = 0; error = false; VETA.repinta(); }

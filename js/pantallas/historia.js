@@ -10,11 +10,11 @@
 
   VETA.pantalla('A16', {
     titulo: 'Historia',
-    guia: ['Aquí está todo lo que ha pasado con este cliente, por fecha.', 'Tú abres un acta, un informe o un mensaje para leerlo entero.', 'Así sabes de qué va antes de llamar.'],
+    guia: ['Aquí está todo lo que ha pasado con este cliente, por fecha.', 'Tú abres una nota de la visita, un informe o un mensaje para leerlo entero.', 'Así sabes de qué va antes de llamar.'],
     pinta: p => {
       const c = M.cliente(p.id);
       if (!c) return UI.vacio({titulo: 'No encuentro a este cliente.', icono: 'pregunta', boton: {texto: 'Volver', atras: true}});
-      if (VETA.ajeno(c.id)) return UI.vacio({titulo: `Lo lleva ${(M.persona(c.lleva) || {}).corto || 'otra persona'}.`, texto: 'Su historia con este cliente, sus actas y sus notas: nada de eso no sale en dirección.', icono: 'candado', boton: {texto: 'Volver', atras: true}});
+      if (VETA.ajeno(c.id)) return UI.vacio({titulo: `Lo lleva ${(M.persona(c.lleva) || {}).corto || 'otra persona'}.`, texto: 'Su historia con este cliente, sus notas de visita y sus notas: nada de eso se ve en dirección.', icono: 'candado', boton: {texto: 'Volver', atras: true}});
       if (st.id !== c.id) { st.id = c.id; st.filtro = 'todo'; }
       const todo = B.historia(c.id);
       const l = st.filtro === 'actas' ? todo.filter(h => h.tipo === 'Acta') : todo;
@@ -31,10 +31,10 @@
         return m ? [{texto: c.quienEs ? c.quienEs + '.' : '', cita: m.texto, origen: `${B.corto(c)} · ${m.cuando}`, chat: c.chat}] : [];
       })();
       const aviso = ajeno ? UI.nota({texto: `Lo lleva ${(M.persona(c.lleva) || {}).corto || 'otra persona'}. Ves los hitos; lo que hablan en su chat no sale en dirección.`, icono: 'candado', caja: true}) : '';
-      return aviso + `<div data-i="0">${UI.selector({etiqueta: 'Qué ver', opciones: [{id: 'todo', texto: 'Todo'}, {id: 'actas', texto: 'Actas'}], valor: st.filtro, accion: 'filtro'})}</div>` +
+      return aviso + `<div data-i="0">${UI.selector({etiqueta: 'Qué ver', opciones: [{id: 'todo', texto: 'Todo'}, {id: 'actas', texto: 'Notas de visita'}], valor: st.filtro, accion: 'filtro'})}</div>` +
         (l.length ? `<div class="b-hist${anima}" data-i="1">${UI.lista(filas)}</div>`
-          : UI.vacio({i: 1, titulo: st.filtro === 'actas' ? 'Todavía no hay actas con este cliente.' : 'Todavía no hay nada con este cliente.',
-            texto: st.filtro === 'actas' ? 'Cuando dictes una visita, el acta sale aquí.' : 'Lo que pase en sus chats y lo que dictes saldrá aquí, por fecha.', icono: 'libro'})) +
+          : UI.vacio({i: 1, titulo: st.filtro === 'actas' ? 'Todavía no hay notas de visita con este cliente.' : 'Todavía no hay nada con este cliente.',
+            texto: st.filtro === 'actas' ? 'Cuando dictes una visita, la nota de la visita sale aquí.' : 'Lo que pase en sus chats y lo que dictes saldrá aquí, por fecha.', icono: 'libro'})) +
         (sabe.length ? UI.bloque({titulo: `Lo que sé de ${B.corto(c)}`, i: 2, html: sabe.map(s => `<div class="b-sabe">${s.texto ? `<p class="b-sabe-t">${esc(s.texto)}</p>` : ''}` +
           UI.cita({texto: s.cita, origen: s.origen, chat: s.chat}) + '</div>').join('')}) : '');
     },

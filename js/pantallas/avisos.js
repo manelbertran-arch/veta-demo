@@ -8,7 +8,7 @@
 
   const puestos = () => {
     const off = X.lee('avisosOff', {});
-    return X.lee('avisos', []).map(a => Object.assign({salto: 'no ha saltado', nuevo: true}, a)).concat(D.avisos.puestos).map(a => Object.assign({}, a, {off: !!off[a.id]}));
+    return X.lee('avisos', []).map(a => Object.assign({salto: 'todavía no te ha avisado', nuevo: true}, a)).concat(D.avisos.puestos).map(a => Object.assign({}, a, {off: !!off[a.id]}));
   };
 
   VETA.pantalla('G6', {
@@ -19,11 +19,11 @@
       let h = `<div class="d-avisame" data-i="0"><span class="d-avisame-ic">${VETA.ic('campana', 24)}</span>` +
         `<label class="d-avisame-c" for="d-aviso-t"><span>Avísame cuando…</span><input id="d-aviso-t" class="d-avisame-i" type="text" value="${esc(texto)}" placeholder="escribe aquí, o usa un ejemplo" enterkeyhint="done"></label></div>`;
       if (ult) h += `<div data-i="0">${UI.lineaHecho({texto: 'Aviso creado · Cuando salte, lo verás en Equipo.', hora: ult.hora, vt: 'aviso-' + ult.id, boton: {texto: 'Deshacer', accion: 'deshacer-aviso', de: ult.id}})}</div>`;
-      if (texto.trim()) h += UI.lista([{titulo: 'Cómo habría ido', sub: 'Las veces que habría saltado este último mes', icono: 'reloj', hoja: 'h36', datos: {ejemplo: ejemplo || ''}}], {i: 1});
+      if (texto.trim()) h += UI.lista([{titulo: 'Cómo habría ido', sub: 'Las veces que te habría avisado este último mes', icono: 'reloj', hoja: 'h36', datos: {ejemplo: ejemplo || ''}}], {i: 1});
       h += UI.bloque({titulo: 'Ejemplos', i: 1, html: `<div class="lista">${D.avisos.ejemplos.map(e => `<div class="fila fila-quieta d-ej${ejemplo === e.id ? ' marcada' : ''}"><span class="fila-c"><span class="fila-t">${esc(e.texto)}</span></span>` +
         UI.boton({tipo: 'secundario', texto: ejemplo === e.id ? 'Elegido' : 'Usar este', accion: 'usar', de: e.id, ancho: false, clase: 'd-usar'}) + '</div>').join('')}</div>`});
-      h += UI.bloque({titulo: 'Puestos · ' + ps.filter(a => !a.off).length, i: 2, html: UI.lista(ps.map(a => ({titulo: a.texto, sub: a.off ? 'apagado' : a.salto, icono: a.off ? 'pausa' : 'campana', hoja: 'h37', datos: {aviso: a.id}, vt: 'aviso-' + a.id})))});
-      h += UI.bloque({titulo: 'Han saltado · 1', i: 3, html: UI.lista([{titulo: 'Queja de Joan Serra', sub: 'Un propietario se queje · sábado 21, 20:05', av: 'joan-serra', ir: 'asunto/joan-serra'}])});
+      h += UI.bloque({titulo: 'Tus avisos · ' + ps.filter(a => !a.off).length, i: 2, html: UI.lista(ps.map(a => ({titulo: a.texto, sub: a.off ? 'apagado' : a.salto, icono: a.off ? 'pausa' : 'campana', hoja: 'h37', datos: {aviso: a.id}, vt: 'aviso-' + a.id})))});
+      h += UI.bloque({titulo: 'Te han avisado · 1', i: 3, html: UI.lista([{titulo: 'Queja de Joan Serra', sub: 'Un propietario se queje · sábado 21, 20:05', av: 'joan-serra', ir: 'asunto/joan-serra'}])});
       h += `<p class="pie" data-i="4">1 caso lleva 5 días sin constancia. El agente ya está avisado; si el jueves sigue igual, verás el recuento, sin nombre ni cliente.</p>`;
       return h;
     },

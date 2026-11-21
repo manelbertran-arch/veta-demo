@@ -246,11 +246,11 @@ textarea.campo-i{resize:vertical;line-height:1.4}
 /* los idiomas: «Elige idioma · Choose your language» y la órbita con los dos. Cada idioma es su botón y se toca siempre:
    el de detrás sube y se atenúa, no se esconde. La órbita mide 2 × 5,75rem de ancho más el botón; 2 × 2rem de alto más el toque */
 .m-idiomas{display:flex;flex-direction:column;align-items:center;gap:var(--e2);touch-action:manipulation;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
-.m-elige{margin:0;display:flex;flex-wrap:wrap;justify-content:center;gap:0 .6em;font:500 .75rem/1.5 var(--body);letter-spacing:.14em;text-transform:uppercase;color:var(--port-t2);opacity:.85;text-align:center}
+.m-elige{margin:0;display:flex;flex-wrap:wrap;justify-content:center;gap:0 .6em;font:500 var(--f-apoyo)/1.5 var(--body);letter-spacing:.08em;text-transform:uppercase;color:var(--port-t2);opacity:.85;text-align:center}
 .m-elige i{font-style:normal;opacity:.6}
 .m-orbita{position:relative;width:min(100%,21rem);height:calc(4rem + var(--toque))}
 .m-via{position:absolute;left:50%;top:50%;width:0;height:0}
-.m-idioma{position:absolute;left:0;top:0;transform:translate(-50%,-50%);display:flex;align-items:center;justify-content:center;min-height:var(--toque);padding:0 1rem;white-space:nowrap;background:rgba(10,9,6,.35);border:1px solid rgba(245,236,220,.2);border-radius:999px;font:600 var(--f-apoyo)/1 var(--body);letter-spacing:.3em;text-indent:.3em;text-transform:uppercase;color:#F5ECDC;cursor:pointer;touch-action:manipulation;-webkit-user-select:none;user-select:none}
+.m-idioma{position:absolute;left:0;top:0;transform:translate(-50%,-50%);display:flex;align-items:center;justify-content:center;min-height:calc(var(--toque) + 4px);padding:0 1rem;white-space:nowrap;background:rgba(10,9,6,.35);border:1px solid rgba(245,236,220,.2);border-radius:999px;font:600 var(--f-apoyo)/1 var(--body);letter-spacing:.3em;text-indent:.3em;text-transform:uppercase;color:#F5ECDC;cursor:pointer;touch-action:manipulation;-webkit-user-select:none;user-select:none}
 .m-idioma:focus-visible{outline:2px solid var(--port-3);outline-offset:2px}
 @media (hover:hover) and (pointer:fine){.m-idioma:hover{border-color:rgba(232,190,120,.6)}}
 /* sin movimiento: los dos quietos, en fila */
@@ -273,3 +273,6 @@ html[data-mov=reducido] .m-idioma{position:static;transform:none;opacity:1}
 /* cita de un chat que dirección no lee (cliente de otra persona) */
 .cita.cita-ajena{flex-direction:row;align-items:flex-start;gap:var(--e2);min-height:0;color:var(--t2);font:500 var(--f-apoyo)/1.4 var(--body)}
 .cita-ajena svg{flex:none;margin-top:2px}
+
+/* A11 · las dos etiquetas de la orden dictada (Trabajo nuevo · Te lo propongo + Ejemplo) */
+.c-etqs{display:flex;flex-wrap:wrap;gap:var(--e2);align-items:center}

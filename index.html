@@ -27,6 +27,7 @@ var red=p.mov==='reducido'||s.mov==='reducido'||/[?&]mov=reducido/.test(location
 <link rel="stylesheet" href="css/temas.css">
 <link rel="stylesheet" href="css/componentes.css">
 <link rel="stylesheet" href="css/movimiento.css">
+<link rel="stylesheet" href="css/vivo.css">
 <link rel="stylesheet" href="css/ordenador.css">
 <link rel="stylesheet" href="css/p-dia.css">
 <link rel="stylesheet" href="css/p-clientes.css">
@@ -62,6 +63,7 @@ var red=p.mov==='reducido'||s.mov==='reducido'||/[?&]mov=reducido/.test(location
 <script src="js/nucleo/hoja.js"></script>
 <script src="js/nucleo/aviso.js"></script>
 <script src="js/nucleo/modelo.js"></script>
+<script src="js/nucleo/vivo.js"></script>
 <script src="js/nucleo/rutas.js"></script>
 <script src="js/nucleo/guia.js"></script>
 <!-- datos (los extra-*.js son de cada paquete) -->
@@ -74,6 +76,10 @@ var red=p.mov==='reducido'||s.mov==='reducido'||/[?&]mov=reducido/.test(location
 <script src="js/datos/extra-b.js"></script>
 <script src="js/datos/extra-c.js"></script>
 <script src="js/datos/extra-d.js"></script>
+<!-- ronda 6: un archivo de datos por paquete (A, C, D) -->
+<script src="js/datos/r6-dia.js"></script>
+<script src="js/datos/r6-veta.js"></script>
+<script src="js/datos/r6-direccion.js"></script>
 <!-- pantallas: núcleo, A, B, C, D -->
 <script src="js/pantallas/portada.js"></script>
 <script src="js/pantallas/muestrario.js"></script>
@@ -109,6 +115,15 @@ var red=p.mov==='reducido'||s.mov==='reducido'||/[?&]mov=reducido/.test(location
 <script src="js/pantallas/conexiones.js"></script>
 <script src="js/pantallas/informe-completo.js"></script>
 <script src="js/pantallas/entra.js"></script>
+<!-- ronda 6: pantallas nuevas (C: que-hace, antes-ahora · D: oficina-que-hace, oficina-antes-ahora) -->
+<script src="js/pantallas/que-hace.js"></script>
+<script src="js/pantallas/antes-ahora.js"></script>
+<script src="js/pantallas/oficina-que-hace.js"></script>
+<script src="js/pantallas/oficina-antes-ahora.js"></script>
+<!-- ronda 6 · D: operaciones, una operación, una persona -->
+<script src="js/pantallas/operaciones.js"></script>
+<script src="js/pantallas/operacion.js"></script>
+<script src="js/pantallas/persona.js"></script>
 <!-- hojas: comunes (núcleo), A, B, C, D -->
 <script src="js/hojas/comunes.js"></script>
 <script src="js/hojas/dia.js"></script>

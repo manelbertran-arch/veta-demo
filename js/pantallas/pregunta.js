@@ -58,7 +58,7 @@
       const acta = M.cosa('c-elena');
       if (r.hoy && acta && acta.estado === 'hecha') l.push(r.hoy);
       filas = UI.lista(l.map(f => { const c = M.cliente(f.cliente) || {}; return {titulo: `${f.cuando} · ${c.nombre}`, sub: f.texto, av: f.cliente, ir: 'cliente/' + f.cliente}; }));
-      if (l.length > r.filas.length) extra = UI.nota({texto: 'Y hoy, la visita de Elena Vives: ya está en su acta.', icono: 'info'});
+      if (l.length > r.filas.length) extra = UI.nota({texto: 'Y hoy, la visita de Elena Vives: ya está en su nota de la visita.', icono: 'info'});
     }
     return `<div class="b-resp" data-i="1">${UI.tarjeta(`<span class="b-resp-r">${VETA.ic('pregunta', 18)}<span>Veta responde</span></span>` +
       `<p class="b-resp-t b-escribe">${esc(r.respuesta)}</p>` +

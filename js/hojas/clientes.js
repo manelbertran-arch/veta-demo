@@ -190,7 +190,7 @@
       const x = h.det && D.b.detalles[h.det];
       if (x && x.tipo === 'acta') {
         return `<p class="hoja-x tenue">${esc(x.cuando)}</p>` +
-          UI.borrador({rotulo: 'Acta de la visita', html: [['Lo que le gustó', x.gusta], ['Lo que le preocupa', x.preocupa], ['Siguiente paso', x.siguiente]]
+          UI.borrador({rotulo: 'Nota de la visita', html: [['Lo que le gustó', x.gusta], ['Lo que le preocupa', x.preocupa], ['Siguiente paso', x.siguiente]]
             .map(([t, v]) => `<span class="b-acta"><b>${esc(t)}</b><span>${esc(v)}</span></span>`).join('')}) +
           UI.boton({tipo: 'secundario', texto: 'Guardar en PDF', icono: 'papel', accion: 'pdf'}) + cerrar('Cerrar');
       }

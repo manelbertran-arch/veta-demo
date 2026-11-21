@@ -14,9 +14,9 @@
         cercano: '¡Hola, Marta! Soy Laura. Sí, sigue disponible. ¿Os va bien el sábado a las 11:00? Te paso la dirección y nos vemos en el portal.',
         otroDia: 'Hola, Marta, soy Laura. El sábado lo tengo complicado: ¿os va bien el viernes a las 18:00 para ver el piso de Gràcia? Te paso la dirección.'},
       'c-jordi': {
-        corto: 'Hola, Jordi. Te paso el dossier de Olzinelles: planos, nota simple y gastos de comunidad.',
-        cercano: '¡Hola, Jordi! Soy Laura. Aquí tienes el dossier de Olzinelles para enseñárselo a tu hermana: planos, nota simple y gastos de comunidad.',
-        otroDia: 'Hola, Jordi, soy Laura. Te paso el dossier de Olzinelles el miércoles, con planos, nota simple y gastos de comunidad. ¿Te va bien?'},
+        corto: 'Hola, Jordi. Te paso el informe del piso de Olzinelles: planos, nota simple y gastos de comunidad.',
+        cercano: '¡Hola, Jordi! Soy Laura. Aquí tienes el informe del piso de Olzinelles para enseñárselo a tu hermana: planos, nota simple y gastos de comunidad.',
+        otroDia: 'Hola, Jordi, soy Laura. Te paso el informe del piso de Olzinelles el miércoles, con planos, nota simple y gastos de comunidad. ¿Te va bien?'},
       'c-nuria': {
         corto: 'Hola, Núria. Ha entrado un piso en Sant Antoni con balcón: 2 habitaciones, 289.000 €. ¿Te paso fotos?',
         cercano: '¡Hola, Núria! Soy Laura. Me pediste que te avisara y aquí está: Sant Antoni, con balcón, 2 habitaciones, 289.000 €. ¿Te paso fotos?',
@@ -42,7 +42,7 @@
 
     // A4 · acta de la visita (textos del plan)
     acta: {
-      elena: {cosa: 'c-elena', cliente: 'elena', nombre: 'Elena', entendido: 'He entendido: acta de la visita con Elena', donde: 'Hoy, 9:00 · piso de Gràcia, c/ Verdi 42',
+      elena: {cosa: 'c-elena', cliente: 'elena', nombre: 'Elena', entendido: 'He entendido: nota de la visita con Elena', donde: 'Hoy, 9:00 · piso de Gràcia, c/ Verdi 42',
         bloques: [
           {id: 'gusto', titulo: 'Lo que le gustó', texto: 'La luz del salón, la terraza y la cocina reformada.'},
           {id: 'preocupa', titulo: 'Lo que le preocupa', texto: 'El ruido de la calle por la noche. Que no haya ascensor: es un tercero.'},
@@ -57,7 +57,7 @@
         dias: [{id: 'jue', texto: 'Jueves 26, 10:00', fecha: 'Jue 26', fechaISO: '2026-11-26'},
           {id: 'vie', texto: 'Viernes 27, 10:00', fecha: 'Vie 27', fechaISO: '2026-11-27'},
           {id: 'lun', texto: 'Lunes 30, 10:00', fecha: 'Lun 30', fechaISO: '2026-11-30'}],
-        pie: 'La pongo en En espera y en tu calendario.', boton: 'Guardar la tarea', linea: 'Guardada · Llamar a Jordi'},
+        pie: 'La vigilo yo y la pongo en tu calendario.', boton: 'Guardar la tarea', linea: 'Guardada · Llamar a Jordi'},
       nota: {tipo: 'nota', entendido: 'He entendido: una nota para la ficha de Pere Soler', texto: 'Pere prefiere que le llame por la tarde, después de las 16:00.', cliente: 'pere',
         pie: 'Queda en su Historia.', boton: 'Guardar la nota', linea: 'Guardada · Nota en la ficha de Pere'}
     },
@@ -66,7 +66,7 @@
     contexto: {acta: 'Después de la visita con Elena Vives', nota: 'Una nota para la ficha de Pere Soler'},
     queDecir: [
       {guion: 'acta', texto: 'Cómo ha ido una visita'}, {guion: 'tarea', texto: 'Una tarea'},
-      {guion: 'orden', texto: 'Una orden para Veta'}, {guion: 'pregunta', texto: 'Una pregunta sobre un cliente'},
+      {guion: 'orden', texto: 'Una orden para Veta'},
       {guion: 'aviso', texto: 'Un aviso', papel: 'direccion'}, {guion: 'operacion', texto: 'Una pregunta sobre una operación', papel: 'direccion'},
       {guion: 'queja', texto: 'Una queja de un cliente', papel: 'direccion'}, {guion: 'mejorar', texto: 'Qué mejorar', papel: 'direccion'}],
     // duración por defecto de «Lo que dijiste» si se entra sin dictar (segundos)
@@ -74,15 +74,15 @@
 
     // H09 · «No es eso»
     noEsEso: [
-      {guion: 'acta', texto: 'Un acta de visita'}, {guion: 'tarea', texto: 'Una tarea'}, {guion: 'nota', texto: 'Una nota'},
+      {guion: 'acta', texto: 'Una nota de la visita'}, {guion: 'tarea', texto: 'Una tarea'}, {guion: 'nota', texto: 'Una nota'},
       {guion: 'orden', texto: 'Una orden para Veta'}, {guion: 'pregunta', texto: 'Una pregunta'}],
 
     // H04 · lo que he leído (Detectado hoy y Ya no está aquí)
-    detectado: ['Marta Puig pide ver el piso', 'El piso de Sant Antoni encaja con Núria Camps', 'Pere Soler dejó una nota de voz'],
+    detectado: ['Marta Puig pide ver el piso', 'El piso de Sant Antoni encaja con Núria Camps'],
     yaNo: {cosa: 'c-sergi', texto: 'Sergi Mas: Anna le contestó el viernes'},
 
     // A1 vacía · «¿Me enseñas esto?»
-    ensenas: {regla: 'r-valoraciones', titulo: '¿Me enseñas esto?', texto: 'He visto que cuando alguien pide una valoración envías el dossier al día siguiente. ¿Lo preparo yo?', ir: 'regla/r-valoraciones'},
+    ensenas: {regla: 'r-valoraciones', titulo: '¿Me enseñas esto?', texto: 'He visto que cuando alguien pide una valoración envías el informe del piso al día siguiente. ¿Lo preparo yo?', ir: 'regla/r-valoraciones'},
 
     // A7 · pie
     esperaPie: 'Tu familia y tus amigos nunca salen aquí. Veta solo sigue tu trabajo.'

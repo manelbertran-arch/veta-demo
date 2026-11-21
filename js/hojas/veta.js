@@ -25,7 +25,7 @@
     pinta: d => {
       const k = caso(d); if (!k.x) return `<p class="hoja-x">Este caso ya no está.</p>` + cerrar(null, 'secundario');
       if (k.tipo === 'prueba') return citaQuieta(k.x.cita, k.x.origen) + `<p class="hoja-x">${esc(k.x.propone)}. Este es el mensaje que te habría dejado:</p>` +
-        UI.borrador({texto: k.x.borrador}) + UI.nota({texto: 'No lo envié: la regla está a prueba.', icono: 'candado', caja: true}) + cerrar(null, 'secundario');
+        UI.borrador({texto: k.x.borrador}) + UI.nota({texto: 'No lo envié: lo estoy probando.', icono: 'candado', caja: true}) + cerrar(null, 'secundario');
       const corto = k.x.nombre.split(' ')[0], ya = C.excepciones(d.regla).includes(d.caso);
       return citaQuieta(k.x.texto, k.extra.origen || '') + `<p class="hoja-x">${esc(k.extra.habria || '')}</p>` +
         (ya ? UI.nota({texto: `Con ${corto} ya no lo hago.`, icono: 'check', caja: true}) + cerrar(null, 'secundario')
@@ -41,17 +41,17 @@
 
   // ---- H19 · Los casos como yo ----
   VETA.hojaDef('h19', {
-    titulo: d => (d.regla === 'r-recordatorios' ? 'Los 6 casos' : 'Los 11 casos como yo'),
+    titulo: d => (d.regla === 'r-recordatorios' ? 'Los 6 casos' : 'Las 11 veces que lo hiciste igual'),
     pinta: d => {
       const r = M.regla(d.regla) || {}, l = d.regla === 'r-recordatorios' ? (r.casos || []) : ((r.casos || {}).comoYo || []);
-      const txt = d.regla === 'r-recordatorios' ? 'Un comprador tardó más de tres días en contestarte. Te habría preparado el recordatorio.' : 'Alguien pidió una valoración y al día siguiente le enviaste el dossier, como lo habría hecho yo.';
+      const txt = d.regla === 'r-recordatorios' ? 'Un comprador tardó más de tres días en contestarte. Aquí habría tocado un recordatorio.' : 'Alguien pidió una valoración y al día siguiente le enviaste el informe del piso.';
       return `<p class="hoja-x">${esc(txt)}</p><div class="lista c-hoja-lista">${l.map(c => UI.fila({titulo: c.nombre, derecha: c.cuando, icono: 'check'})).join('')}</div>` + cerrar(null, 'secundario');
     }
   });
 
   // ---- H20 · Otra cosa… (de una regla) ----
   VETA.hojaDef('h20', {
-    titulo: d => (d.paso === 'cliente' ? 'No con un cliente…' : C.info(d.de).nombre),
+    titulo: d => (d.paso === 'cliente' ? 'No con un cliente…' : 'Otra cosa…'),
     pinta: d => {
       if (d.paso === 'cliente') {
         const ex = C.excepciones(d.de);
@@ -60,20 +60,20 @@
       }
       const r = M.regla(d.de) || {}, activa = r.estado === 'activa', ofi = C.lee('aOficina', {})[d.de];
       const ops = [
-        r.estado === 'a-prueba' ? ['Activarla ya, sin esperar al 7 dic', 'activar', 'check'] : null,
-        [activa ? 'Dejar de hacerlo' : 'Descartarla', 'descartar', 'borrar', true],
+        r.estado === 'a-prueba' ? ['Que lo haga ya, sin esperar al 7 dic', 'activar', 'check'] : null,
+        [activa ? 'Dejar de hacerlo' : 'No lo quiero', 'descartar', 'borrar', true],
         ['Decirlo de otra forma', 'otra-forma', 'mic'],
         ['No con un cliente…', 'no-cliente', 'usuario'],
-        ['Cambiar hasta dónde llega', 'nivel', 'escalera'],
-        ofi ? null : ['Proponerla a la oficina', 'oficina', 'equipo', false, 'Montse la verá con tu nombre y decidirá si la prueba toda la oficina.']
+        ['¿Quién lo hace? Cambiarlo', 'nivel', 'escalera'],
+        ofi ? null : ['Proponérselo a la oficina', 'oficina', 'equipo', false, 'Montse lo verá con tu nombre y decidirá si lo prueba toda la oficina.']
       ].filter(Boolean);
       return `<div class="ops">${ops.map(([t, a, ic, pel, sub]) => `<button type="button" class="op${pel ? ' op-peligro' : ''}" data-accion="${a}">${VETA.ic(ic, 22)}<span class="op-c"><span class="op-t">${esc(t)}</span>${sub ? `<span class="op-s">${esc(sub)}</span>` : ''}</span></button>`).join('')}</div>` + cerrar('Cancelar');
     },
     acciones: {
-      activar(ev, el, d) { VETA.cierraHoja({foco: false}); C.cambiaRegla(d.de, 'activa', 'Activa · Te lo prepararé en Hoy'); },
+      activar(ev, el, d) { VETA.cierraHoja({foco: false}); C.cambiaRegla(d.de, 'activa', 'Ya lo hago yo · te lo dejaré en Hoy'); },
       descartar(ev, el, d) {
         const activa = (M.regla(d.de) || {}).estado === 'activa';
-        VETA.cierraHoja({foco: false}); C.cambiaRegla(d.de, 'descartada', activa ? 'Ya no lo hago · lo dejé de hacer hoy' : 'Descartada · no volveré a proponerla');
+        VETA.cierraHoja({foco: false}); C.cambiaRegla(d.de, 'descartada', activa ? 'Ya no lo hago · lo dejé de hacer hoy' : 'Ya no lo hago · no te lo volveré a proponer');
       },
       'otra-forma'() { VETA.cierraHoja({foco: false}); VETA.ir('dictar/orden'); },
       'no-cliente'(ev, el, d) { VETA.hoja('h20', Object.assign({}, d, {paso: 'cliente'})); },
@@ -84,14 +84,14 @@
       nivel(ev, el, d) { VETA.cierraHoja({foco: false}); VETA.ir('regla/' + d.de + '/nivel'); },
       oficina(ev, el, d) {
         const o = C.lee('aOficina', {}); o[d.de] = VETA.ahora(); C.pon('aOficina', o); VETA.cierraHoja({foco: false}); VETA.repinta();
-        VETA.aviso('Propuesta a la oficina, con tu nombre', {deshacer: () => { const x = C.lee('aOficina', {}); delete x[d.de]; C.pon('aOficina', x); VETA.repinta(); }});
+        VETA.aviso('Se lo he propuesto a la oficina, con tu nombre', {deshacer: () => { const x = C.lee('aOficina', {}); delete x[d.de]; C.pon('aOficina', x); VETA.repinta(); }});
       }
     }
   });
 
   // ---- H21 · Cómo la he entendido, por partes ----
   VETA.hojaDef('h21', {
-    titulo: 'Cómo la he entendido, por partes',
+    titulo: 'Qué he entendido',
     pinta: () => `<div class="c-partes-h">${D().orden.partes.map(x => `<div class="c-parte-h"><div class="c-parte-h-c"><p class="c-parte-h-t">${esc(x.titulo)}</p><p class="c-parte-h-x">${esc(x.texto)}</p></div>` +
       UI.boton({tipo: 'texto', texto: 'Cambiar', accion: 'cambiar', ancho: false, datos: {parte: x.id}}) + '</div>').join('')}</div>` + cerrar(null, 'secundario'),
     acciones: {
@@ -101,21 +101,21 @@
 
   // ---- H22 · Subir un nivel (dirección) ----
   VETA.hojaDef('h22', {
-    titulo: 'Subir un nivel',
+    titulo: 'Subir un paso',
     pinta: d => `<div class="hoja-texto"><section class="ht-b"><h3 class="ht-t">Para quién</h3><p>Para todo el equipo.</p></section>` +
-      `<section class="ht-b"><h3 class="ht-t">Qué cambia</h3><p>«${esc(C.info(d.de).nombre)}» pasa de «Prepara» a «Hace lo de dentro»: apunta, marca y guarda sola. No envía nada.</p></section></div>` +
-      UI.boton({texto: 'Subir un nivel', accion: 'subir'}) + cerrar('Cancelar'),
+      `<section class="ht-b"><h3 class="ht-t">Qué cambia</h3><p>«${esc(C.nombre(d.de))}» pasa de «Te lo dejo escrito» a «Lo apunto yo»: apunto, marco y guardo yo. No envío nada.</p></section></div>` +
+      UI.boton({texto: 'Sí, que suba un paso', accion: 'subir'}) + cerrar('Cancelar'),
     acciones: {
       subir(ev, el, d) {
         const antes = C.nivel(d.de); C.ponNivel(d.de, 3);
-        C.pon('nivelLinea', {id: d.de, texto: 'Nivel subido', hora: VETA.ahora(), subido: antes});
+        C.pon('nivelLinea', {id: d.de, texto: 'Lo apunto yo · desde hoy', hora: VETA.ahora(), subido: antes});
         VETA.cierraHoja({foco: false}); VETA.repinta({hecho: 'c-nivel'});
       }
     }
   });
 
   // ---- H23 · Una práctica de la oficina ----
-  const SIGUE = {propuesta: {texto: 'Ponerla a prueba', estado: 'a-prueba', estadoTexto: 'A prueba · día 1 de 14', aviso: 'A prueba dos semanas'},
+  const SIGUE = {propuesta: {texto: 'Probarlo dos semanas', estado: 'a-prueba', estadoTexto: 'Lo estamos probando · día 1 de 14', aviso: 'Lo probamos dos semanas'},
     'a-prueba': {texto: 'Extenderla a todo el equipo', estado: 'en-marcha', estadoTexto: 'En marcha', aviso: 'Extendida a todo el equipo'}};
   VETA.hojaDef('h23', {
     titulo: d => (C.practicas().find(x => x.id === d.practica) || {}).titulo || 'Una práctica',
@@ -177,8 +177,8 @@
       if (!s) return `<div class="ops">${D().semanas.slice().reverse().map(x => `<button type="button" class="op" data-hoja="h25" data-semana="${x.id}">${VETA.ic('cal', 22)}<span class="op-c"><span class="op-t">${esc(x.texto)}</span><span class="op-s">${VETA.yo().papel === 'direccion' ? '' : x.mensajes + ' mensajes preparados · '}${x.preparados} listos en la oficina</span></span></button>`).join('')}</div>` + cerrar();
       // dirección: solo la cifra de la oficina (los mensajes y actas de la semana son de Laura)
       const dir = VETA.yo().papel === 'direccion';
-      return `<div class="lista c-hoja-lista">${dir ? '' : UI.fila({titulo: 'Mensajes que te preparé', sub: `Enviaste ${s.enviados}`, derecha: String(s.mensajes), icono: 'chat'}) +
-        UI.fila({titulo: 'Actas guardadas', derecha: String(s.actas), icono: 'doc'})}` + UI.fila({titulo: 'Mensajes y tareas listos en la oficina', derecha: VETA.num(s.preparados), icono: 'equipo'}) + `</div>` +
+      return `<div class="lista c-hoja-lista">${dir ? '' : UI.fila({titulo: 'Mensajes que te dejé escritos', sub: `Enviaste ${s.enviados}`, derecha: String(s.mensajes), icono: 'chat'}) +
+        UI.fila({titulo: 'Notas de visita guardadas', derecha: String(s.actas), icono: 'doc'})}` + UI.fila({titulo: 'Mensajes y tareas listos en la oficina', derecha: VETA.num(s.preparados), icono: 'equipo'}) + `</div>` +
         UI.nota({texto: 'Sin horas: salen solo de los tiempos que pone cada persona.', icono: 'info', clase: 'nota-gris'}) +
         UI.boton({tipo: 'secundario', texto: 'Otras semanas', hoja: 'h25'}) + cerrar();
     }
@@ -193,13 +193,13 @@
 
   // ---- H30 · ¿Qué chat borras? y Recibo de borrado ----
   VETA.hojaDef('h30', {
-    titulo: d => (d.de ? 'Recibo de borrado' : '¿Qué chat borras?'),
+    titulo: d => (d.de ? 'Qué se ha borrado' : '¿Qué chat borras?'),
     pinta: d => {
       if (d.de) return `<div class="c-recibo"><p class="c-recibo-t">${VETA.ic('sello', 22)}<b>${esc(d.de)}</b></p>` +
         `<p>1 conversación · pedido hoy · borrado completo antes del jueves 26</p></div>` + UI.nota({texto: 'Lo que ya estaba en la ficha de un cliente se queda en la ficha.', icono: 'info', clase: 'nota-gris'}) + cerrar(null, 'secundario');
       const ya = C.lee('borrados', []).map(b => b.nombre);
       const chats = M.lectura().fuera.concat(M.clientes(VETA.yo().id).slice(0, 6).map(c => c.nombre)).filter(n => !ya.includes(n));
-      return `<p class="hoja-x">Desaparece en 72 h y recibes un recibo.</p><div class="ops">${chats.map(n => `<button type="button" class="op op-peligro" data-accion="borra" data-n="${esc(n)}">${VETA.ic('borrar', 22)}<span class="op-c"><span class="op-t">${esc(n)}</span></span></button>`).join('')}</div>` + cerrar('Cancelar');
+      return `<p class="hoja-x">Desaparece en 72 h y te digo qué se ha borrado.</p><div class="ops">${chats.map(n => `<button type="button" class="op op-peligro" data-accion="borra" data-n="${esc(n)}">${VETA.ic('borrar', 22)}<span class="op-c"><span class="op-t">${esc(n)}</span></span></button>`).join('')}</div>` + cerrar('Cancelar');
     },
     acciones: {
       borra(ev, el) { const n = el.dataset.n; C.pon('borrados', C.lee('borrados', []).concat([{nombre: n, hora: VETA.ahora()}])); VETA.hoja('h30', {de: n}); repintaSiVe('cuenta/chats'); }

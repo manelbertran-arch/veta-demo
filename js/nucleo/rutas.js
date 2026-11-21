@@ -19,9 +19,9 @@
     ['A1', 'hoy', 'Hoy', 'hoy', 'A', 'hoy.js', null, null, {grupo: G.A}],
     ['A2', 'mensaje/:id', 'Editar mensaje', 'hoy', 'A', 'mensaje.js', 'A1', 'mensaje/c-marta', {grupo: G.A}],
     ['A3', 'dictar/:guion', 'Dictar', null, 'A', 'dictar.js', 'A1', 'dictar/libre', {completa: true, grupo: G.A}],
-    ['A4', 'acta/:id', 'Acta de la visita', 'hoy', 'A', 'acta.js', 'A1', 'acta/elena', {completa: true, grupo: G.A}],
+    ['A4', 'acta/:id', 'Nota de la visita', 'hoy', 'A', 'acta.js', 'A1', 'acta/elena', {completa: true, grupo: G.A}],
     ['A4b', 'entendido-dictado/:id', 'Lo que he entendido', 'hoy', 'A', 'dictado.js', 'A1', 'entendido-dictado/tarea', {completa: true, grupo: G.A}],
-    ['A7', 'espera', 'En espera', 'hoy', 'A', 'espera.js', 'A1', null, {grupo: G.A}],
+    ['A7', 'espera', 'Lo que vigilo por ti', 'hoy', 'A', 'espera.js', 'A1', null, {grupo: G.A}],
     ['A12', 'informe/:id', 'Informe al propietario', 'hoy', 'A', 'informe.js', 'A1', 'informe/pere', {grupo: G.A}],
     ['A5', 'clientes', 'Clientes', 'clientes', 'B', 'clientes.js', null, null, {grupo: G.B}],
     ['A5b', 'clientes/al-dia', 'Los que no te necesitan hoy', 'clientes', 'B', 'clientes.js', 'A5', null, {grupo: G.B}],
@@ -32,7 +32,7 @@
     ['A8', 'veta', 'Veta', 'veta', 'C', 'veta.js', null, null, {grupo: G.C}],
     ['A9', 'reglas', 'Lo que hago por ti', 'veta', 'C', 'reglas.js', 'A8', null, {grupo: G.C}],
     ['A9b', 'reglas/semana-pasada', 'La semana pasada', 'veta', 'C', 'reglas.js', 'A9', null, {grupo: G.C}],
-    ['A10', 'regla/:id', 'Una regla', 'veta', 'C', 'regla.js', 'A9', 'regla/r-valoraciones', {grupo: G.C}],
+    ['A10', 'regla/:id', 'Un trabajo', 'veta', 'C', 'regla.js', 'A9', 'regla/r-valoraciones', {grupo: G.C}],
     ['A10b', 'regla/:id/nivel', 'Hasta dónde llega', 'veta', 'C', 'regla.js', 'A10', 'regla/r-valoraciones/nivel', {grupo: G.C}],
     ['A11', 'entendido/:id', 'Así lo he entendido', 'veta', 'C', 'entendido.js', 'A9', 'entendido/recordatorios', {grupo: G.C}],
     ['A13', 'aprendido', 'Lo que he aprendido', 'veta', 'C', 'aprendido.js', 'A8', null, {grupo: G.C}],
@@ -42,21 +42,28 @@
     ['A15b', 'cuenta/chats', 'Chats que no leo', 'veta', 'C', 'cuenta.js', 'A15', null, {grupo: G.C}],
     ['A15c', 'cuenta/seguridad', 'Seguridad', 'veta', 'C', 'cuenta.js', 'A15', null, {grupo: G.C}],
     ['G1', 'equipo', 'Equipo', 'equipo', 'D', 'equipo.js', null, null, {grupo: G.D}],
-    ['G2', 'asunto/:id', 'Un asunto', 'equipo', 'D', 'asunto.js', 'G1', 'asunto/carmen', {grupo: G.D}],
-    ['G2b', 'regla-oficina/:id', 'Una regla para la oficina', 'equipo', 'D', 'regla-oficina.js', 'G1', 'regla-oficina/dossier', {grupo: G.D}],
+    ['G2', 'asunto/:id', 'Qué ha pasado', 'equipo', 'D', 'asunto.js', 'G1', 'asunto/carmen', {grupo: G.D}],
+    ['G2b', 'regla-oficina/:id', 'Un trabajo para la oficina', 'equipo', 'D', 'regla-oficina.js', 'G1', 'regla-oficina/dossier', {grupo: G.D}],
     ['G3', 'semana-equipo', 'Semana', 'equipo', 'D', 'semana-equipo.js', 'G1', null, {grupo: G.D}],
     ['G3b', 'semana-equipo/resumen', 'Enviar el resumen', 'equipo', 'D', 'semana-equipo.js', 'G3', null, {grupo: G.D}],
     ['G3c', 'reunion', 'Para la reunión del lunes', 'equipo', 'D', 'semana-equipo.js', 'G3', null, {grupo: G.D}],
     ['G3d', 'oficinas', 'Por oficina', 'equipo', 'D', 'semana-equipo.js', 'G3', null, {grupo: G.D}],
     ['G3e', 'tiempo-equipo', 'El tiempo que gana el equipo', 'equipo', 'D', 'semana-equipo.js', 'G3', null, {grupo: G.D}],
     ['G5', 'reparto', 'Reparto', 'equipo', 'D', 'reparto.js', 'G1', null, {grupo: G.D}],
-    ['G5b', 'reparto/confirmar', 'Pasar la cartera', 'equipo', 'D', 'reparto.js', 'G5', null, {grupo: G.D}],
+    ['G5b', 'reparto/confirmar', 'Pasar sus clientes', 'equipo', 'D', 'reparto.js', 'G5', null, {grupo: G.D}],
     ['G6', 'avisos', 'Avisos', 'equipo', 'D', 'avisos.js', 'G1', null, {grupo: G.D}],
     ['G7', 'conexiones', 'Conexiones y ajustes', 'equipo', 'D', 'conexiones.js', 'G1', null, {grupo: G.D}],
     ['G7b', 'confianza', 'Qué ves tú y qué ve cada persona', 'equipo', 'D', 'conexiones.js', 'G7', null, {grupo: G.D}],
     ['G7c', 'piloto', 'Parte diario del piloto', 'equipo', 'D', 'conexiones.js', 'G7', null, {grupo: G.D}],
     ['G8', 'informe-completo', 'Informe completo', 'equipo', 'D', 'informe-completo.js', 'G3', null, {grupo: G.D}],
     ['G9', 'entra', 'Lo que entra', 'equipo', 'D', 'entra.js', 'G1', null, {grupo: G.D}],
+    ['A19', 'que-hace', 'Qué hace Veta por ti', 'veta', 'C', 'que-hace.js', 'A8', null, {grupo: G.C}],
+    ['A20', 'antes-ahora', 'Antes y ahora', 'veta', 'C', 'antes-ahora.js', 'A8', null, {grupo: G.C}],
+    ['G15', 'oficina-que-hace', 'Qué hace Veta por tu oficina', 'equipo', 'D', 'oficina-que-hace.js', 'G1', null, {grupo: G.D}],
+    ['G16', 'oficina-antes-ahora', 'Antes y ahora de la oficina', 'equipo', 'D', 'oficina-antes-ahora.js', 'G1', null, {grupo: G.D}],
+    ['G17', 'operaciones', 'Operaciones', 'equipo', 'D', 'operaciones.js', 'G1', null, {grupo: G.D}],
+    ['G18', 'operacion/:id', 'Una operación', 'equipo', 'D', 'operacion.js', 'G17', 'operacion/marta', {grupo: G.D}],
+    ['G19', 'persona/:id', 'Una persona del equipo', 'equipo', 'D', 'persona.js', 'G1', 'persona/laura', {grupo: G.D}],
     ['G10', 'oficina/practicas', 'Cómo trabajamos', 'veta', 'C', 'oficina-veta.js', 'A8', null, {grupo: G.O}],
     ['G11', 'oficina/aprende', 'Lo que aprende la oficina', 'veta', 'C', 'oficina-veta.js', 'A8', null, {grupo: G.O}],
     ['G12', 'oficina/falta', 'Lo que Veta aún no hace', 'veta', 'C', 'oficina-veta.js', 'A8', null, {grupo: G.O}],
@@ -76,7 +83,7 @@
     ['H09', 'No es eso', 'A', 'dia.js'], ['H10', 'Nota de voz', 'B', 'clientes.js'], ['H11', 'Otras acciones', 'B', 'clientes.js'], ['H12', 'Compartir resumen', 'B', 'clientes.js'],
     ['H13', 'Fuera del radar', 'B', 'clientes.js'], ['H14', 'Petición lista', 'B', 'clientes.js'], ['H15', '¿Qué pasó con…?', 'B', 'clientes.js'], ['H16', 'Detalle de historia', 'B', 'clientes.js'],
     ['H17', 'Foto ampliada', 'N', 'comunes.js'], ['H18', 'Un caso', 'C', 'veta.js'], ['H19', 'Los 11 casos como yo', 'C', 'veta.js'], ['H20', 'Otra cosa…', 'C', 'veta.js'],
-    ['H21', 'Cómo la he entendido, por partes', 'C', 'veta.js'], ['H22', 'Subir un nivel', 'C', 'veta.js'], ['H23', 'Una práctica de la oficina', 'C', 'veta.js'], ['H24', 'Tu tiempo en esta tarea', 'C', 'veta.js'],
+    ['H21', 'Qué he entendido', 'C', 'veta.js'], ['H22', 'Subir un nivel', 'C', 'veta.js'], ['H23', 'Una práctica de la oficina', 'C', 'veta.js'], ['H24', 'Tu tiempo en esta tarea', 'C', 'veta.js'],
     ['H25', 'Una semana anterior', 'C', 'veta.js'], ['H26', 'Aspecto', 'N', 'comunes.js'], ['H28', 'Sin señal', 'C', 'veta.js'],
     ['H29', 'Texto legal', 'N', 'comunes.js'], ['H30', '¿Qué chat borras?', 'C', 'veta.js'], ['H31', 'Poner Veta en la pantalla de inicio', 'C', 'veta.js'], ['H32', 'Un hallazgo del mapa', 'C', 'veta.js'],
     ['H33', 'Calendario', 'C', 'veta.js'], ['H34', 'Los 3 temas de hoy', 'D', 'direccion.js'], ['H35', '¿A quién se lo asignas?', 'D', 'direccion.js'], ['H36', 'Cómo habría ido', 'D', 'direccion.js'],
@@ -196,9 +203,18 @@
       return `<header class="cab cab-panel"><nav class="miga" aria-label="Dónde estás">${raizMiga}${migas.map(o => `<button type="button" class="miga-b" data-atras-a="${o.k}">${esc(o.x.titulo || '')}</button><span class="miga-s" aria-hidden="true">›</span>`).join('')}<h1 class="cab-t">${t}</h1></nav>${e.def.cabDerecha ? `<span class="cab-der">${e.def.cabDerecha(e.p)}</span>` : ''}</header>`;
     }
     const ant = pila.length > 1 ? pila[pila.length - 2].titulo : (() => { const r = resuelve(padreDe(e)); return r ? titulo(r) : 'Hoy'; })();
-    return `<header class="cab cab-detalle"><button type="button" class="cab-atras" data-atras aria-label="Volver a ${esc(ant)}">${VETA.ic('atras', 20)}<span>${esc(ant)}</span></button>` +
+    return `<header class="cab cab-detalle"><button type="button" class="cab-atras" data-atras aria-label="Volver a ${esc(ant)}">${VETA.ic('atras', 20)}</button>` +
       `<h1 class="cab-t">${e.def.cabTitulo ? e.def.cabTitulo(e.p) : t}</h1><span class="cab-der">${e.def.cabDerecha ? e.def.cabDerecha(e.p) : ''}</span></header>`;
   }
+
+  // el título de una cabecera de detalle nunca parte en dos líneas: si no cabe, la letra baja de 20 a 16 px como mucho
+  function ajustaTitulo(col) {
+    const t = col.querySelector('.cab-detalle .cab-t'); if (!t || !t.isConnected) return;
+    t.style.fontSize = '';
+    const un = parseFloat(getComputedStyle(t).lineHeight) || 22; let fs = parseFloat(getComputedStyle(t).fontSize) || 20;
+    while (t.getBoundingClientRect().height > un * 1.5 && fs > 16) { fs -= 1; t.style.fontSize = fs + 'px'; }
+  }
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => VETA.$$('#marco .col').forEach(ajustaTitulo));
 
   // ---- montar una pantalla en una columna ----
   function monta(col, e, modo, o) {
@@ -214,6 +230,7 @@
     col.innerHTML = cabecera(e, modo) + (navigator.onLine === false ? UI.sinRed() : '') +
       `<div class="desplaza" tabindex="-1"><section class="pant pant-${esc(e.def.cod)}${e.def.pendiente ? ' pant-pendiente' : ''}" data-pant="${esc(e.def.cod)}" aria-label="${esc(titulo(e))}"><div class="pant-cuerpo">${cuerpo}</div></section></div>` +
       (fijo ? `<div class="fijo">${fijo}</div>` : '');
+    ajustaTitulo(col);
     const d = col.querySelector('.desplaza');
     if (o.scroll) d.scrollTop = o.scroll;
     VETA.mov.vigilaDesplazamiento(d, col);
@@ -292,10 +309,13 @@
 
   // ---- navegar ----
   // VETA.ir('cliente/pere', {foco: el, reemplaza: false, pestana: false, dir: 'adelante'})
+  // al cambiar de ruta no se queda nada de la pantalla anterior: ni hoja abierta ni aviso negro
+  const sueltaTodo = () => { if (VETA.cierraHoja) VETA.cierraHoja({foco: false}); if (VETA.quitaAviso) VETA.quitaAviso(); };
   VETA.ir = (ruta, o) => {
     o = o || {};
     ruta = String(ruta).replace(/^#?\/?/, '');
     if (!resuelve(ruta)) { VETA.aviso('Esa pantalla no existe todavía.'); return; }
+    sueltaTodo();
     if (vedada(ruta)) { ruta = entrada(); o = {pestana: true}; }
     guardaScroll();
     let dir = o.dir || 'adelante';
@@ -311,7 +331,7 @@
     pinta(dir, o.foco);
   };
   VETA.atras = () => {
-    guardaScroll();
+    sueltaTodo(); guardaScroll();
     if (pila.length > 1) {
       const st = history.state;
       if (st && st.veta && st.n === pila.length - 1) { history.back(); return; }
@@ -323,6 +343,7 @@
   // volver a un punto de la pila (migas del panel en ordenador)
   VETA.atrasA = n => {
     n = Number(n); if (!(n >= 0 && n < pila.length - 1)) return;
+    sueltaTodo();
     const pasos = pila.length - 1 - n; const st = history.state;
     if (st && st.veta && st.n === pila.length - 1) { history.go(-pasos); return; }
     pila = pila.slice(0, n + 1); pon(pila[n].ruta, n, true); pinta('atras');
@@ -330,15 +351,37 @@
   // repinta la pantalla actual (después de cambiar el modelo); {hecho: id} hace el «hecho en el sitio» (efecto 7)
   VETA.repinta = o => {
     o = o || {}; guardaScroll();
-    if (o.hecho && !VETA.reducido() && VETA.mov.hayVT()) { pinta('cambia', null, true); return; }
+    if ((o.hecho || o.paso) && !VETA.reducido() && VETA.mov.hayVT()) { pinta('cambia', null, true); return; }   // {paso: true}: lo que lleve data-vt viaja a su sitio
     pinta(null, null, true);
   };
   VETA.actual = () => actual;
   VETA.pila = () => pila.slice();
 
+  // «atrás» del navegador con una hoja abierta: cierra la hoja y la pantalla se queda donde está
+  // (el navegador ya retrocedió una entrada: se le hace avanzar y se ignoran los dos avisos de ese ir y venir)
+  let restaura = null;
+  const SIN_SESION = ['E1', 'E2'];
   function alVolverNavegador() {
     const ruta = rutaHash();
+    if (restaura) {
+      if (ruta === restaura.ruta) restaura = null;
+      return;
+    }
     if (ignora === ruta) { ignora = null; return; }
+    if (VETA.hojaActual && VETA.hojaActual() && actual) {
+      VETA.cierraHoja({foco: false}); if (VETA.quitaAviso) VETA.quitaAviso();
+      if (ruta !== actual.ruta) {
+        restaura = {ruta: actual.ruta}; setTimeout(() => { restaura = null; }, 800);
+        try { history.forward(); } catch (e) { restaura = null; }
+      }
+      return;
+    }
+    sueltaTodo();
+    // dentro de la app, «atrás» no vuelve a la portada ni a entrar: se queda en tu primera pantalla
+    const e0 = resuelve(ruta);
+    if (e0 && SIN_SESION.indexOf(e0.def.cod) >= 0 && VETA.est.lee('dentro', false) && history.state && history.state.veta) {   // solo al volver con el botón del navegador, no al escribir la dirección
+      pila = [{ruta: entrada()}]; pon(entrada(), 0, true); pinta(null, null, true); return;
+    }
     if (vedada(ruta)) { VETA.ir(entrada(), {pestana: true}); return; }
     if (actual && ruta === actual.ruta && pila.length && pila[pila.length - 1].ruta === ruta) return;
     guardaScroll();
@@ -444,6 +487,8 @@
   function arranca() {
     const rol = VETA.param('rol');
     if (rol === 'direccion') VETA.est.pon('perfil', 'montse'); else if (rol === 'agente') VETA.est.pon('perfil', 'laura');
+    // el atajo ?rol= entra ya con esa cuenta (Hoy o Equipo), sin pasar por la portada; con ?nuevo se ve la entrada entera
+    if ((rol === 'direccion' || rol === 'agente') && !VETA.tieneParam('nuevo')) VETA.est.pon('dentro', true);
     if (VETA.param('momento') === 'fin') VETA.modelo.momentoFin();
     const nuevo = VETA.tieneParam('nuevo');
     // se quitan de la dirección los atajos ya aplicados (se queda ?error=1, que es para revisar)

@@ -11,31 +11,31 @@
   pon('asuntos', {
     carmen: {
       contacto: 'carmen', tipo: 'contacto', zona: 'Gràcia', decision: 'd-carmen', propone: 'laura',
-      etiqueta: 'Por decidir · contacto sin dueño · Gràcia',
+      etiqueta: 'No la lleva nadie · Gràcia',
       pide: {texto: 'Busco piso de 3 habitaciones en Gràcia, hasta 450.000 €', origen: 'WhatsApp de la oficina · ayer, 19:10'},
       paso: [{cuando: 'Ayer 19:10', texto: 'Escribe al WhatsApp de la oficina'}, {cuando: 'Ayer 19:11', texto: 'Nadie lleva los contactos que llegan fuera de horario'}, {cuando: 'Hoy 8:00', texto: 'Sigue sin respuesta: 13 horas'}],
       encaja: {piso: 'verdi', texto: 'Verdi 42 · 3 habitaciones · 395.000 €', pega: 'Sin ascensor'},
-      pueden: [{id: 'laura', sub: 'Gràcia · la propuesta de Veta'}, {id: 'anna', sub: 'Gràcia'}, {id: 'montse', sub: 'Sant Gervasi', tu: true}]
+      pueden: [{id: 'laura', sub: 'Gràcia · yo se lo daría'}, {id: 'anna', sub: 'Gràcia'}, {id: 'montse', sub: 'Sant Gervasi', tu: true}]
     },
     'pau-rios': {
       contacto: 'pau-rios', tipo: 'contacto', zona: 'Eixample', propone: 'david',
-      etiqueta: 'Por decidir · contacto sin dueño · Eixample',
+      etiqueta: 'No lo lleva nadie · Eixample',
       pide: {texto: '¿Tenéis algún local en el Eixample para alquilar?', origen: 'WhatsApp de la oficina · sábado 21, 13:20'},
       paso: [{cuando: 'Sáb 21, 13:20', texto: 'Escribe al WhatsApp de la oficina'}, {cuando: 'Sáb 21, 13:21', texto: 'Nadie lleva los contactos del fin de semana'}, {cuando: 'Hoy 8:00', texto: 'Sigue sin respuesta: 2 días'}],
       noHay: 'No tenéis ningún local en el Eixample. Queda apuntado en «Piden lo que no tenéis».',
-      pueden: [{id: 'david', sub: 'Sant Gervasi · la propuesta de Veta'}, {id: 'marc', sub: 'Sant Gervasi'}, {id: 'montse', sub: 'Sant Gervasi', tu: true}]
+      pueden: [{id: 'david', sub: 'Sant Gervasi · yo se lo daría'}, {id: 'marc', sub: 'Sant Gervasi'}, {id: 'montse', sub: 'Sant Gervasi', tu: true}]
     },
     lucia: {
       contacto: 'lucia', tipo: 'contacto', zona: 'Sant Gervasi', propone: 'marc',
-      etiqueta: 'Por decidir · contacto sin dueño · Sant Gervasi',
+      etiqueta: 'No la lleva nadie · Sant Gervasi',
       pide: {texto: 'Quiero vender el piso de mis padres en Sant Gervasi. ¿Cómo trabajáis?', origen: 'WhatsApp de la oficina · hoy, 7:40'},
       paso: [{cuando: 'Hoy 7:40', texto: 'Escribe al WhatsApp de la oficina'}, {cuando: 'Hoy 7:41', texto: 'Llega antes de que abra la oficina'}, {cuando: 'Hoy 8:00', texto: 'Sigue sin respuesta'}],
-      noHay: 'Quiere vender: es un piso nuevo para la cartera de Sant Gervasi.',
-      pueden: [{id: 'marc', sub: 'Sant Gervasi · la propuesta de Veta'}, {id: 'david', sub: 'Sant Gervasi'}, {id: 'montse', sub: 'Sant Gervasi', tu: true}]
+      noHay: 'Quiere vender: es un piso nuevo para Sant Gervasi.',
+      pueden: [{id: 'marc', sub: 'Sant Gervasi · yo se lo daría'}, {id: 'david', sub: 'Sant Gervasi'}, {id: 'montse', sub: 'Sant Gervasi', tu: true}]
     },
     'joan-serra': {
       contacto: 'joan-serra', tipo: 'queja', decision: 'd-joan', lleva: 'marc',
-      etiqueta: 'Por decidir · queja de un propietario',
+      etiqueta: 'Queja de un propietario',
       pide: {texto: 'Llevo diez días sin noticias del piso. Si nadie me dice nada, me voy a otra agencia.', origen: 'WhatsApp · sábado 21, 20:05'},
       paso: [{cuando: 'Jue 12 nov', texto: 'La venta de su casa de Sant Cugat se para en la fase de oferta'}, {cuando: 'Sáb 21, 20:05', texto: 'Escribe por WhatsApp: se queja'}, {cuando: 'Hoy 8:00', texto: 'Sigue abierta desde el sábado'}],
       operacion: 'Venta de la casa de Sant Cugat · parada · 10 días · fase Oferta'
@@ -44,15 +44,15 @@
 
   // ---- G2b · reglas y prácticas de la oficina (dossier es del plan; las otras dos frases, inventadas por D) ----
   pon('reglasOficina', {
-    dossier: {titulo: 'Dossier al día siguiente', decision: 'd-regla', get propone() { return VETA.dir.proponeRegla(); },
-      frase: 'Cuando alguien pide una valoración, Veta prepara el dossier al día siguiente y el agente lo envía.',
+    dossier: {titulo: 'Informe del piso al día siguiente', decision: 'd-regla', get propone() { return VETA.dir.proponeRegla(); },
+      frase: 'Cuando alguien pide una valoración, preparo el informe del piso al día siguiente y el agente lo envía.',
       desde: '23 peticiones de valoración.'},
-    'mismo-dia': {titulo: 'Responder el mismo día', propone: 'Vino con Veta', estado: 'a-prueba', dia: 9,
-      frase: 'Cuando escribe un contacto nuevo, Veta deja la respuesta preparada el mismo día y el agente la envía.',
-      desde: '301 contactos nuevos desde el 3 de octubre.'},
-    actas: {titulo: 'Actas dictadas al salir de la visita', propone: 'La propuso Anna Costa', estado: 'en-marcha', usan: '4 de 6',
-      frase: 'Al salir de una visita, el agente dicta un minuto y Veta deja el acta escrita.',
-      desde: '212 visitas desde el 3 de octubre.'}
+    'mismo-dia': {titulo: 'Responder el mismo día', propone: 'Ya venía conmigo', estado: 'a-prueba', dia: 9,
+      frase: 'Cuando escribe un contacto nuevo, dejo la respuesta escrita el mismo día y el agente la envía.',
+      desde: '301 contactos nuevos desde que empezamos.'},
+    actas: {titulo: 'Contar la visita al salir', propone: 'Lo propuso Anna Costa', estado: 'en-marcha', usan: '4 de 6',
+      frase: 'Al salir de una visita, el agente me la cuenta en un minuto y yo dejo escrita la nota de la visita.',
+      desde: '212 visitas desde que empezamos.'}
   });
 
   // ---- G3 · lo que está parado y lo aprendido ----
@@ -69,7 +69,7 @@
   });
 
   // ---- G3e · semana a semana (casos preparados); 16 nov = 156 del cuadro de ocho ----
-  pon('semanas', [{id: '26-oct', texto: '26 oct', n: 118}, {id: '2-nov', texto: '2 nov', n: 129}, {id: '9-nov', texto: '9 nov', n: 141}, {id: '16-nov', texto: '16 nov', n: 156}]);
+  pon('semanas', [{id: '26-oct', texto: '26 oct', n: 118}, {id: '2-nov', texto: '2 nov', n: 127}, {id: '9-nov', texto: '9 nov', n: 141}, {id: '16-nov', texto: '16 nov', n: 156}]);
 
   // ---- G6 · avisos ----
   pon('avisos', {
@@ -79,25 +79,24 @@
       {id: 'ej-parada', texto: 'Una operación lleve más de 10 días parada', casos: ['Hoy · una venta en Gràcia, 12 días en Visitas', 'Hoy · la casa de Sant Cugat, 10 días en Oferta', 'Vie 13 · un local, 6 semanas en Contacto', 'Lun 2 · una compra en Sants, 11 días', 'Mié 21 oct · una venta en Horta, 14 días']}
     ],
     puestos: [
-      {id: 'av-queja', texto: 'Un propietario se queje', salto: 'saltó el sábado 21, 20:05', saltoLargo: 'Saltó el sábado 21 a las 20:05: queja de Joan Serra.'},
-      {id: 'av-sabado', texto: 'Se cancele una visita del sábado', salto: 'no ha saltado'},
-      {id: 'av-valoracion', texto: 'Alguien pida una valoración fuera de horario', salto: 'no ha saltado'}
+      {id: 'av-queja', texto: 'Un propietario se queje', salto: 'te avisó el sábado 21, 20:05', saltoLargo: 'Te avisó el sábado 21 a las 20:05: queja de Joan Serra.'},
+      {id: 'av-sabado', texto: 'Se cancele una visita del sábado', salto: 'todavía no te ha avisado'},
+      {id: 'av-valoracion', texto: 'Alguien pida una valoración fuera de horario', salto: 'todavía no te ha avisado'}
     ],
     generico: ['Dom 22 · un caso parecido en Gràcia', 'Vie 20 · un caso parecido en Sant Gervasi', 'Mar 17 · un caso parecido en Sants']
   });
 
   // ---- G7 · lo que escucha Veta ----
   pon('escucha', [
-    {id: 'whatsapp', texto: 'WhatsApp Business'}, {id: 'voz', texto: 'Notas de voz', sub: '3 audios sin entender esta semana'},
-    {id: 'llamadas', texto: 'Llamadas de la oficina'}, {id: 'correo', texto: 'Correo de la oficina'}, {id: 'calendario', texto: 'Calendario'}
+    {id: 'whatsapp', texto: 'WhatsApp Business'}, {id: 'calendario', texto: 'Calendario'}
   ]);
 
   // ---- G7c · parte diario del piloto y los cinco anteriores (inventados por D) ----
   pon('partesPiloto', [
     {dia: 'Viernes 20', texto: 'Leídos 38 chats. Detectados 24 casos; preparados 21; completados 18. Esperan aprobación 3.'},
-    {dia: 'Jueves 19', texto: 'Leídos 44 chats. Detectados 29 casos; preparados 25; completados 22. Sin entender: 1 audio.'},
+    {dia: 'Jueves 19', texto: 'Leídos 44 chats. Detectados 29 casos; preparados 25; completados 22.'},
     {dia: 'Miércoles 18', texto: 'Leídos 35 chats. Detectados 22 casos; preparados 19; completados 17.'},
-    {dia: 'Martes 17', texto: 'Leídos 41 chats. Detectados 27 casos; preparados 23; completados 19. Sin entender: 1 audio.'},
+    {dia: 'Martes 17', texto: 'Leídos 41 chats. Detectados 27 casos; preparados 23; completados 19.'},
     {dia: 'Lunes 16', texto: 'Leídos 47 chats. Detectados 31 casos; preparados 26; completados 21.'}
   ]);
 
@@ -105,7 +104,7 @@
   pon('informeSemana', {
     captacion: [['Quieren vender', '9'], ['Contactos nuevos', '14'], ['Sin responder', '5']],
     radiografia: [['Promesas halladas', '12'], ['Promesas sin constancia', '7'], ['Relaciones que se enfrían', '6'], ['Fichas sin teléfono', '4']],
-    decisiones: [['Decididas la semana pasada', '6'], ['Por decidir hoy', '4']],
+    decisiones: [['Decididas la semana pasada', '6'], ['Tienes que decidir hoy', '4']],
     paradasOficina: {gracia: 3, santgervasi: 1}
   });
 
@@ -174,7 +173,7 @@
     // filas de la oficina con su número
     // la regla del dossier lleva el nombre de Laura solo si ella la propuso a la oficina (H20, donde se le dice que Montse la verá con su nombre)
     laPropuso: () => !!(VETA.est.lee('c.aOficina', {}) || {})['r-valoraciones'],
-    proponeRegla: () => VETA.dir.laPropuso() ? 'La propone Laura Martí' : 'La propone Veta, que la ha visto en la oficina',
+    proponeRegla: () => VETA.dir.laPropuso() ? 'Lo propone Laura Martí' : 'Lo propongo yo: lo he visto en la oficina',
     paradas: () => M().operaciones().filter(o => o.estado === 'parado'),
     sinResponder: () => (D.contactos || []).filter(c => !VETA.dir.asignado(c.id)),
     sinDueno: () => (D.contactos || []).filter(c => c.sinDueno && !VETA.dir.asignado(c.id))

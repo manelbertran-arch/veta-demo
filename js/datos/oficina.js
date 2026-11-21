@@ -30,33 +30,33 @@
   // G1 · las decisiones del equipo (4)
   D.cola.equipo = [
     {id: 'd-carmen', quien: 'equipo', tipo: 'asunto', cliente: 'carmen', titulo: 'Carmen López', corto: 'Carmen', nota: false, chat: 'carmen',
-      quienEs: 'Por decidir · contacto sin dueño', etiqueta: 'por-decidir', etiquetaTexto: 'Por decidir',
+      quienEs: 'No la lleva nadie', etiqueta: 'por-decidir', etiquetaTexto: 'Tienes que decidir',
       momento: 'Nadie le contesta desde ayer, 19:10.',
       cita: {texto: 'Busco piso de 3 habitaciones en Gràcia, hasta 450.000 €', origen: 'Carmen · WhatsApp de la oficina · ayer, 19:10'},
-      propone: 'Veta propone a Laura: lleva Gràcia. Encaja con un piso que ya tenéis: Verdi 42.',
-      boton: {texto: 'Asignar a Laura', accion: 'asignar'}, secundarios: [{texto: 'Ver el asunto', ir: 'asunto/carmen'}, otra],
-      otraCosa: [{texto: 'Asignar a otra persona', hoja: 'h35'}, {texto: 'Lo llevo yo', llevoYo: true},
+      propone: 'Yo se lo daría a Laura: lleva Gràcia. Encaja con un piso que ya tenéis: Verdi 42.',
+      boton: {texto: 'Dárselo a Laura', accion: 'asignar'}, secundarios: [{texto: 'Ver qué ha pasado', ir: 'asunto/carmen'}, otra],
+      otraCosa: [{texto: 'Dárselo a otra persona', hoja: 'h35'}, {texto: 'Lo llevo yo', llevoYo: true},
         {texto: 'Para luego', estado: 'para-manana', linea: 'Para luego · Carmen López'}, {texto: 'Descartarlo', estado: 'quitada', linea: 'Descartado · Carmen López'}],
-      fila: 'Carmen López', filaSub: 'Contacto sin dueño desde ayer', lineas: {hecha: 'Carmen López, asignada a Laura'},
+      fila: 'Carmen López', filaSub: 'No la lleva nadie desde ayer', lineas: {hecha: 'Carmen López, asignada a Laura'},
       alResolver: {flag: 'carmen-asignada'}},
-    {id: 'd-regla', quien: 'equipo', tipo: 'regla', titulo: 'Dossier al día siguiente', icono: 'estrella', nota: false,
-      quienEs: 'Por decidir · regla para la oficina', etiqueta: 'por-decidir',
-      resumen: 'Cuando alguien pide una valoración, Veta prepara el dossier al día siguiente y el agente lo envía.',
-      get propone() { return VETA.dir.proponeRegla() + '. En la oficina ha pasado 23 veces desde agosto.'; },
+    {id: 'd-regla', quien: 'equipo', tipo: 'regla', titulo: 'Informe del piso al día siguiente', icono: 'estrella', nota: false,
+      quienEs: 'Trabajo para la oficina', etiqueta: 'por-decidir', etiquetaTexto: 'Tienes que decidir',
+      resumen: 'Cuando alguien pide una valoración, preparo el informe del piso al día siguiente y el agente lo envía.',
+      get propone() { return VETA.dir.proponeRegla() + '. Han llegado 23 peticiones de valoración; Laura lo ha hecho a mano 14 veces.'; },
       boton: {texto: 'Ver los casos y decidir', ir: 'regla-oficina/dossier'},
-      fila: 'Una regla para toda la oficina', get filaSub() { return 'Dossier al día siguiente · ' + (VETA.dir.laPropuso() ? 'la propone Laura' : 'la propone Veta'); }, ficha: 'regla-oficina/dossier', lineas: {hecha: 'Decidida · Dossier al día siguiente'}},
+      fila: 'Un trabajo para toda la oficina', get filaSub() { return 'Informe del piso al día siguiente · ' + (VETA.dir.laPropuso() ? 'lo propone Laura' : 'lo propongo yo'); }, ficha: 'regla-oficina/dossier', lineas: {hecha: 'Decidido · Informe del piso al día siguiente'}},
     {id: 'd-teresa', quien: 'equipo', tipo: 'reparto', titulo: 'Teresa Gil está de baja', av: 'teresa', nota: false,
-      quienEs: 'Por decidir · cartera sin atender', etiqueta: 'por-decidir',
+      quienEs: 'Sus clientes, sin atender', etiqueta: 'por-decidir', etiquetaTexto: 'Tienes que decidir',
       resumen: 'Desde el lunes 16. Tiene 34 conversaciones abiertas con 12 clientes y 3 visitas esta semana.',
-      propone: 'Veta propone pasarlas a Laura, que trabaja en la misma oficina.',
-      boton: {texto: 'Repartir la cartera de Teresa', ir: 'reparto'},
-      fila: 'Teresa está de baja', filaSub: '34 conversaciones sin atender', ficha: 'reparto', lineas: {hecha: 'Cartera de Teresa repartida'}},
+      propone: 'Yo se las pasaría a Laura, que trabaja en la misma oficina.',
+      boton: {texto: 'Pasar sus clientes a otra persona', ir: 'reparto'},
+      fila: 'Teresa está de baja', filaSub: '34 conversaciones sin atender', ficha: 'reparto', lineas: {hecha: 'Clientes de Teresa, pasados'}},
     {id: 'd-joan', quien: 'equipo', tipo: 'queja', cliente: 'joan-serra', titulo: 'Queja de Joan Serra', corto: 'Joan', nota: false, chat: 'joan-serra',
-      quienEs: 'Por decidir · queja de un propietario', etiqueta: 'por-decidir',
+      quienEs: 'Queja de un propietario', etiqueta: 'por-decidir', etiquetaTexto: 'Tienes que decidir',
       // sin citar el chat de Marc: dirección lo sabe porque saltó su aviso de quejas
-      resumen: 'Saltó tu aviso «Un propietario se queje» el sábado a las 20:05: lleva diez días sin noticias del piso.',
+      resumen: 'Te avisé el sábado a las 20:05, como me pediste: un propietario se queja. Lleva diez días sin noticias del piso.',
       pie: 'Lo lleva Marc.',
-      boton: {texto: 'Pedir a Marc que le llame hoy', accion: 'pedir-marc'}, secundarios: [{texto: 'Ver el asunto', ir: 'asunto/joan-serra'}, otra],
+      boton: {texto: 'Pedir a Marc que le llame hoy', accion: 'pedir-marc'}, secundarios: [{texto: 'Ver qué ha pasado', ir: 'asunto/joan-serra'}, otra],
       otraCosa: [{texto: 'Le llamo yo', estado: 'hecha', linea: 'Joan Serra · le llamas tú'}, {texto: 'Para luego', estado: 'para-manana', linea: 'Para luego · Joan Serra'},
         {texto: 'Descartarlo', estado: 'quitada', linea: 'Descartada · queja de Joan Serra'}],
       fila: 'Queja de Joan Serra, propietario', filaSub: 'Lo lleva Marc · sábado 21, 20:05', ficha: 'asunto/joan-serra', lineas: {hecha: 'Pedido a Marc: llamar a Joan Serra hoy'},
@@ -106,8 +106,8 @@
 
   // los ocho números de la oficina (los del backend, con cifras inventadas)
   D.numeros = {
-    nombres: ['Asuntos detectados', 'Mensajes y tareas listos', 'Completados', 'Esperan aprobación', 'Correcciones', 'Hechos sin que nadie los toque', 'Tareas que Veta sigue sola', 'Reglas de la oficina'],
-    ventanas: {'7d': 'Últimos 7 días', desde: 'Desde el 3 de octubre'},
+    nombres: ['Cosas que he visto', 'Mensajes y tareas listos', 'Completados', 'Esperan aprobación', 'Correcciones', 'Hechos sin que nadie los toque', 'Tareas que sigo yo', 'Trabajos de la oficina'],
+    ventanas: {'7d': 'Últimos 7 días', desde: 'Desde que empezamos'},
     '7d': [184, 156, 132, 19, 14, 0, 23, 1],
     desde: [1196, 1012, 861, 24, 97, 0, 41, 6],
     semanaAnterior: {texto: 'del 9 al 15 de noviembre', preparados: 141, completados: 118},
@@ -125,12 +125,12 @@
 
   // tiempos (solo con la etiqueta «Ejemplo»; el código hace la cuenta, no se escribe el resultado a mano)
   D.tiempos = {
-    laura: [{id: 'mensajes', texto: 'Mensajes preparados', n: 27, minEjemplo: 4}, {id: 'actas', texto: 'Actas', n: 3, minEjemplo: 12}, {id: 'avisos', texto: 'Avisos y recordatorios', n: 4, minEjemplo: 2}],
+    laura: [{id: 'mensajes', texto: 'Mensajes preparados', n: 27, minEjemplo: 4}, {id: 'actas', texto: 'Notas de visita', n: 3, minEjemplo: 12}, {id: 'avisos', texto: 'Avisos y recordatorios', n: 4, minEjemplo: 2}],
     equipo: {minutos: 765, conTiempos: 4, personas: 6, costeEjemplo: 35}
   };
 
   // H41 · informe a socios
   D.partes = D.partes || {};
   D.partes.socios = {titulo: 'Informe a socios · noviembre', bloques: [
-    {lista: ['Leído: 128 conversaciones', 'Contestado: 94 en la última semana', 'Promesas: 12 halladas, 7 sin constancia', 'Punto de partida: el día 0 había 46 tarjetas por semana']}]};
+    {lista: ['Leído: 212 chats', 'Contestado: 94 en la última semana', 'Promesas: 12 halladas, 7 sin constancia', 'Punto de partida: el día 0 había 46 tarjetas por semana']}]};
 })();

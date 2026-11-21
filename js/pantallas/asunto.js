@@ -21,13 +21,13 @@
   VETA.pantalla('G2', {
     titulo: p => nombre(p.id),
     cabDerecha: p => VETA.av(p.id, 32, {foco: 'foto'}),
-    guia: ['Aquí Veta junta todo lo de un asunto: lo que pide, lo que ha pasado y quién puede llevarlo.', 'Tú eliges quién lo lleva o lo coges tú.', 'Así nadie se queda esperando una respuesta.'],
+    guia: ['Aquí ves qué ha pasado: lo que pide esta persona y quién puede llevarlo.', 'Tú eliges quién lo lleva o lo coges tú.', 'Así nadie se queda esperando una respuesta.'],
     pinta: p => {
       const a = A(p.id), r = resuelto(p.id), nom = nombre(p.id);
       let h = `<div class="d-asunto-cab" data-i="0">${UI.etiqueta('por-decidir', a.etiqueta)}</div>`;
       if (r) h += `<div data-i="0">${UI.lineaHecho({texto: r.linea, hora: r.hora, vt: 'asunto-' + p.id, boton: {texto: 'Deshacer', accion: 'deshacer-asunto'}})}</div>`;
       // el cliente de otra persona (la queja de Joan, de Marc): dirección no lee su chat; lo sabe por su aviso
-      if (VETA.ajeno(a.contacto)) h += UI.bloque({titulo: 'Por qué lo ves', i: 1, html: UI.nota({texto: `Saltó tu aviso «Un propietario se queje» · ${a.pide.origen.replace('WhatsApp · ', '')}. Lo que escribe en el chat de ${(VETA.datos.personas[a.lleva] || {}).corto || 'su agente'} no sale en dirección.`, icono: 'campana', caja: true})});
+      if (VETA.ajeno(a.contacto)) h += UI.bloque({titulo: 'Por qué lo ves', i: 1, html: UI.nota({texto: `Te avisé, como me pediste: un propietario se queja · ${a.pide.origen.replace('WhatsApp · ', '')}. Lo que escribe en el chat de ${(VETA.datos.personas[a.lleva] || {}).corto || 'su agente'} no sale en dirección.`, icono: 'campana', caja: true})});
       else h += UI.bloque({titulo: a.tipo === 'queja' ? 'Lo que dijo' : 'Lo que pide', i: 1, html: UI.cita({texto: a.pide.texto, origen: nom.split(' ')[0] + ' · ' + a.pide.origen, chat: a.contacto})});
       h += UI.bloque({titulo: 'Lo que ha pasado', i: 2, html: pasos(a)});
       if (a.encaja) {
@@ -40,8 +40,8 @@
           {titulo: a.operacion, icono: 'pausa'}])});
       } else {
         h += UI.bloque({titulo: 'Quién puede llevarlo', i: 4, html: UI.lista(a.pueden.map(q => ({titulo: q.tu ? 'Tú' : X.persona(q.id).nombre, sub: q.sub, av: q.id,
-          etiqueta: q.id === a.propone ? 'propuesta' : null, etiquetaTexto: q.id === a.propone ? 'Veta propone' : null})))});
-        h += UI.nota({texto: 'Veta no le escribe a nadie: quien lo lleve decide cuándo y qué le contesta.', icono: 'candado'});
+          etiqueta: q.id === a.propone ? 'propuesta' : null, etiquetaTexto: q.id === a.propone ? 'Yo se lo daría' : null})))});
+        h += UI.nota({texto: 'Yo no le escribo a nadie: quien lo lleve decide cuándo y qué le contesta.', icono: 'candado'});
       }
       return h;
     },
@@ -49,7 +49,7 @@
       const a = A(p.id); if (resuelto(p.id)) return '';
       if (a.tipo === 'queja') return UI.boton({texto: 'Pedir a Marc que le llame hoy', accion: 'pedir'}) +
         UI.botones([{texto: 'Le llamo yo', accion: 'yo'}, {texto: 'Otra cosa…', hoja: 'h02', de: 'd-joan'}]);
-      return UI.boton({texto: 'Asignar a ' + X.persona(a.propone).corto, accion: 'asignar'}) +
+      return UI.boton({texto: 'Dárselo a ' + X.persona(a.propone).corto, accion: 'asignar'}) +
         UI.botones([{texto: 'Lo llevo yo', accion: 'yo'}, {texto: 'Otra persona', hoja: 'h35', datos: {para: p.id}}]);
     },
     acciones: {

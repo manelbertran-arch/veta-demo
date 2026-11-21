@@ -37,18 +37,60 @@
     }
   });
 
+  // ---- ronda 6 · H35 con «para: 'op'»: cambiar quién lleva una operación (G18). Quien la deja y quien la recibe lo ven en su app. ----
+  const opTexto = d => { const o = X.op(d.op); return o ? o.nombre + ' · ' + o.texto + '. Quien la lleve sigue con lo que toca.' : ''; };
+  const opOpciones = d => {
+    const o = X.op(d.op) || {}, prop = ((D.contactos || []).find(c => c.id === d.op) || {}).propone;
+    return ['anna', 'david', 'laura', 'marc', 'montse'].map(id => ({id, texto: X.persona(id).nombre + (id === VETA.yo().id ? ' (tú)' : ''),
+      sub: X.zona(id) + (id === o.lleva ? ' · la lleva ahora' : id === prop ? ' · yo se lo daría' : ''), av: id}));
+  };
+  const opElige = (op, d) => {
+    const antes = X.llevaOp(d.op), o = X.op(d.op);
+    if (op.id === antes) { VETA.cierraHoja(); return; }
+    X.ponLleva(d.op, op.id);
+    VETA.cierraHoja(); VETA.repinta();
+    setTimeout(() => VETA.aviso((o ? o.nombre : 'La operación') + ': ahora la lleva ' + X.persona(op.id).corto + '.', {deshacer: () => {
+      if (o && o.contacto && !antes) X.desasigna(d.op); else X.ponLleva(d.op, antes || (o && o.base.lleva));
+      VETA.repinta();
+    }}), 60);
+  };
+
+  // ---- ronda 6 · d-preguntar y d-anotar (G18): lo que dirección le pregunta a quien la lleva o anota para sí ----
+  VETA.hojaAcciones('d-preguntar', {
+    titulo: d => { const o = X.op(d.op); return o && o.persona ? 'Preguntar a ' + o.persona.corto : 'Preguntar'; },
+    texto: d => { const o = X.op(d.op); return o ? 'Sobre ' + o.nombre + '. Le llega a su Hoy, en su Veta. No va por WhatsApp.' : ''; },
+    opciones: d => ['¿Cómo va?', '¿Necesitas ayuda con esta?', '¿Puedes llamarle hoy?'].map(t => ({texto: t, icono: 'pregunta', hace: () => {
+      const o = X.op(d.op); X.pregunta(d.op, t); VETA.repinta();
+      setTimeout(() => VETA.aviso('Pregunta dejada a ' + (o && o.persona ? o.persona.corto : 'quien la lleva') + '.'), 60);
+    }}))
+  });
+  VETA.hojaDef('d-anotar', {
+    titulo: d => { const o = X.op(d.op); return o ? 'Anotar sobre ' + o.nombre : 'Anotar algo'; },
+    pinta: d => UI.campo({etiqueta: 'Tu nota', area: true, id: 'd-nota-op', placeholder: 'Por ejemplo: hablarlo el lunes en la reunión'}) +
+      UI.nota({icono: 'candado', texto: 'Tu nota se guarda en esta operación, con su hora.'}) + UI.boton({texto: 'Guardar la nota', accion: 'guardar-nota', datos: {op: d.op}}) + UI.boton({tipo: 'texto', texto: 'Cancelar', datos: {cierra: '1'}}),
+    acciones: {
+      'guardar-nota'(ev, el, d) {
+        const t = ((document.getElementById('d-nota-op') || {}).value || '').trim() || 'Hablarlo el lunes en la reunión';
+        X.anota(d.op, t); VETA.cierraHoja(); VETA.repinta();
+        setTimeout(() => VETA.aviso('Nota guardada.'), 60);
+      }
+    }
+  });
+
   // ---------------- H35 · ¿A quién se lo asignas? / ¿A quién pasas la cartera? ----------------
   VETA.hojaElegir('h35', {
-    titulo: d => d.para === 'cartera' ? '¿A quién pasas la cartera?' : '¿A quién se lo asignas?',
-    texto: d => d.para === 'cartera' ? 'Teresa Gil tiene 34 conversaciones con 12 clientes.' : 'Quien lo lleve decide cuándo y qué le contesta.',
+    titulo: d => d.para === 'cartera' ? '¿A quién pasas sus clientes?' : d.para === 'op' ? '¿Quién la lleva?' : '¿A quién se lo asignas?',
+    texto: d => d.para === 'cartera' ? 'Teresa Gil tiene 34 conversaciones con 12 clientes.' : d.para === 'op' ? opTexto(d) : 'Quien lo lleve decide cuándo y qué le contesta.',
     opciones: d => {
-      if (d.para === 'cartera') return [{id: 'laura', texto: 'Laura Martí', sub: 'Gràcia · la propuesta de Veta', av: 'laura'}, {id: 'anna', texto: 'Anna Costa', sub: 'Gràcia', av: 'anna'},
+      if (d.para === 'op') return opOpciones(d);
+      if (d.para === 'cartera') return [{id: 'laura', texto: 'Laura Martí', sub: 'Gràcia · yo se lo daría', av: 'laura'}, {id: 'anna', texto: 'Anna Costa', sub: 'Gràcia', av: 'anna'},
         {id: 'dos', texto: 'Repartirla entre las dos', sub: '17 y 17'}];
       const a = (D.asuntos || {})[d.para] || {};
-      return ['laura', 'anna', 'marc', 'david'].map(id => ({id, texto: X.persona(id).nombre, sub: X.zona(id) + (id === a.propone ? ' · la propuesta de Veta' : ''), av: id}));
+      return ['laura', 'anna', 'marc', 'david'].map(id => ({id, texto: X.persona(id).nombre, sub: X.zona(id) + (id === a.propone ? ' · yo se lo daría' : ''), av: id}));
     },
-    valor: d => d.para === 'cartera' ? X.carteraA() : (((D.asuntos || {})[d.para] || {}).propone || null),
+    valor: d => d.para === 'cartera' ? X.carteraA() : d.para === 'op' ? X.llevaOp(d.op) : (((D.asuntos || {})[d.para] || {}).propone || null),
     alElegir: (op, d) => {
+      if (d.para === 'op') return opElige(op, d);
       if (d.para === 'cartera') { X.guarda('carteraA', op.id); VETA.repinta(); return; }
       X.asigna(d.para, op.id);
       const r = X.asignado(d.para), id = d.para;
@@ -63,20 +105,20 @@
     bloques: d => {
       const e = D.avisos.ejemplos.find(x => x.id === d.ejemplo);
       const casos = e ? e.casos : D.avisos.generico;
-      return [{texto: (e ? 'En los últimos 30 días habría saltado ' + casos.length + ' veces:' : 'Con lo que has escrito, en los últimos 30 días habría saltado ' + casos.length + ' veces:')},
+      return [{texto: (e ? 'En los últimos 30 días te habría avisado ' + casos.length + ' veces:' : 'Con lo que has escrito, en los últimos 30 días te habría avisado ' + casos.length + ' veces:')},
         {html: `<ul class="d-casos">${casos.map(c => `<li>${VETA.ic('campana', 18)}<span>${esc(c)}</span></li>`).join('')}</ul>`},
         {texto: 'Son casos pasados: no ha salido nada. Cuando lo crees, saltará en Equipo.'}];
     }
   });
 
   // ---------------- H37 · Un aviso puesto ----------------
-  const aviso = id => X.lee('avisos', []).map(a => Object.assign({salto: 'no ha saltado'}, a)).concat(D.avisos.puestos).find(a => a.id === id) || D.avisos.puestos[0];
+  const aviso = id => X.lee('avisos', []).map(a => Object.assign({salto: 'todavía no te ha avisado'}, a)).concat(D.avisos.puestos).find(a => a.id === id) || D.avisos.puestos[0];
   VETA.hojaDef('h37', {
     titulo: d => aviso(d.aviso).texto,
     pinta: d => {
       const a = aviso(d.aviso), off = !!X.lee('avisosOff', {})[a.id];
-      return `<p class="hoja-x">${esc(a.saltoLargo || (a.salto === 'no ha saltado' ? 'No ha saltado todavía. Cuando salte, lo verás en Equipo.' : a.salto))}</p>` +
-        (a.saltoLargo ? `<div class="lista">${UI.fila({titulo: 'Queja de Joan Serra', sub: 'Ver el asunto', av: 'joan-serra', ir: 'asunto/joan-serra'})}</div>` : '') +
+      return `<p class="hoja-x">${esc(a.saltoLargo || (a.salto === 'todavía no te ha avisado' ? 'Todavía no te ha avisado. Cuando lo haga, lo verás en Equipo.' : a.salto))}</p>` +
+        (a.saltoLargo ? `<div class="lista">${UI.fila({titulo: 'Queja de Joan Serra', sub: 'Ver qué ha pasado', av: 'joan-serra', ir: 'asunto/joan-serra'})}</div>` : '') +
         `<div class="lista">${UI.interruptor({texto: off ? 'Apagado' : 'Encendido', sub: 'Apágalo y deja de vigilarlo; lo enciendes cuando quieras.', on: !off, accion: 'apagar', de: a.id})}</div>` +
         UI.boton({tipo: 'secundario', texto: 'Cerrar', datos: {cierra: '1'}, clase: 'hoja-cancela'});
     },
@@ -129,13 +171,13 @@
 
   // ---------------- d-regla-otra · G2b «Otra cosa…» ----------------
   VETA.hojaAcciones('d-regla-otra', {
-    titulo: d => ((D.reglasOficina || {})[d.regla] || {}).titulo || 'La regla',
+    titulo: d => ((D.reglasOficina || {})[d.regla] || {}).titulo || 'Este trabajo',
     opciones: d => {
       const r = (D.reglasOficina || {})[d.regla] || {};
       return [
         {texto: 'Descartarla', sub: 'No se prueba; Laura lo verá en su Veta', icono: 'borrar', hace: () => { if (r.decision) { M.marca(r.decision, 'quitada', {linea: 'Descartada · ' + r.titulo}); VETA.repinta(); } }},
         {texto: 'Para luego', sub: 'Vuelve mañana a Equipo', icono: 'luna', hace: () => { if (r.decision) { M.marca(r.decision, 'para-manana', {linea: 'Para luego · ' + r.titulo}); VETA.repinta(); } }},
-        {texto: 'Cambiar hasta dónde llega', sub: 'Qué prepara Veta y qué hace el agente', icono: 'escalera', ir: 'regla/r-valoraciones/nivel'}];
+        {texto: '¿Quién lo hace? Cambiarlo', sub: 'Qué hace Veta y qué hace el agente', icono: 'escalera', ir: 'regla/r-valoraciones/nivel'}];
     }
   });
 
@@ -164,7 +206,7 @@
       let h = '';
       if (d.lista === 'contactos') {
         h = `<div class="lista">${X.sinResponder().map(c => c.sinDueno
-          ? UI.fila({titulo: c.nombre, sub: c.cuando + ' · sin dueño', av: c.id, ir: 'asunto/' + c.id})
+          ? UI.fila({titulo: c.nombre, sub: c.cuando + ' · no lo lleva nadie', av: c.id, ir: 'asunto/' + c.id})
           : UI.fila({titulo: c.nombre, sub: c.cuando + (c.lleva ? ' · lo lleva ' + X.persona(c.lleva).corto + ', de baja' : ' · sin ficha'), av: c.id, hoja: 'h01', datos: {chat: c.id}})).join('')}</div>`;
         if (!X.sinResponder().length) h = `<p class="hoja-x">Todos tienen quien los lleve.</p>`;
       } else if (d.lista === 'dos') {
@@ -174,7 +216,7 @@
       } else {
         h = UI.cita({texto: 'Busco piso de 3 habitaciones en Gràcia, hasta 450.000 €', origen: 'Carmen · WhatsApp de la oficina · ayer, 19:10', chat: 'carmen'}) +
           `<div class="d-encaja">${UI.foto('verdi', {tam: 'mini'})}<span class="d-encaja-c"><b>Verdi 42 · 3 habitaciones · 395.000 €</b><span>Sin ascensor (ella lo prefiere con ascensor)</span></span></div>` +
-          `<div class="lista">${UI.fila({titulo: 'Carmen López', sub: 'Ver el asunto', av: 'carmen', ir: 'asunto/carmen'})}</div>`;
+          `<div class="lista">${UI.fila({titulo: 'Carmen López', sub: 'Ver qué ha pasado', av: 'carmen', ir: 'asunto/carmen'})}</div>`;
       }
       return h + UI.boton({tipo: 'secundario', texto: 'Cerrar', datos: {cierra: '1'}, clase: 'hoja-cancela'});
     }

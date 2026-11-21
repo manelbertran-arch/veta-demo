@@ -21,13 +21,13 @@
       const ofiMovil = pares([['Gràcia · preparados', '92 (antes 84)'], ['Gràcia · completados', '78 (antes 70)'], ['Gràcia · paradas', '3'],
         ['Sant Gervasi · preparados', '64 (antes 57)'], ['Sant Gervasi · completados', '54 (antes 48)'], ['Sant Gervasi · paradas', '1']]);
       return `<header class="d-inf-cab" data-i="0"><p class="d-periodo">Semana del 16 al 22 de noviembre · Gràcia y Sant Gervasi</p>` +
-        `<p class="bloque-sub">Informe de la oficina. Cifras del equipo, nunca de cada persona.</p></header>` +
+        `<p class="bloque-sub">Informe de la oficina. Lo de cada operación y cada persona está en Operaciones y en El equipo.</p></header>` +
         sec('Los ocho números', ocho, 1) +
         `<div class="d-inf-dos" data-i="2">${sec('Captación', pares(I.captacion), 2)}${sec('Radiografía', pares(I.radiografia), 2)}</div>` +
         sec('Por oficina', `<div class="d-solo-movil">${ofiMovil}</div><div class="d-solo-ord">${ofi}</div>`, 3) +
         sec('Lo que está parado · ' + par.length + ' operaciones', `<ul class="d-inf-l">${par.map(o => `<li>${esc(o.texto)} · ${esc(o.estadoTexto.replace('Parada · ', ''))}</li>`).join('')}</ul>`, 3) +
         sec('Lo aprendido · 7 cosas', `<ul class="d-inf-l">${D.aprendidoSemana.map(t => `<li>${esc(t)}</li>`).join('')}</ul>`, 4) +
-        sec('Decisiones del equipo', pares([I.decisiones[0], ['Por decidir hoy', String(VETA.modelo.decisiones().filter(X.pendiente).length)]]), 4) +
+        sec('Decisiones del equipo', pares([I.decisiones[0], ['Tienes que decidir hoy', String(VETA.modelo.decisiones().filter(X.pendiente).length)]]), 4) +
         `<p class="pie d-inf-pie" data-i="4">Veta · ejemplo con datos inventados · ${esc(D.fecha.hoyTexto)}</p>`;
     },
     botonFijo: () => UI.boton({texto: 'Imprimir', accion: 'imprimir', icono: 'papel'}),

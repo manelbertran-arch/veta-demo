@@ -46,7 +46,7 @@
     intro: '43 veces a mano en seis meses.',
     bloques: () => [{filas: D().falta.map(([t, n]) => ({titulo: t, derecha: String(n), icono: 'mano'}))}],
     pie: 'Veces que alguien de la oficina lo hizo a mano, contadas en los chats.',
-    boton: {texto: 'Enseñarle el primero', ir: 'dictar/orden'}
+    boton: {texto: 'Enséñame el primero', ir: 'dictar/orden'}
   });
 
   // ---- G13 · Un caso para aprender ----
@@ -71,7 +71,7 @@
   VETA.pantalla('G14', {
     titulo: 'Lo que sabe tu oficina',
     guia: ['Aquí ves lo que Veta ha encontrado en los chats de toda la oficina.', 'Tú lo lees: son cuentas, no opiniones.', 'Así sabes qué funciona en tu zona.'],
-    pinta: () => `<div class="c-cifra" data-i="0">${UI.cifra({valor: 212, unidad: 'de 301 contactos acabaron en visita', periodo: 'desde el 3 de octubre'})}</div>` +
+    pinta: () => `<div class="c-cifra" data-i="0">${UI.cifra({valor: 212, unidad: 'de 301 contactos acabaron en visita', periodo: 'desde que empezamos'})}</div>` +
       UI.bloque({titulo: 'Tres cosas que se repiten', i: 1, html: D().sabe.map(([t, a, b], k) =>
         `<div class="c-sabe" style="--v:${a / b};--k:${k}"><p class="c-sabe-t">${esc(t)}</p><div class="c-sabe-l"><span class="c-barra-t" aria-hidden="true"><i></i></span><b>${a} de ${b}</b>${C.ejemplo()}</div></div>`).join('')}) +
       UI.nota({texto: 'Cuentas hechas con los chats de la oficina, sin nombres. Son de ejemplo.', icono: 'info', clase: 'nota-gris'})

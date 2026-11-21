@@ -7,7 +7,7 @@
   const UI = VETA.UI, esc = VETA.esc, ic = VETA.ic;
   const DA = () => VETA.datos.diaA || {};
   const guionDe = p => {
-    const g = p.guion === 'libre' || !VETA.datos.dictados[p.guion] ? (VETA.yo().papel === 'direccion' ? 'operacion' : 'tarea') : p.guion;
+    const g = p.guion === 'libre' || !VETA.datos.dictados[p.guion] ? (VETA.yo().papel === 'direccion' ? 'operacion' : p.guion === 'libre' ? 'orden' : 'tarea') : p.guion;
     const d = VETA.datos.dictados[g];
     return d && d.papel === 'direccion' && VETA.yo().papel !== 'direccion' ? 'tarea' : g;
   };
@@ -17,7 +17,8 @@
   const reloj = () => `${rec && rec.pausa ? 'En pausa' : 'Grabando'} · ${VETA.A.mmss(rec ? rec.seg : 0)}`;
   function ejemplo(g) {
     const d = VETA.datos.dictados[g] || {};
-    return `<span class="a-ej-r">Ejemplo de lo que puedes decir</span><p class="a-ej-t">«${esc(d.frase || '')}»</p>` +
+    const pie = g === 'orden' ? ((VETA.datos.r6 || {}).dia || {}).ordenPie : null;
+    return `<span class="a-ej-r">Ejemplo de lo que puedes decir</span><p class="a-ej-t">«${esc(d.frase || '')}»</p>` + (pie ? `<p class="a-ej-p">${esc(pie)}</p>` : '') +
       `<p class="nota nota-gris a-ej-n">En esta demo no se usa tu micrófono.</p>`;
   }
   function pintaEstado(el) {
@@ -28,7 +29,7 @@
   }
 
   VETA.pantalla('A3', {
-    guia: ['Aquí hablas como se lo contarías a un compañero.', 'Tú dices cómo ha ido, qué hay que hacer o qué quieres que aprenda.', 'Así Veta lo ordena: un acta, una tarea, una nota o una regla.'],
+    guia: ['Aquí hablas como se lo contarías a un compañero.', 'Tú dices cómo ha ido, qué hay que hacer o qué quieres que aprenda.', 'Así Veta lo ordena: una nota de la visita, una tarea, una nota o un trabajo.'],
     pinta: p => {
       const g = guionDe(p), ctx = (DA().contexto || {})[g];
       return `<div class="a-rec" data-i="0"><span class="a-punto" aria-hidden="true"></span><span class="a-rec-t" role="timer" aria-live="off">Grabando · 0:00</span></div>` +
@@ -44,6 +45,7 @@
       const g = guionDe(p), d = VETA.A.dictado();
       rec = {g, seg: d && d.guion === g ? d.seg : 0, pausa: false, texto: '', escribe: false, el};
       pintaEstado(el);
+      if (VETA.vivo && VETA.vivo.halo) VETA.vivo.halo(true);   // el borde se enciende mientras escucha
       const yo = rec;
       clearInterval(VETA.A._dictT);
       VETA.A._dictT = setInterval(() => {
@@ -58,6 +60,7 @@
         if (!rec) return; rec.pausa = !rec.pausa;
         const b = el.closest('.btn'); if (b) b.innerHTML = `${ic(rec.pausa ? 'play' : 'pausa', 20)}<span>${rec.pausa ? 'Seguir' : 'Pausar'}</span>`;
         pintaEstado(rec.el);
+        if (VETA.vivo && VETA.vivo.halo) VETA.vivo.halo(!rec.pausa);
       },
       escribir(ev, el) {
         if (!rec) return; rec.escribe = !rec.escribe;
@@ -72,6 +75,7 @@
       terminar() {
         if (!rec || rec.fin) return;
         rec.fin = true; clearInterval(VETA.A._dictT);
+        if (VETA.vivo && VETA.vivo.halo) VETA.vivo.halo(false);
         const g = rec.g, d = VETA.datos.dictados[g] || {};
         const texto = (rec.escribe && rec.texto.trim()) ? rec.texto.trim() : d.frase;
         VETA.est.pon('a.ultimoDictado', {guion: g, seg: rec.seg || ((DA().duracion || {})[g] || 0), texto, hora: VETA.ahora()});
@@ -97,7 +101,7 @@
     pinta: () => {
       const dir = VETA.yo().papel === 'direccion';
       // dirección ve sus propios ejemplos (los de la agente hablan de los clientes de Laura)
-      const ops = (DA().queDecir || []).filter(o => dir ? o.papel === 'direccion' : !o.papel);
+      const ops = (DA().queDecir || []).filter(o => dir ? o.papel === 'direccion' : (!o.papel && o.guion !== 'pregunta'));
       return `<div class="ops">${ops.map(o => `<button type="button" class="op op-elige" role="radio" aria-checked="${!!rec && rec.g === o.guion}" data-accion="guion" data-guion="${esc(o.guion)}">` +
         `<span class="op-c"><span class="op-t">${esc(o.texto)}</span><span class="op-s">«${esc((VETA.datos.dictados[o.guion] || {}).frase || '')}»</span></span><span class="op-marca">${ic('check', 20)}</span></button>`).join('')}</div>` +
         UI.boton({tipo: 'texto', texto: 'Cancelar', datos: {cierra: '1'}, clase: 'hoja-cancela'});

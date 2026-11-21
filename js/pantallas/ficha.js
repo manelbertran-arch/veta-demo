@@ -161,7 +161,7 @@
     if (m.queja) return {titulo: 'Queja anotada', texto: `La anotaste hoy, a las ${m.queja.hora}: ${m.queja.texto}.`, ir};
     if (a && a.tipo === 'queja') return {titulo: 'Queja de un propietario', texto: `Saltó tu aviso «Un propietario se queje» · ${a.pide.origen.replace('WhatsApp · ', '')}.`, ir};
     const asig = a && a.tipo === 'contacto' && X ? X.asignado(c.id) : null;
-    if (asig) return {titulo: 'Contacto sin dueño', texto: `Se lo asignaste hoy a ${(M.persona(asig.a) || {}).corto || asig.a}.`, ir: a ? 'asunto/' + c.id : null};
+    if (asig) return {titulo: 'No lo lleva nadie', texto: `Se lo asignaste hoy a ${(M.persona(asig.a) || {}).corto || asig.a}.`, ir: a ? 'asunto/' + c.id : null};
     if (c.lleva === 'teresa' && X && X.cartera()) return {titulo: 'La cartera de Teresa', texto: `Teresa está de baja; pasaste su cartera a ${X.carteraTexto(X.carteraA())} hoy.`, ir: 'reparto'};
     return null;
   }
@@ -170,12 +170,12 @@
     const p = M.persona(lleva) || {}, a = asuntoDe(c), o = M.operaciones().find(x => x.cliente === c.id);
     let h = UI.bloque({titulo: 'Quién lo lleva', i: 0, html: UI.lista([{titulo: p.nombre || lleva, sub: VETA.dir ? VETA.dir.zona(lleva) : null, av: lleva}])});
     if (a) {
-      h += UI.bloque({titulo: 'Por qué lo abres', i: 1, html: UI.nota({texto: `${a.titulo}. ${a.texto}`, icono: 'info', caja: true}) + (a.ir ? UI.lista([{titulo: 'Ver el asunto', icono: 'tarea', ir: a.ir}]) : '')});
+      h += UI.bloque({titulo: 'Por qué lo abres', i: 1, html: UI.nota({texto: `${a.titulo}. ${a.texto}`, icono: 'info', caja: true}) + (a.ir ? UI.lista([{titulo: 'Ver qué ha pasado', icono: 'tarea', ir: a.ir}]) : '')});
       if (o) h += UI.bloque({titulo: 'La operación', i: 2, html: UI.lista([{titulo: o.texto, sub: o.estadoTexto, icono: o.estado === 'parado' ? 'pausa' : 'casa'}])});
     } else {
-      h += UI.bloque({titulo: 'Por qué lo abres', i: 1, html: UI.nota({texto: 'No tienes ningún asunto abierto con este cliente. Si surge uno (una queja, un reparto), te lo traigo a Equipo.', icono: 'info', caja: true})});
+      h += UI.bloque({titulo: 'Por qué lo abres', i: 1, html: UI.nota({texto: 'No tienes ninguna cosa abierta con este cliente. Si surge uno (una queja, un reparto), te lo traigo a Equipo.', icono: 'info', caja: true})});
     }
-    h += `<div data-i="3">${UI.nota({texto: `Lo que ${p.corto || 'su agente'} habla con este cliente, sus notas y sus actas no salen en dirección.`, icono: 'candado'})}</div>`;
+    h += `<div data-i="3">${UI.nota({texto: `Lo que ${p.corto || 'su agente'} habla con este cliente, sus notas y sus notas de visita no salen en dirección.`, icono: 'candado'})}</div>`;
     return `<div class="b-ficha b-ficha-ajena">${h}</div>`;
   }
 

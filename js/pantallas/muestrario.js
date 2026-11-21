@@ -17,6 +17,47 @@
   const baseDe = el => String(el.dataset.de || '').replace(/^mu-/, '');
   const pon = (el, estado, extra) => { const id = baseDe(el); local[id] = {estado, hora: VETA.ahora(), extra: Object.assign({}, (local[id] || {}).extra, extra || {})}; VETA.repinta({hecho: 'mu-' + id}); };
 
+  // ---- ronda 6 · piezas vivas (VETA.vivo): todas a la vista y con su botón para probarlas ----
+  let vNivel = 2, vLleva = false;
+  const pieza = (rotulo, html) => `<p class="v-mu-r">${esc(rotulo)}</p>${html}`;
+  const vivas = () => {
+    const Vv = VETA.vivo, m = VETA.modelo.cosa('c-marta');
+    const fila = (id, t, sub) => UI.fila({titulo: t, sub, av: id, vt: 'mu-v-' + id, datos: {muda: '1'}});
+    const mias = [vLleva ? null : fila('elena', 'Elena Vives', 'Confirmar la visita de mañana'), fila('marta', 'Marta Puig', 'Contestar: pide ver el piso'), fila('pere', 'Pere Soler', 'Enviar el informe de la semana')].filter(Boolean);
+    return `<div class="v-mu">` +
+      pieza('1 · Oro: el trazo se dibuja una vez bajo la frase que prueba algo', `<p class="hoja-x">Marta escribió: «${Vv.marca(m.cita.texto + ', por la mañana mejor', 'Podríamos verlo este sábado')}».</p>`) +
+      pieza('2 · Anillo: casos contados o veces vistas, en tres tamaños', `<div class="v-mu-fila">${Vv.anillo({van: 11, de: 14, tam: 's', texto: '11 de 14 casos'})}${Vv.anillo({van: 11, de: 14})}${Vv.anillo({veces: 9})}${Vv.anillo({van: 11, de: 14, tam: 'l'})}</div>`) +
+      pieza('3 · Escalera: mini (en línea) y completa, con los casos delante para subir', `<p class="hoja-x">Confirmar visitas: ${Vv.escalera({nivel: vNivel, desde: 'el 12 nov', mini: true})}</p>` +
+        UI.tarjeta(Vv.escalera({nivel: vNivel, desde: vNivel === 2 ? 'el 12 nov' : 'hoy', sube: {hechas: 14, corregidas: 1, pregunta: vNivel === 2 ? '¿Apunto yo la visita sin preguntarte?' : '¿Te lo dejo listo para enviar con un toque?', boton: 'Sí, sube un peldaño', accion: 'v-sube'}})) +
+        (vNivel > 2 ? UI.boton({tipo: 'texto', texto: 'Volver al peldaño 2', accion: 'v-baja'}) : '')) +
+      pieza('4 · Hilo: dijo → preparé → decidiste → aprendí', UI.tarjeta(Vv.hilo([
+        {paso: 'Dijo', texto: '«' + m.cita.texto + '»', cuando: m.cita.origen},
+        {paso: 'Preparé', texto: 'La respuesta, con día y hora: sábado a las 11:00.'},
+        {paso: 'Decidiste', texto: 'Cambiaste «¿cuándo te va bien?» por dos horas concretas.'},
+        {paso: 'Aprendí', texto: 'Cuando propongas una visita, doy dos horas.', cuando: 'Ejemplo'}]))) +
+      pieza('5 · Cuenta: la cifra rueda de un valor a otro', `<p class="hoja-x">Hoy te tocan <b>${Vv.cuenta({de: 9, a: 6})}</b> · hace un mes, 9.</p>`) +
+      pieza('6 · Antes y ahora: dos columnas y la línea de seis semanas', UI.tarjeta(Vv.antesAhora({
+        antes: {rotulo: 'El primer día', valor: 46, unidad: 'cosas tuyas por semana'}, ahora: {rotulo: 'Hoy', valor: 21, unidad: 'cosas tuyas por semana'}, semanas: [46, 41, 37, 30, 25, 21]}))) +
+      pieza('7 · Escena «Veta lee»: caen los mensajes, el oro subraya y la frase se vuelve la tarjeta', Vv.escena({ir: 'muestrario/abierta', boton: 'Ver la tarjeta'})) +
+      pieza('8 · Pulso (Veta trabajando) y halo mientras escucha', `<div class="v-mu-fila">${Vv.pulso({ahora: 'Leyendo 3 chats nuevos…', texto: 'Al día · leído hasta las ' + VETA.ahora(-3)})}</div>` +
+        UI.boton({tipo: 'secundario', texto: 'Escuchar 3 segundos', accion: 'v-halo', icono: 'mic'})) +
+      pieza('9 · Paso: la fila se muda de bloque, la lista se recoloca y la tarjeta se abre desde su sitio',
+        `<div class="tarjeta"><h3 class="bloque-t">Para ti hoy · ${Vv.cuenta({de: vLleva ? 3 : 2, a: vLleva ? 2 : 3, clave: 'mu-v-n' + vLleva})}</h3>${UI.lista(mias)}` +
+        `<h3 class="bloque-t">Lo llevo yo</h3>${vLleva ? UI.lista([fila('elena', 'Elena Vives', 'Visita confirmada · lo hice yo')]) : '<p class="bloque-sub">Nada todavía.</p>'}</div>` +
+        UI.boton({tipo: 'secundario', texto: vLleva ? 'Devolvérmelo' : 'Que confirme Veta las visitas', accion: 'v-lleva'}) +
+        `<div class="tarjeta" data-foco="tarjeta"><div class="v-es-quien">${VETA.av('marta', 40)}<span><b>${esc(m.titulo)}</b><span>${esc(m.quienEs)}</span></span></div>` +
+        UI.boton({tipo: 'secundario', texto: 'Abrir desde su sitio', ir: 'muestrario/abierta'}) + `</div>`) +
+      pieza('10 · Aviso con deshacer: anillo de cuenta atrás; al deshacer, enseña', UI.boton({tipo: 'secundario', texto: 'Cerrar algo y deshacer', accion: 'v-aviso'})) +
+      pieza('11 · «De dónde sale» (H01): la frase literal subrayada y la fecha en una pastilla', UI.tarjeta(UI.cita({texto: m.cita.texto, origen: m.cita.origen, de: 'c-marta'}))) +
+      UI.boton({tipo: 'texto', texto: 'Dibujarlo todo otra vez', accion: 'v-otra'}) + `</div>`;
+  };
+  VETA.pantalla('muestrario-abierta', {
+    ruta: 'muestrario/abierta', titulo: 'Marta Puig', destino: null, grupo: 'Núcleo',
+    guia: ['Aquí ves una tarjeta que se ha abierto desde su sitio.', 'Tú vuelves atrás.', 'Así se usa data-foco="tarjeta".'],
+    pinta: () => { const m = VETA.modelo.cosa('c-marta'); return `<div class="tarjeta" data-foco="tarjeta" data-i="0"><div class="v-es-quien">${VETA.av('marta', 40)}<span><b>${esc(m.titulo)}</b><span>${esc(m.quienEs)}</span></span></div>` +
+      UI.cita({texto: m.cita.texto, origen: m.cita.origen, de: 'c-marta'}) + UI.borrador({texto: m.borrador}) + `</div><p class="intro" data-i="1">La tarjeta de la pantalla anterior y esta llevan data-foco="tarjeta": viaja y crece hasta su sitio.</p>`; }
+  });
+
   VETA.pantalla('muestrario', {
     ruta: 'muestrario', titulo: 'Muestrario', destino: null, ancha: true, grupo: 'Núcleo',
     guia: ['Aquí están todos los componentes del núcleo.', 'Tú los tocas para ver cómo responden.', 'Así los paquetes saben qué usar.'],
@@ -26,8 +67,9 @@
       const hojas = Object.values(VETA.HOJAS);
       return [
         `<p class="intro" data-i="0">Todo lo que el núcleo da a los paquetes. Lo que toques aquí no cambia la demo.</p>`,
+        sec('Piezas vivas', vivas(), 'ronda 6 · VETA.vivo'),
         sec('Banda de destino', `<div class="mu-banda"><div class="cab cab-banda"><span class="cab-t">Hoy</span><span class="cab-yo">${VETA.av(yo.id, 36, {aro: true})}</span></div></div>`),
-        sec('Cabecera de detalle', `<div class="mu-banda"><div class="cab cab-detalle"><button type="button" class="cab-atras" data-accion="toca">${VETA.ic('atras', 20)}<span>Hoy</span></button><span class="cab-t">Pere Soler</span><span class="cab-der"></span></div></div>`),
+        sec('Cabecera de detalle', `<div class="mu-banda"><div class="cab cab-detalle"><button type="button" class="cab-atras" data-accion="toca">${VETA.ic('atras', 20)}</button><span class="cab-t">Pere Soler</span><span class="cab-der"></span></div></div>`),
         sec('Barra y micro «Dictar»', `<div class="mu-barra"><div class="barra"><div class="tabs">` +
           [['hoy', 'Hoy', 'hoy', 3], ['clientes', 'Clientes', 'clientes'], ['aprende', 'Veta', 'veta']].map(([ic, t, k, n], i) =>
             `<button type="button" class="tab${i === 0 ? ' on' : ''}" data-accion="toca"><span class="tab-ic">${VETA.ic(ic, 24)}${n ? `<span class="contador"><span class="contador-n">${n}</span></span>` : ''}</span><span class="tab-p">${t}</span></button>`).join('') +
@@ -43,7 +85,7 @@
         sec('Tarjeta', UI.tarjeta(`<p class="hoja-x">Radio 20, borde fino y sombra. Una abierta por pantalla.</p>`)),
         sec('Cita y borrador', UI.cita({texto: '¿Sigue disponible el piso de Gràcia? Podríamos verlo este sábado', origen: 'Marta · ayer, 18:42', de: 'c-marta'}) +
           UI.borrador({texto: 'Hola, Marta, soy Laura. ¿Os va bien este sábado a las 11:00 para ver el piso de Gràcia?'}) +
-          UI.borrador({html: 'Hola, Jordi, soy Laura. Te paso el dossier: planos, nota simple <mark>y gastos de comunidad</mark>.'}) +
+          UI.borrador({html: 'Hola, Jordi, soy Laura. Te paso el informe del piso: planos, nota simple <mark>y gastos de comunidad</mark>.'}) +
           UI.nota({texto: 'No sale hasta que tú lo envíes', icono: 'candado'}) + UI.nota({texto: 'Aviso con candado, en caja.', icono: 'candado', caja: true})),
         sec('Línea de hecho', UI.lineaHecho({texto: 'Enviado a Marta', hora: VETA.ahora(), hoja: 'h03', de: 'c-marta', boton: {texto: 'No lo envié', accion: 'toca'}})),
         sec('La tarjeta de la cola · seis tipos', tipos.map((c, k) => UI.tarjetaCosa(c, {n: k + 1, total: 6})).join('')),
@@ -90,6 +132,13 @@
       deshacer(ev, el) { delete local[baseDe(el)]; VETA.repinta({hecho: el.dataset.de}); },
       quitar(ev, el) { pon(el, 'quitada'); },
       copiar(ev, el) { VETA.aviso('Texto copiado. Envíalo desde tu WhatsApp.'); pon(el, 'por-hacer', {boton: {texto: 'Ya lo envié', accion: 'ya-lo-envie'}, secundarios: [{texto: 'Copiar otra vez', accion: 'copiar'}]}); },
+      // piezas vivas
+      'v-sube'() { vNivel = Math.min(vNivel + 1, 4); VETA.repinta({paso: true}); },
+      'v-baja'() { vNivel = 2; VETA.repinta({paso: true}); },
+      'v-lleva'() { vLleva = !vLleva; VETA.repinta({paso: true}); },
+      'v-halo'() { VETA.vivo.halo(true); setTimeout(() => VETA.vivo.halo(false), 3000); },
+      'v-aviso'() { VETA.aviso('Cerrado: Marta ya contestó.', {deshacer: () => {}, ensena: 'Entendido: no lo cierro sin preguntarte.'}); },
+      'v-otra'() { VETA.vivo.olvida(); VETA.repinta(); },
       // efectos
       'ir-lista'() { VETA.ir('muestrario/lista'); },
       pestana() { VETA.ir('clientes', {pestana: true}); },
@@ -122,12 +171,12 @@
     pie: 'Ejemplo con datos inventados.'
   });
   VETA.confirma('muestrario-confirma', {
-    ruta: 'muestrario/confirma', titulo: 'Pasar la cartera', destino: null, grupo: 'Núcleo',
+    ruta: 'muestrario/confirma', titulo: 'Pasar sus clientes', destino: null, grupo: 'Núcleo',
     texto: 'Una pantalla de confirmación: qué va a pasar, los detalles y un botón.',
     filas: [{titulo: '34 conversaciones', sub: 'De Teresa Gil a Laura Martí', av: 'teresa'}, {titulo: '3 visitas esta semana', icono: 'cal'}],
     nota: 'Nadie recibe nada hasta que lo apruebes.',
-    boton: {texto: 'Pasar la cartera a Laura'},
-    alConfirmar: () => ({aviso: 'Cartera pasada a Laura.'})
+    boton: {texto: 'Pasar los clientes a Laura'},
+    alConfirmar: () => ({aviso: 'Clientes pasados a Laura.'})
   });
   VETA.hojaAcciones('mu-acciones', {
     titulo: 'Marta Puig', texto: 'Una hoja de acciones: opciones como filas de 56.',
