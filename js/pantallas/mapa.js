@@ -5,17 +5,17 @@
   'use strict';
   const UI = VETA.UI, esc = VETA.esc, C = VETA.c;
 
-  C.mapaHtml = desde => `<p class="intro" data-i="${desde}">Del 23 de mayo al 23 de noviembre.</p>` +
+  C.mapaHtml = desde => `<p class="intro" data-i="${desde}">From 23 May to 23 November.</p>` +
     VETA.datos.c.mapa.map((b, k) => UI.bloque({titulo: `${b.titulo} · ${b.filas.length}`, i: Math.min(4, desde + 1 + k),
       html: UI.lista(b.filas.map(f => ({titulo: f.titulo, sub: f.sub, hoja: 'h32', datos: {hallazgo: f.id}})))})).join('') +
-    `<p class="c-pista" data-i="4">${VETA.ic('estrella', 18)}<span>Empieza por los dossieres: 14 casos en seis meses.</span></p>`;
+    `<p class="c-pista" data-i="4">${VETA.ic('estrella', 18)}<span>Start with the dossiers: 14 cases in six months.</span></p>`;
   C.hallazgo = id => { let x = null; VETA.datos.c.mapa.forEach(b => b.filas.forEach(f => { if (f.id === id) x = f; })); return x; };
 
   VETA.pantalla('A18m', {
-    titulo: 'Mi mapa de trabajo',
-    guia: ['Aquí ves lo que Veta encontró en seis meses de tus chats.', 'Tú tocas cada fila para ver de qué mensajes sale.', 'Así sabes por dónde empezar: lo que más se repite.'],
+    titulo: 'My work map',
+    guia: ['Here you see what Veta found in six months of your chats.', 'You tap each row to see which messages it comes from.', 'That way you know where to start: what repeats the most.'],
     pinta: () => C.mapaHtml(0),
-    botonFijo: () => UI.boton({texto: 'Ver los 14 casos', ir: 'regla/r-valoraciones'})
+    botonFijo: () => UI.boton({texto: 'See the 14 cases', ir: 'regla/r-valoraciones'})
   });
   void esc;
 })();

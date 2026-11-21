@@ -18,49 +18,49 @@
 
   // ---- G10 · Cómo trabajamos ----
   VETA.lista('G10', {
-    titulo: 'Cómo trabajamos',
-    guia: ['Aquí están las prácticas de la oficina y en qué punto está cada una.', 'Tú tocas una para ver quién la propuso y de qué caso nació.', 'Así lo que funciona pasa a ser cómo trabaja todo el equipo.'],
-    intro: () => VETA.yo().papel === 'direccion' ? 'Lo que la oficina hace igual, o está probando. Tú decides el paso siguiente de cada una.' : 'Lo que la oficina hace igual, o está probando. Lo decide dirección.',
+    titulo: 'How we work',
+    guia: ['Here are the office\'s practices and where each one stands.', 'You tap one to see who proposed it and what case it came from.', 'That way what works becomes how the whole team works.'],
+    intro: () => VETA.yo().papel === 'direccion' ? 'What the office does the same way, or is trying out. You decide the next step for each one.' : 'What the office does the same way, or is trying out. Management decides.',
     bloques: () => [{filas: C.practicas().map(filaPractica)}]
   });
 
   // ---- G11 · Lo que aprende la oficina ----
   VETA.pantalla('G11', {
-    titulo: 'Lo que aprende la oficina',
-    guia: ['Aquí ves dónde se paran las operaciones y qué está aprendiendo la oficina.', 'Tú tocas una práctica o un caso para ver de dónde sale.', 'Así se mejora con lo que pasa de verdad, no con opiniones.'],
+    titulo: 'What the office learns',
+    guia: ['Here you see where deals stall and what the office is learning.', 'You tap a practice or a case to see where it comes from.', 'That way you improve with what really happens, not with opinions.'],
     pinta: () => {
       const max = Math.max(...D().paradas.map(x => x[1]), 1), total = D().paradas.reduce((s, x) => s + x[1], 0);
-      return UI.bloque({titulo: 'Dónde se paran las operaciones', texto: `${total} operaciones paradas ahora, por fase.`, i: 0, html:
+      return UI.bloque({titulo: 'Where deals stall', texto: `${total} deals stalled now, by stage.`, i: 0, html:
           `<div class="c-barras" role="list">${D().paradas.map(([f, n], k) => `<div class="c-barra" role="listitem" style="--v:${n / max};--k:${k}"><span class="c-barra-n">${esc(f)}</span>` +
             `<span class="c-barra-t" aria-hidden="true"><i></i></span><b class="c-barra-v">${n}</b></div>`).join('')}</div>`}) +
-        UI.bloque({titulo: 'Qué se ha propuesto y cuánta gente lo usa', i: 1, html: UI.lista(C.practicas().map(filaPractica))}) +
-        UI.bloque({titulo: 'Cómo aprende Veta', i: 2, html: `<ol class="c-hilo c-hilo-corto">${D().aprende.map(([t, x], k) => `<li class="c-nudo" style="--k:${k}"><span class="c-nudo-p" aria-hidden="true"></span><span><b>${esc(t)}</b><br><span class="c-nudo-s">${esc(x)}</span></span></li>`).join('')}</ol>`}) +
-        UI.lista([{titulo: 'Casos para aprender', sub: '1 · una operación caída', derecha: '1', icono: 'libro', ir: 'oficina/caso/claudia'}], {i: 3});
+        UI.bloque({titulo: 'What\'s been proposed and how many people use it', i: 1, html: UI.lista(C.practicas().map(filaPractica))}) +
+        UI.bloque({titulo: 'How Veta learns', i: 2, html: `<ol class="c-hilo c-hilo-corto">${D().aprende.map(([t, x], k) => `<li class="c-nudo" style="--k:${k}"><span class="c-nudo-p" aria-hidden="true"></span><span><b>${esc(t)}</b><br><span class="c-nudo-s">${esc(x)}</span></span></li>`).join('')}</ol>`}) +
+        UI.lista([{titulo: 'Cases to learn from', sub: '1 · a deal that fell through', derecha: '1', icono: 'libro', ir: 'oficina/caso/claudia'}], {i: 3});
     }
   });
 
   // ---- G12 · Lo que Veta aún no hace ----
   VETA.lista('G12', {
-    titulo: 'Lo que Veta aún no hace',
-    guia: ['Aquí ves los trabajos que la oficina todavía hace a mano.', 'Tú le enseñas el primero dictándolo con tu voz.', 'Así Veta aprende primero lo que más tiempo quita.'],
-    intro: '43 veces a mano en seis meses.',
+    titulo: 'What Veta doesn\'t do yet',
+    guia: ['Here you see the work the office still does by hand.', 'You teach it the first one by dictating it with your voice.', 'That way Veta first learns what takes up the most time.'],
+    intro: '43 times by hand in six months.',
     bloques: () => [{filas: D().falta.map(([t, n]) => ({titulo: t, derecha: String(n), icono: 'mano'}))}],
-    pie: 'Veces que alguien de la oficina lo hizo a mano, contadas en los chats.',
-    boton: {texto: 'Enseñarle el primero', ir: 'dictar/orden'}
+    pie: 'Times someone in the office did it by hand, counted in the chats.',
+    boton: {texto: 'Teach it the first one', ir: 'dictar/orden'}
   });
 
   // ---- G13 · Un caso para aprender ----
   VETA.pantalla('G13', {
-    titulo: 'Un caso para aprender',
-    guia: ['Aquí se cuenta una operación que se cayó, con sus mensajes y fechas.', 'Tú sacas de ella una práctica para la oficina.', 'Así lo que salió mal no vuelve a pasar.'],
+    titulo: 'A case to learn from',
+    guia: ['Here\'s the story of a deal that fell through, with its messages and dates.', 'You draw a practice for the office from it.', 'That way what went wrong doesn\'t happen again.'],
     pinta: () => {
       const hecha = C.lee('practicaClaudia', false);
-      return (hecha ? UI.lineaHecho({texto: 'Propuesta creada: llamar en 48 horas a quien pide una visita', hora: hecha, ir: 'oficina/practicas', boton: {texto: 'Deshacer', accion: 'deshacer'}, vt: 'c-caso', i: 0}) : '') +
-        `<div class="c-caso-cab" data-i="0">${VETA.av('claudia', 64)}<div><p class="c-yo-n">Clàudia Ribas</p><p class="c-yo-p">Operación caída · compra de un piso en Sants</p></div></div>` +
-        UI.bloque({titulo: 'Qué pasó', i: 1, html: `<ol class="c-tiempo">${VETA.datos.casoClaudia.map(x => `<li><span class="c-tiempo-f">${esc(x.cuando)}</span><span class="c-tiempo-t${/^«/.test(x.texto) ? ' c-tiempo-cita' : ''}">${esc(x.texto)}</span></li>`).join('')}</ol>`}) +
-        UI.bloque({titulo: 'Lo que enseña', i: 2, html: UI.nota({texto: 'Quien pide ver un piso y no recibe una llamada en 48 horas, se va.', icono: 'estrella', caja: true})});
+      return (hecha ? UI.lineaHecho({texto: 'Proposal created: call within 48 hours anyone who asks for a viewing', hora: hecha, ir: 'oficina/practicas', boton: {texto: 'Undo', accion: 'deshacer'}, vt: 'c-caso', i: 0}) : '') +
+        `<div class="c-caso-cab" data-i="0">${VETA.av('claudia', 64)}<div><p class="c-yo-n">Clàudia Ribas</p><p class="c-yo-p">Deal fell through · purchase of a flat in Sants</p></div></div>` +
+        UI.bloque({titulo: 'What happened', i: 1, html: `<ol class="c-tiempo">${VETA.datos.casoClaudia.map(x => `<li><span class="c-tiempo-f">${esc(x.cuando)}</span><span class="c-tiempo-t${/^«/.test(x.texto) ? ' c-tiempo-cita' : ''}">${esc(x.texto)}</span></li>`).join('')}</ol>`}) +
+        UI.bloque({titulo: 'What it teaches', i: 2, html: UI.nota({texto: 'Whoever asks to see a flat and doesn\'t get a call within 48 hours leaves.', icono: 'estrella', caja: true})});
     },
-    botonFijo: () => (C.lee('practicaClaudia', false) ? '' : UI.boton({texto: 'Sacar una práctica de este caso', accion: 'saca'})),
+    botonFijo: () => (C.lee('practicaClaudia', false) ? '' : UI.boton({texto: 'Draw a practice from this case', accion: 'saca'})),
     acciones: {
       saca() { C.pon('practicaClaudia', VETA.ahora()); VETA.repinta({hecho: 'c-caso'}); },
       deshacer() { C.pon('practicaClaudia', false); VETA.repinta({hecho: 'c-caso'}); }
@@ -69,11 +69,11 @@
 
   // ---- G14 · Lo que sabe tu oficina ----
   VETA.pantalla('G14', {
-    titulo: 'Lo que sabe tu oficina',
-    guia: ['Aquí ves lo que Veta ha encontrado en los chats de toda la oficina.', 'Tú lo lees: son cuentas, no opiniones.', 'Así sabes qué funciona en tu zona.'],
-    pinta: () => `<div class="c-cifra" data-i="0">${UI.cifra({valor: 212, unidad: 'de 301 contactos acabaron en visita', periodo: 'desde el 3 de octubre'})}</div>` +
-      UI.bloque({titulo: 'Tres cosas que se repiten', i: 1, html: D().sabe.map(([t, a, b], k) =>
-        `<div class="c-sabe" style="--v:${a / b};--k:${k}"><p class="c-sabe-t">${esc(t)}</p><div class="c-sabe-l"><span class="c-barra-t" aria-hidden="true"><i></i></span><b>${a} de ${b}</b>${C.ejemplo()}</div></div>`).join('')}) +
-      UI.nota({texto: 'Cuentas hechas con los chats de la oficina, sin nombres. Son de ejemplo.', icono: 'info', clase: 'nota-gris'})
+    titulo: 'What your office knows',
+    guia: ['Here you see what Veta has found in the chats of the whole office.', 'You read it: these are counts, not opinions.', 'That way you know what works in your area.'],
+    pinta: () => `<div class="c-cifra" data-i="0">${UI.cifra({valor: 212, unidad: 'of 301 contacts ended in a viewing', periodo: 'since 3 October'})}</div>` +
+      UI.bloque({titulo: 'Three things that repeat', i: 1, html: D().sabe.map(([t, a, b], k) =>
+        `<div class="c-sabe" style="--v:${a / b};--k:${k}"><p class="c-sabe-t">${esc(t)}</p><div class="c-sabe-l"><span class="c-barra-t" aria-hidden="true"><i></i></span><b>${a} of ${b}</b>${C.ejemplo()}</div></div>`).join('')}) +
+      UI.nota({texto: 'Counts made from the office chats, without names. They\'re examples.', icono: 'info', clase: 'nota-gris'})
   });
 })();

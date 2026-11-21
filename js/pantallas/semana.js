@@ -8,28 +8,28 @@
   C.ruedaHoras = () => { ruedaHoras = true; };
 
   VETA.pantalla('A14', {
-    titulo: 'Tu semana',
-    guia: ['Aquí ves lo que Veta hizo por ti la semana pasada, en números.', 'Tú pones tus tiempos si quieres ver horas; Veta no las inventa.', 'Así sabes que dirección ve lo de toda la oficina, no lo tuyo por separado.'],
+    titulo: 'Your week',
+    guia: ['Here you see what Veta did for you last week, in numbers.', 'You enter your times if you want to see hours; Veta doesn\'t make them up.', 'That way you know management sees the whole office, not yours separately.'],
     pinta: () => {
       const t = M.lee('tiempos', null), min = t ? M.minutosLaura(t) : 0;
       const s = C.semanaDe(), dir = VETA.yo().papel === 'direccion';
-      const cab = `<p class="intro" data-i="0">Semana del 16 al 22 de noviembre.</p>` +
-        `<div class="c-cifra" data-i="0">${UI.cifra({valor: s.preparados, unidad: 'mensajes que te dejé preparados', id: 'c-cifra-31'})}<p class="c-apoyo">Enviaste ${s.enviados} · retocaste ${s.retocados}</p>`;
+      const cab = `<p class="intro" data-i="0">Week of 16 to 22 November.</p>` +
+        `<div class="c-cifra" data-i="0">${UI.cifra({valor: s.preparados, unidad: 'messages I had ready for you', id: 'c-cifra-31'})}<p class="c-apoyo">You sent ${s.enviados} · you tweaked ${s.retocados}</p>`;
       // dirección: solo lo suyo; lo del equipo está en Equipo › Semana
       if (dir) return cab + '</div>' +
-        UI.bloque({titulo: 'Además', i: 1, html: UI.lista([{titulo: `${s.actas} acta guardada`, icono: 'doc'}, {titulo: `${s.promesas} promesas apuntadas`, icono: 'mano'}])}) +
-        UI.bloque({titulo: 'Lo que ven los demás', i: 2, html: UI.nota({texto: 'Tus cifras son tuyas: en la semana del equipo salen sumadas con las del resto, nunca por separado.', icono: 'escudo', caja: true})}) +
-        UI.lista([{titulo: 'La semana del equipo', sub: 'Cifras de toda la oficina', icono: 'equipo', ir: 'semana-equipo'}], {i: 3});
+        UI.bloque({titulo: 'Also', i: 1, html: UI.lista([{titulo: `${s.actas} viewing notes saved`, icono: 'doc'}, {titulo: `${s.promesas} promises noted`, icono: 'mano'}])}) +
+        UI.bloque({titulo: 'What others see', i: 2, html: UI.nota({texto: 'Your figures are yours: in the team\'s week they show added up with everyone else\'s, never separately.', icono: 'escudo', caja: true})}) +
+        UI.lista([{titulo: 'The team\'s week', sub: 'Figures for the whole office', icono: 'equipo', ir: 'semana-equipo'}], {i: 3});
       return cab +
-          (t ? `<p class="c-horas"><b id="c-horas">${esc(VETA.horas(min))}</b> esta semana · con tus tiempos ${C.ejemplo()}</p>` : '') + `</div>` +
-        UI.bloque({titulo: 'Además', i: 1, html: UI.lista([{titulo: '3 actas guardadas', icono: 'doc'}, {titulo: '4 promesas apuntadas', icono: 'mano'}])}) +
+          (t ? `<p class="c-horas"><b id="c-horas">${esc(VETA.horas(min))}</b> this week · with your times ${C.ejemplo()}</p>` : '') + `</div>` +
+        UI.bloque({titulo: 'Also', i: 1, html: UI.lista([{titulo: '3 viewing notes saved', icono: 'doc'}, {titulo: '4 promises noted', icono: 'mano'}])}) +
         // los ocho números de la oficina no van aquí: su número es el suyo (crítica 2.13)
-        UI.bloque({titulo: 'Lo que ve dirección', i: 2, html: UI.nota({texto: 'Los números de toda la oficina, sumados. No ve los tuyos por separado, ni tus chats, ni los que dejas fuera. Nada sale sin tu aprobación.', icono: 'escudo', caja: true})}) +
+        UI.bloque({titulo: 'What management sees', i: 2, html: UI.nota({texto: 'The whole office\'s numbers, added up. It doesn\'t see yours separately, or your chats, or the ones you leave out. Nothing goes out without your approval.', icono: 'escudo', caja: true})}) +
         UI.lista([
-          {titulo: 'Tus tiempos', sub: t ? C.tiemposTexto(t) : 'sin poner', icono: 'reloj', hoja: 'h24'},
-          {titulo: 'Tu lista de cada día', sub: 'de 46 tarjetas por semana a 21', icono: 'hoy', hoja: 'c-lista'},
-          {titulo: 'Lo que aún haces a mano', sub: '3 trabajos', icono: 'mano', hoja: 'c-mano'},
-          {titulo: 'Semanas anteriores', icono: 'cal', hoja: 'h25'}
+          {titulo: 'Your times', sub: t ? C.tiemposTexto(t) : 'not set', icono: 'reloj', hoja: 'h24'},
+          {titulo: 'Your daily list', sub: 'from 46 cards per week to 21', icono: 'hoy', hoja: 'c-lista'},
+          {titulo: 'What you still do by hand', sub: '3 tasks', icono: 'mano', hoja: 'c-mano'},
+          {titulo: 'Previous weeks', icono: 'cal', hoja: 'h25'}
         ], {i: 4});
     },
     alMontar: el => {

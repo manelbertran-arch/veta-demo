@@ -46,12 +46,12 @@
   // «Está en el chat de Laura con Jordi»: la frase que sustituye a una cita ajena
   VETA.chatAjenoTexto = id => {
     const c = (VETA.datos.clientes || {})[id] || {}, p = (VETA.datos.personas || {})[c.lleva] || {};
-    return `Está en el chat de ${p.corto || 'otra persona'} con ${c.corto || c.nombre || 'su cliente'}. Dirección no lee los chats de cada persona.`;
+    return `It's in the chat of ${p.corto || 'another person'} with ${c.corto || c.nombre || 'their client'}. Management doesn't read each person's chats.`;
   };
 
   // cifras con punto de miles a la española (1.196), también en números de 4 cifras
-  VETA.num = n => String(Math.round(n)).replace(/\B(?=(\d{3})+(?!\d))/g, '.');
-  VETA.euros = n => VETA.num(n) + ' €';
+  VETA.num = n => String(Math.round(n)).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+  VETA.euros = n => '€' + VETA.num(n);
   VETA.horas = min => { min = Math.round(min); const h = Math.floor(min / 60), m = min % 60; return h ? (h + ' h' + (m ? ' ' + m + ' min' : '')) : (m + ' min'); };
 
   VETA.param = k => { try { return new URLSearchParams(location.search).get(k); } catch (e) { return null; } };
@@ -61,5 +61,5 @@
   VETA.ordenador = () => !!(window.matchMedia && matchMedia('(min-width: 900px)').matches);
 
   // iniciales de un nombre: «Montse Ribas» → «MR»
-  VETA.iniciales = nombre => String(nombre || '?').replace(/^Família\s+/, '').split(/\s+/).filter(Boolean).slice(0, 2).map(p => p[0]).join('').toUpperCase();
+  VETA.iniciales = nombre => String(nombre || '?').replace(/^Família\s+/, '').replace(/\s+family$/, '').split(/\s+/).filter(Boolean).slice(0, 2).map(p => p[0]).join('').toUpperCase();
 })();

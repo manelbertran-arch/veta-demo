@@ -14,13 +14,13 @@
   const mios = () => Object.keys(D.clientes).map(B.cli).filter(c => c && !c.fuera && c.lleva === VETA.yo().id && c.cartera !== false);
   const aLaVista = () => mios().filter(c => !['al-dia', 'cerrado'].includes(c.estado))
     .sort((a, b) => (RANGO[a.estado] ?? 4) - (RANGO[b.estado] ?? 4) || ord(a.id) - ord(b.id));
-  const alDia = () => mios().filter(c => ['al-dia', 'cerrado'].includes(c.estado)).sort((a, b) => a.nombre.localeCompare(b.nombre, 'es'));
+  const alDia = () => mios().filter(c => ['al-dia', 'cerrado'].includes(c.estado)).sort((a, b) => a.nombre.localeCompare(b.nombre, 'en'));
 
   // «Te toca», «Esperando» y «Al día» van en texto neutro; solo lo que se sale de lo normal lleva color
-  const NEUTRO = {'te-toca': 'Te toca', 'esperando': 'Esperando', 'al-dia': 'Al día'};
+  const NEUTRO = {'te-toca': 'Your turn', 'esperando': 'Waiting', 'al-dia': 'Up to date'};
   const subCli = c => NEUTRO[c.estado || 'te-toca']
     ? `<span class="b-mot"><span class="b-mot-t"><b class="b-mot-e">${NEUTRO[c.estado || 'te-toca']}</b> · ${esc(B.motivo(c))}</span></span>`
-    : `<span class="b-mot">${UI.etiqueta(c.estado, c.estado === 'parado' ? 'Parado' : c.estado === 'cerrado' ? 'Cerrado' : null)}<span class="b-mot-t">${esc(B.motivo(c))}</span></span>`;
+    : `<span class="b-mot">${UI.etiqueta(c.estado, c.estado === 'parado' ? 'Stalled' : c.estado === 'cerrado' ? 'Closed' : null)}<span class="b-mot-t">${esc(B.motivo(c))}</span></span>`;
   const filaCli = (c, k) => UI.fila({titulo: c.nombre, subHtml: subCli(c), av: c.id, focoFoto: true, ir: 'cliente/' + c.id, clase: 'b-fila', datos: {k: Math.min(k || 0, 6)}});
 
   // ---- las operaciones de la oficina (dirección › Todos) ----
@@ -31,9 +31,9 @@
   };
   const filaOp = (o, k) => UI.fila({titulo: o.c.nombre, av: o.cliente, focoFoto: true, ir: 'cliente/' + o.cliente, clase: 'b-fila', datos: {k: Math.min(k, 6)},
     subHtml: `<span class="b-mot">${UI.etiqueta(ETQ_OP[o.estado] || 'te-toca', o.estadoTexto)}<span class="b-mot-t">${esc(o.texto)} · ${esc((M.persona(o.lleva) || {}).corto || '')}</span></span>`});
-  const FILTROS_OP = [{id: 'todas', texto: 'Todas', f: () => true}, {id: 'parado', texto: 'Paradas', f: o => o.estado === 'parado'}, {id: 'en-marcha', texto: 'En marcha', f: o => o.estado === 'en-marcha'},
-    {id: 'cerrado', texto: 'Cerradas', f: o => o.estado === 'cerrado'}, {id: 'caida', texto: 'Caídas', f: o => o.estado === 'caida'}, {id: 'sigo', texto: 'Las que sigues', f: o => o.sigo}];
-  const FILTROS = [{id: 'te-toca', texto: 'Te tocan'}, {id: 'oportunidad', texto: 'Oportunidades'}, {id: 'parado', texto: 'Parados'}, {id: 'esperando', texto: 'Esperando respuesta'}];
+  const FILTROS_OP = [{id: 'todas', texto: 'All', f: () => true}, {id: 'parado', texto: 'Stalled', f: o => o.estado === 'parado'}, {id: 'en-marcha', texto: 'In use', f: o => o.estado === 'en-marcha'},
+    {id: 'cerrado', texto: 'Closed', f: o => o.estado === 'cerrado'}, {id: 'caida', texto: 'Fell through', f: o => o.estado === 'caida'}, {id: 'sigo', texto: 'The ones you follow', f: o => o.sigo}];
+  const FILTROS = [{id: 'te-toca', texto: 'Your turn'}, {id: 'oportunidad', texto: 'Opportunities'}, {id: 'parado', texto: 'Stalled'}, {id: 'esperando', texto: 'Waiting for a reply'}];
   const filtros = () => st.vista === 'todos'
     ? FILTROS_OP.map(f => ({id: f.id, texto: f.texto, n: ops().filter(f.f).length}))
     : FILTROS.map(f => ({id: f.id, texto: f.texto, n: mios().filter(c => c.estado === f.id).length}));
@@ -47,7 +47,7 @@
   };
 
   // ¿lo escrito es una pregunta? (empieza por «¿» o por qué/quién/cuándo…, acaba en «?» o tiene más de dos palabras)
-  const INTERROGA = ['que', 'quien', 'quienes', 'cuando', 'cuanto', 'cuanta', 'cuantos', 'cuantas', 'como', 'donde', 'cual', 'cuales', 'por', 'hay', 'tengo'];
+  const INTERROGA = ['que', 'quien', 'quienes', 'cuando', 'cuanto', 'cuanta', 'cuantos', 'cuantas', 'como', 'donde', 'cual', 'cuales', 'por', 'hay', 'tengo', 'what', 'who', 'whom', 'whose', 'when', 'how', 'where', 'which', 'why', 'is', 'are', 'did', 'do', 'does', 'has', 'have', 'can'];
   const esPregunta = q => { const t = String(q || '').trim(), n = B.norm(t); return /^¿|\?$/.test(t) || INTERROGA.includes(n.split(' ')[0]) || n.split(' ').length > 2; };
   // los clientes cuyo nombre (o nombre corto) sale en lo escrito: «¿Qué le prometí a Jordi?» → Jordi Ferrer
   const nombrados = (base, q) => { const n = ' ' + B.norm(q) + ' '; return base.filter(c => n.includes(' ' + B.norm(c.nombre) + ' ') || n.includes(' ' + B.norm(B.corto(c)) + ' ')); };
@@ -55,9 +55,9 @@
   // ---- lo que hay debajo de la caja: sugerencias, filtro, resultados o la lista ----
   function sugerencias() {
     const fl = filtros();
-    return `<div class="b-sug-in"><p class="b-sug-r">Ver solo</p><div class="b-chips">${fl.map((f, k) =>
+    return `<div class="b-sug-in"><p class="b-sug-r">Show only</p><div class="b-chips">${fl.map((f, k) =>
       `<button type="button" class="b-chip" data-accion="filtro" data-valor="${esc(f.id)}" style="--k:${k}">${esc(f.texto)} · <b>${f.n}</b></button>`).join('')}</div>` +
-      (st.vista === 'todos' ? '' : `<p class="b-sug-r">Pregunta a Veta</p>` + UI.lista(Object.entries(B.preguntas()).map(([k, x]) => ({titulo: x.pregunta, icono: 'pregunta', ir: 'pregunta/' + k})), {clase: 'b-preg'})) +
+      (st.vista === 'todos' ? '' : `<p class="b-sug-r">Ask Veta</p>` + UI.lista(Object.entries(B.preguntas()).map(([k, x]) => ({titulo: x.pregunta, icono: 'pregunta', ir: 'pregunta/' + k})), {clase: 'b-preg'})) +
       '</div>';
   }
   function resultados() {
@@ -68,34 +68,34 @@
       const base = st.vista === 'todos' ? ops().map(o => Object.assign({}, o.c, {op: o})) : mios();
       const pregunta = esPregunta(st.q);
       const hay = pregunta ? nombrados(base, st.q) : base.filter(c => B.norm(c.nombre).includes(q));
-      const preg = UI.lista([{titulo: `Preguntar a Veta: «${st.q.trim()}»`, icono: 'pregunta', ir: B.rutaPregunta(st.q), clase: 'b-preguntar', datos: {limpia: '1'}}]);
+      const preg = UI.lista([{titulo: `Ask Veta: “${st.q.trim()}”`, icono: 'pregunta', ir: B.rutaPregunta(st.q), clase: 'b-preguntar', datos: {limpia: '1'}}]);
       // una pregunta: primero «Preguntar a Veta», y debajo los clientes que nombra (sin aviso de vacío)
       if (pregunta) return `<div class="b-res${anima}">${preg}${hay.length ? UI.lista(hay.map((c, k) => c.op ? filaOp(c.op, k) : filaCli(c, k))) : ''}</div>`;
-      if (!hay.length) return `<div class="b-res${anima}">` + UI.vacio({titulo: 'No hay ningún cliente con ese nombre.', texto: 'Prueba a preguntarlo.', icono: 'pregunta'}) + preg + '</div>';
+      if (!hay.length) return `<div class="b-res${anima}">` + UI.vacio({titulo: 'There\'s no client with that name.', texto: 'Try asking it.', icono: 'pregunta'}) + preg + '</div>';
       return `<div class="b-res${anima}">${UI.lista(hay.map((c, k) => c.op ? filaOp(c.op, k) : filaCli(c, k)))}${preg}</div>`;
     }
     if (st.vista === 'todos') {
       const f = FILTROS_OP.find(x => x.id === st.filtro) || FILTROS_OP[0];
       const l = ops().filter(f.f);
       return `<div class="b-res${anima}">${barraFiltro(f.texto, l.length, f.id !== 'todas')}` +
-        (l.length ? UI.lista(l.map(filaOp)) : UI.vacio({titulo: 'Ninguna operación aquí.', texto: 'Las que marques con «Seguir de cerca» en su ficha salen en esta lista.', icono: 'estrella'})) + '</div>';
+        (l.length ? UI.lista(l.map(filaOp)) : UI.vacio({titulo: 'No deals here.', texto: 'The ones you mark with “Follow closely” on their profile show in this list.', icono: 'estrella'})) + '</div>';
     }
     if (st.filtro) {
       const f = FILTROS.find(x => x.id === st.filtro);
       const l = mios().filter(c => c.estado === st.filtro);
       return `<div class="b-res${anima}">${barraFiltro(f.texto, l.length, true)}` +
-        (l.length ? UI.lista(l.map(filaCli)) : UI.vacio({titulo: 'Nadie en este grupo ahora.', texto: 'Cuando alguien entre aquí, te lo pongo arriba.', icono: 'check'})) + '</div>';
+        (l.length ? UI.lista(l.map(filaCli)) : UI.vacio({titulo: 'Nobody in this group now.', texto: 'When someone comes in here, I\'ll put them at the top.', icono: 'check'})) + '</div>';
     }
     const vista = aLaVista(), resto = alDia().length, fuera = M.chatsFuera();
     return `<div class="b-res${anima}">` +
-      (vista.length ? UI.lista(vista.map(filaCli), {i: 1}) : UI.vacio({titulo: 'Nadie te necesita ahora.', texto: 'Si alguien escribe o se para una operación, sale aquí.', icono: 'check', i: 1})) +
+      (vista.length ? UI.lista(vista.map(filaCli), {i: 1}) : UI.vacio({titulo: 'Nobody needs you right now.', texto: 'If someone writes or a deal stalls, it shows here.', icono: 'check', i: 1})) +
       UI.lista([
-        resto ? {titulo: `Los otros ${resto} no te necesitan hoy`, icono: 'check', ir: 'clientes/al-dia'} : null,
-        yoDir() ? null : {titulo: 'Fuera del radar', sub: `${fuera} chats personales que no miro`, icono: 'escudo', hoja: 'h13'}
+        resto ? {titulo: `The other ${resto} don't need you today`, icono: 'check', ir: 'clientes/al-dia'} : null,
+        yoDir() ? null : {titulo: 'Off the radar', sub: `${fuera} personal chats I don't look at`, icono: 'escudo', hoja: 'h13'}
       ], {i: 2}) + '</div>';
   }
   const barraFiltro = (texto, n, quitar) => `<div class="b-filtro" data-i="1"><span class="b-filtro-t">${VETA.ic('check', 18)}<span>${esc(texto)} · ${n}</span></span>` +
-    (quitar ? UI.boton({tipo: 'texto', texto: 'Quitar filtro', accion: 'quita-filtro', ancho: false}) : '') + '</div>';
+    (quitar ? UI.boton({tipo: 'texto', texto: 'Clear filter', accion: 'quita-filtro', ancho: false}) : '') + '</div>';
 
   const limpia = () => { st.q = ''; st.filtro = null; };
   // tocar «Preguntar a Veta: «…»» también deja la caja limpia para la vuelta
@@ -106,18 +106,18 @@
   const abreSug = (el, on) => { const s = el.querySelector('.b-sug'); if (s) { s.classList.toggle('on', on); s.setAttribute('aria-hidden', on ? 'false' : 'true'); s.inert = !on; } };
 
   VETA.pantalla('A5', {
-    titulo: 'Clientes',
-    guia: ['Aquí Veta ordena tus clientes por quién te necesita hoy.', 'Tú buscas un nombre o le preguntas algo a Veta.', 'Así no buscas por orden alfabético ni repasas chats.'],
+    titulo: 'Clients',
+    guia: ['Here Veta sorts your clients by who needs you today.', 'You search for a name or ask Veta something.', 'That way you don\'t search alphabetically or go through chats.'],
     pinta: () => {
       // dirección ve solo sus clientes: a los de otra persona se llega desde Equipo, por un asunto concreto
       st.vista = 'mios';
-      return `<div class="b-caja" data-i="0">${UI.campo({buscar: true, id: 'b-buscar', placeholder: 'Busca un nombre o pregunta algo', valor: st.q})}</div>` +
+      return `<div class="b-caja" data-i="0">${UI.campo({buscar: true, id: 'b-buscar', placeholder: 'Search a name or ask something', valor: st.q})}</div>` +
         `<div class="b-sug" aria-hidden="true" inert>${sugerencias()}</div>` +
         `<div class="b-zona">${resultados()}</div>`;
     },
     alMontar: el => {
       const inp = el.querySelector('#b-buscar'); if (!inp) return;
-      inp.setAttribute('autocomplete', 'off'); inp.setAttribute('aria-label', 'Busca un nombre o pregunta algo');
+      inp.setAttribute('autocomplete', 'off'); inp.setAttribute('aria-label', 'Search a name or ask something');
       const sug = el.querySelector('.b-sug');
       // tocar una sugerencia no le quita el foco a la caja
       sug.addEventListener('pointerdown', e => { if (e.target.closest('button')) e.preventDefault(); });
@@ -151,19 +151,19 @@
   const filasAlDia = () => {
     const q = B.norm(stb.q);
     const l = alDia().filter(c => !q || B.norm(c.nombre).includes(q));
-    if (!l.length) return UI.vacio({titulo: 'No hay ningún cliente con ese nombre.', texto: 'Prueba a preguntarlo desde Clientes.', icono: 'pregunta'});
+    if (!l.length) return UI.vacio({titulo: 'There\'s no client with that name.', texto: 'Try asking it from Clients.', icono: 'pregunta'});
     return UI.lista(l.map((c, k) => UI.fila({titulo: c.nombre, av: c.id, focoFoto: true, ir: 'cliente/' + c.id, clase: 'b-fila', datos: {k: Math.min(k, 6)},
-      subHtml: c.estado === 'cerrado' ? `<span class="b-mot">${UI.etiqueta('cerrado', c.id === 'carme-font' ? 'Cerrado · vendió en junio' : 'Cerrado')}</span>`
-        : `<span class="b-mot"><span class="b-mot-t"><b class="b-mot-e">Al día</b> · ${esc(c.bLlamada ? 'hablasteis hoy' : c.quienEs || '')}</span></span>`})));
+      subHtml: c.estado === 'cerrado' ? `<span class="b-mot">${UI.etiqueta('cerrado', c.id === 'carme-font' ? 'Closed · sold in June' : 'Closed')}</span>`
+        : `<span class="b-mot"><span class="b-mot-t"><b class="b-mot-e">Up to date</b> · ${esc(c.bLlamada ? 'you talked today' : c.quienEs || '')}</span></span>`})));
   };
   VETA.pantalla('A5b', {
-    titulo: 'Al día',
-    guia: ['Aquí están los clientes que hoy no te necesitan.', 'Tú abres cualquiera para ver su ficha.', 'Así ves la cartera entera sin que estorbe arriba.'],
-    pinta: () => `<div class="b-caja" data-i="0">${UI.campo({buscar: true, id: 'b-buscar-b', placeholder: 'Busca un nombre', valor: stb.q})}</div>` +
-      `<p class="intro" data-i="1">${alDia().length} clientes al día o cerrados, por orden alfabético.</p><div class="b-zona" data-i="2">${filasAlDia()}</div>`,
+    titulo: 'Up to date',
+    guia: ['Here are the clients who don\'t need you today.', 'You open any of them to see their profile.', 'That way you see the whole portfolio without it getting in the way at the top.'],
+    pinta: () => `<div class="b-caja" data-i="0">${UI.campo({buscar: true, id: 'b-buscar-b', placeholder: 'Search a name', valor: stb.q})}</div>` +
+      `<p class="intro" data-i="1">${alDia().length} clients up to date or closed, in alphabetical order.</p><div class="b-zona" data-i="2">${filasAlDia()}</div>`,
     alMontar: el => {
       const inp = el.querySelector('#b-buscar-b'); if (!inp) return;
-      inp.setAttribute('autocomplete', 'off'); inp.setAttribute('aria-label', 'Busca un nombre');
+      inp.setAttribute('autocomplete', 'off'); inp.setAttribute('aria-label', 'Search a name');
       inp.addEventListener('input', () => { stb.q = inp.value; el.querySelector('.b-zona').innerHTML = `<div class="b-entra">${filasAlDia()}</div>`; });
     }
   });

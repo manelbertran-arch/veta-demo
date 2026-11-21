@@ -1,8 +1,8 @@
 {
   "name": "Veta",
   "short_name": "Veta",
-  "description": "Veta · demo con datos inventados",
-  "lang": "es",
+  "description": "Veta · demo with made-up data",
+  "lang": "en",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",

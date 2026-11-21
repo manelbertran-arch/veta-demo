@@ -13,44 +13,44 @@
   function papel(c, d, abierta) {
     const key = c.id + '|' + d.k, vt = 'b-doc-' + c.id + '-' + d.k;
     if (ultima() === key && d.cambiado) {
-      const t = d.estado === 'recibido' ? `Recibido · ${d.texto}` : `Reabierta: ${d.texto.toLowerCase()} vuelve a Documentos`;
-      return UI.lineaHecho({texto: t, hora: d.hora, vt, boton: {texto: 'Deshacer', accion: 'doc-deshaz', datos: {k: d.k}}});
+      const t = d.estado === 'recibido' ? `Received · ${d.texto}` : `Reopened: ${d.texto.toLowerCase()} goes back to Documents`;
+      return UI.lineaHecho({texto: t, hora: d.hora, vt, boton: {texto: 'Undo', accion: 'doc-deshaz', datos: {k: d.k}}});
     }
     if (d.estado === 'falta') {
       const ped = d.pedido;
       return UI.tarjeta(`<div class="b-doc-cab"><span class="b-doc-t">${esc(d.texto)}</span>${UI.etiqueta('falta')}</div>` +
-        `<p class="hoja-x tenue">${esc(d.plazo || ('Plazo: ' + d.fecha))}</p>` +
-        (ped ? UI.lineaHecho({texto: `Pedido a ${B.corto(c)}`, hora: ped.hora, hoja: 'h03', de: d.cosa || null, boton: {texto: 'No lo envié', accion: 'doc-no-pedido', datos: {k: d.k}}}) : '') +
-        UI.botones([{texto: 'Marcar recibido', accion: 'doc-recibido', datos: {k: d.k}}]), {clase: 'b-doc' + (abierta ? ' abierta' : ''), vt});
+        `<p class="hoja-x tenue">${esc(d.plazo || ('Deadline: ' + d.fecha))}</p>` +
+        (ped ? UI.lineaHecho({texto: `Requested from ${B.corto(c)}`, hora: ped.hora, hoja: 'h03', de: d.cosa || null, boton: {texto: 'I didn\'t send it', accion: 'doc-no-pedido', datos: {k: d.k}}}) : '') +
+        UI.botones([{texto: 'Mark received', accion: 'doc-recibido', datos: {k: d.k}}]), {clase: 'b-doc' + (abierta ? ' abierta' : ''), vt});
     }
     return `<div class="fila fila-quieta b-doc-fila" data-vt="${esc(vt)}"><span class="fila-ic">${VETA.ic('check', 22)}</span>` +
-      `<span class="fila-c"><span class="fila-t">${esc(d.texto)}</span><span class="fila-s">${esc(d.hora ? 'Recibido hoy, ' + d.hora : d.cuando || 'Recibido')}</span></span>` +
-      (d.reabrir ? UI.boton({tipo: 'texto', texto: 'Reabrir', accion: 'doc-reabre', datos: {k: d.k}, ancho: false}) : '') + '</div>';
+      `<span class="fila-c"><span class="fila-t">${esc(d.texto)}</span><span class="fila-s">${esc(d.hora ? 'Received today, ' + d.hora : d.cuando || 'Received')}</span></span>` +
+      (d.reabrir ? UI.boton({tipo: 'texto', texto: 'Reopen', accion: 'doc-reabre', datos: {k: d.k}, ancho: false}) : '') + '</div>';
   }
 
   VETA.pantalla('A6d', {
-    titulo: 'Documentos y fechas',
-    guia: ['Aquí ves qué papeles faltan y qué fechas hay con este cliente.', 'Tú pides lo que falta o lo marcas recibido.', 'Así ningún plazo se pasa sin que lo veas.'],
+    titulo: 'Documents and dates',
+    guia: ['Here you see what paperwork is missing and what dates there are with this client.', 'You ask for what\'s missing or mark it received.', 'That way no deadline passes without you seeing it.'],
     pinta: p => {
       const c = M.cliente(p.id);
-      if (!c) return UI.vacio({titulo: 'No encuentro a este cliente.', icono: 'pregunta', boton: {texto: 'Volver', atras: true}});
-      if (VETA.ajeno(c.id)) return UI.vacio({titulo: `Lo lleva ${(M.persona(c.lleva) || {}).corto || 'otra persona'}.`, texto: 'Sus papeles y sus fechas con este cliente: eso no sale en dirección.', icono: 'candado', boton: {texto: 'Volver', atras: true}});
+      if (!c) return UI.vacio({titulo: 'I can\'t find this client.', icono: 'pregunta', boton: {texto: 'Back', atras: true}});
+      if (VETA.ajeno(c.id)) return UI.vacio({titulo: `Handled by ${(M.persona(c.lleva) || {}).corto || 'another person'}.`, texto: 'Their paperwork and dates with this client: that doesn\'t show in management.', icono: 'candado', boton: {texto: 'Back', atras: true}});
       const docs = B.docs(c.id), fechas = B.fechas(c.id);
       const faltan = docs.filter(d => d.estado === 'falta' || (ultima() === c.id + '|' + d.k && d.cambiado));
       const resto = docs.filter(d => !faltan.includes(d));
       const primera = faltan.find(d => d.estado === 'falta');
       let h = '';
-      h += `<section class="bloque" data-i="0"><h2 class="bloque-t">Documentos</h2>` +
+      h += `<section class="bloque" data-i="0"><h2 class="bloque-t">Documents</h2>` +
         (faltan.length ? faltan.map(d => papel(c, d, d === primera)).join('') : '') +
-        (!docs.some(d => d.estado === 'falta') ? UI.vacio({titulo: 'No falta ningún papel.', texto: docs.length ? 'Lo que ya tienes está aquí abajo.' : 'Cuando haga falta alguno, te lo pongo aquí y en Hoy.', icono: 'check'}) : '') +
+        (!docs.some(d => d.estado === 'falta') ? UI.vacio({titulo: 'No paperwork missing.', texto: docs.length ? 'What you already have is down here.' : 'When something is needed, I\'ll put it here and in Today.', icono: 'check'}) : '') +
         (resto.length ? `<div class="lista b-docs">${resto.map(d => papel(c, d)).join('')}</div>` : '') + '</section>';
-      h += UI.bloque({titulo: 'Fechas', i: 1, html: fechas.length ? UI.lista(fechas.map(f => ({titulo: f.cuando, sub: f.texto, icono: 'cal'})))
-        : `<p class="bloque-sub">No hay fechas apuntadas con ${esc(c.nombre)}.</p>`});
+      h += UI.bloque({titulo: 'Dates', i: 1, html: fechas.length ? UI.lista(fechas.map(f => ({titulo: f.cuando, sub: f.texto, icono: 'cal'})))
+        : `<p class="bloque-sub">No dates logged with ${esc(c.nombre)}.</p>`});
       return h;
     },
     botonFijo: p => {
       const c = M.cliente(p.id); const d = c && !VETA.ajeno(c.id) && pedible(c.id);   // dirección no escribe al cliente de otra persona
-      return d ? UI.boton({texto: `Pedírselo a ${B.corto(c)}`, hoja: 'h14', de: c.id, datos: {k: d.k}}) : '';
+      return d ? UI.boton({texto: `Ask for it from ${B.corto(c)}`, hoja: 'h14', de: c.id, datos: {k: d.k}}) : '';
     },
     acciones: {
       'doc-recibido'(ev, el, p) { cambia(p.id, el.dataset.k, 'recibido'); },

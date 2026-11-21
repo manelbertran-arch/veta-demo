@@ -7,126 +7,126 @@
 
   // A10 · nombre corto (cabecera) y frase entera de cada regla
   C.reglas = {
-    'r-valoraciones': {nombre: 'Valoraciones', frase: 'Cuando alguien pide una valoración, yo preparo el dossier al día siguiente y tú lo envías.', desde: 'agosto'},
-    'r-cancelaciones': {nombre: 'Visitas canceladas', frase: 'Cuando se cancela una visita, te propongo otra fecha y tú decides si la envías.'},
-    'r-actas': {nombre: 'Actas', frase: 'Después de cada visita, te pido el acta para que la dictes al salir.'},
-    'r-promesas': {nombre: 'Promesas', frase: 'Cuando alguien te promete algo en el chat, lo apunto y te aviso si no llega.'},
-    'r-informes': {nombre: 'Informes del lunes', frase: 'Cada lunes te preparo el informe de cada propietario y tú lo envías.'},
-    'r-contestado': {nombre: 'Quién ha contestado', frase: 'Cuando un cliente te contesta, lo marco para que no le vuelvas a escribir lo mismo.'},
-    'r-firmas': {nombre: 'Avisos de firma', frase: 'El día antes de una firma, te aviso con lo que hace falta llevar.'},
-    'r-recordatorios': {nombre: 'Recordatorios', frase: 'Cuando un comprador no te conteste en 3 días, te preparo un recordatorio y tú lo envías.'}
+    'r-valoraciones': {nombre: 'Valuations', frase: 'When someone asks for a valuation, I prepare the dossier the next day and you send it.', desde: 'agosto'},
+    'r-cancelaciones': {nombre: 'Cancelled viewings', frase: 'When a viewing is cancelled, I suggest another date and you decide whether to send it.'},
+    'r-actas': {nombre: 'Notes', frase: 'After each viewing, I ask you for the notes so you can dictate them on the way out.'},
+    'r-promesas': {nombre: 'Promises', frase: 'When someone promises you something in the chat, I note it down and let you know if it doesn\'t arrive.'},
+    'r-informes': {nombre: 'Monday reports', frase: 'Every Monday I prepare each owner\'s report and you send it.'},
+    'r-contestado': {nombre: 'Who has replied', frase: 'When a client replies to you, I mark it so you don\'t write the same thing to them again.'},
+    'r-firmas': {nombre: 'Signing alerts', frase: 'The day before a signing, I tell you what you need to bring.'},
+    'r-recordatorios': {nombre: 'Reminders', frase: 'When a buyer doesn\'t reply to you in 3 days, I prepare a reminder and you send it.'}
   };
   // A10 · los 3 casos distintos de valoraciones (H18): hora del mensaje y qué habría hecho Veta
   C.distinto = {
-    jordi: {origen: 'Jordi · WhatsApp · 6 nov, 10:12', habria: 'Yo habría preparado el dossier para el día 7. Tú escribiste otra cosa.', motivo: 'Escribiste otra cosa'},
-    nuria: {origen: 'Núria · WhatsApp · 21 oct, 17:40', habria: 'Yo habría preparado el dossier para el día 22. No enviaste nada.', motivo: 'No enviaste nada'},
-    toni: {origen: 'Toni · WhatsApp · 2 sep, 12:05', habria: 'Yo habría preparado el dossier para el día 3. Tú escribiste otra cosa.', motivo: 'Escribiste otra cosa'}
+    jordi: {origen: 'Jordi · WhatsApp · 6 Nov, 10:12', habria: 'I would have prepared the dossier for the 7th. You wrote something else.', motivo: 'You wrote something else'},
+    nuria: {origen: 'Núria · WhatsApp · 21 Oct, 17:40', habria: 'I would have prepared the dossier for the 22nd. You didn\'t send anything.', motivo: 'You didn\'t send anything'},
+    toni: {origen: 'Toni · WhatsApp · 2 Sep, 12:05', habria: 'I would have prepared the dossier for the 3rd. You wrote something else.', motivo: 'You wrote something else'}
   };
   // A10 · la regla a prueba (visitas canceladas): lo que habría hecho, sin enviarlo
   C.aPrueba = [
-    {id: 'jordi', cuando: 'Vie 20', nombre: 'Jordi Ferrer', propone: 'Propondría el jueves 26, 18:00',
-      cita: 'Al final mañana no puedo ir a ver el piso, lo siento.', origen: 'Jordi · WhatsApp · vie 20, 9:05',
-      borrador: 'Hola, Jordi, soy Laura. No pasa nada. ¿Te va bien el jueves 26 a las 18:00 para verlo?'},
-    {id: 'anna-bosch', cuando: 'Jue 19', nombre: 'Anna Bosch', propone: 'Propondría el sábado 21, 10:00',
-      cita: 'Me ha surgido un viaje, ¿podemos cambiar la visita?', origen: 'Anna · WhatsApp · jue 19, 16:30',
-      borrador: 'Hola, Anna, soy Laura. Claro. ¿Te va bien el sábado 21 a las 10:00?'}
+    {id: 'jordi', cuando: 'Fri 20', nombre: 'Jordi Ferrer', propone: 'I\'d suggest Thursday 26, 18:00',
+      cita: 'In the end I can\'t make it to see the flat tomorrow, sorry.', origen: 'Jordi · WhatsApp · Fri 20, 9:05',
+      borrador: 'Hi Jordi, it\'s Laura. No problem. Does Thursday 26 at 18:00 work for you to see it?'},
+    {id: 'anna-bosch', cuando: 'Thu 19', nombre: 'Anna Bosch', propone: 'I\'d suggest Saturday 21, 10:00',
+      cita: 'A trip has come up, can we change the viewing?', origen: 'Anna · WhatsApp · Thu 19, 16:30',
+      borrador: 'Hi Anna, it\'s Laura. Of course. Does Saturday 21 at 10:00 work for you?'}
   ];
   // A10b · los cinco niveles
   C.niveles = [
-    {n: 1, nombre: 'Ordena', texto: 'Apunta y ordena lo que ve.'},
-    {n: 2, nombre: 'Prepara', texto: 'Te deja el mensaje listo.'},
-    {n: 3, nombre: 'Hace lo de dentro', texto: 'Apunta, marca y guarda. No envía nada.'},
-    {n: 4, nombre: 'Envía con tu visto bueno', texto: 'Un toque tuyo y sale.'},
-    {n: 5, nombre: 'Lo hace sola', texto: 'Hoy está cerrado: ningún mensaje sale solo.', cerrado: true}
+    {n: 1, nombre: 'Sorts', texto: 'Notes down and sorts what it sees.'},
+    {n: 2, nombre: 'Prepares', texto: 'Leaves the message ready for you.'},
+    {n: 3, nombre: 'Does the internal stuff', texto: 'Notes, marks and saves. Sends nothing.'},
+    {n: 4, nombre: 'Sends with your OK', texto: 'One tap from you and it goes.'},
+    {n: 5, nombre: 'Does it on its own', texto: 'Closed today: no message goes out on its own.', cerrado: true}
   ];
   // A11 · la orden dictada y sus partes (H21)
   C.orden = {
-    dijiste: 'Cuando un comprador no me conteste en tres días, prepárame un recordatorio.',
+    dijiste: 'When a buyer doesn\'t reply to me in three days, prepare a reminder for me.',
     partes: [
-      {id: 'cuando', titulo: 'Cuándo actúa', texto: 'Cuando un comprador lleva 3 días sin contestarte.'},
-      {id: 'comprueba', titulo: 'Qué comprueba', texto: 'Que el último mensaje sea tuyo y que no haya una visita apuntada.'},
-      {id: 'hace', titulo: 'Qué hace', texto: 'Te prepara un recordatorio en Hoy.'},
-      {id: 'llega', titulo: 'Hasta dónde llega', texto: 'Prepara. Tú lo envías.'}
+      {id: 'cuando', titulo: 'When it acts', texto: 'When a buyer has gone 3 days without replying to you.'},
+      {id: 'comprueba', titulo: 'What it checks', texto: 'That the last message is yours and that there\'s no viewing booked.'},
+      {id: 'hace', titulo: 'What it does', texto: 'Prepares a reminder for you in Today.'},
+      {id: 'llega', titulo: 'How far it goes', texto: 'Prepares. You send it.'}
     ]
   };
   // A9b · la semana pasada
   C.semanaPasada = [
-    {titulo: 'Mensajes que te preparé', derecha: '31', sub: 'Enviaste 27'},
-    {titulo: 'Actas guardadas', derecha: '3'}, {titulo: 'Promesas apuntadas', derecha: '4'},
-    {titulo: 'Informes del lunes', derecha: '1'}, {titulo: 'Respuestas marcadas', derecha: '9'}
+    {titulo: 'Messages I prepared for you', derecha: '31', sub: 'You sent 27'},
+    {titulo: 'Notes saved', derecha: '3'}, {titulo: 'Promises noted', derecha: '4'},
+    {titulo: 'Monday reports', derecha: '1'}, {titulo: 'Replies marked', derecha: '9'}
   ];
   // A13 · lo que he aprendido
   C.aprendido = [
-    {id: 'pere-tarde', texto: 'A Pere le escribes por la tarde, después de las 16:00.', corto: 'A Pere le escribes por la tarde', origen: 'De tus mensajes de octubre'},
-    {id: 'marta-sabados', texto: 'Marta Puig solo puede ver pisos los sábados.', corto: 'Marta solo puede los sábados', origen: 'De su chat del 3 nov'},
-    {id: 'arras-notaria', texto: 'Las arras las firmas en la notaría de Gran de Gràcia.', corto: 'Las arras, en Gran de Gràcia', origen: 'De tus 4 últimas arras'}
+    {id: 'pere-tarde', texto: 'You write to Pere in the afternoon, after 16:00.', corto: 'You write to Pere in the afternoon', origen: 'From your October messages'},
+    {id: 'marta-sabados', texto: 'Marta Puig can only see flats on Saturdays.', corto: 'Marta can only do Saturdays', origen: 'From her chat on 3 Nov'},
+    {id: 'arras-notaria', texto: 'You sign deposit contracts at the notary on Gran de Gràcia.', corto: 'Deposits, on Gran de Gràcia', origen: 'From your last 4 deposit contracts'}
   ];
-  C.oficinaDice = ['Las visitas se apuntan en la ficha el mismo día.', 'El certificado energético se pide antes de anunciar el precio.'];
+  C.oficinaDice = ['Viewings are logged on the profile the same day.', 'The energy certificate is requested before advertising the price.'];
   // A13b · ejemplos de mejora
-  C.mejoras = ['Llamar en 48 horas a quien pide ver un piso', 'Confirmar las visitas la víspera', 'Pedir el certificado energético al captar el piso'];
+  C.mejoras = ['Call within 48 hours anyone who asks to see a flat', 'Confirm viewings the day before', 'Ask for the energy certificate when taking on the flat'];
   // A14 · tu lista de cada día (hoja) y lo que aún haces a mano (hoja)
-  C.lista = {antes: 46, semanas: [['26 oct', 34], ['2 nov', 29], ['9 nov', 25], ['16 nov', 21]]};
-  C.aMano = [['Enviar el dossier al día siguiente', 14], ['Confirmar las visitas la víspera', 9], ['Pedir el certificado energético', 6]];
+  C.lista = {antes: 46, semanas: [['26 Oct', 34], ['2 Nov', 29], ['9 Nov', 25], ['16 Nov', 21]]};
+  C.aMano = [['Send the dossier the next day', 14], ['Confirm viewings the day before', 9], ['Ask for the energy certificate', 6]];
   // H25 · semanas anteriores (casos preparados de la oficina, los de G3e; mensajes de Laura inventados)
   C.semanas = [
-    {id: '26-oct', texto: 'Semana del 26 oct al 1 nov', corto: '26 oct', preparados: 118, mensajes: 22, enviados: 19, actas: 2},
-    {id: '2-nov', texto: 'Semana del 2 al 8 nov', corto: '2 nov', preparados: 129, mensajes: 25, enviados: 22, actas: 4},
-    {id: '9-nov', texto: 'Semana del 9 al 15 nov', corto: '9 nov', preparados: 141, mensajes: 28, enviados: 25, actas: 3},
-    {id: '16-nov', texto: 'Semana del 16 al 22 nov', corto: '16 nov', preparados: 156, mensajes: 31, enviados: 27, actas: 3}
+    {id: '26-oct', texto: 'Week of 26 Oct to 1 Nov', corto: '26 Oct', preparados: 118, mensajes: 22, enviados: 19, actas: 2},
+    {id: '2-nov', texto: 'Week of 2 to 8 Nov', corto: '2 Nov', preparados: 129, mensajes: 25, enviados: 22, actas: 4},
+    {id: '9-nov', texto: 'Week of 9 to 15 Nov', corto: '9 Nov', preparados: 141, mensajes: 28, enviados: 25, actas: 3},
+    {id: '16-nov', texto: 'Week of 16 to 22 Nov', corto: '16 Nov', preparados: 156, mensajes: 31, enviados: 27, actas: 3}
   ];
   // H24 · tus tiempos (minutos de ejemplo; las cuentas salen de VETA.datos.tiempos.laura)
-  C.tiempos = [{id: 'mensajes', texto: 'Responder un mensaje', min: 4}, {id: 'actas', texto: 'Un acta', min: 12}, {id: 'avisos', texto: 'Apuntar una promesa', min: 2}];
+  C.tiempos = [{id: 'mensajes', texto: 'Reply to a message', min: 4}, {id: 'actas', texto: 'Viewing notes', min: 12}, {id: 'avisos', texto: 'Log a promise', min: 2}];
 
   // A18m · mi mapa de trabajo (H32 con sus citas)
   C.mapa = [
-    {titulo: 'Lo que he encontrado', filas: [
-      {id: 'sin-respuesta', titulo: 'Contactos sin respuesta', sub: '5 · el más antiguo, de ayer', texto: 'Personas que te escribieron y todavía esperan una respuesta tuya.',
-        citas: [{texto: '¿Sigue disponible el piso de Gràcia? Podríamos verlo este sábado', origen: 'Marta · ayer, 18:42'}]},
-      {id: 'quieren', titulo: 'Querían vender o comprar', sub: '9 personas', texto: 'Lo dijeron en el chat y no siempre se apuntó en ninguna ficha.',
-        citas: [{texto: 'Antes de nada, ¿puedes venir a verlo?', origen: 'Núria · 21 oct'}, {texto: '¿Cuánto podría pedir por el piso de mi madre?', origen: 'Jordi · 6 nov'}]},
-      {id: 'promesas', titulo: 'Promesas', sub: '7 sin constancia', texto: 'Lo que te prometieron, o prometiste tú, y no consta que se haya cumplido.',
-        citas: [{texto: 'El miércoles te paso la nómina', origen: 'Elena · lun 16'}]},
-      {id: 'papeles', titulo: 'Papeles pendientes', sub: '4', texto: 'Documentos que alguien tiene que mandar antes de seguir.',
-        citas: [{texto: 'Te mando el certificado energético cuando me lo den', origen: 'Pere · vie 13'}]},
-      {id: 'enfrian', titulo: 'Relaciones que se enfrían', sub: '3', texto: 'Clientes con los que hace semanas que no hablas.',
-        citas: [{texto: 'Si sale algún local en el Eixample, avísame', origen: 'Albert · hace 7 semanas'}]}]},
-    {titulo: 'Asuntos abiertos', filas: [
-      {id: 'visita-gracia', titulo: 'La visita del piso de Gràcia', sub: 'Marta Puig · el sábado', texto: 'Marta quiere ver Verdi 42 este sábado. Falta confirmarle la hora.',
-        citas: [{texto: '¿Sigue disponible el piso de Gràcia? Podríamos verlo este sábado', origen: 'Marta · ayer, 18:42'}]},
-      {id: 'dossier-sants', titulo: 'El dossier del piso de Sants', sub: 'Jordi Ferrer · se lo prometiste', texto: 'Le dijiste a Jordi que le mandabas el dossier del piso de Sants.',
-        citas: [{texto: 'Perfecto, quedo a la espera del dossier', origen: 'Jordi · vie 20'}]},
-      {id: 'papeles-verdi', titulo: 'Los papeles del piso de Verdi', sub: 'Pere Soler · el certificado', texto: 'Falta el certificado energético para poder anunciar el precio.',
-        citas: [{texto: 'Te mando el certificado energético cuando me lo den', origen: 'Pere · vie 13'}]}]},
-    {titulo: 'Trabajos que se repiten', filas: [
-      {id: 'dossier', titulo: 'Enviar el dossier al día siguiente', sub: '14 veces en seis meses', texto: 'Cuando alguien pide una valoración, al día siguiente le mandas el dossier. Lo has hecho 14 veces; en 11 de la misma forma.',
-        citas: [{texto: '¿Cuánto podría pedir por el piso de mi madre?', origen: 'Jordi · 6 nov'}], boton: {texto: 'Ver los 14 casos', ir: 'regla/r-valoraciones'}},
-      {id: 'certificado', titulo: 'Pedir el certificado energético', sub: '6 veces', texto: 'Al captar un piso, pides el certificado energético al propietario.',
-        citas: [{texto: 'Te mando el certificado energético cuando me lo den', origen: 'Pere · vie 13'}]},
-      {id: 'visitas', titulo: 'Confirmar las visitas la víspera', sub: '9 veces', texto: 'El día antes de una visita escribes para confirmarla.',
-        citas: [{texto: 'Sí, mañana a las 11:00 nos vemos en el portal', origen: 'Elena · vie 20'}]}]}
+    {titulo: 'What I\'ve found', filas: [
+      {id: 'sin-respuesta', titulo: 'Contacts without a reply', sub: '5 · the oldest, from yesterday', texto: 'People who wrote to you and are still waiting for your reply.',
+        citas: [{texto: 'Is the Gràcia flat still available? We could see it this Saturday', origen: 'Marta · yesterday, 18:42'}]},
+      {id: 'quieren', titulo: 'Wanted to sell or buy', sub: '9 people', texto: 'They said it in the chat and it wasn\'t always logged on any profile.',
+        citas: [{texto: 'First of all, can you come and see it?', origen: 'Núria · 21 Oct'}, {texto: 'How much could I ask for my mother\'s flat?', origen: 'Jordi · 6 Nov'}]},
+      {id: 'promesas', titulo: 'Promises', sub: '7 with no record', texto: 'What they promised you, or you promised, with no record of it being kept.',
+        citas: [{texto: 'I\'ll send you the payslip on Wednesday', origen: 'Elena · Mon 16'}]},
+      {id: 'papeles', titulo: 'Pending paperwork', sub: '4', texto: 'Documents someone has to send before moving on.',
+        citas: [{texto: 'I\'ll send you the energy certificate when I get it', origen: 'Pere · Fri 13'}]},
+      {id: 'enfrian', titulo: 'Relationships going cold', sub: '3', texto: 'Clients you haven\'t talked to in weeks.',
+        citas: [{texto: 'If any unit comes up in the Eixample, let me know', origen: 'Albert · 7 weeks ago'}]}]},
+    {titulo: 'Open matters', filas: [
+      {id: 'visita-gracia', titulo: 'The Gràcia flat viewing', sub: 'Marta Puig · on Saturday', texto: 'Marta wants to see Verdi 42 this Saturday. The time still needs confirming.',
+        citas: [{texto: 'Is the Gràcia flat still available? We could see it this Saturday', origen: 'Marta · yesterday, 18:42'}]},
+      {id: 'dossier-sants', titulo: 'The Sants flat dossier', sub: 'Jordi Ferrer · you promised it', texto: 'You told Jordi you\'d send him the Sants flat dossier.',
+        citas: [{texto: 'Perfect, I\'ll wait for the dossier', origen: 'Jordi · Fri 20'}]},
+      {id: 'papeles-verdi', titulo: 'The Verdi flat paperwork', sub: 'Pere Soler · the certificate', texto: 'The energy certificate is missing to be able to advertise the price.',
+        citas: [{texto: 'I\'ll send you the energy certificate when I get it', origen: 'Pere · Fri 13'}]}]},
+    {titulo: 'Repeated work', filas: [
+      {id: 'dossier', titulo: 'Send the dossier the next day', sub: '14 times in six months', texto: 'When someone asks for a valuation, you send them the dossier the next day. You\'ve done it 14 times; 11 of them the same way.',
+        citas: [{texto: 'How much could I ask for my mother\'s flat?', origen: 'Jordi · 6 Nov'}], boton: {texto: 'See the 14 cases', ir: 'regla/r-valoraciones'}},
+      {id: 'certificado', titulo: 'Ask for the energy certificate', sub: '6 times', texto: 'When taking on a flat, you ask the owner for the energy certificate.',
+        citas: [{texto: 'I\'ll send you the energy certificate when I get it', origen: 'Pere · Fri 13'}]},
+      {id: 'visitas', titulo: 'Confirm viewings the day before', sub: '9 times', texto: 'The day before a viewing you write to confirm it.',
+        citas: [{texto: 'Yes, tomorrow at 11:00 we\'ll meet at the door', origen: 'Elena · Fri 20'}]}]}
   ];
 
   // G10 · cómo trabajamos (H23)
   C.practicas = [
-    {id: 'actas', titulo: 'Actas dictadas al salir de la visita', estado: 'en-marcha', estadoTexto: 'En marcha', usan: 'la usan 4 de 6', propuso: 'la propuso Anna Costa',
-      caso: 'Nació de las visitas de septiembre: las actas se escribían dos días después, o nunca.'},
-    {id: 'mismo-dia', titulo: 'Responder el mismo día', estado: 'a-prueba', estadoTexto: 'A prueba · día 9 de 14', usan: 'a prueba con todo el equipo', propuso: 'vino con Veta',
-      caso: 'Venía preparada con Veta: los contactos que esperan más de un día se enfrían.'},
-    {id: 'dossier', titulo: 'Dossier al día siguiente', estado: 'propuesta', estadoTexto: 'Propuesta', usan: 'la usa Laura Martí', propuso: 'de Laura Martí',
-      caso: 'Nació de los chats de Laura: 14 valoraciones desde agosto, 11 con el dossier al día siguiente.'}
+    {id: 'actas', titulo: 'Notes dictated on the way out of the viewing', estado: 'en-marcha', estadoTexto: 'In use', usan: 'used by 4 of 6', propuso: 'proposed by Anna Costa',
+      caso: 'It came out of the September viewings: notes were written two days later, or never.'},
+    {id: 'mismo-dia', titulo: 'Reply the same day', estado: 'a-prueba', estadoTexto: 'On trial · day 9 of 14', usan: 'on trial with the whole team', propuso: 'came with Veta',
+      caso: 'It came ready with Veta: contacts waiting more than a day go cold.'},
+    {id: 'dossier', titulo: 'Dossier the next day', estado: 'propuesta', estadoTexto: 'Proposal', usan: 'used by Laura Martí', propuso: 'by Laura Martí',
+      caso: 'It came out of Laura\'s chats: 14 valuations since August, 11 with the dossier the next day.'}
   ];
-  C.practicaClaudia = {id: 'llamar-48', titulo: 'Llamar en 48 horas a quien pide una visita', estado: 'propuesta', estadoTexto: 'Propuesta', usan: 'todavía no la usa nadie',
-    propuso: 'sale de un caso', caso: 'Nació del caso de Clàudia Ribas: pidió ver un piso de Sants y nadie la llamó.'};
+  C.practicaClaudia = {id: 'llamar-48', titulo: 'Call within 48 hours anyone who asks for a viewing', estado: 'propuesta', estadoTexto: 'Proposal', usan: 'nobody uses it yet',
+    propuso: 'comes from a case', caso: 'It came out of Clàudia Ribas\'s case: she asked to see a flat in Sants and nobody called her.'};
   // G11 · dónde se paran las operaciones y cómo aprende Veta
-  C.paradas = [['Contacto', 1], ['Visitas', 2], ['Oferta', 1], ['Arras', 0]];
-  C.aprende = [['Escucha', 'Lee los chats de trabajo que cada persona deja leer.'], ['Detecta', 'Ve lo que se repite y lo que se queda parado.'],
-    ['El equipo decide', 'Una persona lo propone; dirección decide si se prueba.'], ['La oficina mejora', 'Lo que funciona pasa a ser cómo trabajamos.']];
+  C.paradas = [['Contact', 1], ['Viewings', 2], ['Offer', 1], ['Deposit', 0]];
+  C.aprende = [['Listens', 'Reads the work chats each person lets it read.'], ['Detects', 'Sees what repeats and what gets stuck.'],
+    ['The team decides', 'One person proposes it; management decides whether to try it.'], ['The office improves', 'What works becomes how we work.']];
   // G12 · lo que Veta aún no hace
-  C.falta = [['Responder a contactos nuevos', 23], ['Preparar dossieres', 14], ['Pedir certificados energéticos', 6]];
+  C.falta = [['Reply to new contacts', 23], ['Prepare dossiers', 14], ['Ask for energy certificates', 6]];
   // G14 · lo que sabe tu oficina
-  C.sabe = [['Quien pide fotos del balcón, visita', 31, 38], ['Si el propietario no recibe noticias en 10 días, suele quejarse', 5, 7], ['En Gràcia casi todos piden ver el piso en sábado', 64, 92]];
+  C.sabe = [['Whoever asks for balcony photos books a viewing', 31, 38], ['If the owner gets no news in 10 days, they usually complain', 5, 7], ['In Gràcia almost everyone asks to see the flat on a Saturday', 64, 92]];
   // H33 · calendarios
   C.calendarios = ['Calendly', 'Cal.com', 'Google Calendar'];
   // E2 · cuentas de ejemplo
-  C.cuentas = {laura: 'laura@ejemplo.es', montse: 'montse@ejemplo.es'};
+  C.cuentas = {laura: 'laura@example.com', montse: 'montse@example.com'};
 })();

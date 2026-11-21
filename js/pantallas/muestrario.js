@@ -18,66 +18,66 @@
   const pon = (el, estado, extra) => { const id = baseDe(el); local[id] = {estado, hora: VETA.ahora(), extra: Object.assign({}, (local[id] || {}).extra, extra || {})}; VETA.repinta({hecho: 'mu-' + id}); };
 
   VETA.pantalla('muestrario', {
-    ruta: 'muestrario', titulo: 'Muestrario', destino: null, ancha: true, grupo: 'Núcleo',
-    guia: ['Aquí están todos los componentes del núcleo.', 'Tú los tocas para ver cómo responden.', 'Así los paquetes saben qué usar.'],
+    ruta: 'muestrario', titulo: 'Showcase', destino: null, ancha: true, grupo: 'Core',
+    guia: ['Here are all the core components.', 'You tap them to see how they respond.', 'That way the packages know what to use.'],
     pinta: () => {
       const yo = VETA.yo();
       const tipos = ['c-marta', 'c-elena', 'c-pere', 'c-nuria', 'c-jordi', 'c-sergi'].map(muestra);
       const hojas = Object.values(VETA.HOJAS);
       return [
-        `<p class="intro" data-i="0">Todo lo que el núcleo da a los paquetes. Lo que toques aquí no cambia la demo.</p>`,
-        sec('Banda de destino', `<div class="mu-banda"><div class="cab cab-banda"><span class="cab-t">Hoy</span><span class="cab-yo">${VETA.av(yo.id, 36, {aro: true})}</span></div></div>`),
-        sec('Cabecera de detalle', `<div class="mu-banda"><div class="cab cab-detalle"><button type="button" class="cab-atras" data-accion="toca">${VETA.ic('atras', 20)}<span>Hoy</span></button><span class="cab-t">Pere Soler</span><span class="cab-der"></span></div></div>`),
-        sec('Barra y micro «Dictar»', `<div class="mu-barra"><div class="barra"><div class="tabs">` +
-          [['hoy', 'Hoy', 'hoy', 3], ['clientes', 'Clientes', 'clientes'], ['aprende', 'Veta', 'veta']].map(([ic, t, k, n], i) =>
+        `<p class="intro" data-i="0">Everything the core gives the packages. Whatever you tap here doesn't change the demo.</p>`,
+        sec('Destination band', `<div class="mu-banda"><div class="cab cab-banda"><span class="cab-t">Today</span><span class="cab-yo">${VETA.av(yo.id, 36, {aro: true})}</span></div></div>`),
+        sec('Detail header', `<div class="mu-banda"><div class="cab cab-detalle"><button type="button" class="cab-atras" data-accion="toca">${VETA.ic('atras', 20)}<span>Today</span></button><span class="cab-t">Pere Soler</span><span class="cab-der"></span></div></div>`),
+        sec('Bar and “Dictate” mic', `<div class="mu-barra"><div class="barra"><div class="tabs">` +
+          [['hoy', 'Today', 'hoy', 3], ['clientes', 'Clients', 'clientes'], ['aprende', 'Veta', 'veta']].map(([ic, t, k, n], i) =>
             `<button type="button" class="tab${i === 0 ? ' on' : ''}" data-accion="toca"><span class="tab-ic">${VETA.ic(ic, 24)}${n ? `<span class="contador"><span class="contador-n">${n}</span></span>` : ''}</span><span class="tab-p">${t}</span></button>`).join('') +
-          `</div><button type="button" class="mic" data-accion="toca" aria-label="Dictar"><span class="mic-c">${VETA.ic('mic', 26)}</span><span class="mic-p">Dictar</span></button></div></div>`),
-        sec('Botones', UI.boton({texto: 'Botón principal', accion: 'toca'}) + UI.botones([{texto: 'Secundario', accion: 'toca'}, {texto: 'Otro', accion: 'toca'}]) +
-          `<div class="mu-fila">${UI.boton({tipo: 'texto', texto: 'Deshacer', accion: 'toca'})}${UI.boton({tipo: 'texto', texto: 'No lo envié', accion: 'toca'})}${UI.boton({tipo: 'redondo', texto: 'Llamar', icono: 'telefono', accion: 'toca'})}${UI.boton({tipo: 'redondo', texto: 'WhatsApp', icono: 'chat', accion: 'toca'})}</div>`),
-        sec('Etiquetas', `<div class="mu-fila">${Object.keys(UI.ETIQUETAS).map(k => UI.etiqueta(k)).join('')}</div>`),
-        sec('Filas y lista', UI.lista([
-          {titulo: 'Pere Soler', sub: 'Propietario del piso de Verdi 42', av: 'pere', ir: 'muestrario/lista', focoFoto: true},
-          {titulo: 'Carmen López', sub: 'Iniciales cuando no hay foto', av: 'carmen', etiqueta: 'te-toca', ir: 'muestrario/lista'},
-          {titulo: 'Verdi 42, 3.º 2.ª', sub: 'Con miniatura de piso', foto: 'verdi', derecha: '395.000 €', ir: 'muestrario/lista'},
-          {titulo: 'Con icono', sub: 'Y sin «›» porque no se toca', icono: 'reloj'}])),
-        sec('Tarjeta', UI.tarjeta(`<p class="hoja-x">Radio 20, borde fino y sombra. Una abierta por pantalla.</p>`)),
-        sec('Cita y borrador', UI.cita({texto: '¿Sigue disponible el piso de Gràcia? Podríamos verlo este sábado', origen: 'Marta · ayer, 18:42', de: 'c-marta'}) +
-          UI.borrador({texto: 'Hola, Marta, soy Laura. ¿Os va bien este sábado a las 11:00 para ver el piso de Gràcia?'}) +
-          UI.borrador({html: 'Hola, Jordi, soy Laura. Te paso el dossier: planos, nota simple <mark>y gastos de comunidad</mark>.'}) +
-          UI.nota({texto: 'No sale hasta que tú lo envíes', icono: 'candado'}) + UI.nota({texto: 'Aviso con candado, en caja.', icono: 'candado', caja: true})),
-        sec('Línea de hecho', UI.lineaHecho({texto: 'Enviado a Marta', hora: VETA.ahora(), hoja: 'h03', de: 'c-marta', boton: {texto: 'No lo envié', accion: 'toca'}})),
-        sec('La tarjeta de la cola · seis tipos', tipos.map((c, k) => UI.tarjetaCosa(c, {n: k + 1, total: 6})).join('')),
-        sec('Cifra grande y ocho números', UI.cifra({valor: cifra, unidad: 'casos preparados', periodo: 'últimos 7 días', id: 'mu-cifra'}) +
-          UI.boton({tipo: 'secundario', texto: 'Hacer rodar la cifra', accion: 'rueda'}) +
-          UI.selector({etiqueta: 'Periodo', opciones: [{id: '7d', texto: 'Últimos 7 días'}, {id: 'desde', texto: 'Desde el 3 oct'}], valor: ventana, accion: 'ventana'}) +
+          `</div><button type="button" class="mic" data-accion="toca" aria-label="Dictate"><span class="mic-c">${VETA.ic('mic', 26)}</span><span class="mic-p">Dictate</span></button></div></div>`),
+        sec('Buttons', UI.boton({texto: 'Primary button', accion: 'toca'}) + UI.botones([{texto: 'Secondary', accion: 'toca'}, {texto: 'Other', accion: 'toca'}]) +
+          `<div class="mu-fila">${UI.boton({tipo: 'texto', texto: 'Undo', accion: 'toca'})}${UI.boton({tipo: 'texto', texto: 'I didn\'t send it', accion: 'toca'})}${UI.boton({tipo: 'redondo', texto: 'Call', icono: 'telefono', accion: 'toca'})}${UI.boton({tipo: 'redondo', texto: 'WhatsApp', icono: 'chat', accion: 'toca'})}</div>`),
+        sec('Tags', `<div class="mu-fila">${Object.keys(UI.ETIQUETAS).map(k => UI.etiqueta(k)).join('')}</div>`),
+        sec('Rows and list', UI.lista([
+          {titulo: 'Pere Soler', sub: 'Owner of the Verdi 42 flat', av: 'pere', ir: 'muestrario/lista', focoFoto: true},
+          {titulo: 'Carmen López', sub: 'Initials when there\'s no photo', av: 'carmen', etiqueta: 'te-toca', ir: 'muestrario/lista'},
+          {titulo: 'Verdi 42, 3.º 2.ª', sub: 'With a flat thumbnail', foto: 'verdi', derecha: '395.000 €', ir: 'muestrario/lista'},
+          {titulo: 'With an icon', sub: 'And without “›” because it isn\'t tappable', icono: 'reloj'}])),
+        sec('Card', UI.tarjeta(`<p class="hoja-x">Radius 20, thin border and shadow. One open per screen.</p>`)),
+        sec('Quote and draft', UI.cita({texto: 'Is the Gràcia flat still available? We could see it this Saturday', origen: 'Marta · yesterday, 18:42', de: 'c-marta'}) +
+          UI.borrador({texto: 'Hi Marta, it\'s Laura. Does this Saturday at 11:00 work for you to see the Gràcia flat?'}) +
+          UI.borrador({html: 'Hi Jordi, it\'s Laura. Here\'s the dossier: floor plans, land registry extract <mark>and community fees</mark>.'}) +
+          UI.nota({texto: 'It doesn\'t go out until you send it', icono: 'candado'}) + UI.nota({texto: 'Alert with a padlock, boxed.', icono: 'candado', caja: true})),
+        sec('Done line', UI.lineaHecho({texto: 'Sent to Marta', hora: VETA.ahora(), hoja: 'h03', de: 'c-marta', boton: {texto: 'I didn\'t send it', accion: 'toca'}})),
+        sec('The queue card · six types', tipos.map((c, k) => UI.tarjetaCosa(c, {n: k + 1, total: 6})).join('')),
+        sec('Big figure and eight numbers', UI.cifra({valor: cifra, unidad: 'cases prepared', periodo: 'last 7 days', id: 'mu-cifra'}) +
+          UI.boton({tipo: 'secundario', texto: 'Roll the figure', accion: 'rueda'}) +
+          UI.selector({etiqueta: 'Period', opciones: [{id: '7d', texto: 'Last 7 days'}, {id: 'desde', texto: 'Since 3 Oct'}], valor: ventana, accion: 'ventana'}) +
           UI.ochoNumeros(ventana)),
-        sec('Barra de pasos', UI.pasos({hecho: 3, total: 5, texto: 'La venta · Visitas · paso 3 de 5'})),
-        sec('Campo, interruptor y selector de dos', UI.campo({etiqueta: 'Nombre', placeholder: 'Escribe aquí'}) + UI.campo({buscar: true, placeholder: 'Pregunta a Veta por un cliente'}) +
-          UI.campo({etiqueta: 'Mensaje', area: true, valor: 'Hola, Marta, soy Laura.'}) +
-          UI.interruptor({texto: 'Guía', sub: 'Explica lo que tocas', on: VETA.guia.on(), accion: 'guia'}) +
-          UI.selector({etiqueta: 'Qué clientes', opciones: [{id: 'mios', texto: 'Míos'}, {id: 'todos', texto: 'Todos'}], valor: 'mios', accion: 'toca'})),
-        sec('Fotos y avatares', `<div class="mu-fila">${UI.foto('verdi', {tam: 'mini', ampliar: true})}${UI.foto('atico', {tam: 'mini', ampliar: true})}<span class="foto foto-mini" aria-label="Sin foto"><i class="foto-res">${VETA.ic('casa', 24)}</i></span></div>` +
+        sec('Step bar', UI.pasos({hecho: 3, total: 5, texto: 'Sale · Viewings · step 3 of 5'})),
+        sec('Field, switch and two-way selector', UI.campo({etiqueta: 'Name', placeholder: 'Type here'}) + UI.campo({buscar: true, placeholder: 'Ask Veta about a client'}) +
+          UI.campo({etiqueta: 'Message', area: true, valor: 'Hi Marta, it\'s Laura.'}) +
+          UI.interruptor({texto: 'Guide', sub: 'Explains what you tap', on: VETA.guia.on(), accion: 'guia'}) +
+          UI.selector({etiqueta: 'Which clients', opciones: [{id: 'mios', texto: 'Mine'}, {id: 'todos', texto: 'All'}], valor: 'mios', accion: 'toca'})),
+        sec('Photos and avatars', `<div class="mu-fila">${UI.foto('verdi', {tam: 'mini', ampliar: true})}${UI.foto('atico', {tam: 'mini', ampliar: true})}<span class="foto foto-mini" aria-label="No photo"><i class="foto-res">${VETA.ic('casa', 24)}</i></span></div>` +
           UI.foto('verdi', {tam: 'ancha'}) +
           `<div class="mu-fila">${VETA.av('laura', 32)}${VETA.av('laura', 36, {aro: true})}${VETA.av('marta', 40)}${VETA.av('pere', 64)}${VETA.av('montse', 40)}${VETA.av('toni', 64)}</div>`),
-        sec('Estados de pantalla', (carga ? UI.silueta(3) : UI.tarjeta('<p class="hoja-x">El contenido ya ha llegado.</p>')) +
-          UI.boton({tipo: 'secundario', texto: 'Cargar otra vez', accion: 'carga'}) +
-          UI.vacio({titulo: 'Eso es todo por hoy', texto: 'Una frase que dice qué pasa y cuál es el paso siguiente.', icono: 'check'}) +
-          UI.error({texto: 'No he podido cargar esto.'}) + `<div class="lista">${UI.sinRed()}</div>`),
-        sec('Onda de dictar', `<div class="mu-fila">${UI.onda({pausada: ondaPausa})}${UI.boton({tipo: 'secundario', texto: ondaPausa ? 'Seguir' : 'Pausa', accion: 'onda', ancho: false})}</div>`),
-        sec('Los 16 efectos', `<div class="mu-efectos">` + [
-          ['1 · Apretar', 'toca'], ['2 · Ir adelante', 'ir-lista'], ['3 · Cambiar de pestaña', 'pestana'], ['4 · Foto que viaja', 'foco'],
-          ['5 · Cascada', 'cascada'], ['6 · Hoja', 'hoja'], ['7 · Hecho en el sitio', 'hecho'], ['8 · Aviso negro', 'aviso'],
-          ['9 · Cifra que rueda', 'rueda'], ['10 · Sombra al bajar', 'baja'], ['11 · Foto que se encoge', 'encoge'], ['12 · Silueta', 'carga'],
-          ['13 · Onda', 'onda'], ['14 · Portada', 'portada'], ['15 · Interruptor', 'guia-demo'], ['16 · Tema', 'tema']
+        sec('Screen states', (carga ? UI.silueta(3) : UI.tarjeta('<p class="hoja-x">The content has already arrived.</p>')) +
+          UI.boton({tipo: 'secundario', texto: 'Load again', accion: 'carga'}) +
+          UI.vacio({titulo: 'That\'s all for today', texto: 'A sentence that says what\'s happening and what the next step is.', icono: 'check'}) +
+          UI.error({texto: 'I couldn\'t load this.'}) + `<div class="lista">${UI.sinRed()}</div>`),
+        sec('Dictation wave', `<div class="mu-fila">${UI.onda({pausada: ondaPausa})}${UI.boton({tipo: 'secundario', texto: ondaPausa ? 'Continue' : 'Pause', accion: 'onda', ancho: false})}</div>`),
+        sec('The 16 effects', `<div class="mu-efectos">` + [
+          ['1 · Press', 'toca'], ['2 · Go forward', 'ir-lista'], ['3 · Switch tab', 'pestana'], ['4 · Travelling photo', 'foco'],
+          ['5 · Cascade', 'cascada'], ['6 · Sheet', 'hoja'], ['7 · Done in place', 'hecho'], ['8 · Black alert', 'aviso'],
+          ['9 · Rolling figure', 'rueda'], ['10 · Shadow on scroll', 'baja'], ['11 · Shrinking photo', 'encoge'], ['12 · Silhouette', 'carga'],
+          ['13 · Wave', 'onda'], ['14 · Home', 'portada'], ['15 · Switch', 'guia-demo'], ['16 · Theme', 'tema']
         ].map(([t, a]) => UI.boton({tipo: 'secundario', texto: t, accion: a})).join('') + '</div>' +
-          `<div class="mu-informe" id="mu-informe"><p>Baja dentro de este recuadro: la foto se encoge al salir (efecto 11).</p>${UI.foto('verdi', {tam: 'ancha'}).replace('class="foto foto-ancha', 'class="foto foto-ancha foto-encoge')}<p>Texto del informe que sigue debajo de la foto.</p><p>Más texto.</p><p>Y más texto para poder bajar.</p><p>Fin.</p></div>`),
-        sec('Plantillas', UI.lista([
-          {titulo: 'Pantalla de lista', sub: 'VETA.lista', ir: 'muestrario/lista', icono: 'hoy'},
-          {titulo: 'Pantalla de confirmación', sub: 'VETA.confirma', ir: 'muestrario/confirma', icono: 'check'},
-          {titulo: 'Hoja de acciones', sub: 'VETA.hojaAcciones', hoja: 'mu-acciones', icono: 'puntos'},
-          {titulo: 'Hoja de texto', sub: 'VETA.hojaTexto', hoja: 'mu-texto', icono: 'doc'},
-          {titulo: 'Hoja de elegir', sub: 'VETA.hojaElegir', hoja: 'mu-elegir', icono: 'usuario'}])),
-        sec('Las 42 hojas', UI.lista(hojas.map(h => ({titulo: h.titulo, sub: h.cod + ' · ' + (VETA.hojaDefs[h.id] ? 'hecha' : 'pendiente del paquete ' + h.paq), hoja: h.id,
+          `<div class="mu-informe" id="mu-informe"><p>Scroll inside this box: the photo shrinks as it leaves (effect 11).</p>${UI.foto('verdi', {tam: 'ancha'}).replace('class="foto foto-ancha', 'class="foto foto-ancha foto-encoge')}<p>Report text that continues below the photo.</p><p>More text.</p><p>And more text so you can scroll.</p><p>End.</p></div>`),
+        sec('Templates', UI.lista([
+          {titulo: 'List screen', sub: 'VETA.lista', ir: 'muestrario/lista', icono: 'hoy'},
+          {titulo: 'Confirmation screen', sub: 'VETA.confirma', ir: 'muestrario/confirma', icono: 'check'},
+          {titulo: 'Action sheet', sub: 'VETA.hojaAcciones', hoja: 'mu-acciones', icono: 'puntos'},
+          {titulo: 'Text sheet', sub: 'VETA.hojaTexto', hoja: 'mu-texto', icono: 'doc'},
+          {titulo: 'Choice sheet', sub: 'VETA.hojaElegir', hoja: 'mu-elegir', icono: 'usuario'}])),
+        sec('The 42 sheets', UI.lista(hojas.map(h => ({titulo: h.titulo, sub: h.cod + ' · ' + (VETA.hojaDefs[h.id] ? 'hecha' : 'pending from package ' + h.paq), hoja: h.id,
           datos: h.id === 'h01' || h.id === 'h02' ? {de: 'c-marta'} : h.id === 'h17' ? {piso: 'verdi'} : h.id === 'h29' ? {texto: 'acuerdo'} : h.id === 'h41' ? {parte: 'socios'} : null}))))
       ].join('');
     },
@@ -89,7 +89,7 @@
       'todavia-no'(ev, el) { pon(el, 'por-hacer'); }, 'no-lo-envie'(ev, el) { delete local[baseDe(el)]; VETA.repinta({hecho: el.dataset.de}); },
       deshacer(ev, el) { delete local[baseDe(el)]; VETA.repinta({hecho: el.dataset.de}); },
       quitar(ev, el) { pon(el, 'quitada'); },
-      copiar(ev, el) { VETA.aviso('Texto copiado. Envíalo desde tu WhatsApp.'); pon(el, 'por-hacer', {boton: {texto: 'Ya lo envié', accion: 'ya-lo-envie'}, secundarios: [{texto: 'Copiar otra vez', accion: 'copiar'}]}); },
+      copiar(ev, el) { VETA.aviso('Text copied. Send it from your WhatsApp.'); pon(el, 'por-hacer', {boton: {texto: 'I\'ve sent it', accion: 'ya-lo-envie'}, secundarios: [{texto: 'Copy again', accion: 'copiar'}]}); },
       // efectos
       'ir-lista'() { VETA.ir('muestrario/lista'); },
       pestana() { VETA.ir('clientes', {pestana: true}); },
@@ -97,13 +97,13 @@
       cascada() { VETA.mov.cascada(VETA.$('.col.activa .pant')); },
       hoja() { VETA.hoja('h26'); },
       hecho() { const b = VETA.$('.col.activa .tc [data-accion="principal"]'); if (b) { b.scrollIntoView({block: 'center'}); b.click(); } },
-      aviso() { VETA.aviso('Texto copiado.', {deshacer: () => VETA.aviso('Deshecho.')}); },
+      aviso() { VETA.aviso('Text copied.', {deshacer: () => VETA.aviso('Deshecho.')}); },
       rueda() { cifra = cifra === 156 ? 1012 : 156; VETA.rueda(document.getElementById('mu-cifra'), cifra); },
       ventana(ev, el) { ventana = el.dataset.valor; VETA.modelo.numeros(ventana).forEach((n, k) => VETA.rueda(VETA.$('.col.activa [data-n8="' + k + '"]'), n.valor)); },
       baja() { const d = VETA.$('.col.activa .desplaza'); if (d) d.scrollBy({top: 240, behavior: VETA.reducido() ? 'auto' : 'smooth'}); },
       encoge() { const m = document.getElementById('mu-informe'); if (m) { m.scrollIntoView({block: 'center'}); m.scrollBy({top: 200, behavior: VETA.reducido() ? 'auto' : 'smooth'}); } },
       carga() { carga = true; VETA.repinta(); setTimeout(() => { carga = false; VETA.repinta(); }, 1200); },
-      onda() { ondaPausa = !ondaPausa; const o = VETA.$('.col.activa .onda'); if (o) o.classList.toggle('pausada', ondaPausa); const b = VETA.$('.col.activa [data-accion="onda"].btn-suelto span'); if (b) b.textContent = ondaPausa ? 'Seguir' : 'Pausa'; },
+      onda() { ondaPausa = !ondaPausa; const o = VETA.$('.col.activa .onda'); if (o) o.classList.toggle('pausada', ondaPausa); const b = VETA.$('.col.activa [data-accion="onda"].btn-suelto span'); if (b) b.textContent = ondaPausa ? 'Continue' : 'Pause'; },
       portada() { VETA.est.pon('portadaVista', false); VETA.ir('portada'); },
       guia(ev, el) { VETA.guia.pon(el.getAttribute('aria-checked') === 'true'); },
       'guia-demo'() { const i = VETA.$('.col.activa .interr'); if (i) { i.scrollIntoView({block: 'center'}); i.click(); } },
@@ -113,30 +113,30 @@
 
   // las plantillas, con datos de ejemplo
   VETA.lista('muestrario-lista', {
-    ruta: 'muestrario/lista', titulo: 'Pere Soler', destino: null, grupo: 'Núcleo',
+    ruta: 'muestrario/lista', titulo: 'Pere Soler', destino: null, grupo: 'Core',
     cabDerecha: () => VETA.av('pere', 32, {foco: 'foto'}),
-    guia: ['Aquí ves una pantalla hecha solo con datos.', 'Tú tocas una fila.', 'Así se hacen las de prioridad 2.'],
-    intro: 'Una pantalla de lista: bloques con título y filas. La foto de la cabecera es la que ha viajado desde la fila.',
-    bloques: [{titulo: 'Lo último', filas: [{titulo: 'Informe enviado', sub: 'Lun 16', icono: 'papel', hoja: 'h41', datos: {parte: 'socios'}}, {titulo: 'Nota de voz', sub: 'Sáb 21, 21:10', icono: 'mic'}]},
-      {titulo: 'Más', filas: [{titulo: 'Ir a la confirmación', ir: 'muestrario/confirma', icono: 'check'}]}],
-    pie: 'Ejemplo con datos inventados.'
+    guia: ['Here you see a screen built only from data.', 'You tap a row.', 'That\'s how the priority 2 ones are built.'],
+    intro: 'A list screen: blocks with a title and rows. The header photo is the one that travelled from the row.',
+    bloques: [{titulo: 'Latest', filas: [{titulo: 'Report sent', sub: 'Mon 16', icono: 'papel', hoja: 'h41', datos: {parte: 'socios'}}, {titulo: 'Voice note', sub: 'Sat 21, 21:10', icono: 'mic'}]},
+      {titulo: 'More', filas: [{titulo: 'Go to the confirmation', ir: 'muestrario/confirma', icono: 'check'}]}],
+    pie: 'Example with made-up data.'
   });
   VETA.confirma('muestrario-confirma', {
-    ruta: 'muestrario/confirma', titulo: 'Pasar la cartera', destino: null, grupo: 'Núcleo',
-    texto: 'Una pantalla de confirmación: qué va a pasar, los detalles y un botón.',
-    filas: [{titulo: '34 conversaciones', sub: 'De Teresa Gil a Laura Martí', av: 'teresa'}, {titulo: '3 visitas esta semana', icono: 'cal'}],
-    nota: 'Nadie recibe nada hasta que lo apruebes.',
-    boton: {texto: 'Pasar la cartera a Laura'},
-    alConfirmar: () => ({aviso: 'Cartera pasada a Laura.'})
+    ruta: 'muestrario/confirma', titulo: 'Hand over the portfolio', destino: null, grupo: 'Core',
+    texto: 'A confirmation screen: what\'s going to happen, the details and a button.',
+    filas: [{titulo: '34 conversations', sub: 'From Teresa Gil to Laura Martí', av: 'teresa'}, {titulo: '3 viewings this week', icono: 'cal'}],
+    nota: 'Nobody receives anything until you approve it.',
+    boton: {texto: 'Hand over the portfolio to Laura'},
+    alConfirmar: () => ({aviso: 'Portfolio handed over to Laura.'})
   });
   VETA.hojaAcciones('mu-acciones', {
-    titulo: 'Marta Puig', texto: 'Una hoja de acciones: opciones como filas de 56.',
-    opciones: [{texto: 'Ya lo llevé por teléfono', hace: () => VETA.aviso('Resuelto · lo llevaste por teléfono.')}, {texto: 'Ver la ficha', sub: 'Abre otra pantalla', ir: 'muestrario/lista'}, {texto: 'Descartarlo', peligro: true, hace: () => VETA.aviso('Descartado.')}]
+    titulo: 'Marta Puig', texto: 'An action sheet: options as 56 px rows.',
+    opciones: [{texto: 'I already handled it by phone', hace: () => VETA.aviso('Resolved · you handled it by phone.')}, {texto: 'See the profile', sub: 'Opens another screen', ir: 'muestrario/lista'}, {texto: 'Dismiss it', peligro: true, hace: () => VETA.aviso('Descartado.')}]
   });
-  VETA.hojaTexto('mu-texto', {titulo: 'Una hoja de texto', bloques: [{texto: 'Bloques de texto con título opcional.'}, {titulo: 'Con lista', lista: ['Uno', 'Dos', 'Tres']}]});
+  VETA.hojaTexto('mu-texto', {titulo: 'A text sheet', bloques: [{texto: 'Text blocks with an optional title.'}, {titulo: 'With a list', lista: ['One', 'Two', 'Three']}]});
   VETA.hojaElegir('mu-elegir', {
-    titulo: '¿A quién se lo asignas?', texto: 'Una hoja de elegir.',
+    titulo: 'Who do you assign it to?', texto: 'A choice sheet.',
     opciones: [{id: 'laura', texto: 'Laura Martí', sub: 'Gràcia', av: 'laura'}, {id: 'anna', texto: 'Anna Costa', sub: 'Gràcia', av: 'anna'}, {id: 'marc', texto: 'Marc Roca', sub: 'Sant Gervasi', av: 'marc'}],
-    valor: () => 'laura', alElegir: op => VETA.aviso('Asignado a ' + op.texto + '.')
+    valor: () => 'laura', alElegir: op => VETA.aviso('Assigned to ' + op.texto + '.')
   });
 })();

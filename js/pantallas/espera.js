@@ -12,12 +12,12 @@
     const x = Object.assign({}, c, {momento: c.fecha + ' · ' + c.texto});
     if (c.id === 'e-elena') delete x.borrador;            // el borrador se enseña al preparar el recordatorio
     if (!c.boton && !c.local) {
-      x.boton = {texto: 'Ver la ficha de ' + nombre(c.cliente), ir: 'cliente/' + c.cliente};
-      x.secundarios = M.cosa(c.id) ? [{texto: 'Se cumplió', accion: 'se-cumplio'}, {texto: 'Otra cosa…', hoja: 'h02'}] : [{texto: 'Se cumplió', accion: 'se-cumplio'}];
+      x.boton = {texto: 'See the profile of ' + nombre(c.cliente), ir: 'cliente/' + c.cliente};
+      x.secundarios = M.cosa(c.id) ? [{texto: 'It was kept', accion: 'se-cumplio'}, {texto: 'Something else…', hoja: 'h02'}] : [{texto: 'It was kept', accion: 'se-cumplio'}];
     }
     if (c.local) {
-      x.boton = {texto: 'Ver la ficha de ' + nombre(c.cliente), ir: 'cliente/' + c.cliente};
-      x.secundarios = [{texto: 'Ya está hecha', accion: 'local-hecha'}];
+      x.boton = {texto: 'See the profile of ' + nombre(c.cliente), ir: 'cliente/' + c.cliente};
+      x.secundarios = [{texto: 'Already done', accion: 'local-hecha'}];
     }
     return x;
   }
@@ -28,16 +28,16 @@
   }
 
   VETA.pantalla('A7', {
-    guia: ['Aquí está lo que depende de otros o tiene fecha, por orden.', 'Tú preparas el recordatorio cuando toca, o lo das por cumplido.', 'Así nada de lo que te prometen se queda olvidado.'],
+    guia: ['Here\'s what depends on others or has a date, in order.', 'You prepare the reminder when it\'s time, or mark it as kept.', 'That way nothing you\'re promised gets forgotten.'],
     pinta: () => {
       const q = VETA.A.q(), pend = VETA.A.esperaPend(q);
-      let h = `<p class="a-cuantas" data-i="0">${pend.length === 1 ? '1 cosa, por fecha' : pend.length + ' cosas, por fecha'}</p>`;
+      let h = `<p class="a-cuantas" data-i="0">${pend.length === 1 ? '1 thing, by date' : pend.length + ' things, by date'}</p>`;
       const u = M.ultima(q);
       if (u && u.tipo === 'espera' && u.orden === VETA.A.seq()) {
         h += `<div class="a-sitio" data-i="1">${UI.lineaCosa(u)}` +
-          (u.id === 'e-elena' && u.borrador ? UI.borrador({texto: u.borrador}) + UI.nota({texto: 'No sale hasta que tú lo envíes', icono: 'candado'}) : '') + '</div>';
+          (u.id === 'e-elena' && u.borrador ? UI.borrador({texto: u.borrador}) + UI.nota({texto: 'It doesn\'t go out until you send it', icono: 'candado'}) : '') + '</div>';
       }
-      if (!pend.length) return h + UI.vacio({titulo: 'Nada en espera', texto: 'Nada en espera. Lo que prometan, lo apunto yo.', icono: 'reloj', i: 1});
+      if (!pend.length) return h + UI.vacio({titulo: 'Nothing waiting', texto: 'Nothing waiting. Whatever they promise, I\'ll note it down.', icono: 'reloj', i: 1});
       h += `<div class="a-abierta" data-i="1">${UI.tarjetaCosa(abierta(pend[0]))}</div>`;
       if (pend.length > 1) h += `<div data-i="2">${UI.lista(pend.slice(1).map(fila))}</div>`;
       h += `<p class="pie" data-i="3">${esc((VETA.datos.diaA || {}).esperaPie || '')}</p>`;
@@ -50,14 +50,14 @@
       },
       'se-cumplio'(ev, el) {
         const id = el.dataset.de, c = VETA.A.espera(VETA.A.q()).find(x => x.id === id); if (!c) return;
-        M.marca(id, 'hecha', {linea: 'Se cumplió · ' + c.titulo}); VETA.repinta({hecho: id});
-        if (!M.cosa(id)) VETA.aviso('Se cumplió · ' + c.titulo, {deshacer: () => { M.deshaz(id); VETA.repinta(); }});
+        M.marca(id, 'hecha', {linea: 'It was kept · ' + c.titulo}); VETA.repinta({hecho: id});
+        if (!M.cosa(id)) VETA.aviso('It was kept · ' + c.titulo, {deshacer: () => { M.deshaz(id); VETA.repinta(); }});
       },
       'local-hecha'(ev, el) {
         const id = el.dataset.de, t = VETA.A.local(id); if (!t) return;
         const l = VETA.A.locales().map(x => x.id === id ? Object.assign({}, x, {cumplida: true}) : x);
         VETA.est.pon('a.locales', l); VETA.repinta({hecho: id});
-        VETA.aviso('Hecha · ' + t.titulo, {deshacer: () => { VETA.est.pon('a.locales', VETA.A.locales().map(x => x.id === id ? Object.assign({}, x, {cumplida: false}) : x)); VETA.repinta(); }});
+        VETA.aviso('Done · ' + t.titulo, {deshacer: () => { VETA.est.pon('a.locales', VETA.A.locales().map(x => x.id === id ? Object.assign({}, x, {cumplida: false}) : x)); VETA.repinta(); }});
       }
     }
   });

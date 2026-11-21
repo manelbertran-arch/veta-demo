@@ -14,17 +14,17 @@
   C.dentro = () => lee('dentro', []);
   C.leidos = () => M.chatsLeidos() + C.dentro().length;
   C.fuera = () => M.chatsFuera() - C.dentro().length;
-  C.lecturaTexto = () => `Leo ${VETA.num(C.leidos())} · ${C.fuera()} ${C.fuera() === 1 ? 'queda' : 'quedan'} fuera`;
+  C.lecturaTexto = () => `I read ${VETA.num(C.leidos())} · ${C.fuera()} left out`;
   // reglas
-  C.info = id => D().reglas[id] || {nombre: 'Una regla', frase: ''};
-  C.fechaPrueba = 'hasta el 7 dic';
+  C.info = id => D().reglas[id] || {nombre: 'A rule', frase: ''};
+  C.fechaPrueba = 'until 7 Dec';
   C.estadoRegla = r => {
     if (!r) return {etq: 'neutro', texto: ''};
-    if (r.estado === 'propuesta') return {etq: 'propuesta', texto: 'Propuesta · por decidir'};
-    if (r.estado === 'a-prueba') return {etq: 'a-prueba', texto: `A prueba · día ${r.hora && !r.dia ? 1 : (r.dia || 1)} de ${r.pruebaDias || 14}`};
-    if (r.estado === 'activa') return {etq: 'activa', texto: r.desde ? `Activa · desde el ${r.desde}` : 'Activa · desde hoy'};
-    if (r.estado === 'descartada') return {etq: 'neutro', texto: 'Descartada'};
-    return {etq: 'propuesta', texto: 'Regla nueva · Propuesta'};
+    if (r.estado === 'propuesta') return {etq: 'propuesta', texto: 'Proposal · to decide'};
+    if (r.estado === 'a-prueba') return {etq: 'a-prueba', texto: `On trial · day ${r.hora && !r.dia ? 1 : (r.dia || 1)} of ${r.pruebaDias || 14}`};
+    if (r.estado === 'activa') return {etq: 'activa', texto: r.desde ? `Active · since ${r.desde}` : 'Active · since today'};
+    if (r.estado === 'descartada') return {etq: 'neutro', texto: 'Dismissed'};
+    return {etq: 'propuesta', texto: 'New rule · Proposal'};
   };
   // la cuenta de lo aprendido que queda
   C.aprendidoQueda = () => D().aprendido.filter(a => !lee('olvidados', []).includes(a.id)).length;
@@ -40,9 +40,9 @@
   const vista = () => (VETA.yo().papel === 'direccion' ? lee('vetaVista', 'oficina') : 'mias');
 
   function miasDir() {
-    return UI.vacio({titulo: 'Nada por decidir', texto: 'Cuando vea algo que se repite en tus chats, te lo propongo aquí.', icono: 'check', i: 0}) + UI.lista([
-      {titulo: 'Tu semana', sub: `te preparé ${C.semanaDe().preparados} mensajes`, icono: 'grafica', ir: 'semana'},
-      {titulo: 'Cuenta y privacidad', sub: C.lecturaTexto(), icono: 'escudo', ir: 'cuenta'}
+    return UI.vacio({titulo: 'Nothing to decide', texto: 'When I see something that repeats in your chats, I\'ll propose it here.', icono: 'check', i: 0}) + UI.lista([
+      {titulo: 'Your week', sub: `I prepared ${C.semanaDe().preparados} messages`, icono: 'grafica', ir: 'semana'},
+      {titulo: 'Account and privacy', sub: C.lecturaTexto(), icono: 'escudo', ir: 'cuenta'}
     ], {i: 1});
   }
   // la semana de quien mira (Laura: 31 mensajes; Montse: los suyos)
@@ -54,45 +54,45 @@
     let arriba;
     if (r && r.estado === 'propuesta') {
       arriba = UI.tarjeta(
-        `<div class="c-prop-cab">${UI.etiqueta('propuesta', 'Propuesta · por decidir')}</div>` +
-        `<p class="c-frase" data-g="La propuesta|Lo que Veta quiere hacer, dicho en una frase.">${esc(info.frase)}</p>` +
-        `<p class="c-apoyo">Lo he visto 14 veces en tus chats desde agosto. En 3 escribiste otra cosa.</p>` +
-        UI.boton({texto: 'Ver los casos y decidir', ir: 'regla/r-valoraciones', g: 'Ver los casos y decidir|Abre los 14 casos y decides si la pruebas.'}),
+        `<div class="c-prop-cab">${UI.etiqueta('propuesta', 'Proposal · to decide')}</div>` +
+        `<p class="c-frase" data-g="The proposal|What Veta wants to do, in one sentence.">${esc(info.frase)}</p>` +
+        `<p class="c-apoyo">I've seen it 14 times in your chats since August. In 3 of them you wrote something else.</p>` +
+        UI.boton({texto: 'See the cases and decide', ir: 'regla/r-valoraciones', g: 'See the cases and decide|Opens the 14 cases and you decide whether to try it.'}),
         {clase: 'abierta c-propuesta', i: 0});
     } else {
-      arriba = UI.vacio({titulo: 'Nada por decidir', texto: 'Cuando vea algo que se repite, te lo propongo aquí.', icono: 'check', i: 0});
+      arriba = UI.vacio({titulo: 'Nothing to decide', texto: 'When I see something that repeats, I\'ll propose it here.', icono: 'check', i: 0});
     }
     const aPrueba = res.aPrueba, activas = res.activas;
     return arriba + UI.lista([
-      {titulo: 'Lo que hago por ti', sub: `${activas} reglas activas · ${aPrueba} a prueba`, icono: 'probeta', ir: 'reglas'},
-      {titulo: 'Lo que he aprendido', sub: C.aprendidoQueda() ? `${C.aprendidoQueda()} ${C.aprendidoQueda() === 1 ? 'cosa nueva' : 'cosas nuevas'} esta semana` : 'Nada nuevo esta semana', icono: 'aprende', ir: 'aprendido'},
-      {titulo: 'Tu semana', sub: 'te preparé 31 mensajes', icono: 'grafica', ir: 'semana'},
-      {titulo: 'Cuenta y privacidad', sub: C.lecturaTexto(), icono: 'escudo', ir: 'cuenta'}
+      {titulo: 'What I do for you', sub: `${activas} active rules · ${aPrueba} on trial`, icono: 'probeta', ir: 'reglas'},
+      {titulo: 'What I\'ve learned', sub: C.aprendidoQueda() ? `${C.aprendidoQueda()} ${C.aprendidoQueda() === 1 ? 'new thing' : 'new things'} this week` : 'Nothing new this week', icono: 'aprende', ir: 'aprendido'},
+      {titulo: 'Your week', sub: 'I prepared 31 messages', icono: 'grafica', ir: 'semana'},
+      {titulo: 'Account and privacy', sub: C.lecturaTexto(), icono: 'escudo', ir: 'cuenta'}
     ], {i: 1});
   }
 
   function oficina() {
     const d = M.cosa('d-regla');
     const arriba = d && !M.RESUELTOS.includes(d.estado)
-      ? UI.tarjeta(`<div class="c-prop-cab">${UI.etiqueta('por-decidir', 'Por decidir · regla para la oficina')}</div>` +
-          `<p class="c-frase">Dossier al día siguiente</p><p class="c-apoyo">La propone Laura Martí. En la oficina ha pasado 23 veces desde agosto.</p>` +
-          UI.boton({texto: 'Ver los casos y decidir', ir: 'regla-oficina/dossier'}), {clase: 'abierta c-propuesta', i: 0})
-      : UI.vacio({titulo: 'Nada por decidir en la oficina', texto: 'Cuando alguien proponga una regla para todos, sale aquí.', icono: 'check', i: 0});
+      ? UI.tarjeta(`<div class="c-prop-cab">${UI.etiqueta('por-decidir', 'To decide · office rule')}</div>` +
+          `<p class="c-frase">Dossier the next day</p><p class="c-apoyo">Proposed by Laura Martí. In the office it has happened 23 times since August.</p>` +
+          UI.boton({texto: 'See the cases and decide', ir: 'regla-oficina/dossier'}), {clase: 'abierta c-propuesta', i: 0})
+      : UI.vacio({titulo: 'Nothing to decide in the office', texto: 'When someone proposes a rule for everyone, it shows here.', icono: 'check', i: 0});
     const n = D().practicas.length + (lee('practicaClaudia', false) ? 1 : 0);
     return arriba + UI.lista([
-      {titulo: 'Cómo trabajamos', sub: `${n} prácticas`, icono: 'libro', ir: 'oficina/practicas'},
-      {titulo: 'Lo que aprende la oficina', sub: 'Dónde se paran las operaciones', icono: 'grafica', ir: 'oficina/aprende'},
-      {titulo: 'Lo que Veta aún no hace', sub: '43 veces a mano', icono: 'mano', ir: 'oficina/falta'},
-      {titulo: 'Lo que sabe tu oficina', sub: 'De 301 contactos, 212 visitas', icono: 'ojo', ir: 'oficina/sabe'}
+      {titulo: 'How we work', sub: `${n} practices`, icono: 'libro', ir: 'oficina/practicas'},
+      {titulo: 'What the office learns', sub: 'Where deals stall', icono: 'grafica', ir: 'oficina/aprende'},
+      {titulo: 'What Veta doesn\'t do yet', sub: '43 times by hand', icono: 'mano', ir: 'oficina/falta'},
+      {titulo: 'What your office knows', sub: 'Of 301 contacts, 212 viewings', icono: 'ojo', ir: 'oficina/sabe'}
     ], {i: 1});
   }
 
   VETA.pantalla('A8', {
     titulo: 'Veta',
-    guia: ['Aquí Veta te cuenta lo que hace por ti y lo que te propone.', 'Tú decides si lo prueba, sin prisa: nada de esto es urgente.', 'Así le enseñas fuera del día, y nunca actúa sin tu permiso.'],
+    guia: ['Here Veta tells you what it does for you and what it proposes.', 'You decide whether it tries it, no rush: none of this is urgent.', 'That way you teach it outside the working day, and it never acts without your permission.'],
     pinta: () => {
       const dir = VETA.yo().papel === 'direccion';
-      const sel = dir ? `<div class="c-sel" data-i="0">${UI.selector({etiqueta: 'Qué ver', opciones: [{id: 'mias', texto: 'Mías'}, {id: 'oficina', texto: 'De la oficina'}], valor: vista(), accion: 'vista'})}</div>` : '';
+      const sel = dir ? `<div class="c-sel" data-i="0">${UI.selector({etiqueta: 'What to see', opciones: [{id: 'mias', texto: 'Mine'}, {id: 'oficina', texto: 'From the office'}], valor: vista(), accion: 'vista'})}</div>` : '';
       return sel + `<div class="c-vista" id="c-vista">${vista() === 'oficina' ? oficina() : mias()}</div>`;
     },
     acciones: {

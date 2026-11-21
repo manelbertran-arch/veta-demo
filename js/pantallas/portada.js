@@ -6,19 +6,21 @@
   'use strict';
   const UI = VETA.UI;
   VETA.pantalla('E1', {
-    ruta: 'portada', titulo: 'Portada', completa: true, sinCabecera: true, area: 'marca',
-    guia: ['Aquí Veta se presenta: tú trabajas, Veta aprende y después lo hace por ti.', 'Tú entras eligiendo tu papel en la oficina.', 'Así sabes desde el principio que nada sale sin que tú lo envíes y que todo es un ejemplo.'],
+    ruta: 'portada', titulo: 'Home', completa: true, sinCabecera: true, area: 'marca',
+    guia: ['Here Veta introduces itself: you work, Veta learns and then does it for you.', 'You sign in by choosing your role in the office.', 'That way you know from the start that nothing goes out without you sending it and that everything is an example.'],
     pinta: () => {
       const primera = !VETA.est.lee('portadaVista', false) && !VETA.reducido();
+      const tour = !VETA.est.lee('tourVisto', false);   // la primera vez manda el tour; después, entrar
       return `<div class="portada">` +
         `<div class="port-luz" aria-hidden="true"></div><div class="port-veta${primera ? ' descubre' : ''}" aria-hidden="true"></div>` +
         `<div class="port-marca"><img src="assets/veta-symbol-gold.png" alt="" width="30" height="24"><b>VETA</b></div>` +
-        `<h1 class="port-h"><span>Tú trabajas.</span><span class="oro">Veta aprende.</span><span class="oro">Después lo hace por ti.</span></h1>` +
-        `<p class="port-que">Veta convierte tus conversaciones de trabajo en acciones preparadas y automatizaciones que aprenden de ti.</p>` +
-        `<p class="port-dice">Cada semana, menos trabajo manual. Nada sale sin que tú lo envíes.</p>` +
-        `<div class="port-acc">${UI.boton({tipo: 'claro', texto: 'Entrar', accion: 'entrar', g: 'Entrar|Eliges tu papel y entras con tu correo.'})}` +
-        `${UI.boton({tipo: 'texto', texto: 'Ver cómo es el primer día', ir: 'primer-dia/0'})}</div>` +
-        `<p class="port-aviso">Ejemplo con datos inventados. No sale ningún mensaje.</p></div>`;
+        `<h1 class="port-h"><span>You work.</span><span class="oro">Veta learns.</span><span class="oro">Then it does it for you.</span></h1>` +
+        `<p class="port-que">Veta turns your work conversations into prepared actions and automations that learn from you.</p>` +
+        `<p class="port-dice">Less manual work every week. Nothing goes out without you sending it.</p>` +
+        `<div class="port-acc">${tour
+          ? UI.boton({tipo: 'claro', texto: 'Show me the tour', ir: 'primer-dia/0'}) + UI.boton({tipo: 'texto', texto: 'Sign in', accion: 'entrar', g: 'Sign in|You choose your role and sign in with your email.'})
+          : UI.boton({tipo: 'claro', texto: 'Sign in', accion: 'entrar', g: 'Sign in|You choose your role and sign in with your email.'}) + UI.boton({tipo: 'texto', texto: 'Show me the tour', ir: 'primer-dia/0'})}</div>` +
+        `<p class="port-aviso">Example with made-up data. No message goes out.</p></div>`;
     },
     alMontar: el => {
       VETA.est.pon('portadaVista', true);

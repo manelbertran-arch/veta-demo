@@ -8,17 +8,17 @@
 
   // ---------------- H34 · Los 3 temas de hoy (elige hasta 3) ----------------
   let eleccion = [];
-  const pintaTemas = () => `<p class="hoja-x">Elige hasta 3. Son los que verás arriba y en la reunión.</p>` +
+  const pintaTemas = () => `<p class="hoja-x">Choose up to 3. They're the ones you'll see at the top and in the meeting.</p>` +
     `<div class="ops d-temas-h">${D.temas.map(t => {
       const on = eleccion.includes(t.id), lleno = !on && eleccion.length >= 3;
       return `<button type="button" class="op op-elige d-tema-op" role="checkbox" aria-checked="${on}"${lleno ? ' aria-disabled="true"' : ''} data-accion="tema" data-tema="${esc(t.id)}">` +
         `<span class="op-c"><span class="op-t">${esc(t.texto)}</span></span><b class="d-tema-n">${esc(t.cifra)}</b><span class="op-marca">${VETA.ic('check', 20)}</span></button>`;
     }).join('')}</div>` +
-    `<p class="d-cuenta" aria-live="polite">${eleccion.length} de 3 elegidos</p>` +
-    UI.boton({texto: 'Guardar', accion: 'guardar', deshabilitado: !eleccion.length}) +
-    UI.boton({tipo: 'texto', texto: 'Cancelar', datos: {cierra: '1'}, clase: 'hoja-cancela'});
+    `<p class="d-cuenta" aria-live="polite">${eleccion.length} of 3 chosen</p>` +
+    UI.boton({texto: 'Save', accion: 'guardar', deshabilitado: !eleccion.length}) +
+    UI.boton({tipo: 'texto', texto: 'Cancel', datos: {cierra: '1'}, clase: 'hoja-cancela'});
   VETA.hojaDef('h34', {
-    titulo: 'Los 3 temas de hoy',
+    titulo: 'Today\'s 3 topics',
     pinta: () => { eleccion = X.temas().map(t => t.id); return pintaTemas(); },
     acciones: {
       tema(ev, el) {
@@ -32,20 +32,20 @@
         if (!eleccion.length) return;
         M.pon('temas', eleccion.slice());
         VETA.cierraHoja({foco: false}); VETA.repinta();
-        VETA.aviso('Temas guardados.', {deshacer: () => { M.deshazFlag('temas'); VETA.repinta(); }});
+        VETA.aviso('Topics saved.', {deshacer: () => { M.deshazFlag('temas'); VETA.repinta(); }});
       }
     }
   });
 
   // ---------------- H35 · ¿A quién se lo asignas? / ¿A quién pasas la cartera? ----------------
   VETA.hojaElegir('h35', {
-    titulo: d => d.para === 'cartera' ? '¿A quién pasas la cartera?' : '¿A quién se lo asignas?',
-    texto: d => d.para === 'cartera' ? 'Teresa Gil tiene 34 conversaciones con 12 clientes.' : 'Quien lo lleve decide cuándo y qué le contesta.',
+    titulo: d => d.para === 'cartera' ? 'Who do you pass the portfolio to?' : 'Who do you assign it to?',
+    texto: d => d.para === 'cartera' ? 'Teresa Gil has 34 conversations with 12 clients.' : 'Whoever handles it decides when and what to reply.',
     opciones: d => {
-      if (d.para === 'cartera') return [{id: 'laura', texto: 'Laura Martí', sub: 'Gràcia · la propuesta de Veta', av: 'laura'}, {id: 'anna', texto: 'Anna Costa', sub: 'Gràcia', av: 'anna'},
-        {id: 'dos', texto: 'Repartirla entre las dos', sub: '17 y 17'}];
+      if (d.para === 'cartera') return [{id: 'laura', texto: 'Laura Martí', sub: 'Gràcia · Veta\'s proposal', av: 'laura'}, {id: 'anna', texto: 'Anna Costa', sub: 'Gràcia', av: 'anna'},
+        {id: 'dos', texto: 'Split it between the two', sub: '17 and 17'}];
       const a = (D.asuntos || {})[d.para] || {};
-      return ['laura', 'anna', 'marc', 'david'].map(id => ({id, texto: X.persona(id).nombre, sub: X.zona(id) + (id === a.propone ? ' · la propuesta de Veta' : ''), av: id}));
+      return ['laura', 'anna', 'marc', 'david'].map(id => ({id, texto: X.persona(id).nombre, sub: X.zona(id) + (id === a.propone ? ' · Veta\'s proposal' : ''), av: id}));
     },
     valor: d => d.para === 'cartera' ? X.carteraA() : (((D.asuntos || {})[d.para] || {}).propone || null),
     alElegir: (op, d) => {
@@ -59,49 +59,49 @@
 
   // ---------------- H36 · Cómo habría ido ----------------
   VETA.hojaTexto('h36', {
-    titulo: 'Cómo habría ido',
+    titulo: 'How it would have gone',
     bloques: d => {
       const e = D.avisos.ejemplos.find(x => x.id === d.ejemplo);
       const casos = e ? e.casos : D.avisos.generico;
-      return [{texto: (e ? 'En los últimos 30 días habría saltado ' + casos.length + ' veces:' : 'Con lo que has escrito, en los últimos 30 días habría saltado ' + casos.length + ' veces:')},
+      return [{texto: (e ? 'In the last 30 days it would have triggered ' + casos.length + ' times:' : 'With what you\'ve written, in the last 30 days it would have triggered ' + casos.length + ' times:')},
         {html: `<ul class="d-casos">${casos.map(c => `<li>${VETA.ic('campana', 18)}<span>${esc(c)}</span></li>`).join('')}</ul>`},
-        {texto: 'Son casos pasados: no ha salido nada. Cuando lo crees, saltará en Equipo.'}];
+        {texto: 'These are past cases: nothing has gone out. Once you create it, it will trigger in Team.'}];
     }
   });
 
   // ---------------- H37 · Un aviso puesto ----------------
-  const aviso = id => X.lee('avisos', []).map(a => Object.assign({salto: 'no ha saltado'}, a)).concat(D.avisos.puestos).find(a => a.id === id) || D.avisos.puestos[0];
+  const aviso = id => X.lee('avisos', []).map(a => Object.assign({salto: 'hasn\'t triggered'}, a)).concat(D.avisos.puestos).find(a => a.id === id) || D.avisos.puestos[0];
   VETA.hojaDef('h37', {
     titulo: d => aviso(d.aviso).texto,
     pinta: d => {
       const a = aviso(d.aviso), off = !!X.lee('avisosOff', {})[a.id];
-      return `<p class="hoja-x">${esc(a.saltoLargo || (a.salto === 'no ha saltado' ? 'No ha saltado todavía. Cuando salte, lo verás en Equipo.' : a.salto))}</p>` +
-        (a.saltoLargo ? `<div class="lista">${UI.fila({titulo: 'Queja de Joan Serra', sub: 'Ver el asunto', av: 'joan-serra', ir: 'asunto/joan-serra'})}</div>` : '') +
-        `<div class="lista">${UI.interruptor({texto: off ? 'Apagado' : 'Encendido', sub: 'Apágalo y deja de vigilarlo; lo enciendes cuando quieras.', on: !off, accion: 'apagar', de: a.id})}</div>` +
-        UI.boton({tipo: 'secundario', texto: 'Cerrar', datos: {cierra: '1'}, clase: 'hoja-cancela'});
+      return `<p class="hoja-x">${esc(a.saltoLargo || (a.salto === 'hasn\'t triggered' ? 'It hasn\'t triggered yet. When it does, you\'ll see it in Team.' : a.salto))}</p>` +
+        (a.saltoLargo ? `<div class="lista">${UI.fila({titulo: 'Complaint from Joan Serra', sub: 'See the matter', av: 'joan-serra', ir: 'asunto/joan-serra'})}</div>` : '') +
+        `<div class="lista">${UI.interruptor({texto: off ? 'Off' : 'On', sub: 'Turn it off and stop watching it; switch it on whenever you want.', on: !off, accion: 'apagar', de: a.id})}</div>` +
+        UI.boton({tipo: 'secundario', texto: 'Close', datos: {cierra: '1'}, clase: 'hoja-cancela'});
     },
     acciones: {
       apagar(ev, el) {
         const id = el.dataset.de, on = el.getAttribute('aria-checked') === 'true';
         const t = X.lee('avisosOff', {}); if (on) delete t[id]; else t[id] = true; X.guarda('avisosOff', t);
         VETA.cierraHoja({foco: false}); VETA.repinta();
-        if (!on) VETA.aviso('Aviso apagado.', {deshacer: () => { const u = X.lee('avisosOff', {}); delete u[id]; X.guarda('avisosOff', u); VETA.repinta(); }});
-        else VETA.aviso('Aviso encendido.');
+        if (!on) VETA.aviso('Alert turned off.', {deshacer: () => { const u = X.lee('avisosOff', {}); delete u[id]; X.guarda('avisosOff', u); VETA.repinta(); }});
+        else VETA.aviso('Alert turned on.');
       }
     }
   });
 
   // ---------------- H38 · Coste por hora ----------------
-  const etiquetaGuardar = v => (Number(v) > 0 ? 'Guardar ' + VETA.num(Number(v)) + ' € la hora' : 'Guardar');
+  const etiquetaGuardar = v => (Number(v) > 0 ? 'Save ' + VETA.num(Number(v)) + ' € per hour' : 'Save');
   VETA.hojaDef('h38', {
-    titulo: 'Coste por hora',
+    titulo: 'Cost per hour',
     pinta: () => {
       const c = M.lee('coste', null) || '';
-      return `<p class="hoja-x">Veta nunca pone euros por ti. Si escribes tu coste por hora, te digo cuánto son esas horas.</p>` +
-        `<div class="campo"><label class="campo-e" for="d-coste">€ la hora</label><div class="campo-caja d-coste-caja"><input id="d-coste" class="campo-i" type="number" inputmode="decimal" min="1" max="999" step="1" value="${esc(c)}" placeholder="35"><span class="d-coste-u">€</span></div></div>` +
-        UI.nota({texto: 'Se ve con la etiqueta «Ejemplo» y dice de dónde sale.', icono: 'info', clase: 'nota-gris'}) +
+      return `<p class="hoja-x">Veta never puts euros in for you. If you enter your cost per hour, I'll tell you what those hours are worth.</p>` +
+        `<div class="campo"><label class="campo-e" for="d-coste">€ per hour</label><div class="campo-caja d-coste-caja"><input id="d-coste" class="campo-i" type="number" inputmode="decimal" min="1" max="999" step="1" value="${esc(c)}" placeholder="35"><span class="d-coste-u">€</span></div></div>` +
+        UI.nota({texto: 'It shows with the “Example” label and says where it comes from.', icono: 'info', clase: 'nota-gris'}) +
         UI.boton({texto: etiquetaGuardar(c), accion: 'guardar', deshabilitado: !(Number(c) > 0), clase: 'd-coste-b'}) +
-        (c ? UI.boton({tipo: 'texto', texto: 'Quitar el coste', accion: 'quitar'}) : UI.boton({tipo: 'texto', texto: 'Cancelar', datos: {cierra: '1'}, clase: 'hoja-cancela'}));
+        (c ? UI.boton({tipo: 'texto', texto: 'Remove the cost', accion: 'quitar'}) : UI.boton({tipo: 'texto', texto: 'Cancel', datos: {cierra: '1'}, clase: 'hoja-cancela'}));
     },
     alMontar: h => {
       const i = h.querySelector('#d-coste'), b = h.querySelector('.d-coste-b'); if (!i || !b) return;
@@ -114,69 +114,69 @@
         if (!(v > 0)) return;
         M.pon('coste', v); X.guarda('rodarEuros', true);
         VETA.cierraHoja({foco: false}); VETA.repinta();
-        VETA.aviso('Coste guardado: ' + v + ' € la hora.', {deshacer: () => { M.deshazFlag('coste'); VETA.repinta(); }});
+        VETA.aviso('Cost saved: ' + v + ' € per hour.', {deshacer: () => { M.deshazFlag('coste'); VETA.repinta(); }});
       },
-      quitar() { M.pon('coste', null); VETA.cierraHoja({foco: false}); VETA.repinta(); VETA.aviso('Coste quitado.', {deshacer: () => { M.deshazFlag('coste'); VETA.repinta(); }}); }
+      quitar() { M.pon('coste', null); VETA.cierraHoja({foco: false}); VETA.repinta(); VETA.aviso('Cost removed.', {deshacer: () => { M.deshazFlag('coste'); VETA.repinta(); }}); }
     }
   });
 
   // ---------------- H40 · Clientes con dos chats ----------------
   VETA.hojaTexto('h40', {
-    titulo: 'Clientes con dos chats',
-    bloques: () => [{texto: 'Veta une sola los chats del mismo teléfono. Un cliente, una ficha.'},
-      {titulo: 'Unidos esta semana · ' + D.dosChats.length, html: `<div class="lista">${D.dosChats.map(c => UI.fila({titulo: c.texto, sub: c.sub, icono: 'chat'})).join('')}</div>`}]
+    titulo: 'Clients with two chats',
+    bloques: () => [{texto: 'Veta merges chats from the same phone on its own. One client, one profile.'},
+      {titulo: 'Merged this week · ' + D.dosChats.length, html: `<div class="lista">${D.dosChats.map(c => UI.fila({titulo: c.texto, sub: c.sub, icono: 'chat'})).join('')}</div>`}]
   });
 
   // ---------------- d-regla-otra · G2b «Otra cosa…» ----------------
   VETA.hojaAcciones('d-regla-otra', {
-    titulo: d => ((D.reglasOficina || {})[d.regla] || {}).titulo || 'La regla',
+    titulo: d => ((D.reglasOficina || {})[d.regla] || {}).titulo || 'The rule',
     opciones: d => {
       const r = (D.reglasOficina || {})[d.regla] || {};
       return [
-        {texto: 'Descartarla', sub: 'No se prueba; Laura lo verá en su Veta', icono: 'borrar', hace: () => { if (r.decision) { M.marca(r.decision, 'quitada', {linea: 'Descartada · ' + r.titulo}); VETA.repinta(); } }},
-        {texto: 'Para luego', sub: 'Vuelve mañana a Equipo', icono: 'luna', hace: () => { if (r.decision) { M.marca(r.decision, 'para-manana', {linea: 'Para luego · ' + r.titulo}); VETA.repinta(); } }},
-        {texto: 'Cambiar hasta dónde llega', sub: 'Qué prepara Veta y qué hace el agente', icono: 'escalera', ir: 'regla/r-valoraciones/nivel'}];
+        {texto: 'Dismiss it', sub: 'It won\'t be tried; Laura will see it in her Veta', icono: 'borrar', hace: () => { if (r.decision) { M.marca(r.decision, 'quitada', {linea: 'Dismissed · ' + r.titulo}); VETA.repinta(); } }},
+        {texto: 'For later', sub: 'Back in Team tomorrow', icono: 'luna', hace: () => { if (r.decision) { M.marca(r.decision, 'para-manana', {linea: 'For later · ' + r.titulo}); VETA.repinta(); } }},
+        {texto: 'Change how far it goes', sub: 'What Veta prepares and what the agent does', icono: 'escalera', ir: 'regla/r-valoraciones/nivel'}];
     }
   });
 
   // ---------------- d-tema · G3c, los casos de un tema (sin nombres de agentes) ----------------
   VETA.hojaTexto('d-tema', {
-    titulo: d => ((D.temas || []).find(t => t.id === d.tema) || {texto: 'Tema'}).texto,
+    titulo: d => ((D.temas || []).find(t => t.id === d.tema) || {texto: 'Topic'}).texto,
     bloques: d => {
       const t = (D.temas || []).find(x => x.id === d.tema) || {cifra: ''};
       const casos = d.tema === 'contactos' ? (D.contactos || []).map(c => c.nombre + ' · ' + c.cuando) : ((D.casosTema || {})[d.tema] || []);
-      return [{html: `<p class="d-dato"><b>${esc(t.cifra)}</b> ${d.tema === 'respuesta' ? 'de media, la última semana' : 'esta semana'}</p>`}, {lista: casos},
-        {texto: 'Sin nombres de agentes: es para hablarlo en equipo.'}];
+      return [{html: `<p class="d-dato"><b>${esc(t.cifra)}</b> ${d.tema === 'respuesta' ? 'on average, last week' : 'this week'}</p>`}, {lista: casos},
+        {texto: 'No agent names: it\'s for discussing as a team.'}];
     }
   });
 
   // ---------------- d-partes · G7c, los partes anteriores ----------------
   VETA.hojaTexto('d-partes', {
-    titulo: 'Partes anteriores',
+    titulo: 'Previous wrap-ups',
     bloques: () => (D.partesPiloto || []).map(p => ({titulo: p.dia, texto: p.texto}))
   });
 
   // ---------------- d-entra · G9, cada lista ----------------
-  const TIT = {contactos: 'Contactos sin responder', dos: 'Escriben dos veces o más', no: 'Piden lo que no tenéis', si: 'Quieren lo que ya tenéis'};
+  const TIT = {contactos: 'Contacts without a reply', dos: 'Write twice or more', no: 'Asked for what you don\'t have', si: 'Want what you already have'};
   VETA.hojaDef('d-entra', {
-    titulo: d => TIT[d.lista] || 'Lo que entra',
+    titulo: d => TIT[d.lista] || 'What\'s coming in',
     pinta: d => {
       let h = '';
       if (d.lista === 'contactos') {
         h = `<div class="lista">${X.sinResponder().map(c => c.sinDueno
-          ? UI.fila({titulo: c.nombre, sub: c.cuando + ' · sin dueño', av: c.id, ir: 'asunto/' + c.id})
-          : UI.fila({titulo: c.nombre, sub: c.cuando + (c.lleva ? ' · lo lleva ' + X.persona(c.lleva).corto + ', de baja' : ' · sin ficha'), av: c.id, hoja: 'h01', datos: {chat: c.id}})).join('')}</div>`;
-        if (!X.sinResponder().length) h = `<p class="hoja-x">Todos tienen quien los lleve.</p>`;
+          ? UI.fila({titulo: c.nombre, sub: c.cuando + ' · unowned', av: c.id, ir: 'asunto/' + c.id})
+          : UI.fila({titulo: c.nombre, sub: c.cuando + (c.lleva ? ' · handled by ' + X.persona(c.lleva).corto + ', on leave' : ' · no profile'), av: c.id, hoja: 'h01', datos: {chat: c.id}})).join('')}</div>`;
+        if (!X.sinResponder().length) h = `<p class="hoja-x">Everyone has someone handling them.</p>`;
       } else if (d.lista === 'dos') {
         h = `<div class="lista">${D.entra.dosVeces.map(c => UI.fila({titulo: c.texto, av: c.id, hoja: 'h01', datos: {chat: c.id}})).join('')}</div>`;
       } else if (d.lista === 'no') {
-        h = `<p class="hoja-x">Lo apunto para cuando entre algo así.</p><div class="lista">${D.entra.noTenemos.map(c => UI.fila({titulo: c.texto, sub: c.sub, icono: 'pregunta'})).join('')}</div>`;
+        h = `<p class="hoja-x">I'll note it for when something like that comes in.</p><div class="lista">${D.entra.noTenemos.map(c => UI.fila({titulo: c.texto, sub: c.sub, icono: 'pregunta'})).join('')}</div>`;
       } else {
-        h = UI.cita({texto: 'Busco piso de 3 habitaciones en Gràcia, hasta 450.000 €', origen: 'Carmen · WhatsApp de la oficina · ayer, 19:10', chat: 'carmen'}) +
-          `<div class="d-encaja">${UI.foto('verdi', {tam: 'mini'})}<span class="d-encaja-c"><b>Verdi 42 · 3 habitaciones · 395.000 €</b><span>Sin ascensor (ella lo prefiere con ascensor)</span></span></div>` +
-          `<div class="lista">${UI.fila({titulo: 'Carmen López', sub: 'Ver el asunto', av: 'carmen', ir: 'asunto/carmen'})}</div>`;
+        h = UI.cita({texto: 'Looking for a 3-bedroom flat in Gràcia, up to €450,000', origen: 'Carmen · Office WhatsApp · yesterday, 19:10', chat: 'carmen'}) +
+          `<div class="d-encaja">${UI.foto('verdi', {tam: 'mini'})}<span class="d-encaja-c"><b>Verdi 42 · 3 bedrooms · €395,000</b><span>No lift (she'd prefer one with a lift)</span></span></div>` +
+          `<div class="lista">${UI.fila({titulo: 'Carmen López', sub: 'See the matter', av: 'carmen', ir: 'asunto/carmen'})}</div>`;
       }
-      return h + UI.boton({tipo: 'secundario', texto: 'Cerrar', datos: {cierra: '1'}, clase: 'hoja-cancela'});
+      return h + UI.boton({tipo: 'secundario', texto: 'Close', datos: {cierra: '1'}, clase: 'hoja-cancela'});
     }
   });
 })();

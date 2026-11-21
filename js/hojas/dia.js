@@ -7,28 +7,28 @@
   const UI = VETA.UI, M = VETA.modelo, esc = VETA.esc, ic = VETA.ic;
   const DA = () => VETA.datos.diaA || {};
   const limpio = s => String(s || '').replace(/<[^>]+>/g, '');
-  const cerrar = () => UI.boton({tipo: 'secundario', texto: 'Cerrar', datos: {cierra: '1'}, clase: 'hoja-cancela'});
+  const cerrar = () => UI.boton({tipo: 'secundario', texto: 'Close', datos: {cierra: '1'}, clase: 'hoja-cancela'});
   const sec = (titulo, html) => `<section class="a-h-sec">${titulo ? `<h3 class="ht-t">${esc(titulo)}</h3>` : ''}${html}</section>`;
 
   // ---- H03 · Registro de lo enviado ----
   const preparado = c => { const inf = c.tipo === 'informe' ? ((DA().informe || {})[c.cliente] || {}).mensaje : null; return limpio((c.extra || {}).borradorHtml || c.borrador || inf || ''); };
   VETA.hojaDef('h03', {
-    titulo: 'Registro',
+    titulo: 'Log',
     pinta: d => {
       const c = M.cosa(d.de);
-      if (!c) return `<p class="hoja-x">No encuentro este envío.</p>` + cerrar();
+      if (!c) return `<p class="hoja-x">I can't find this send.</p>` + cerrar();
       const prep = preparado(c), env = (c.extra || {}).borrador ? limpio(c.extra.borrador) : prep;
       const llego = VETA.est.lee('a.llego.' + c.id, null), rec = VETA.A.local('a-rec-' + c.id);
-      let h = `<p class="hoja-x">Para ${esc(c.titulo)}, por WhatsApp · hoy</p>`;
-      h += sec('Lo que preparó Veta', `<p class="a-h-txt">${esc(prep)}</p>`);
-      h += sec('Lo que enviaste', `<p class="a-h-txt">${esc(env)}</p>${env === prep ? '<p class="a-h-gris">Igual que el de Veta.</p>' : '<p class="a-h-gris">Lo cambiaste tú.</p>'}`);
-      h += UI.nota({texto: 'Lo copiaste y lo enviaste tú. Veta no ha enviado nada.', icono: 'candado', caja: true});
-      h += `<p class="a-h-gris a-h-marca">Marcado por ti · ${esc(c.hora || VETA.ahora())}</p>`;
-      h += sec('¿Llegó?', llego
-        ? UI.lineaHecho({texto: llego === 'si' ? 'Llegó · queda apuntado' : 'No llegó · queda apuntado', boton: {texto: 'Cambiar', accion: 'llego-borra'}})
-        : UI.botones([{texto: 'Sí', accion: 'llego', datos: {v: 'si'}}, {texto: 'No llegó', accion: 'llego', datos: {v: 'no'}}]));
-      h += rec ? UI.lista([{titulo: 'Recordatorio preparado', sub: 'Está en En espera, ' + rec.fecha.toLowerCase(), icono: 'reloj'}])
-        : UI.lista([{titulo: 'Preparar un recordatorio si no contesta', sub: 'Lo dejo en En espera', icono: 'reloj', accion: 'recordatorio'}]);
+      let h = `<p class="hoja-x">For ${esc(c.titulo)}, via WhatsApp · today</p>`;
+      h += sec('What Veta prepared', `<p class="a-h-txt">${esc(prep)}</p>`);
+      h += sec('What you sent', `<p class="a-h-txt">${esc(env)}</p>${env === prep ? '<p class="a-h-gris">Same as Veta\'s.</p>' : '<p class="a-h-gris">You changed it.</p>'}`);
+      h += UI.nota({texto: 'You copied it and sent it yourself. Veta hasn\'t sent anything.', icono: 'candado', caja: true});
+      h += `<p class="a-h-gris a-h-marca">Marked by you · ${esc(c.hora || VETA.ahora())}</p>`;
+      h += sec('Did it arrive?', llego
+        ? UI.lineaHecho({texto: llego === 'si' ? 'Arrived · logged' : 'Didn\'t arrive · logged', boton: {texto: 'Change', accion: 'llego-borra'}})
+        : UI.botones([{texto: 'Yes', accion: 'llego', datos: {v: 'si'}}, {texto: 'Didn\'t arrive', accion: 'llego', datos: {v: 'no'}}]));
+      h += rec ? UI.lista([{titulo: 'Reminder ready', sub: 'It\'s in Waiting, ' + rec.fecha.toLowerCase(), icono: 'reloj'}])
+        : UI.lista([{titulo: 'Prepare a reminder if there\'s no reply', sub: 'I\'ll leave it in Waiting', icono: 'reloj', accion: 'recordatorio'}]);
       return h + cerrar();
     },
     acciones: {
@@ -36,7 +36,7 @@
       'llego-borra'(ev, el, d) { VETA.est.pon('a.llego.' + d.de, null); VETA.hoja('h03', d); },
       recordatorio(ev, el, d) {
         const c = M.cosa(d.de); if (!c) return;
-        VETA.A.ponLocal({id: 'a-rec-' + c.id, tipo: 'recordatorio', cliente: c.cliente, titulo: c.titulo, texto: 'Recordatorio si no contesta', fecha: 'Jue 26', fechaISO: '2026-11-26'});
+        VETA.A.ponLocal({id: 'a-rec-' + c.id, tipo: 'recordatorio', cliente: c.cliente, titulo: c.titulo, texto: 'Reminder if there\'s no reply', fecha: 'Thu 26', fechaISO: '2026-11-26'});
         VETA.hoja('h03', d); VETA.repinta();
       }
     }
@@ -44,33 +44,33 @@
 
   // ---- H04 · Lo que he leído ----
   VETA.hojaDef('h04', {
-    titulo: 'Lo que he leído',
+    titulo: 'What I\'ve read',
     pinta: d => {
       const L = M.lectura() || {}, hoy = L.hoy || {}, dir = VETA.yo().papel === 'direccion', equipo = dir && d && d.quien === 'equipo';
       const sergi = dir ? null : M.cosa((DA().yaNo || {}).cosa);
-      let h = `<p class="hoja-x">Leído hasta hoy, ${esc(VETA.ahora(-3))}</p>`;
+      let h = `<p class="hoja-x">Read up to today, ${esc(VETA.ahora(-3))}</p>`;
       h += `<ul class="a-canales">${(L.canales || []).map(c => `<li><span class="a-verde" aria-hidden="true"></span><span class="a-can-n">${esc(c.nombre)}</span><span class="a-can-h">${esc(c.hace)}</span></li>`).join('')}</ul>`;
-      h += `<p class="a-h-txt">${esc(equipo ? '46 chats de trabajo leídos hoy en la oficina · 14 audios pasados a texto · 3 por escuchar' : hoy.chats + ' chats leídos hoy · ' + hoy.audios + ' audios pasados a texto · ' + hoy.porEscuchar + ' por escuchar')}</p>`;
+      h += `<p class="a-h-txt">${esc(equipo ? '46 work chats read today in the office · 14 audio clips transcribed · 3 to listen to' : hoy.chats + ' chats read today · ' + hoy.audios + ' audio clips transcribed · ' + hoy.porEscuchar + ' to listen to')}</p>`;
       // dirección: en Equipo, lo de la oficina (sin chats de nadie); en lo suyo, sus clientes
-      const det = equipo ? ['Carmen López escribe al WhatsApp de la oficina y nadie le contesta', 'Joan Serra se queja: lleva diez días sin noticias', 'Teresa está de baja: 34 conversaciones sin atender']
-        : dir ? ['Rubén Gil pregunta por las visitas del ático', 'Guillem Roig pide que le confirmes la visita del miércoles', 'Sílvia Prat espera respuesta a su oferta'] : (DA().detectado || []);
-      h += sec('Detectado hoy · ' + det.length, `<ul class="a-h-lista">${det.map(t => `<li>${esc(t)}</li>`).join('')}</ul>`);
-      if (sergi && sergi.estado === 'quitada') h += sec('Ya no está aquí · 1', `<ul class="a-h-lista"><li>${esc(DA().yaNo.texto)}</li></ul>`);
-      h += `<p class="a-h-gris">${ic('candado', 18)} ${equipo ? 'Aquí solo sale lo de la oficina: los chats de cada persona no salen en dirección.' : 'Tus grupos personales y los chats que dejaste fuera no los leo.'}</p>`;
+      const det = equipo ? ['Carmen López writes to the office WhatsApp and nobody replies', 'Joan Serra complains: ten days without news', 'Teresa is on leave: 34 unattended conversations']
+        : dir ? ['Rubén Gil asks about the penthouse viewings', 'Guillem Roig asks you to confirm Wednesday\'s viewing', 'Sílvia Prat is waiting for a reply to her offer'] : (DA().detectado || []);
+      h += sec('Detected today · ' + det.length, `<ul class="a-h-lista">${det.map(t => `<li>${esc(t)}</li>`).join('')}</ul>`);
+      if (sergi && sergi.estado === 'quitada') h += sec('No longer here · 1', `<ul class="a-h-lista"><li>${esc(DA().yaNo.texto)}</li></ul>`);
+      h += `<p class="a-h-gris">${ic('candado', 18)} ${equipo ? 'Only office matters show here: each person\'s chats don\'t show in management.' : 'I don\'t read your personal groups or the chats you left out.'}</p>`;
       return h + cerrar();
     }
   });
 
   // ---- H05 · Hechas hoy ----
   VETA.hojaDef('h05', {
-    titulo: 'Hechas hoy',
+    titulo: 'Done today',
     pinta: () => {
       const l = VETA.A.hechas(VETA.A.q());
-      if (!l.length) return `<p class="hoja-x">Todavía no has hecho nada hoy. Lo que hagas sale aquí, con su hora.</p>` + cerrar();
+      if (!l.length) return `<p class="hoja-x">You haven't done anything yet today. Whatever you do shows here, with its time.</p>` + cerrar();
       return `<div class="a-h-hechas">${l.map(x => {
         const izq = `<span class="a-dia-h">${esc(x.hora || '')}</span><span class="a-dia-t">${esc(x.texto)}</span>`;
         const a = x.sale ? `<button type="button" class="a-hl-a" data-accion="registro" data-de="${esc(x.id)}">${izq}</button>` : `<div class="a-hl-a">${izq}</div>`;
-        const b = UI.boton({tipo: 'texto', texto: x.sale ? 'No lo envié' : 'Deshacer', accion: x.local ? 'deshacer-local' : 'deshacer', de: x.id, ancho: false});
+        const b = UI.boton({tipo: 'texto', texto: x.sale ? 'I didn\'t send it' : 'Undo', accion: x.local ? 'deshacer-local' : 'deshacer', de: x.id, ancho: false});
         return `<div class="a-hl">${a}${b}</div>`;
       }).join('')}</div>` + cerrar();
     },
@@ -83,37 +83,37 @@
 
   // ---- H06 · Día cerrado ----
   VETA.hojaDef('h06', {
-    titulo: 'Día cerrado',
+    titulo: 'Day closed',
     pinta: () => {
       const q = VETA.A.q(), cola = M.cola(q);
       const hecho = cola.filter(c => ['enviada', 'hecha', 'quitada'].includes(c.estado)).length;
       const espera = VETA.A.esperaPend(q).length, man = M.manana(q).length;
       const parte = ((VETA.datos.partes || {})['1930'] || {}).bloques || [];
-      let h = `<div class="a-h-cifras">${[['Hecho', hecho], ['En espera', espera], ['Pasan a mañana', man]].map(([t, n]) => `<div><b>${n}</b><span>${esc(t)}</span></div>`).join('')}</div>`;
+      let h = `<div class="a-h-cifras">${[['Done', hecho], ['Waiting', espera], ['Moved to tomorrow', man]].map(([t, n]) => `<div><b>${n}</b><span>${esc(t)}</span></div>`).join('')}</div>`;
       h += `<div class="hoja-texto">${parte.slice(1).map(b => `<section class="ht-b">${b.titulo ? `<h3 class="ht-t">${esc(b.titulo)}</h3>` : ''}${b.texto ? `<p>${esc(b.texto)}</p>` : ''}${b.lista ? `<ul>${b.lista.map(x => `<li>${esc(x)}</li>`).join('')}</ul>` : ''}</section>`).join('')}</div>`;
-      h += UI.lista([{titulo: 'Ver el parte completo', icono: 'doc', hoja: 'h41', datos: {parte: '1930'}}]);
-      return h + UI.boton({texto: 'Volver a Hoy', datos: {cierra: '1'}});
+      h += UI.lista([{titulo: 'See the full wrap-up', icono: 'doc', hoja: 'h41', datos: {parte: '1930'}}]);
+      return h + UI.boton({texto: 'Back to Today', datos: {cierra: '1'}});
     }
   });
 
   // ---- H07 · Lo que dijiste ----
   VETA.hojaDef('h07', {
-    titulo: 'Lo que dijiste',
+    titulo: 'What you said',
     pinta: d => {
       const g = d.guion || 'acta', u = VETA.est.lee('a.ultimoDictado', null);
       const mio = u && u.guion === g ? u : null;
       const texto = mio ? mio.texto : ((VETA.datos.dictados || {})[g] || {}).frase;
       const seg = mio ? mio.seg : (DA().duracion || {})[g] || 0;
-      return `<p class="hoja-x">Hoy, ${esc(mio ? mio.hora : '9:47')} · ${esc(VETA.A.mmss(seg))}</p>` +
-        `<blockquote class="a-h-dijo">«${esc(texto || '')}»</blockquote>` +
-        `<p class="a-h-gris">No guardo el audio: solo el texto.</p>` + cerrar();
+      return `<p class="hoja-x">Today, ${esc(mio ? mio.hora : '9:47')} · ${esc(VETA.A.mmss(seg))}</p>` +
+        `<blockquote class="a-h-dijo">“${esc(texto || '')}”</blockquote>` +
+        `<p class="a-h-gris">I don't keep the audio: only the text.</p>` + cerrar();
     }
   });
 
   // ---- H09 · No es eso ----
   VETA.hojaAcciones('h09', {
-    titulo: 'No es eso',
-    texto: '¿Qué era?',
+    titulo: 'That\'s not it',
+    texto: 'What was it?',
     opciones: d => (DA().noEsEso || []).filter(o => o.guion !== d.guion).map(o => ({texto: o.texto, hace: () => {
       const u = VETA.est.lee('a.ultimoDictado', null);
       if (u) VETA.est.pon('a.ultimoDictado', Object.assign({}, u, {guion: o.guion}));

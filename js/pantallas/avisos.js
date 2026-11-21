@@ -8,26 +8,26 @@
 
   const puestos = () => {
     const off = X.lee('avisosOff', {});
-    return X.lee('avisos', []).map(a => Object.assign({salto: 'no ha saltado', nuevo: true}, a)).concat(D.avisos.puestos).map(a => Object.assign({}, a, {off: !!off[a.id]}));
+    return X.lee('avisos', []).map(a => Object.assign({salto: 'hasn\'t triggered', nuevo: true}, a)).concat(D.avisos.puestos).map(a => Object.assign({}, a, {off: !!off[a.id]}));
   };
 
   VETA.pantalla('G6', {
-    titulo: 'Avisos',
-    guia: ['Aquí Veta vigila por ti lo que no quieres que se escape.', 'Tú escribes cuándo quieres que te avise, o usas un ejemplo.', 'Así te enteras a tiempo, sin mirar cada chat.'],
+    titulo: 'Alerts',
+    guia: ['Here Veta watches for you what you don\'t want to slip through.', 'You write when you want it to alert you, or use an example.', 'That way you find out in time, without checking every chat.'],
     pinta: () => {
       const ps = puestos(), ult = X.lee('avisoNuevo', null);
       let h = `<div class="d-avisame" data-i="0"><span class="d-avisame-ic">${VETA.ic('campana', 24)}</span>` +
-        `<label class="d-avisame-c" for="d-aviso-t"><span>Avísame cuando…</span><input id="d-aviso-t" class="d-avisame-i" type="text" value="${esc(texto)}" placeholder="escribe aquí, o usa un ejemplo" enterkeyhint="done"></label></div>`;
-      if (ult) h += `<div data-i="0">${UI.lineaHecho({texto: 'Aviso creado · Cuando salte, lo verás en Equipo.', hora: ult.hora, vt: 'aviso-' + ult.id, boton: {texto: 'Deshacer', accion: 'deshacer-aviso', de: ult.id}})}</div>`;
-      if (texto.trim()) h += UI.lista([{titulo: 'Cómo habría ido', sub: 'Las veces que habría saltado este último mes', icono: 'reloj', hoja: 'h36', datos: {ejemplo: ejemplo || ''}}], {i: 1});
-      h += UI.bloque({titulo: 'Ejemplos', i: 1, html: `<div class="lista">${D.avisos.ejemplos.map(e => `<div class="fila fila-quieta d-ej${ejemplo === e.id ? ' marcada' : ''}"><span class="fila-c"><span class="fila-t">${esc(e.texto)}</span></span>` +
-        UI.boton({tipo: 'secundario', texto: ejemplo === e.id ? 'Elegido' : 'Usar este', accion: 'usar', de: e.id, ancho: false, clase: 'd-usar'}) + '</div>').join('')}</div>`});
-      h += UI.bloque({titulo: 'Puestos · ' + ps.filter(a => !a.off).length, i: 2, html: UI.lista(ps.map(a => ({titulo: a.texto, sub: a.off ? 'apagado' : a.salto, icono: a.off ? 'pausa' : 'campana', hoja: 'h37', datos: {aviso: a.id}, vt: 'aviso-' + a.id})))});
-      h += UI.bloque({titulo: 'Han saltado · 1', i: 3, html: UI.lista([{titulo: 'Queja de Joan Serra', sub: 'Un propietario se queje · sábado 21, 20:05', av: 'joan-serra', ir: 'asunto/joan-serra'}])});
-      h += `<p class="pie" data-i="4">1 caso lleva 5 días sin constancia. El agente ya está avisado; si el jueves sigue igual, verás el recuento, sin nombre ni cliente.</p>`;
+        `<label class="d-avisame-c" for="d-aviso-t"><span>Alert me when…</span><input id="d-aviso-t" class="d-avisame-i" type="text" value="${esc(texto)}" placeholder="type here, or use an example" enterkeyhint="done"></label></div>`;
+      if (ult) h += `<div data-i="0">${UI.lineaHecho({texto: 'Alert created · When it triggers, you\'ll see it in Team.', hora: ult.hora, vt: 'aviso-' + ult.id, boton: {texto: 'Undo', accion: 'deshacer-aviso', de: ult.id}})}</div>`;
+      if (texto.trim()) h += UI.lista([{titulo: 'How it would have gone', sub: 'The times it would have triggered this past month', icono: 'reloj', hoja: 'h36', datos: {ejemplo: ejemplo || ''}}], {i: 1});
+      h += UI.bloque({titulo: 'Examples', i: 1, html: `<div class="lista">${D.avisos.ejemplos.map(e => `<div class="fila fila-quieta d-ej${ejemplo === e.id ? ' marcada' : ''}"><span class="fila-c"><span class="fila-t">${esc(e.texto)}</span></span>` +
+        UI.boton({tipo: 'secundario', texto: ejemplo === e.id ? 'Chosen' : 'Use this one', accion: 'usar', de: e.id, ancho: false, clase: 'd-usar'}) + '</div>').join('')}</div>`});
+      h += UI.bloque({titulo: 'Set · ' + ps.filter(a => !a.off).length, i: 2, html: UI.lista(ps.map(a => ({titulo: a.texto, sub: a.off ? 'apagado' : a.salto, icono: a.off ? 'pausa' : 'campana', hoja: 'h37', datos: {aviso: a.id}, vt: 'aviso-' + a.id})))});
+      h += UI.bloque({titulo: 'Triggered · 1', i: 3, html: UI.lista([{titulo: 'Complaint from Joan Serra', sub: 'An owner complains · Saturday 21, 20:05', av: 'joan-serra', ir: 'asunto/joan-serra'}])});
+      h += `<p class="pie" data-i="4">1 case has gone 5 days with no record. The agent has already been alerted; if it's the same on Thursday, you'll see the count, without name or client.</p>`;
       return h;
     },
-    botonFijo: () => texto.trim() ? UI.boton({texto: 'Crear aviso', accion: 'crear', icono: 'campana'}) : '',
+    botonFijo: () => texto.trim() ? UI.boton({texto: 'Create alert', accion: 'crear', icono: 'campana'}) : '',
     alMontar: el => {
       const i = el.querySelector('#d-aviso-t'); if (!i) return;
       i.addEventListener('input', () => {

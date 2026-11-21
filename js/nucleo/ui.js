@@ -29,13 +29,13 @@
 
   // ---- etiquetas: color solo en lo que se sale de lo normal ----
   const ETQ = {
-    'te-toca': ['neutro', 'punto', 'Te toca'], 'esperando': ['neutro', 'reloj', 'Esperando respuesta'], 'al-dia': ['neutro', 'check', 'Al día'],
-    'cerrado': ['neutro', 'caja', 'Cerrado'], 'activa': ['neutro', 'check', 'Activa'], 'decidido': ['neutro', 'check', 'Decidido'],
-    'sin-responder': ['rojo', 'aviso', 'Sin responder desde ayer'], 'vencida': ['rojo', 'reloj', 'Vencida'], 'no-se-puede': ['rojo', 'candado', 'No se puede enviar'],
-    'prometiste': ['ambar', 'mano', 'Lo prometiste'], 'parado': ['ambar', 'pausa', 'Parado'], 'para-manana': ['ambar', 'luna', 'Para mañana'], 'falta': ['ambar', 'papel', 'Falta'],
-    'oportunidad': ['verde', 'rayo', 'Oportunidad'], 'recibido': ['verde', 'check', 'Recibido'], 'en-marcha': ['verde', 'check', 'En marcha'],
-    'a-prueba': ['azul', 'probeta', 'A prueba'], 'ejemplo': ['azul', 'info', 'Ejemplo'], 'tuya': ['azul', 'usuario', 'Tuya'],
-    'propuesta': ['oro', 'estrella', 'Propuesta'], 'por-decidir': ['oro', 'estrella', 'Por decidir']
+    'te-toca': ['neutro', 'punto', 'Your turn'], 'esperando': ['neutro', 'reloj', 'Waiting for a reply'], 'al-dia': ['neutro', 'check', 'Up to date'],
+    'cerrado': ['neutro', 'caja', 'Closed'], 'activa': ['neutro', 'check', 'Active'], 'decidido': ['neutro', 'check', 'Decided'],
+    'sin-responder': ['rojo', 'aviso', 'No reply since yesterday'], 'vencida': ['rojo', 'reloj', 'Overdue'], 'no-se-puede': ['rojo', 'candado', 'Can\'t be sent'],
+    'prometiste': ['ambar', 'mano', 'You promised it'], 'parado': ['ambar', 'pausa', 'Stalled'], 'para-manana': ['ambar', 'luna', 'For tomorrow'], 'falta': ['ambar', 'papel', 'Missing'],
+    'oportunidad': ['verde', 'rayo', 'Opportunity'], 'recibido': ['verde', 'check', 'Received'], 'en-marcha': ['verde', 'check', 'In use'],
+    'a-prueba': ['azul', 'probeta', 'On trial'], 'ejemplo': ['azul', 'info', 'Example'], 'tuya': ['azul', 'usuario', 'Yours'],
+    'propuesta': ['oro', 'estrella', 'Proposal'], 'por-decidir': ['oro', 'estrella', 'To decide']
   };
 
   // ---- avatar: foto o iniciales; si la foto falla, quedan las iniciales ----
@@ -100,9 +100,9 @@
     const dueno = VETA.duenoDe ? VETA.duenoDe({chat: o.chat, de: o.de}) : null;
     if (dueno && VETA.ajeno(dueno)) return `<p class="cita cita-ajena">${ic('candado', 18)}<span>${esc(VETA.chatAjenoTexto(dueno))}</span></p>`;
     return `<button type="button" class="cita" data-hoja="h01"${o.de ? ` data-de="${esc(o.de)}"` : ''}${o.chat ? ` data-chat="${esc(o.chat)}"` : ''}>` +
-      `<span class="cita-t">«${esc(o.texto)}»</span><span class="cita-o">${esc(o.origen)} ›</span></button>`;
+      `<span class="cita-t">“${esc(o.texto)}”</span><span class="cita-o">${esc(o.origen)} ›</span></button>`;
   };
-  UI.borrador = o => `<div class="borrador"${o.id ? ` id="${esc(o.id)}"` : ''}><span class="borrador-r">${esc(o.rotulo || 'Borrador de Veta')}</span>` +
+  UI.borrador = o => `<div class="borrador"${o.id ? ` id="${esc(o.id)}"` : ''}><span class="borrador-r">${esc(o.rotulo || 'Veta\'s draft')}</span>` +
     `<p class="borrador-t">${o.html || esc(o.texto)}</p></div>`;
   UI.nota = o => `<p class="nota${o.caja ? ' nota-caja' : ''}${o.clase ? ' ' + o.clase : ''}">${o.icono ? ic(o.icono, 18) : ''}<span>${o.html || esc(o.texto)}</span></p>`;
 
@@ -127,7 +127,7 @@
   UI.pasos = o => {
     const total = o.total || 5, hecho = Math.max(0, Math.min(total, o.hecho || 0));
     return `<div class="pasos"><span class="pasos-l" aria-hidden="true"><i style="width:${(hecho / total) * 100}%"></i></span>` +
-      `<span class="pasos-t">${esc(o.texto || ('paso ' + hecho + ' de ' + total))}</span></div>`;
+      `<span class="pasos-t">${esc(o.texto || ('step ' + hecho + ' of ' + total))}</span></div>`;
   };
 
   // ---- campo, interruptor, selector de dos ----
@@ -150,9 +150,9 @@
   // ---- estados de pantalla ----
   UI.vacio = o => `<div class="vacio"${o.i != null ? ` data-i="${o.i}"` : ''}>${o.icono ? `<span class="vacio-ic">${ic(o.icono, 28)}</span>` : ''}<h2 class="vacio-t">${esc(o.titulo)}</h2>` +
     (o.texto ? `<p class="vacio-x">${esc(o.texto)}</p>` : '') + (o.boton ? UI.boton(Object.assign({tipo: 'secundario'}, o.boton)) : '') + '</div>';
-  UI.silueta = n => `<div class="silueta" aria-hidden="true">${Array.from({length: n || 3}, (_, k) => `<span class="sil-b${k % 3 === 0 ? ' sil-alta' : ''}"></span>`).join('')}</div><p class="solo-lector">Cargando</p>`;
-  UI.error = o => `<div class="error-p"><p>${esc((o && o.texto) || 'No he podido cargar esto.')}</p>${UI.boton({tipo: 'secundario', texto: 'Reintentar', accion: 'reintentar'})}${UI.boton({tipo: 'texto', texto: 'Volver', atras: true})}</div>`;
-  UI.sinRed = () => `<div class="sinred" role="status">${ic('sinred', 18)}<span>Sin conexión. Lo que hagas se guarda y sale cuando vuelva la señal.</span></div>`;
+  UI.silueta = n => `<div class="silueta" aria-hidden="true">${Array.from({length: n || 3}, (_, k) => `<span class="sil-b${k % 3 === 0 ? ' sil-alta' : ''}"></span>`).join('')}</div><p class="solo-lector">Loading</p>`;
+  UI.error = o => `<div class="error-p"><p>${esc((o && o.texto) || 'I couldn\'t load this.')}</p>${UI.boton({tipo: 'secundario', texto: 'Retry', accion: 'reintentar'})}${UI.boton({tipo: 'texto', texto: 'Back', atras: true})}</div>`;
+  UI.sinRed = () => `<div class="sinred" role="status">${ic('sinred', 18)}<span>Offline. Whatever you do is saved and goes out when the signal is back.</span></div>`;
   UI.onda = o => `<span class="onda${o && o.pausada ? ' pausada' : ''}" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i></span>`;
 
   // ---- fotos de piso: si falla, bloque --s2 con la casa ----
@@ -161,13 +161,13 @@
     const piso = (VETA.datos.pisos || {})[pisoId] || {};
     const archivo = (piso.fotos || [])[o.n || 0] || pisoId;
     const cls = 'foto foto-' + (o.tam || 'mini');
-    const dentro = `<img src="assets/pisos/${esc(archivo)}.webp" alt="${esc(piso.nombre ? 'Foto del piso: ' + piso.nombre : 'Foto del piso')}" decoding="async"><i class="foto-res" aria-hidden="true">${ic('casa', 24)}</i>`;
-    if (o.ampliar) return `<button type="button" class="${cls} con-foto" data-hoja="h17" data-piso="${esc(pisoId)}" data-n="${o.n || 0}" data-foco="piso" aria-label="Ampliar la foto">${dentro}</button>`;
+    const dentro = `<img src="assets/pisos/${esc(archivo)}.webp" alt="${esc(piso.nombre ? 'Photo of the flat: ' + piso.nombre : 'Photo of the flat')}" decoding="async"><i class="foto-res" aria-hidden="true">${ic('casa', 24)}</i>`;
+    if (o.ampliar) return `<button type="button" class="${cls} con-foto" data-hoja="h17" data-piso="${esc(pisoId)}" data-n="${o.n || 0}" data-foco="piso" aria-label="Enlarge the photo">${dentro}</button>`;
     return `<span class="${cls} con-foto"${o.foco ? ` data-foco="${esc(o.foco)}"` : ''}>${dentro}</span>`;
   };
 
   // ---- burbujas de chat (H01) ----
-  UI.burbujas = mensajes => `<div class="burbujas">${(mensajes || []).map(m => `<div class="burbuja ${m.tu ? 'b-tu' : 'b-otro'}"><p>${esc(m.texto)}</p><span>${esc((m.tu ? 'Tú · ' : '') + (m.cuando || ''))}</span></div>`).join('')}</div>`;
+  UI.burbujas = mensajes => `<div class="burbujas">${(mensajes || []).map(m => `<div class="burbuja ${m.tu ? 'b-tu' : 'b-otro'}"><p>${esc(m.texto)}</p><span>${esc((m.tu ? 'You · ' : '') + (m.cuando || ''))}</span></div>`).join('')}</div>`;
 
   // ---- la tarjeta de una cosa de la cola (A1, A6, A7, G1): seis tipos y sus estados ----
   // cosa: un objeto de VETA.modelo.cola()/.cosa(). o: {n, total} para «1 de 6».
@@ -180,23 +180,23 @@
     const quien = c.av || c.cliente;
     const lead = quien ? VETA.av(quien, 40, {foco: 'foto', nombre: c.titulo}) : `<span class="tc-ic">${ic(c.icono || 'estrella', 22)}</span>`;
     const cab = `<div class="tc-cab">${lead}<span class="tc-nombre" data-foco="nombre">${esc(c.titulo)}</span>` +
-      (o.n ? `<span class="tc-n">${o.n} de ${o.total}</span>` : '') + '</div>';
+      (o.n ? `<span class="tc-n">${o.n} of ${o.total}</span>` : '') + '</div>';
     const quienEs = (c.quienEs || c.etiqueta) ? `<div class="tc-quien">${c.quienEs ? `<span>${esc(c.quienEs)}</span>` : ''}${c.etiqueta ? UI.etiqueta(c.etiqueta, c.etiquetaTexto) : ''}</div>` : '';
     if (c.estado === 'pregunta-envio') {
-      return UI.tarjeta(cab + quienEs + `<h3 class="tc-preg">¿Lo enviaste?</h3>` +
-        UI.boton({texto: 'Sí, enviado', accion: 'si-enviado', de: c.id}) +
-        UI.botones([{texto: 'Todavía no', accion: 'todavia-no', de: c.id}]) +
-        UI.nota({texto: 'En esta demo WhatsApp no se abre: no sale ningún mensaje.', clase: 'nota-gris'}), {clase: 'tc tc-' + c.tipo, vt});
+      return UI.tarjeta(cab + quienEs + `<h3 class="tc-preg">Did you send it?</h3>` +
+        UI.boton({texto: 'Yes, sent', accion: 'si-enviado', de: c.id}) +
+        UI.botones([{texto: 'Not yet', accion: 'todavia-no', de: c.id}]) +
+        UI.nota({texto: 'WhatsApp doesn\'t open in this demo: no message goes out.', clase: 'nota-gris'}), {clase: 'tc tc-' + c.tipo, vt});
     }
     const x = c.extra || {};
     let h = cab + quienEs;
     if (c.momento) h += `<p class="tc-momento">${esc(c.momento)}</p>`;
     if (c.piso && !c.encaja) h += `<div class="tc-piso">${UI.foto(c.piso, {tam: 'mini', ampliar: true})}<span>${esc(c.pisoTexto || (VETA.datos.pisos[c.piso] || {}).nombre || '')}</span></div>`;
     if (c.saber) h += `<p class="tc-saber">${esc(c.saber)}</p>`;
-    if (c.deSusChats) h += `<button type="button" class="enlace" data-hoja="h01" data-de="${esc(c.id)}">De sus chats ›</button>`;
+    if (c.deSusChats) h += `<button type="button" class="enlace" data-hoja="h01" data-de="${esc(c.id)}">From their chats ›</button>`;
     if (c.depende) h += `<p class="tc-pie">${esc(c.depende)}</p>`;
     if (c.cita) h += UI.cita({texto: c.cita.texto, origen: c.cita.origen, de: c.id});
-    if (c.antes) h += `<div class="tc-antes"><b>Antes de llamar</b><ul>${c.antes.map(a => `<li>${esc(a)}</li>`).join('')}</ul></div>`;
+    if (c.antes) h += `<div class="tc-antes"><b>Before calling</b><ul>${c.antes.map(a => `<li>${esc(a)}</li>`).join('')}</ul></div>`;
     if (c.encaja) h += `<div class="tc-encaja"><span class="tc-encaja-t">${esc(c.encaja.titulo)}</span><div class="tc-piso">${UI.foto(c.encaja.piso, {tam: 'mini', ampliar: true})}<span>${esc(c.encaja.texto)}</span></div></div>`;
     if (c.resumen) h += `<p class="tc-resumen">${esc(c.resumen)}</p>`;
     if (c.propone) h += `<p class="tc-resumen">${esc(c.propone)}</p>`;
@@ -204,7 +204,7 @@
     const borr = x.borradorHtml || x.borrador || c.borrador;
     if (borr) h += UI.borrador({html: x.borradorHtml || null, texto: x.borradorHtml ? null : borr});
     if (c.bloqueo) h += UI.nota({texto: c.bloqueo, icono: 'candado', caja: true});
-    if (c.nota !== false && (c.nota || c.sale)) h += UI.nota({texto: c.nota || 'No sale hasta que tú lo envíes', icono: 'candado'});
+    if (c.nota !== false && (c.nota || c.sale)) h += UI.nota({texto: c.nota || 'It doesn\'t go out until you send it', icono: 'candado'});
     if (c.pie) h += `<p class="tc-pie">${esc(c.pie)}</p>`;
     const b = Object.assign({}, c.boton || {}, x.boton || {});
     if (!b.ir && !b.hoja && !b.accion) b.accion = 'principal';
@@ -217,12 +217,12 @@
   UI.lineaCosa = c => {
     const x = c.extra || {};
     const sale = c.estado === 'enviada';
-    const def = {enviada: 'Enviado a ' + (c.corto || c.titulo), hecha: 'Hecho · ' + c.titulo, quitada: 'Quitada · ' + c.titulo, 'para-manana': 'Para mañana · ' + (c.corto || c.titulo)};
+    const def = {enviada: 'Sent to ' + (c.corto || c.titulo), hecha: 'Done · ' + c.titulo, quitada: 'Removed · ' + c.titulo, 'para-manana': 'For tomorrow · ' + (c.corto || c.titulo)};
     return UI.lineaHecho({
       texto: x.linea || (c.lineas && c.lineas[c.estado]) || def[c.estado] || c.titulo,
       hora: c.estado === 'para-manana' ? '' : c.hora,
       hoja: sale ? 'h03' : null, de: c.id, vt: 'cola-' + c.id,
-      boton: {texto: sale ? 'No lo envié' : 'Deshacer', accion: sale ? 'no-lo-envie' : 'deshacer'}
+      boton: {texto: sale ? 'I didn\'t send it' : 'Undo', accion: sale ? 'no-lo-envie' : 'deshacer'}
     });
   };
   // la fila de una cosa que espera turno (cola cerrada)
