@@ -1,0 +1,107 @@
+/* Veta demo · ronda 7 · css/r7.css · N2 · Inicio y las piezas comunes (VETA.r7). Colores y medidas: solo variables de temas.css y base.css.
+   R5: negro y crema; oro = lo hizo o lo propone Veta; rojo = nadie ha contestado o no la lleva nadie. Una sola pastilla. */
+
+/* ---- caras solapadas ---- */
+.r7-caras{display:inline-flex;align-items:center;flex:none}
+.r7-caras .av{box-shadow:0 0 0 2px var(--s1)}
+.r7-caras .av+.av,.r7-caras .av+.r7-caras-mas{margin-left:-10px}
+.r7-caras-mas{position:relative;display:inline-grid;place-items:center;height:32px;min-width:32px;padding:0 7px;border-radius:var(--r-pill);background:var(--s2);color:var(--t2);box-shadow:0 0 0 2px var(--s1);font:700 var(--f-apoyo)/1 var(--body);font-variant-numeric:tabular-nums}
+.r7-caras-40 .r7-caras-mas{height:40px;min-width:40px}
+
+/* ---- pastilla: un estilo, tres tonos ---- */
+.r7-pastilla{flex:none;display:inline-flex;align-items:center;height:28px;max-width:11em;padding:0 11px;border-radius:var(--r-pill);font:600 var(--f-apoyo)/1 var(--body);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.r7-p-gris{background:var(--s2);color:var(--t2)}
+.r7-p-oro{background:var(--av-ic-b);color:var(--av-ic-t)}
+.r7-p-rojo{background:var(--urg-b);color:var(--urg-t)}
+
+/* ---- caja de Inicio ---- */
+.r7-caja{position:relative;display:flex;flex-direction:column;align-items:stretch;min-width:0;min-height:0;padding:14px 14px 13px;border-radius:var(--r-3);background:var(--s1);color:var(--t1);text-align:left;box-shadow:var(--somb),inset 0 0 0 1px var(--borde);transition:transform var(--t-toque) var(--c-estandar),background-color var(--t-toque) var(--c-estandar);-webkit-tap-highlight-color:transparent}
+.r7-caja:active{transform:scale(.965);background:var(--tinte)}
+.r7-caja:focus-visible{outline:2px solid var(--acento);outline-offset:2px}
+.r7-caja-a{display:flex;align-items:center;justify-content:space-between;gap:var(--e2);min-height:40px;margin-bottom:auto}
+.r7-caja-ic{flex:none;width:36px;height:36px;display:grid;place-items:center;border-radius:50%;background:var(--s2);color:var(--t1)}
+.r7-caja-oro .r7-caja-ic{background:var(--veta-g);color:var(--port-b)}
+.r7-caja-n{margin-left:auto;font:700 clamp(2.375rem,5.6vh,2.875rem)/1 var(--display);letter-spacing:-.03em;font-variant-numeric:tabular-nums}
+.r7-caja-t{margin-top:var(--e2);font:700 clamp(1.0625rem,2.35vh,1.25rem)/1.2 var(--body);letter-spacing:-.01em}
+.r7-caja-f{margin-top:2px;min-height:2.6em;color:var(--t2);font:500 clamp(.9375rem,1.85vh,1rem)/1.3 var(--body);text-wrap:balance;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden}
+
+/* ---- R3 · fila y lista ---- */
+.r7-lista{display:flex;flex-direction:column;border-radius:var(--r-3);background:var(--s1);box-shadow:var(--somb),inset 0 0 0 1px var(--borde);overflow:hidden}
+.r7-fila{position:relative;display:flex;align-items:center;gap:var(--e3);width:100%;height:72px;padding:0 var(--e3) 0 var(--e4);color:var(--t1);text-align:left;background:none;-webkit-tap-highlight-color:transparent;transition:background-color var(--t-toque) var(--c-estandar)}
+button.r7-fila:active{background:var(--tinte)}
+.r7-fila+.r7-fila::before,.r7-fila-d+.r7-fila::before,.r7-fila+.r7-fila-d>.r7-fila::before,.r7-fila-d+.r7-fila-d>.r7-fila::before{content:"";position:absolute;top:0;left:calc(var(--e4) + 40px + var(--e3));right:0;height:1px;background:var(--borde)}
+.r7-fila-ic{flex:none;width:40px;height:40px;display:grid;place-items:center;border-radius:50%;background:var(--s2);color:var(--t1)}
+.r7-fila-ic.r7-oro{background:var(--veta-g);color:var(--port-b)}
+.r7-fila-c{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+.r7-fila-1{display:flex;align-items:center;justify-content:space-between;gap:var(--e2);min-height:28px}
+.r7-fila-n{flex:0 1 auto;min-width:0;font:700 var(--f-cuerpo)/1.2 var(--body);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.r7-fila-p{color:var(--t2);font:500 var(--f-apoyo)/1.25 var(--body);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.r7-fila-num{flex:none;min-width:1.2em;text-align:right;font:700 var(--f-hoja)/1 var(--display);font-variant-numeric:tabular-nums}
+.r7-fila-chev{flex:none;display:grid;place-items:center;width:16px;color:var(--t3);opacity:.7}
+.r7-fila-quieta{padding-right:var(--e4)}
+/* la que se abre en el sitio */
+.r7-fila-d{position:relative;display:flex;flex-direction:column}
+.r7-gira{transition:transform var(--t-corto) var(--c-estandar)}
+[aria-expanded=true]>.r7-gira{transform:rotate(180deg)}
+.r7-abierto{padding:0 var(--e4) var(--e4) calc(var(--e4) + 40px + var(--e3));color:var(--t2);font:500 var(--f-apoyo)/1.4 var(--body)}
+.r7-abierto>*+*{margin-top:var(--e2)}
+
+/* ---- ficha: el bloque de una pantalla de ficha (lo que hay que ver junto para decidir). Con .r7-oro, lo que deja escrito Veta ---- */
+.r7-ficha{display:flex;flex-direction:column;gap:var(--e2);padding:var(--e4);border-radius:var(--r-3);background:var(--s1);color:var(--t1);box-shadow:var(--somb),inset 0 0 0 1px var(--borde);font:500 var(--f-cuerpo)/1.4 var(--body)}
+.r7-ficha.r7-oro{box-shadow:var(--somb),inset 0 0 0 1.5px var(--top-acento)}
+.r7-ficha-de{color:var(--t2);font:600 var(--f-apoyo)/1.2 var(--body)}
+.r7-ficha.r7-oro .r7-ficha-de{color:var(--veta)}
+
+/* ---- R4 · el botón negro (va en botonFijo) y los claros ---- */
+.r7-boton{display:flex;align-items:center;justify-content:center;gap:var(--e2);width:100%;min-height:var(--btn);padding:0 var(--e4);border-radius:var(--r-btn);background:var(--accion);color:var(--accion-t);font:700 var(--f-cuerpo)/1.2 var(--body);text-align:center;transition:transform var(--t-toque) var(--c-estandar),opacity var(--t-toque) var(--c-estandar)}
+.r7-boton:active{transform:scale(.98);opacity:.9}
+.r7-boton[disabled]{opacity:.4}
+.r7-otros{display:flex;gap:var(--e2)}
+.r7-otros>.r7-boton{flex:1;min-width:0}
+.r7-boton-claro{min-height:var(--btn-2);background:transparent;color:var(--t1);box-shadow:inset 0 0 0 1.5px var(--borde);font-size:var(--f-apoyo)}
+
+/* ---- la tira «Enséñale a Veta» ---- */
+.r7-tira{display:flex;align-items:center;gap:var(--e3);width:100%;padding:14px var(--e4) 14px 14px;border-radius:var(--r-3);background:var(--top-b);color:var(--top-t);text-align:left;box-shadow:inset 0 0 0 1px var(--mic-borde,transparent);transition:transform var(--t-toque) var(--c-estandar),opacity var(--t-toque) var(--c-estandar);-webkit-tap-highlight-color:transparent}
+.r7-tira:active{transform:scale(.98);opacity:.92}
+.r7-tira:focus-visible{outline:2px solid var(--top-acento);outline-offset:2px}
+.r7-tira-mic{flex:none;width:48px;height:48px;display:grid;place-items:center;border-radius:50%;background:var(--veta-g);color:var(--port-b)}
+.r7-tira-c{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+.r7-tira-t{font:700 var(--f-cuerpo)/1.2 var(--display);letter-spacing:-.01em}
+.r7-tira-f{color:var(--top-t2);font:500 var(--f-apoyo)/1.3 var(--body);text-wrap:pretty}
+/* la incrustada: una línea, en oro, donde Veta deja algo preparado */
+.r7-ensena{display:inline-flex;align-items:center;gap:var(--e2);min-height:var(--toque);padding:0 var(--e2) 0 0;color:var(--veta);font:700 var(--f-apoyo)/1.2 var(--body);-webkit-tap-highlight-color:transparent}
+.r7-ensena-mic{flex:none;width:32px;height:32px;display:grid;place-items:center;border-radius:50%;background:var(--veta-g);color:var(--port-b)}
+.r7-ensena:active{opacity:.7}
+
+/* ---- Inicio (R1: cabe entero en 390×664 con la barra) ---- */
+#marco .pant:has(.r7-inicio){min-height:100%;display:flex;padding-top:var(--e4);padding-bottom:var(--e3)}
+#marco .pant:has(.r7-inicio)>.pant-cuerpo{flex:1;min-height:0}
+.r7-inicio{flex:1;display:flex;flex-direction:column;gap:var(--e3);min-height:0}
+.r7-hola{display:flex;align-items:flex-start;justify-content:space-between;gap:var(--e3);padding:clamp(0px,2.4vh,28px) 2px var(--e1)}
+.r7-hola-c{min-width:0}
+.r7-hola-t{font:700 var(--f-titulo)/1.1 var(--display);letter-spacing:-.02em}
+.r7-hola-f{margin-top:var(--e1);max-width:19em;color:var(--t2);font:500 var(--f-cuerpo)/1.3 var(--body);text-wrap:pretty}
+.r7-yo{flex:none;width:var(--toque);height:var(--toque);display:grid;place-items:center;border-radius:50%;margin:-4px -4px 0 0;transition:transform var(--t-toque) var(--c-estandar)}
+.r7-yo:active{transform:scale(.94)}
+.r7-yo .av{width:44px;height:44px;box-shadow:0 0 0 1.5px var(--top-acento),0 0 0 4px var(--fondo)}
+.r7-cajas{flex:1 1 auto;display:grid;grid-template-columns:1fr 1fr;grid-auto-rows:minmax(132px,1fr);gap:var(--e3);max-height:484px;min-height:0}
+.r7-inicio .r7-tira{flex:none;margin-top:auto}
+
+/* ordenador: las cuatro cajas en fila, centradas */
+@media (min-width:900px){
+  #marco .pant:has(.r7-inicio){max-width:1040px;padding:var(--e7) var(--e6) var(--e6)}
+  .r7-inicio{flex:none;gap:var(--e5)}
+  .r7-hola{padding:0 2px var(--e2)}
+  .r7-hola-t{font-size:var(--f-cifra)}
+  .r7-hola-f{max-width:none;font-size:var(--f-hoja)}
+  .r7-cajas{flex:none;grid-template-columns:repeat(4,1fr);grid-auto-rows:188px;gap:var(--e4);max-height:none}
+  .r7-caja{padding:var(--e4) var(--e4) 18px}
+  .r7-caja-n{font-size:3rem}
+  .r7-caja:hover{background:var(--tinte)}
+  .r7-inicio .r7-tira{margin-top:0;padding:var(--e4) var(--e5) var(--e4) var(--e4)}
+  .r7-fila:is(button):hover{background:var(--tinte)}
+}
+
+/* con «Reducir movimiento» nada se mueve: la caja contesta con el fondo */
+html[data-mov=reducido] .r7-caja:active,html[data-mov=reducido] .r7-tira:active,html[data-mov=reducido] .r7-boton:active{transform:none}
+html[data-mov=reducido] .r7-tira:active{opacity:.8}
