@@ -44,6 +44,7 @@
   VETA.pantalla('G5b', {
     titulo: 'Pass her clients',
     frase: 'This is what will happen. Read it and confirm.',
+    fraseCuerpo: true,
     guia: ['Here Veta tells you exactly what\'s going to happen before touching someone else\'s work.', 'You read it and confirm, or cancel.', 'That way nobody gets a surprise: neither the team nor the clients.'],
     pinta: () => {
       const a = X.carteraA(), dos = a === 'dos';

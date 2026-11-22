@@ -32,6 +32,8 @@
       if (falta === 'informe') return `The notes are done. Now, the report for ${prop}: you read it and you send it.`;
       return 'Both are saved but not sent. Open them and send them when you want.';
     },
+    // “Listo para enviar”: la frase dice por dónde empezar, se queda a la vista en el cuerpo
+    fraseCuerpo: p => { const v = A2().de(p.id); if (!v) return false; const e = A2().est(v.id); return !!(e.contada && !enviados(e)); },
     pinta: p => {
       const v = A2().de(p.id); if (!v) return noHay();
       const e = A2().est(v.id), prop = A2().nombre(v.propietario);
@@ -97,6 +99,7 @@
   VETA.pantalla('A24', {
     titulo: 'How did it go?',
     frase: 'Tell me as you would tell a colleague: what they liked, what they did not, and what happens next.',
+    fraseCuerpo: true,   // la instrucción del paso se queda a la vista, en el cuerpo (sin “?”)
     pinta: p => {
       const v = A2().de(p.id); if (!v) return noHay();
       return `<div class="a2-cuenta" data-modo="quieto" data-i="0">` +

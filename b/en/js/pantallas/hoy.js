@@ -296,6 +296,8 @@
     // el título dice lo que se hace (“Contestar a Marta”, “Informe de la semana”), no el nombre: así el volver nunca repite el título (9b)
     titulo: p => { const c = cosaDe(p.id); if (!c) return 'Your turn'; return pal(c).titulo || (c.reabierta ? c.titulo : c.tipo === 'visita' ? 'Viewing with ' + nombreCorto(c) : borradorDe(c) ? 'Reply to ' + nombreCorto(c) : c.titulo); },
     frase: fraseToca,
+    // cuando la pantalla pregunta algo (“¿Lo has enviado?”, “¿lo escribo siempre así?”), la pregunta se queda en el cuerpo, sobre sus botones
+    fraseCuerpo: p => ['aprender', 'preguntar'].includes(estadoDe(cosaDe(p.id))),
     guia: ['Here you see what they wrote to you and what I wrote for you.', 'You send it from your WhatsApp. If you change it, I ask if I should always do it this way.', 'When you finish, you go on to the next one.'],
     pinta: p => {
       const c = cosaDe(p.id), st = estadoDe(c);

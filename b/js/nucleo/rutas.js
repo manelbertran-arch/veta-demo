@@ -84,13 +84,13 @@
   });
   // ronda 7 · el reparto nuevo va encima de la tabla: nombre, caja (destino), padre y LA FRASE de cada raíz (ESTRATEGIA_R7.md, 4 y 7)
   const R7 = {
-    A1: {titulo: 'Te toca a ti', padre: 'R0', frase: 'Hoy te tocan 6 cosas. Hace un mes eran 9: el resto ya lo hago yo.'},
-    A21: {frase: 'Antes te la confirmo. Al salir me cuentas cómo ha ido y te dejo el acta y el informe listos.'},
-    A5: {padre: 'R0', frase: 'Toca una cara y ves qué pasa y qué toca ahora.'},
+    A1: {titulo: 'Te toca a ti', padre: 'R0', cuenta: () => VETA.r7.cuentas().hoy, frase: 'Hoy te tocan 6 cosas. Hace un mes eran 9: el resto ya lo hago yo.'},
+    A21: {cuenta: () => VETA.r7.cuentas().visitas, frase: 'Antes te la confirmo. Al salir me cuentas cómo ha ido y te dejo el acta y el informe listos.'},
+    A5: {padre: 'R0', cuenta: () => VETA.r7.cuentas().clientes, frase: 'Toca una cara y ves qué pasa y qué toca ahora.'},
     A8: {padre: 'R0', frase: 'Esto ya lo hago yo. Esto te lo propongo. Y puedes enseñarme algo nuevo.'},
-    G20: {frase: '6 cosas esperan tu decisión. Toca una.'},
+    G20: {cuenta: () => VETA.r7.cuentas().decidir, frase: '6 cosas esperan tu decisión. Toca una.'},
     G1: {padre: 'R0', frase: 'Toca una persona y ves qué lleva y cómo va.'},
-    G17: {padre: 'R0', destino: 'operaciones', frase: '22 operaciones. Primero, las 5 que hay que mirar hoy.'},
+    G17: {padre: 'R0', destino: 'operaciones', cuenta: () => VETA.r7.cuentas().operaciones, frase: '22 operaciones. Primero, las 5 que hay que mirar hoy.'},
     G21: {frase: 'Esto hace Veta por tu oficina. Puedes enviar el resumen al equipo.'},
     A3: {titulo: 'Enséñale a Veta', padre: 'R0'}, A4b: {padre: 'A3'},
     // FC (defectos 5 y 10): Cuenta no es ninguna caja, la barra no marca nada; «Veta en un minuto» vive en Cuenta; lo aprendido cuelga de «Ya lo hago yo» y «Tu semana» de «Antes y ahora»
@@ -261,26 +261,50 @@
   }
 
   // ---- cabeceras ----
+  // Manel, 22-nov: la frase ya no va bajo el título. Va en una hoja pequeña que abre el «?» de arriba a la derecha
+  // (siempre en el mismo sitio, solo si la pantalla tiene frase). Si la frase es la instrucción del paso
+  // (`fraseCuerpo: true` o `p => …`), va arriba del cuerpo (.pant-frase) y no hay «?».
+  // El número de la frase, si lo había, pasa al título, pequeño y en gris: campo `cuenta` (número o `p => número`).
+  const val = (x, p) => (typeof x === 'function' ? x(p) : x);
+  const fraseDe = e => { try { return val(e.def.frase, e.p) || ''; } catch (er) { return ''; } };
+  const enCuerpo = e => { try { return !!val(e.def.fraseCuerpo, e.p); } catch (er) { return false; } };
+  const numeroCab = e => {
+    if (e.def.cuenta == null) return '';
+    let n; try { n = val(e.def.cuenta, e.p); } catch (er) { return ''; }
+    return n == null || n === '' ? '' : `<span class="cab-n">${esc(String(n))}</span>`;
+  };
+  const conNumero = (h1, e) => { const n = numeroCab(e); return n ? `<div class="cab-tit">${h1}${n}</div>` : h1; };
+  const ayuda = e => {
+    const f = enCuerpo(e) ? '' : fraseDe(e);
+    return f ? `<button type="button" class="cab-ayuda" data-hoja="ayuda" data-frase="${esc(f)}" aria-label="Qué puedes hacer aquí"><span class="cab-ayuda-c" aria-hidden="true">?</span></button>` : '';
+  };
   function cabecera(e, modo) {
     if (e.def.sinCabecera) return '';
     const t = esc(titulo(e));
-    if (modo === 'lista') return `<header class="cab cab-lista"><h1 class="cab-t">${t}</h1></header>`;
+    if (modo === 'lista') return `<header class="cab cab-lista">${conNumero(`<h1 class="cab-t">${t}</h1>`, e)}${ayuda(e)}</header>`;
     if (modo === 'panel') {
       const migas = pila.map((x, k) => ({x, k})).filter(o => o.k < pila.length - 1);
       // panel que se abre solo (primera fila de la lista): la pila no lo tiene, pero la miga dice de qué lista sale
       const top = pila[pila.length - 1], auto = top && top.ruta !== e.ruta;
       const raizMiga = auto ? `<span class="miga-b miga-quieta">${esc(top.titulo || '')}</span><span class="miga-s" aria-hidden="true">›</span>` : '';
-      return `<header class="cab cab-panel"><nav class="miga" aria-label="Dónde estás">${raizMiga}${migas.map(o => `<button type="button" class="miga-b" data-atras-a="${o.k}">${esc(o.x.titulo || '')}</button><span class="miga-s" aria-hidden="true">›</span>`).join('')}<h1 class="cab-t">${t}</h1></nav>${e.def.cabDerecha ? `<span class="cab-der">${e.def.cabDerecha(e.p)}</span>` : ''}</header>`;
+      return `<header class="cab cab-panel"><nav class="miga" aria-label="Dónde estás">${raizMiga}${migas.map(o => `<button type="button" class="miga-b" data-atras-a="${o.k}">${esc(o.x.titulo || '')}</button><span class="miga-s" aria-hidden="true">›</span>`).join('')}<h1 class="cab-t">${t}</h1>${numeroCab(e)}</nav>${e.def.cabDerecha || ayuda(e) ? `<span class="cab-der">${e.def.cabDerecha ? e.def.cabDerecha(e.p) : ''}${ayuda(e)}</span>` : ''}</header>`;
     }
-    // ronda 7 · cabecera única: «‹ de dónde vienes» (V1), título y LA FRASE de la pantalla (R2: campo `frase`, texto o función de los parámetros)
+    // ronda 7 · cabecera única: «‹ de dónde vienes» (V1), título y, a la derecha, el «?» con la frase de la pantalla (campo `frase`)
     const i = pila.findIndex(x => x.ruta === e.ruta);
     const ant = i > 0 && pila[i - 1].titulo ? pila[i - 1].titulo : (() => { const r = resuelve(padreDe(e)); return r ? titulo(r) : 'Inicio'; })();
     const der = e.def.cabDerecha ? e.def.cabDerecha(e.p) : '', tt = e.def.cabTitulo ? e.def.cabTitulo(e.p) : t;
     if (esPre(e)) return `<header class="cab cab-detalle"><button type="button" class="cab-atras" data-atras aria-label="Volver a ${esc(ant)}">${VETA.ic('atras', 20)}</button><h1 class="cab-t">${tt}</h1><span class="cab-der">${der}</span></header>`;
-    const f = typeof e.def.frase === 'function' ? e.def.frase(e.p) : e.def.frase;
-    return `<header class="cab cab-r7"><div class="cab-fila"><button type="button" class="cab-atras" data-atras aria-label="Volver a ${esc(ant)}">${VETA.ic('atras', 20)}<span>${esc(ant)}</span></button><span class="cab-der">${der}</span></div>` +
-      `<h1 class="cab-t">${tt}</h1>${f ? `<p class="cab-frase">${esc(f)}</p>` : ''}</header>`;
+    return `<header class="cab cab-r7"><div class="cab-fila"><button type="button" class="cab-atras" data-atras aria-label="Volver a ${esc(ant)}">${VETA.ic('atras', 20)}<span>${esc(ant)}</span></button><span class="cab-der">${der}${ayuda(e)}</span></div>` +
+      conNumero(`<h1 class="cab-t">${tt}</h1>`, e) + '</header>';
   }
+  // la instrucción del paso, arriba del cuerpo y con su letra (solo las pantallas con `fraseCuerpo`)
+  const fraseCuerpo = e => { const f = enCuerpo(e) ? fraseDe(e) : ''; return f ? `<p class="pant-frase" data-i="0">${esc(f)}</p>` : ''; };
+  VETA.fraseDe = e => fraseDe(e || actual || {def: {}});
+  // la hoja del «?»: «Qué puedes hacer aquí» y la frase de la pantalla que lo abrió
+  VETA.hojaDef('ayuda', {
+    titulo: 'Qué puedes hacer aquí',
+    pinta: d => `<p class="hoja-ayuda">${esc(d.frase || VETA.fraseDe() || 'Toca lo que quieras ver.')}</p>`
+  });
 
   // el título de una cabecera de detalle nunca parte en dos líneas: si no cabe, la letra baja de 20 a 16 px como mucho
   function ajustaTitulo(col) {
@@ -303,7 +327,7 @@
     catch (err) { setTimeout(() => { throw err; }); cuerpo = UI.error({texto: 'Esta pantalla ha fallado al pintarse.'}); }
     const fijo = e.def.botonFijo ? e.def.botonFijo(e.p) : '';
     col.innerHTML = cabecera(e, modo) + (navigator.onLine === false ? UI.sinRed() : '') +
-      `<div class="desplaza" tabindex="-1"><section class="pant pant-${esc(e.def.cod)}${e.def.pendiente ? ' pant-pendiente' : ''}" data-pant="${esc(e.def.cod)}" aria-label="${esc(titulo(e))}"><div class="pant-cuerpo">${cuerpo}</div></section></div>` +
+      `<div class="desplaza" tabindex="-1"><section class="pant pant-${esc(e.def.cod)}${e.def.pendiente ? ' pant-pendiente' : ''}" data-pant="${esc(e.def.cod)}" aria-label="${esc(titulo(e))}"><div class="pant-cuerpo">${modo === 'lista' ? '' : fraseCuerpo(e)}${cuerpo}</div></section></div>` +
       (fijo ? `<div class="fijo">${fijo}</div>` : '');
     ajustaTitulo(col);
     const d = col.querySelector('.desplaza');

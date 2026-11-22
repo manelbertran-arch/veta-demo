@@ -111,6 +111,7 @@
   VETA.pantalla('A3', {
     titulo: p => (dictado(p) || {}).titulo || 'Enséñale a Veta',
     frase: p => (dictado(p) || {}).frase || P().frase,
+    fraseCuerpo: true,   // la instrucción del paso se queda a la vista, en el cuerpo (sin «?»)
     cabDerecha: p => (dictado(p) ? '' : puntos(1)),
     pinta: p => {
       const s = vivo(p), d = dictado(p), c = caso(p);
@@ -195,6 +196,7 @@
   const FILAS = [['que', 'Qué haré', 'doc'], ['cuando', 'Cuándo', 'reloj'], ['quien', 'Con quién', 'clientes'], ['hasta', 'Hasta dónde llego', 'check']];
   paso('A3b', 'entendido', 'Esto he entendido', 'A3', {
     frase: 'Mira si es esto. Puedes cambiar cada cosa.',
+    fraseCuerpo: true,
     cabDerecha: () => puntos(2),
     pinta: p => {
       const c = curso(p), l = leccion(c);
@@ -231,6 +233,7 @@
 
   // ============ paso 3 · «Pruébalo» ============
   paso('A3c', 'prueba', 'Pruébalo', 'A3b', {
+    fraseCuerpo: true,
     frase: p => (leccion(curso(p)).casos.length ? `Esto pasó en ${P().chats}. Mira qué habría hecho yo.` : `Todavía no ha pasado en ${P().chats}.`),
     cabDerecha: () => puntos(3),
     pinta: p => {
@@ -253,6 +256,7 @@
   const antesDe = p => { const l = VETA.pila(), k = l.findIndex(x => x.ruta === 'dictar/' + p.guion); return (k >= 0 ? k : l.length - 1) - 1; };
   const desdeCaso = p => { const k = antesDe(p); return k > 0 ? k : -1; };                   // > 0: no es Inicio
   paso('A3d', 'hecho', 'Hecho. Ya lo sé hacer.', 'R0', {   // FN · abierto en frío cuelga de Inicio, no de «Pruébalo»
+    fraseCuerpo: true,
     frase: p => (dir() ? 'Empiezo hoy. Nada sale sin una persona.' : soloAviso(curso(p)) ? 'Empiezo hoy. Te aviso y lo haces tú.' : 'Empiezo hoy. Nada sale sin ti.'),
     cabDerecha: () => puntos(4),
     pinta: p => {

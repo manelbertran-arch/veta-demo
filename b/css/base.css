@@ -135,7 +135,21 @@ mark{background:var(--tinte);color:inherit;border-radius:4px;padding:0 2px}
 .cab-r7 .cab-atras{height:44px;min-height:44px;max-width:75%;margin:0;padding:0 var(--e3) 0 0;gap:var(--e1);color:var(--t1);font:600 var(--f-cuerpo)/1.2 var(--body)}
 .cab-r7 .cab-atras span{max-width:none}
 .cab-r7 .cab-t{font-size:var(--f-titulo);line-height:1.1;letter-spacing:-.02em;white-space:normal;overflow:visible}
-.cab-frase{margin:var(--e1) 0 0;max-width:34em;font:500 var(--f-cuerpo)/1.35 var(--body);color:var(--t2)}
+/* 22-nov · la frase ya no va bajo el título: va en la hoja del «?» (zona de 44, círculo de 28, gris, sin color), siempre arriba a la derecha */
+.cab-der{gap:var(--e1)}
+.cab-ayuda{flex:none;width:44px;height:44px;display:grid;place-items:center;margin-right:-8px;color:var(--t3)}
+.cab-ayuda-c{width:28px;height:28px;box-sizing:border-box;border-radius:50%;border:1.5px solid currentColor;display:grid;place-items:center;font:600 15px/1 var(--body);opacity:.8}
+.cab-ayuda:active .cab-ayuda-c{background:var(--s2)}
+.cab-lista .cab-ayuda,.cab-panel .cab-ayuda{margin-left:auto}
+.hoja-ayuda{margin:0 0 var(--e4);max-width:34em;font:500 var(--f-cuerpo)/1.45 var(--body);color:var(--t1)}
+/* el número que decía la frase, pequeño y en gris al lado del título: «Te toca a ti · 6» */
+.cab-tit{display:flex;align-items:baseline;gap:var(--e2);min-width:0}
+.cab-tit .cab-t{min-width:0}
+.cab-n{flex:none;font:600 var(--f-hoja)/1 var(--body);color:var(--t3)}
+.cab-n::before{content:'·';margin-right:var(--e2)}
+.cab-panel .cab-n{margin-left:var(--e2);font-size:var(--f-cuerpo)}
+/* la instrucción del paso (pantallas con `fraseCuerpo`): arriba del cuerpo, con su letra */
+.pant-frase{margin:0;max-width:34em;font:500 var(--f-cuerpo)/1.4 var(--body);color:var(--t1)}
 .tabs{flex:1}
 .tab{flex:1 1 0;width:auto;min-width:0}
 .tab-p{white-space:nowrap}

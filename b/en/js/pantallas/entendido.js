@@ -9,7 +9,7 @@
   let escribe = false, texto = '';
 
   VETA.pantalla('A11', {
-    titulo: 'This is what I understood', completa: true,
+    titulo: 'This is what I understood', completa: true, fraseCuerpo: true,
     frase: p => (noEntendida(p) ? 'I didn\'t understand it. Tell me another way or type it.' : 'This is how I understood what you asked. If that is right, I try it.'),
     pinta: p => {
       const o = VETA.datos.c.orden;

@@ -32,6 +32,8 @@
       if (falta === 'informe') return `El acta ya está. Ahora, el informe para ${prop}: lo lees y lo envías tú.`;
       return 'Los dos están guardados sin enviar. Ábrelos y envíalos cuando quieras.';
     },
+    // «Listo para enviar»: la frase dice por dónde empezar, se queda a la vista en el cuerpo
+    fraseCuerpo: p => { const v = A2().de(p.id); if (!v) return false; const e = A2().est(v.id); return !!(e.contada && !enviados(e)); },
     pinta: p => {
       const v = A2().de(p.id); if (!v) return noHay();
       const e = A2().est(v.id), prop = A2().nombre(v.propietario);
@@ -97,6 +99,7 @@
   VETA.pantalla('A24', {
     titulo: '¿Cómo ha ido?',
     frase: 'Cuéntamelo como a un compañero: qué le gustó, qué no y qué toca ahora.',
+    fraseCuerpo: true,   // la instrucción del paso se queda a la vista, en el cuerpo (sin «?»)
     pinta: p => {
       const v = A2().de(p.id); if (!v) return noHay();
       return `<div class="a2-cuenta" data-modo="quieto" data-i="0">` +

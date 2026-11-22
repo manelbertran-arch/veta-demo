@@ -56,6 +56,7 @@
   VETA.pantalla('G3b', {
     titulo: 'Enviar el resumen',
     frase: 'Te lo dejo escrito. Lo recibirán Laura, Anna, Marc y David; Teresa, de baja, no.',
+    fraseCuerpo: true,   // a quién le llega, a la vista antes de enviar
     pinta: () => {
       const env = enviado();
       let h = '';

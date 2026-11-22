@@ -18,6 +18,7 @@
   const pasoTexto = id => { const n = VETA.vivo.niveles()[C.paso(id) - 1] || {}; return n.enLista || n.nombre || ''; };
   VETA.pantalla('A9', {
     titulo: 'Ya lo hago yo',
+    cuenta: () => VETA.r7.cuentas().veta,
     frase: () => `Estos ${VETA.r7.cuentas().veta} trabajos ya los hago yo. Toca uno para ver cómo lo hago.`,
     pinta: () => {
       const l = hago(), fuera = M.reglas().filter(r => r.estado === 'descartada');

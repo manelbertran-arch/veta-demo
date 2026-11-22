@@ -44,6 +44,7 @@
   VETA.pantalla('G5b', {
     titulo: 'Pasar sus clientes',
     frase: 'Esto es lo que va a pasar. Léelo y confirma.',
+    fraseCuerpo: true,
     guia: ['Aquí Veta te dice exactamente qué va a pasar antes de tocar el trabajo de otra persona.', 'Tú lo lees y confirmas, o cancelas.', 'Así nadie se lleva una sorpresa: ni el equipo ni los clientes.'],
     pinta: () => {
       const a = X.carteraA(), dos = a === 'dos';

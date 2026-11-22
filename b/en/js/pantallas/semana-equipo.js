@@ -56,6 +56,7 @@
   VETA.pantalla('G3b', {
     titulo: 'Send the summary',
     frase: 'I write it for you. Laura, Anna, Marc and David will get it; Teresa, who is off sick, will not.',
+    fraseCuerpo: true,   // a quién le llega, a la vista antes de enviar
     pinta: () => {
       const env = enviado();
       let h = '';
