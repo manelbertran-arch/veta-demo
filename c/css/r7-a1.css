@@ -8,3 +8,6 @@
 /* petición al núcleo (css/componentes.css): las iniciales de una cara van en <b> dentro de `.av` (700) y el navegador las sube a 900
    («bolder»). Solo hay dos pesos, 500 y 700 (PLAN_R8.md, 4.2): hasta que se arregle allí, se fija aquí. */
 .av b{font-weight:700}
+
+/* «lo primero» de Inicio se abre también tocando la tarjeta entera */
+.r7-primero[data-ir]{cursor:pointer;-webkit-tap-highlight-color:transparent}

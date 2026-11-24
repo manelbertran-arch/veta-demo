@@ -182,7 +182,8 @@
     const l = pendientes(q).map(filaCosa);
     reabiertas(q).forEach(x => l.push({cara: x.cliente || null, nombre: x.cliente ? ((M.quien(x.cliente) || {}).nombre || x.tuya) : x.tuya, pasa: 'Lo vuelves a llevar tú', ir: 'toca/' + x.id, boton: 'Abrir'}));
     const uno = l[0], resto = l.slice(1).map(f => Object.assign({}, f, {boton: null}));
-    return (uno ? R7.primero({i: 0, cara: uno.cara, nombre: uno.nombre, pasa: uno.pasa, pastilla: uno.pastilla, boton: {texto: uno.boton, ir: uno.ir}}) : '') +
+    // «lo primero» se abre con su botón o tocando la tarjeta entera (data-ir en la tarjeta, como una fila)
+    return (uno ? R7.primero({i: 0, cara: uno.cara, nombre: uno.nombre, pasa: uno.pasa, pastilla: uno.pastilla, boton: {texto: uno.boton, ir: uno.ir}, datos: {ir: uno.ir}}) : '') +
       (resto.length ? R7.lista(resto, {i: 1}) : '') +
       R7.lista([deVeta(q)].concat(semana ? [{nombre: 'Tu semana', ir: 'semana'}] : [], ocasionales(q)), {i: 2});
   }
