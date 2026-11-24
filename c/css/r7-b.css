@@ -9,18 +9,3 @@
 
 /* A5 · un respiro entre lo que filtra (buscador y filtros) y la lista */
 .pant-A5 .rb-filtros{margin-bottom:var(--e3)}
-
-/* las iniciales de una cara van en 700 como el resto: <b> dentro de .av hereda «bolder» y sale en 900 (petición al núcleo: componentes.css) */
-.pant-A5 .av b,.pant-A5p .av b,.pant-A6 .av b{font-weight:inherit}
-
-/* la cruz del buscador (la pinta el navegador, en azul): en gris */
-.pant-A5 .campo-i::-webkit-search-cancel-button,.pant-A5p .campo-i::-webkit-search-cancel-button{filter:grayscale(1)}
-
-/* Los filtros miden 40 (pieza 9), pero todo lo tocable tiene que llegar a 44 (C12). Aquí el botón crece 2 px por arriba y por
-   abajo sin que se vea: un borde transparente, y el fondo recortado a la pastilla de 40. Petición al núcleo: hacerlo en r7.css
-   para todas las pantallas; cuando esté, se borra este bloque. */
-.pant-A5 .r7-filtros,.pant-A16 .r7-filtros{margin-top:-2px;margin-bottom:-2px}
-.pant-A5 .r7-filtro,.pant-A16 .r7-filtro{box-sizing:border-box;height:44px;border:solid transparent;border-width:2px 0;background-clip:padding-box}
-@media (min-width:900px){
-  .pant-A5 .r7-filtros,.pant-A16 .r7-filtros{row-gap:var(--e1)}   /* en ordenador parten en varias filas: la separación a la vista sigue siendo 8 */
-}

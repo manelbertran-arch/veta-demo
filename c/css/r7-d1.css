@@ -1,7 +1,0 @@
-/* Veta demo · ronda 8 · css/r7-d1.css · carril D
-   El Inicio de dirección, Un asunto, Equipo y Una persona se pintan solo con las piezas de css/r7.css.
-   (Se fueron la rejilla de Equipo, los tonos de las iniciales y los ejemplos-botón de Avisos.) */
-
-/* las iniciales de una cara van en 700, como dice .av: sin esto, el <b> de dentro las sube a 900 (solo hay pesos 500 y 700).
-   Petición al núcleo: `.av b{font-weight:inherit}` en componentes.css, y esta regla sobra. */
-.r7-inicio[data-papel=direccion] .av b,.pant-G1 .av b,.pant-G2 .av b,.pant-G5 .av b,.pant-G5b .av b,.pant-G6 .av b,.pant-G17 .av b,.pant-G18 .av b,.pant-G19 .av b{font-weight:inherit}

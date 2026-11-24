@@ -4,7 +4,7 @@
    Del informe sale su versión en papel (.d-papel: tablas de verdad, todo seguido), no los bloques de pantalla. */
 @page{size:A4;margin:16mm 14mm}
 html,body{background:#fff!important;color:#000!important;height:auto!important;overflow:visible!important}
-.lateral,#lateral,#barra,.barra,#guia,.cajon,#aviso,#velo,#hoja,.reloj,.cab,.fijo,.sinred{display:none!important}
+.lateral,#lateral,#barra,.barra,#aviso,#velo,#hoja,.reloj,.cab,.fijo,.sinred{display:none!important}
 .app,.marco,#marco,.col,.desplaza{display:block!important;position:static!important;height:auto!important;max-height:none!important;overflow:visible!important;width:auto!important;box-shadow:none!important;border:0!important;background:none!important}
 .col:not(:has(.pant-G8,.pant-G3b)){display:none!important}
 .pant{max-width:none!important;padding:0!important;margin:0!important}

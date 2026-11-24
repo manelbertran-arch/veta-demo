@@ -330,7 +330,7 @@
       if (st === 'nada' || st === 'cerrada' || st === 'aprender') return '';
       if (st === 'reabierta') return R7.botones({texto: 'Ciérralo tú', accion: 'r6-recierra', de: c.id});
       if (st === 'preguntar') return R7.botones({texto: 'Sí, enviado', accion: 'si-enviado', de: c.id}, {texto: 'Todavía no', accion: 'todavia-no', de: c.id});
-      if (st === 'hecha') { const s = siguiente(c); return s ? R7.botones({texto: 'Siguiente: ' + nombreCorto(s) + ' ›', accion: 'r7-siguiente', datos: {ruta: rutaDe(s)}}) : ''; }
+      if (st === 'hecha') { const s = siguiente(c); return s ? R7.botones({texto: 'Siguiente: ' + nombreCorto(s), accion: 'r7-siguiente', datos: {ruta: rutaDe(s)}}) : ''; }
       return R7.botones(botonDe(c).negro);
     },
     alMontar: montaDia,

@@ -3,7 +3,7 @@
    Las hojas son diálogos centrados de 480. Ronda 8: sin cajón de guía; el menú lleva los cuatro sitios, «Dictar» y la cuenta. */
 @media (min-width:900px){
   .app{display:grid;grid-template-columns:240px minmax(0,1fr);grid-template-rows:minmax(0,1fr)}
-  .reloj,#barra,#guia{display:none!important}
+  .reloj,#barra{display:none!important}
   .marco{grid-column:2;grid-row:1}
 
   /* barra lateral */
@@ -39,16 +39,13 @@
 
   /* pantallas completas y anchas */
   .app[data-vista=completa]{grid-template-columns:minmax(0,1fr)}
-  .app[data-vista=completa] .lateral,.app[data-vista=completa] .cajon{display:none}
+  .app[data-vista=completa] .lateral{display:none}
   .app[data-vista=completa] .marco{grid-column:1}
   /* ronda 8 · lo que va a una columna (pantallas completas y lo que se abre desde Inicio) se centra a 560, cabecera y pie incluidos */
   .col-completa>.cab,.col-detalle>.cab{width:100%;max-width:calc(var(--col-max) + 2*var(--margen));margin:0 auto}
   .col-completa .pant,.col-detalle .pant{max-width:calc(var(--col-max) + 2*var(--margen));padding-left:var(--margen);padding-right:var(--margen)}
   .col-completa .fijo,.col-detalle .fijo{align-items:center;padding-left:var(--margen);padding-right:var(--margen)}
   .col-completa .fijo>*,.col-detalle .fijo>*{max-width:var(--col-max)}
-
-  /* ocho números en 4×2 */
-  .n8{grid-template-columns:repeat(4,minmax(0,1fr))}
 
   /* hojas: diálogos centrados de 480 */
   .hoja{left:50%;right:auto;top:50%;bottom:auto;width:480px;max-height:86dvh;border-radius:var(--r-4);padding-bottom:var(--e5);translate:-50% -50%;transform:translateY(16px);opacity:0;transition:transform var(--t-corto) var(--c-sale),opacity var(--t-corto) var(--c-sale)}
@@ -58,9 +55,6 @@
 
   /* aviso: centrado en la zona de contenido */
   .aviso{left:calc(240px + var(--margen))}
-
-  /* muestrario a lo ancho */
-  .mu-efectos{grid-template-columns:repeat(4,minmax(0,1fr))}
 }
 
 /* «Dictar» marcado en el menú */

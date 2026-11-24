@@ -151,7 +151,7 @@
       {titulo: 'Unidos la semana pasada · ' + D.dosChats.length, html: `<div class="lista">${D.dosChats.map(c => UI.fila({titulo: c.texto, sub: c.sub})).join('')}</div>`}]
   });
 
-  // ---------------- d-regla-otra · G2b «Otra cosa…» ----------------
+  // ---------------- d-regla-otra · G2b, «Más» de una propuesta ----------------
   VETA.hojaAcciones('d-regla-otra', {
     titulo: d => { const r = (D.reglasOficina || {})[d.regla] || {}; return r.corto || r.titulo || 'Este trabajo'; },
     opciones: d => {

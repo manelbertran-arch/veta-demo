@@ -79,7 +79,7 @@
         R.tarjeta({de: 'Tu propuesta · hoy', texto: `«${env.texto}»`, i: 1});
       const k = D().mejoras.indexOf(texto);
       return `<div data-i="0" data-vt="c-mejora">${UI.campo({id: 'c-mejora', etiqueta: '¿Qué haríais mejor?', area: true, filas: 3, valor: texto, placeholder: 'Escríbelo con tus palabras'})}</div>` +
-        `<section class="r7-grupo" data-i="1"><h2 class="r7-rotulo">Por ejemplo</h2>${R.elegir(D().mejoras.map((m, n) => ({id: n, texto: m})), {valor: k < 0 ? null : k, accion: 'ejemplo', etiqueta: 'Por ejemplo'})}</section>` +
+        R.elegir(D().mejoras.map((m, n) => ({id: n, texto: m})), {valor: k < 0 ? null : k, accion: 'ejemplo', rotulo: 'Por ejemplo', i: 1}) +
         (busca ? R.tarjeta({veta: true, de: 'Lo que he encontrado', texto: busca, i: 2}) : '') +
         R.enlace({texto: 'Buscar casos', accion: 'buscar', i: 3});
     },

@@ -75,18 +75,6 @@
     }
   });
 
-  // ---- H13 · Fuera del radar ----
-  VETA.hojaDef('h13', {
-    titulo: 'Fuera del radar',
-    pinta: () => {
-      const l = (M.lectura().fuera || []).concat((M.lee('chats-fuera', []) || []).map(id => (M.cliente(id) || {}).nombre || id));
-      return `<p class="hoja-x">${l.length} chats personales que no miro:</p>` +
-        VETA.r7.lista(l.map(n => ({nombre: n}))) +
-        `<p class="hoja-x tenue">No salen en ninguna pantalla más que en esta.</p>` +
-        VETA.r7.lista([{nombre: 'Cambiar esta lista', ir: 'cuenta/chats'}]);
-    }
-  });
-
   // ---- H14 · Petición lista ----
   const docDe = d => {
     const id = cliDe(d), docs = B.docs(id);

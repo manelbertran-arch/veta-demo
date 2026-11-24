@@ -94,9 +94,9 @@
     acciones: {otra(ev, el, d) { VETA.hoja('h17', Object.assign({}, d, {n: el.dataset.n})); }}
   });
 
-  // ---- H26 · Aspecto ----
+  // ---- H26 · Cómo se ve (el título, igual que la fila de Cuenta que la abre) ----
   VETA.hojaDef('h26', {
-    titulo: 'Aspecto',
+    titulo: 'Cómo se ve',
     pinta: () => `<p class="hoja-x">Elige cómo quieres ver Veta. Cambia al momento.</p>` +
       UI.selector({etiqueta: 'Modo', opciones: Object.keys(VETA.tema.MODOS).map(k => ({id: k, texto: VETA.tema.MODOS[k]})), valor: VETA.tema.modo(), accion: 'modo'}) +
       `<div class="paletas" role="group" aria-label="Paletas">${VETA.tema.COLORES.map(c => `<button type="button" class="paleta" data-accion="color" data-color="${c}" aria-pressed="${c === VETA.tema.color()}">` +

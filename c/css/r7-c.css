@@ -1,8 +1,7 @@
 /* Veta demo · ronda 8 · css/r7-c.css · carril C (Veta y cuenta). Solo variables de temas.css y base.css.
    Las pantallas de C se pintan con las piezas del núcleo (css/r7.css); aquí solo queda lo que no es una pieza:
    - .r7c-caso: una línea que se toca dentro de un plegable abierto (lo encontrado en «Mi mapa de trabajo»; cada una abre su hoja).
-   - .r7c-campos: los tres campos de «Seguridad», uno debajo de otro.
-   - G11: las barras por fase no son una serie en el tiempo; la última no se destaca. */
+   - .r7c-campos: los tres campos de «Seguridad», uno debajo de otro. */
 
 .r7c-caso{display:flex;align-items:center;gap:var(--e2);width:100%;min-height:48px;padding:var(--e1) 0;text-align:left;color:var(--t1);background:none;-webkit-tap-highlight-color:transparent}
 .r7c-caso+.r7c-caso{margin-top:0;border-top:1px solid var(--borde)}
@@ -12,6 +11,3 @@
 .r7c-caso:active{opacity:.6}
 
 .r7c-campos{display:flex;flex-direction:column;gap:var(--e3)}
-
-.pant-G11 .r7-barra.on{color:var(--t3);font-weight:500}
-.pant-G11 .r7-barra.on i{background:var(--s2)}

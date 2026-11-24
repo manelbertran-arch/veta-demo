@@ -9,9 +9,15 @@
   const UI = VETA.UI, C = VETA.c;
   const D = () => VETA.datos.c, R7 = () => VETA.r7;
 
-  // prácticas con su estado (h23 las cambia en dirección)
+  // prácticas con su estado. Las tres que son un trabajo de la oficina (dossier, mismo-dia, actas) lo cambian en su pantalla, que solo abre
+  // dirección (#/regla-oficina/<id>): aquí se lee de allí, para que la fila y la pantalla digan lo mismo. Las demás (la que sale de un caso)
+  // lo cambian en la hoja h23.
+  const FASE = {'a-prueba': {estado: 'a-prueba', estadoTexto: 'Lo estamos probando · día 1 de 14', usan: 'a prueba con todo el equipo'},
+    'en-marcha': {estado: 'en-marcha', estadoTexto: 'En marcha', usan: 'la usa todo el equipo'}};
+  const faseOf = id => { try { return VETA.d1 && VETA.d1.faseRegla ? VETA.d1.faseRegla(id) : null; } catch (e) { return null; } };
+  C.conPantalla = id => !!faseOf(id);
   C.practicas = () => D().practicas.concat(C.lee('practicaClaudia', false) ? [D().practicaClaudia] : []).map(x => {
-    const e = C.lee('practica', {})[x.id];
+    const f = faseOf(x.id), e = f ? (!f.inicial && FASE[f.f]) : C.lee('practica', {})[x.id];
     return e ? Object.assign({}, x, e) : x;
   });
   // el estado, en texto: cómo va y quién la usa o quién la propuso
@@ -21,14 +27,16 @@
   VETA.pantalla('G10', {
     titulo: 'Cómo trabajamos',
     sub: 'Lo que la oficina hace igual, o está probando.',
-    pinta: () => R7().lista(C.practicas().map(x => ({nombre: x.corto || x.titulo, pasa: estado(x), hoja: 'h23', datos: {practica: x.id}})), {i: 1})
+    // dirección abre el trabajo entero (ahí lo prueba, lo extiende o lo quita); la agente, la hoja que se lo cuenta
+    pinta: () => { const dir = VETA.yo().papel === 'direccion'; return R7().lista(C.practicas().map(x => Object.assign({nombre: x.corto || x.titulo, pasa: estado(x)},
+      dir && C.conPantalla(x.id) ? {ir: 'regla-oficina/' + x.id} : {hoja: 'h23', datos: {practica: x.id}})), {i: 1}); }
   });
 
   // ---- G11 · Lo que aprende la oficina ----
   VETA.pantalla('G11', {
     titulo: 'Lo que aprende la oficina',
     sub: () => `${D().paradas.reduce((s, x) => s + x[1], 0)} operaciones paradas ahora, por fase.`,
-    pinta: () => R7().barras(D().paradas.map(([f, n]) => ({valor: n, fecha: f})), {etiqueta: 'Operaciones paradas ahora, por fase', i: 1}) +
+    pinta: () => R7().barras(D().paradas.map(([f, n]) => ({valor: n, fecha: f})), {etiqueta: 'Operaciones paradas ahora, por fase', serie: false, i: 1}) +
       R7().lista([
         {nombre: 'Lo que sabe tu oficina', ir: 'oficina/sabe'},
         {nombre: 'Qué se ha propuesto', dato: C.practicas().length, ir: 'oficina/practicas'},

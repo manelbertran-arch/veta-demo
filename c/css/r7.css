@@ -20,7 +20,7 @@ html[data-modo=oscuro] .tab-mic-c,html[data-modo=oscuro] .lat-mic .mic-c{backgro
 /* la de Veta: círculo negro con el símbolo oro */
 .av.r7-veta{background:var(--port-b)}
 .av.r7-veta img{position:static;width:56%;height:auto;object-fit:contain}
-html[data-modo=oscuro] .av.r7-veta{box-shadow:inset 0 0 0 1px var(--borde)}
+html[data-modo=oscuro] .av.r7-veta{box-shadow:inset 0 0 0 1.5px var(--top-acento)}   /* negro sobre negro no se ve: en oscuro lleva el aro oro */
 
 /* ---- pieza 8 · pastilla: solo roja ---- */
 .r7-pastilla{flex:none;display:inline-flex;align-items:center;height:26px;padding:0 10px;border-radius:var(--r-pill);background:var(--urg-b);color:var(--urg-t);font:700 var(--f-apoyo)/1 var(--body);white-space:nowrap}
@@ -62,8 +62,6 @@ button.r7-fila:active{background:var(--tinte)}
 .r7-lista>.interr{min-height:var(--fila-1);padding:var(--e1) var(--e1) var(--e1) var(--e4)}
 .r7-lista>*+.interr{box-shadow:inset 0 1px 0 var(--borde)}
 .r7-lista>.interr .interr-t{font-weight:500}
-/* lo que se fue: el medallón de icono (los que aún pinte a mano alguna pantalla no se ven; Z borra esta línea con ellos) */
-.r7-fila-ic{display:none!important}
 
 /* ---- pieza 6 · tarjeta: bloque de lectura. Con .r7-oro, lo que deja escrito Veta (aro oro de 1,5 px, a plena opacidad también en oscuro) ---- */
 .r7-ficha{display:flex;flex-direction:column;gap:var(--e2);padding:var(--e4);border-radius:var(--r-3);background:var(--s1);color:var(--t1);box-shadow:var(--somb),inset 0 0 0 1px var(--borde);font:500 var(--f-cuerpo)/var(--l-lee) var(--body)}
@@ -86,16 +84,19 @@ button.r7-fila:active{background:var(--tinte)}
 .r7-enlace:active{opacity:.6}
 
 /* ---- pieza 15 · línea de apoyo: el subtítulo (primera línea del contenido) y la nota (sobre el botón del pie) ---- */
-.r7-sub,.pant-frase{margin:0;padding:0 var(--e1);color:var(--t2);font:500 var(--f-apoyo)/var(--l-fila) var(--body)}
+.r7-sub{margin:0;padding:0 var(--e1);color:var(--t2);font:500 var(--f-apoyo)/var(--l-fila) var(--body)}
 .r7-nota{display:flex;align-items:center;justify-content:center;gap:6px;min-height:20px;margin:0;color:var(--t3);font:500 var(--f-apoyo)/var(--l-fila) var(--body);text-align:center}
 .r7-nota .ic{flex:none}
 
 /* ---- pieza 9 · filtros: pastillas de 40 que se deslizan de lado ---- */
 .r7-filtros{display:flex;gap:var(--e2);margin:0 calc(-1*var(--margen));padding:0 var(--margen);overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch}
 .r7-filtros::-webkit-scrollbar{display:none}
-.r7-filtro{flex:none;height:40px;padding:0 14px;border-radius:var(--r-pill);background:var(--s1);color:var(--t1);box-shadow:inset 0 0 0 1px var(--borde);font:500 var(--f-apoyo)/1 var(--body);white-space:nowrap}
+/* la pastilla se ve de 40 (pieza 9) y se toca en 44: el botón crece 2 px por arriba y por abajo con un borde transparente, y el fondo y el aro
+   se quedan en la pastilla (background-clip). La fila compensa esos 4 px con margen negativo para no mover nada */
+.r7-filtros{margin-top:-2px;margin-bottom:-2px}
+.r7-filtro{flex:none;box-sizing:border-box;height:44px;border:solid transparent;border-width:2px 0;background-clip:padding-box;padding:0 14px;border-radius:var(--r-pill);background-color:var(--s1);color:var(--t1);box-shadow:inset 0 0 0 1px var(--borde);font:500 var(--f-apoyo)/1 var(--body);white-space:nowrap}
 .r7-filtro b{margin-left:var(--e1);color:var(--t3);font-weight:500;font-variant-numeric:tabular-nums}
-.r7-filtro[aria-pressed=true]{background:var(--t1);color:var(--fondo);box-shadow:none;font-weight:700}
+.r7-filtro[aria-pressed=true]{background-color:var(--t1);color:var(--fondo);box-shadow:none;font-weight:700}
 .r7-filtro[aria-pressed=true] b{color:inherit;font-weight:500;opacity:.7}
 
 /* ---- pieza 12 · cifra y barras ---- */
@@ -105,6 +106,7 @@ button.r7-fila:active{background:var(--tinte)}
 .r7-barras{display:grid;grid-template-columns:repeat(var(--n,4),1fr);gap:var(--e3);align-items:end;padding:var(--e4);border-radius:var(--r-3);background:var(--s1);box-shadow:var(--somb),inset 0 0 0 1px var(--borde)}
 .r7-barra{display:flex;flex-direction:column;justify-content:flex-end;gap:var(--e1);color:var(--t3);font:500 var(--f-apoyo)/1.2 var(--body);text-align:center;font-variant-numeric:tabular-nums}
 .r7-barra i{display:block;border-radius:6px 6px 0 0;background:var(--s2)}
+html[data-modo=oscuro] .r7-barra:not(.on) i{background:color-mix(in srgb,var(--t3) 45%,transparent)}   /* en oscuro --s2 sobre la tarjeta no se ve: las barras que no son la de hoy, en gris medio */
 .r7-barra.on{color:var(--t1);font-weight:700}
 .r7-barra.on i{background:var(--top-acento)}
 
@@ -114,12 +116,12 @@ button.r7-fila:active{background:var(--tinte)}
 .r7-doc-foto .foto{width:100%;height:170px;aspect-ratio:auto;border-radius:0}
 .r7-doc-foto::after{content:"";position:absolute;inset:0;pointer-events:none;background:var(--velo-foto,transparent)}
 .r7-doc-in{display:flex;flex-direction:column;gap:var(--e3);padding:var(--e4)}
-.r7-doc-datos{color:var(--t3);font:500 var(--f-apoyo)/var(--l-fila) var(--body)}
 .r7-doc-datos span{display:block}
 .r7-doc-t{font:700 var(--f-hoja)/1.2 var(--display);letter-spacing:-.01em}
 .r7-doc-s{display:flex;flex-direction:column}
 .r7-doc-r{margin-bottom:var(--e1);color:var(--t3);font:700 var(--f-apoyo)/1.2 var(--body)}
 .r7-doc p,.r7-doc li{font:500 var(--f-cuerpo)/var(--l-lee) var(--body)}
+.r7-doc p.r7-doc-datos{color:var(--t3);font:500 var(--f-apoyo)/var(--l-fila) var(--body)}   /* la línea de datos es un <p>: va después de `.r7-doc p` y con su peso */
 .r7-doc-fila{display:flex;align-items:flex-start;justify-content:space-between;gap:var(--e3);font:500 var(--f-cuerpo)/var(--l-lee) var(--body)}
 .r7-doc-fn{min-width:0}
 .r7-doc-fs{display:block;color:var(--t3);font:500 var(--f-apoyo)/var(--l-fila) var(--body)}
@@ -129,6 +131,7 @@ button.r7-fila:active{background:var(--tinte)}
 .r7-micro{align-self:center;display:flex;flex-direction:column;align-items:center;gap:var(--e3);padding:20px 0 var(--e2);color:var(--t1)}
 .r7-micro-c{width:104px;height:104px;display:grid;place-items:center;border-radius:50%;background:var(--veta-g);color:var(--port-b);transition:transform var(--t-toque) var(--c-estandar)}
 .r7-micro:active .r7-micro-c{transform:scale(.98)}
+.r7-micro-quieto:active .r7-micro-c{transform:none}
 .r7-micro-t{font:700 var(--f-cuerpo)/1 var(--body)}
 
 /* ---- Inicio: fecha, saludo, la frase y tu cara; debajo, lo que pone cada papel (VETA.inicioDe) ---- */
@@ -145,8 +148,8 @@ button.r7-fila:active{background:var(--tinte)}
 /* ---- ordenador: el Inicio es una columna de 560 centrada, igual que en móvil ---- */
 @media (min-width:900px){
   #marco .pant:has(.r7-inicio){max-width:calc(var(--col-max) + 2*var(--margen));padding:var(--e6) var(--margen) var(--e6)}
-  .r7-fila:is(button):hover,.r7-filtro:not([aria-pressed=true]):hover{background:var(--tinte)}
-  .r7-filtros{flex-wrap:wrap;overflow:visible}
+  .r7-fila:is(button):hover,.r7-filtro:not([aria-pressed=true]):hover{background-color:var(--tinte)}
+  .r7-filtros{flex-wrap:wrap;overflow:visible;row-gap:var(--e1)}   /* parten en varias filas: con los 2+2 px de cada botón, la separación a la vista sigue siendo 8 */
 }
 
 /* con «Reducir movimiento» nada se mueve */

@@ -92,7 +92,7 @@
       if (e.estado !== 'enviada') return r7.botones(enviar);
       if (A2().viejo(e)) return '';   // un informe de antes: se enseña como quedó
       // lo que sigue va en negro
-      if (!x.semana && A2().falta(x.id) === 'acta') return r7.botones({texto: 'Siguiente: el acta ›', accion: 'sigue'});
+      if (!x.semana && A2().falta(x.id) === 'acta') return r7.botones({texto: 'Siguiente: el acta', accion: 'sigue'});
       const fin = A2().fin();
       return fin ? r7.botones(fin) : '';
     },

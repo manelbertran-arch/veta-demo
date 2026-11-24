@@ -1,10 +1,10 @@
 /* Veta demo · ronda 8 · js/nucleo/r7.js · el juego de piezas (PLAN_R8.md, apartado 4). Referencia con ejemplos: analisis/PARTE_N.md
    VETA.r7: funciones que devuelven HTML (texto), como VETA.UI. Estilos en css/r7.css. Una pantalla no pinta HTML propio para nada de esto.
    - cuentas()  el único sitio del que salen los números (la frase de Inicio, el punto de la barra, los filtros).
-   - fila · lista · primero · tarjeta · sub · nota · boton · botones · enlace · filtros · cifra · barras · doc · elegir · cara · pastilla · micro · pasos · caras
+   - fila · lista · grupo · primero · tarjeta · sub · nota · boton · botones · enlace · filtros · cifra · barras · doc · elegir · cara · pastilla · micro · pasos · caras
    - La cabecera, el «volver», el subtítulo (`sub`), la nota del pie (`nota`) y «Más» (`mas`) los pone el armazón: js/nucleo/rutas.js.
    Cada pieza acepta lo de siempre para tocar: ir, hoja, accion, de, datos, i (UI.attrs).
-   De la ronda 7 se fueron caja() y tira(); ensena() devuelve '' hasta que cada carril quite su llamada (lo sustituye el micro de la barra). */
+   De la ronda 7 se fueron caja(), tira() y ensena() (lo sustituye el micro de la barra: la pantalla dice de qué va con `casoDictado`). */
 (function () {
   'use strict';
   const esc = VETA.esc, ic = (n, w) => VETA.ic(n, w), UI = VETA.UI;
@@ -96,12 +96,14 @@
   // ---- pieza 4 · lista: tarjeta de radio 20 con filas. lista(filas, {rotulo: 'Ya lo hago yo', i, clase}) ----
   // Acepta objetos de fila o HTML ya hecho. Con `rotulo` devuelve <section class="r7-grupo"> con el rótulo encima
   // (lo lleva siempre que la pantalla tenga tres listas o más). «›» y «+» nunca en la misma lista: si se mezclan, avisa por consola.
+  // grupo('Por ejemplo', html, {i}) → el rótulo de grupo (15 px, 700, gris) sobre lo que sea: una lista, un elegir, unas barras
+  const grupo = (rotulo, html, o) => `<section class="r7-grupo"${o && o.i != null ? ` data-i="${esc(o.i)}"` : ''}><h2 class="r7-rotulo">${esc(rotulo)}</h2>${html}</section>`;
   const lista = (filas, o) => {
     o = o || {};
     const l = (filas || []).filter(Boolean), obj = l.filter(f => typeof f !== 'string');
     if (obj.some(f => f.abre != null) && obj.some(f => f.abre == null && tocable(f))) avisa('lista que mezcla filas que navegan («›») y plegables («+»):', o.rotulo || obj[0].nombre);
     const h = `<div class="r7-lista${o.clase ? ' ' + o.clase : ''}"${!o.rotulo && o.i != null ? ` data-i="${esc(o.i)}"` : ''}>${l.map(f => typeof f === 'string' ? f : fila(f)).join('')}</div>`;
-    return o.rotulo ? `<section class="r7-grupo"${o.i != null ? ` data-i="${esc(o.i)}"` : ''}><h2 class="r7-rotulo">${esc(o.rotulo)}</h2>${h}</section>` : h;
+    return o.rotulo ? grupo(o.rotulo, h, o) : h;
   };
 
   // abrir en el sitio: una abierta a la vez dentro de su lista
@@ -162,14 +164,15 @@
   // cifra({valor: 156, frase: 'cosas que os dejé listas. Hace un mes, 118.'}) → un número a 40 px con su frase al lado. Una por pantalla.
   const cifra = o => `<div class="r7-cifra"${UI.attrs({i: o.i, id: o.id})}><b class="r7-cifra-n">${esc(typeof o.valor === 'number' ? VETA.num(o.valor) : o.valor)}</b><span class="r7-cifra-f">${esc(o.frase || '')}</span></div>`;
   // barras([{valor: 118, fecha: '26 oct'}, …, {valor: 156, fecha: '16 nov'}]) → la única gráfica: cuatro columnas como mucho, la última en oro,
-  // el valor encima y la fecha debajo, sin ejes. Va dentro de una tarjeta. {texto: '156'} si el valor se escribe distinto de como se mide.
+  // el valor encima y la fecha debajo, sin ejes. Ya es una tarjeta: no se mete en otra. {texto: '156'} si el valor se escribe distinto de como se mide.
+  // Si las columnas no son una serie en el tiempo (paradas por fase), {serie: false}: ninguna se destaca.
   const barras = (l, o) => {
     o = o || {}; l = (l || []).filter(Boolean);
     if (l.length > 4) { avisa('barras: cuatro columnas como mucho; se pintan las cuatro últimas'); l = l.slice(-4); }
     const max = Math.max(1, ...l.map(x => Number(x.valor) || 0));
     const voz = l.map(x => `${x.fecha || ''}: ${x.texto != null ? x.texto : x.valor}`).join(', ');
     return `<div class="r7-barras"${UI.attrs({i: o.i})} role="img" aria-label="${esc(o.etiqueta ? o.etiqueta + '. ' + voz : voz)}" style="--n:${l.length}">${l.map((x, k) =>
-      `<div class="r7-barra${k === l.length - 1 ? ' on' : ''}" aria-hidden="true"><span class="r7-barra-v">${esc(x.texto != null ? x.texto : typeof x.valor === 'number' ? VETA.num(x.valor) : x.valor)}</span><i style="height:${Math.max(4, Math.round(56 * (Number(x.valor) || 0) / max))}px"></i><span class="r7-barra-f">${esc(x.fecha || '')}</span></div>`).join('')}</div>`;
+      `<div class="r7-barra${o.serie !== false && k === l.length - 1 ? ' on' : ''}" aria-hidden="true"><span class="r7-barra-v">${esc(x.texto != null ? x.texto : typeof x.valor === 'number' ? VETA.num(x.valor) : x.valor)}</span><i style="height:${Math.max(4, Math.round(56 * (Number(x.valor) || 0) / max))}px"></i><span class="r7-barra-f">${esc(x.fecha || '')}</span></div>`).join('')}</div>`;
   };
 
   // ---- pieza 13 · documento: el papel (PLAN_R8.md, 8.1). Una sola tarjeta de radio 20 con aro; dentro no hay ninguna otra caja ----
@@ -187,12 +190,15 @@
   };
 
   // ---- elegir: tres respuestas no son tres botones, son tres filas con una marcada ----
-  // elegir([{id: 'si', texto: 'Sí, le interesa', sub}, {id: 'duda', texto: 'Tiene dudas'}], {valor: 'si', accion: 'elige'}) → la acción recibe el.dataset.valor
+  // elegir([{id: 'si', texto: 'Sí, le interesa', sub}, {id: 'duda', texto: 'Tiene dudas'}], {valor: 'si', accion: 'elige', rotulo}) → la acción recibe el.dataset.valor
+  // Con `rotulo` lleva el rótulo de grupo encima (y es su nombre para el lector de pantalla), igual que lista().
   const elegir = (l, o) => {
     o = o || {};
-    return `<div class="r7-lista r7-elegir" role="radiogroup"${o.etiqueta ? ` aria-label="${esc(o.etiqueta)}"` : ''}${o.i != null ? ` data-i="${esc(o.i)}"` : ''}>${(l || []).filter(Boolean).map(x =>
+    const voz = o.etiqueta || o.rotulo;
+    const h = `<div class="r7-lista r7-elegir" role="radiogroup"${voz ? ` aria-label="${esc(voz)}"` : ''}${!o.rotulo && o.i != null ? ` data-i="${esc(o.i)}"` : ''}>${(l || []).filter(Boolean).map(x =>
       `<button type="button" class="r7-fila${x.sub ? '' : ' r7-fila-1l'}${x.cara ? ' r7-con' : ''}" role="radio" data-r7-elige aria-checked="${x.id === o.valor}"${UI.attrs({accion: x.accion || o.accion, de: o.de, datos: {valor: x.id}})}>` +
       `${x.cara ? cara(x.cara, 40, {nombre: x.texto}) : ''}<span class="r7-fila-c"><span class="r7-fila-1"><span class="r7-fila-n">${esc(x.texto)}</span></span>${x.sub ? `<span class="r7-fila-p">${esc(x.sub)}</span>` : ''}</span><span class="r7-marca">${ic('check', 20)}</span></button>`).join('')}</div>`;
+    return o.rotulo ? grupo(o.rotulo, h, o) : h;
   };
   document.addEventListener('click', ev => {
     const b = ev.target.closest && ev.target.closest('[data-r7-elige]'); if (!b) return;
@@ -201,15 +207,12 @@
 
   // ---- pieza 16 · micro grande (104, oro) y pasos. Solo en Dictar y «¿Cómo ha ido?» ----
   // micro({texto: 'Toca y dímelo', accion: 'graba'}) · pasos(2, 4) → cuatro puntos (lo normal: cabDerecha: () => ({tipo: 'puntos', paso: 2}))
-  const micro = o => { o = o || {}; return `<button type="button" class="r7-micro${o.clase ? ' ' + o.clase : ''}"${UI.attrs(o)}><span class="r7-micro-c">${ic(o.icono || 'mic', 40)}</span><span class="r7-micro-t">${esc(o.texto || 'Toca y dímelo')}</span></button>`; };
+  // Sin acción (ya se ha dicho: «Esto has dicho») no es un botón: se ve igual y no se toca.
+  const micro = o => { o = o || {}; const b = tocable(o);
+    return `<${b ? 'button type="button"' : 'div'} class="r7-micro${b ? '' : ' r7-micro-quieto'}${o.clase ? ' ' + o.clase : ''}"${UI.attrs(o)}><span class="r7-micro-c">${ic(o.icono || 'mic', 40)}</span><span class="r7-micro-t">${esc(o.texto || 'Toca y dímelo')}</span></${b ? 'button' : 'div'}>`; };
   const pasos = (n, total) => VETA.cabDer({tipo: 'puntos', paso: n, total});
-
-  // ---- lo que se fue (ronda 7) ----
-  // ensena: el «Enséñale a Veta» incrustado. Lo sustituye el micro de la barra (la pantalla dice de qué va con `casoDictado`).
-  // Devuelve '' para que las llamadas que quedan no fallen; Z la borra.
-  const ensena = () => '';
 
   // los ganchos de Inicio (los rellenan A y D desde sus ficheros; los lee js/pantallas/inicio.js)
   VETA.inicioDe = VETA.inicioDe || {};
-  VETA.r7 = Object.assign(VETA.r7 || {}, {cuentas, fuentes, quienes, caras, cara, pastilla, fila, lista, boton, botones, enlace, tarjeta, primero, sub, nota, filtros, cifra, barras, doc, elegir, micro, pasos, ensena});
+  VETA.r7 = Object.assign(VETA.r7 || {}, {cuentas, fuentes, quienes, caras, cara, pastilla, fila, lista, grupo, boton, botones, enlace, tarjeta, primero, sub, nota, filtros, cifra, barras, doc, elegir, micro, pasos});
 })();

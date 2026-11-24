@@ -1,5 +1,6 @@
 /* Veta demo · hojas · veta.js · carril C (Veta y cuenta)
-   Todas salen de las tres plantillas (acciones, texto, elegir) o de su mismo dibujo; ninguna lleva iconos a la izquierda.
+   Todas salen de las tres plantillas (acciones, texto, elegir), salvo las que llevan campos (h24, c-avisos) y las instrucciones de h31;
+   ninguna lleva iconos a la izquierda.
    De siempre: h18 Un caso · h19 Los casos iguales · h20 Cambiar algo (de un trabajo) · h21 Qué he entendido · h22 Subir un paso ·
    h23 Una práctica · h24 Tus tiempos · h25 Una semana anterior · h28 Sin señal · h30 ¿Qué chat borras? · h31 Poner Veta en la pantalla
    de inicio · h32 Un hallazgo del mapa · h33 Calendario · c-mano (lo que aún haces a mano) · c-avisos · c-anadir (añadir un chat).
@@ -16,11 +17,6 @@
   const nombre = id => (M.quien(id) || {}).nombre || id;
   const repintaSiVe = rutaEmpieza => { const a = VETA.actual(); if (a && a.ruta.indexOf(rutaEmpieza) === 0) VETA.repinta(); };
   const mayus = t => String(t || '').replace(/^./, c => c.toUpperCase());
-  // el dibujo de la hoja de texto y el de la de acciones, para las hojas que llevan además un botón que no siempre sale
-  const lee = bloques => `<div class="hoja-texto">${bloques.filter(Boolean).map(b => `<section class="ht-b">${b.titulo ? `<h3 class="ht-t">${esc(b.titulo)}</h3>` : ''}` +
-    (b.texto ? `<p>${esc(b.texto)}</p>` : '') + (b.lista ? `<ul>${b.lista.map(x => `<li>${esc(x)}</li>`).join('')}</ul>` : '') + (b.html || '') + '</section>').join('')}</div>`;
-  const ops = l => `<div class="ops">${l.map(o => `<button type="button" class="op${o.peligro ? ' op-peligro' : ''}"${UI.attrs(o)}><span class="op-c"><span class="op-t">${esc(o.texto)}</span>` +
-    `${o.sub ? `<span class="op-s">${esc(o.sub)}</span>` : ''}</span></button>`).join('')}</div>`;
   // una cita: tarjeta con comillas y de dónde sale
   const cita = (texto, origen) => R7().tarjeta({de: origen, texto: `«${texto}»`});
 
@@ -30,16 +26,16 @@
     const r = M.regla(d.regla), c = r && r.casos && r.casos.distinto && r.casos.distinto.find(y => y.cliente === d.caso);
     return {tipo: 'distinto', x: c, extra: D().distinto[d.caso] || {}};
   };
-  VETA.hojaDef('h18', {
+  const cortoDe = k => k.x.nombre.split(' ')[0], yaExcepto = d => C.excepciones(d.regla).includes(d.caso);
+  VETA.hojaTexto('h18', {
     titulo: d => { const k = caso(d); return k.x ? `${k.x.nombre} · ${k.x.cuando}` : 'Un caso'; },
-    pinta: d => {
-      const k = caso(d); if (!k.x) return lee([{texto: 'Este caso ya no está.'}]);
-      if (k.tipo === 'prueba') return lee([{html: cita(k.x.cita, k.x.origen)}, {texto: `${k.x.propone}. Este es el mensaje que te habría dejado:`},
-        {html: R7().tarjeta({veta: true, de: 'No lo envié: lo estoy probando', texto: k.x.borrador})}]);
-      const corto = k.x.nombre.split(' ')[0], ya = C.excepciones(d.regla).includes(d.caso);
-      return lee([{html: cita(k.x.texto, k.extra.origen || '')}, {texto: k.extra.habria || ''}, ya ? {texto: `Con ${corto} ya no lo hago.`} : null]) +
-        (ya ? '' : UI.boton({texto: `Con ${corto}, no lo hagas`, accion: 'excepcion'}));
+    bloques: d => {
+      const k = caso(d); if (!k.x) return [{texto: 'Este caso ya no está.'}];
+      if (k.tipo === 'prueba') return [{html: cita(k.x.cita, k.x.origen)}, {texto: `${k.x.propone}. Este es el mensaje que te habría dejado:`},
+        {html: R7().tarjeta({veta: true, de: 'No lo envié: lo estoy probando', texto: k.x.borrador})}];
+      return [{html: cita(k.x.texto, k.extra.origen || '')}, {texto: k.extra.habria || ''}, yaExcepto(d) ? {texto: `Con ${cortoDe(k)} ya no lo hago.`} : null];
     },
+    boton: d => { const k = caso(d); return k.x && k.tipo !== 'prueba' && !yaExcepto(d) ? {texto: `Con ${cortoDe(k)}, no lo hagas`, accion: 'excepcion'} : null; },
     acciones: {
       excepcion(ev, el, d) {
         C.ponExcepcion(d.regla, d.caso); VETA.cierraHoja({foco: false}); VETA.repinta();
@@ -119,16 +115,18 @@
   // ---- h23 · Una práctica de la oficina ----
   const SIGUE = {propuesta: {texto: 'Probarlo dos semanas', estado: 'a-prueba', estadoTexto: 'Lo estamos probando · día 1 de 14', aviso: 'Lo probamos dos semanas'},
     'a-prueba': {texto: 'Extenderla a todo el equipo', estado: 'en-marcha', estadoTexto: 'En marcha', aviso: 'Extendida a todo el equipo'}};
-  VETA.hojaDef('h23', {
+  // el botón solo en las prácticas que se deciden aquí; las que tienen pantalla en dirección (C.conPantalla) se deciden en ella
+  const sigueDe = x => (x && VETA.yo().papel === 'direccion' && !(C.conPantalla && C.conPantalla(x.id)) && SIGUE[x.estado]) || null;
+  VETA.hojaTexto('h23', {
     titulo: d => { const x = C.practicas().find(y => y.id === d.practica) || {}; return x.corto || x.titulo || 'Una práctica'; },
-    pinta: d => {
+    bloques: d => {
       const x = C.practicas().find(y => y.id === d.practica);
-      if (!x) return lee([{texto: 'Esta práctica ya no está.'}]);
-      const dir = VETA.yo().papel === 'direccion', s = dir && SIGUE[x.estado];
-      return lee([{titulo: 'Qué es', texto: x.titulo}, {titulo: 'Cómo va', texto: x.estadoTexto}, {titulo: 'Quién la propuso', texto: mayus(x.propuso)}, {titulo: 'Cuánta gente la usa', texto: mayus(x.usan)},
-        {titulo: 'De qué caso nació', texto: x.caso}, s ? null : {texto: dir ? 'Ya la usa todo el equipo.' : 'Lo decide dirección. Tú la ves aquí para saber cómo trabaja la oficina.'}]) +
-        (s ? UI.boton({texto: s.texto, accion: 'sigue'}) : '');
+      if (!x) return [{texto: 'Esta práctica ya no está.'}];
+      const dir = VETA.yo().papel === 'direccion';
+      return [{titulo: 'Qué es', texto: x.titulo}, {titulo: 'Cómo va', texto: x.estadoTexto}, {titulo: 'Quién la propuso', texto: mayus(x.propuso)}, {titulo: 'Cuánta gente la usa', texto: mayus(x.usan)},
+        {titulo: 'De qué caso nació', texto: x.caso}, sigueDe(x) ? null : !dir ? {texto: 'Lo decide dirección. Tú la ves aquí para saber cómo trabaja la oficina.'} : x.estado === 'en-marcha' && !SIGUE[x.estado] ? {texto: 'Ya la usa todo el equipo.'} : null];
     },
+    boton: d => { const s = sigueDe(C.practicas().find(y => y.id === d.practica)); return s ? {texto: s.texto, accion: 'sigue'} : null; },
     acciones: {
       sigue(ev, el, d) {
         const x = C.practicas().find(y => y.id === d.practica), s = x && SIGUE[x.estado]; if (!s) return;
@@ -170,16 +168,21 @@
   }
 
   // ---- h25 · Una semana anterior ----
-  VETA.hojaDef('h25', {
-    titulo: d => { const s = D().semanas.find(x => x.id === d.semana); return s ? s.texto : 'Semanas anteriores'; },
-    pinta: d => {
-      const s = D().semanas.find(x => x.id === d.semana), dir = VETA.yo().papel === 'direccion';
-      if (!s) return ops(D().semanas.slice().reverse().map(x => ({texto: x.texto, sub: `${dir ? '' : x.mensajes + ' mensajes preparados · '}${x.preparados} listos en la oficina`, hoja: 'h25', datos: {semana: x.id}})));
-      // dirección: solo la cifra de la oficina (los mensajes y actas de la semana son de la agente)
-      return lee([dir ? null : {titulo: 'Mensajes que te dejé escritos', texto: `${s.mensajes} · enviaste ${s.enviados}`}, dir ? null : {titulo: 'Actas de visita guardadas', texto: String(s.actas)},
-        {titulo: 'Mensajes y tareas listos en la oficina', texto: VETA.num(s.preparados)}, {texto: 'Sin horas: salen solo de los tiempos que pone cada persona.'}]) +
-        UI.boton({tipo: 'secundario', texto: 'Otras semanas', hoja: 'h25'});
-    }
+  // Sin semana elegida, la lista de semanas; con ella, sus cifras y el botón para ver otra. Dirección ve solo la cifra de la oficina
+  // (los mensajes y actas de la semana son de la agente).
+  const semanaDe = d => D().semanas.find(x => x.id === d.semana);
+  VETA.hojaAcciones('h25', {
+    titulo: d => { const s = semanaDe(d); return s ? s.texto : 'Semanas anteriores'; },
+    bloques: d => {
+      const s = semanaDe(d), dir = VETA.yo().papel === 'direccion'; if (!s) return null;
+      return [dir ? null : {titulo: 'Mensajes que te dejé escritos', texto: `${s.mensajes} · enviaste ${s.enviados}`}, dir ? null : {titulo: 'Actas de visita guardadas', texto: String(s.actas)},
+        {titulo: 'Mensajes y tareas listos en la oficina', texto: VETA.num(s.preparados)}, {texto: 'Sin horas: salen solo de los tiempos que pone cada persona.'}];
+    },
+    opciones: d => {
+      const dir = VETA.yo().papel === 'direccion'; if (semanaDe(d)) return [];
+      return D().semanas.slice().reverse().map(x => ({texto: x.texto, sub: `${dir ? '' : x.mensajes + ' mensajes preparados · '}${x.preparados} listos en la oficina`, hoja: 'h25', datos: {semana: x.id}}));
+    },
+    boton: d => (semanaDe(d) ? {tipo: 'secundario', texto: 'Otras semanas', hoja: 'h25'} : null)
   });
 
   // ---- h28 · Sin señal ----
@@ -190,17 +193,13 @@
   });
 
   // ---- h30 · ¿Qué chat borras? y recibo de borrado ----
-  VETA.hojaDef('h30', {
+  const borrables = () => { const ya = C.lee('borrados', []).map(b => b.nombre); return M.lectura().fuera.concat(M.clientes(VETA.yo().id).slice(0, 6).map(c => c.nombre)).filter(n => !ya.includes(n)); };
+  VETA.hojaAcciones('h30', {
     titulo: d => (d.de ? 'Qué se ha borrado' : '¿Qué chat borras?'),
-    pinta: d => {
-      if (d.de) return lee([{titulo: d.de, texto: '1 conversación · pedido hoy · borrado completo antes del jueves 26'}, {texto: 'Lo que ya estaba en la ficha de un cliente se queda en la ficha.'}]);
-      const ya = C.lee('borrados', []).map(b => b.nombre);
-      const chats = M.lectura().fuera.concat(M.clientes(VETA.yo().id).slice(0, 6).map(c => c.nombre)).filter(n => !ya.includes(n));
-      return `<p class="hoja-x">Desaparece en 72 h y te digo qué se ha borrado.</p>` + ops(chats.map(n => ({texto: n, peligro: true, accion: 'borra', datos: {n}})));
-    },
-    acciones: {
-      borra(ev, el) { const n = el.dataset.n; C.pon('borrados', C.lee('borrados', []).concat([{nombre: n, hora: VETA.ahora()}])); VETA.hoja('h30', {de: n}); repintaSiVe('cuenta/chats'); }
-    }
+    texto: d => (d.de ? '' : 'Desaparece en 72 h y te digo qué se ha borrado.'),
+    bloques: d => (d.de ? [{titulo: d.de, texto: '1 conversación · pedido hoy · borrado completo antes del jueves 26'}, {texto: 'Lo que ya estaba en la ficha de un cliente se queda en la ficha.'}] : null),
+    opciones: d => (d.de ? [] : borrables().map(n => ({texto: n, peligro: true, cierra: false,
+      hace: () => { C.pon('borrados', C.lee('borrados', []).concat([{nombre: n, hora: VETA.ahora()}])); VETA.hoja('h30', {de: n}); repintaSiVe('cuenta/chats'); }})))
   });
 
   // ---- h31 · Poner Veta en la pantalla de inicio ----
@@ -235,12 +234,10 @@
   });
 
   // ---- h32 · Un hallazgo del mapa ----
-  VETA.hojaDef('h32', {
+  VETA.hojaTexto('h32', {
     titulo: d => (C.hallazgo(d.hallazgo) || {}).titulo || 'Un hallazgo',
-    pinta: d => {
-      const f = C.hallazgo(d.hallazgo); if (!f) return '';
-      return lee([{texto: f.texto}].concat((f.citas || []).map(c => ({html: cita(c.texto, c.origen)})))) + (f.boton ? UI.boton(f.boton) : '');
-    }
+    bloques: d => { const f = C.hallazgo(d.hallazgo); return f ? [{texto: f.texto}].concat((f.citas || []).map(c => ({html: cita(c.texto, c.origen)}))) : []; },
+    boton: d => (C.hallazgo(d.hallazgo) || {}).boton || null
   });
 
   // ---- h33 · Calendario ----

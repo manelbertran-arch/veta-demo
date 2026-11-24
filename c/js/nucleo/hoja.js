@@ -17,16 +17,8 @@
   const FONDO = ['#lateral', '#marco', '#barra'];
   const inerte = on => FONDO.forEach(q => { const el = document.querySelector(q); if (el) { if (on) el.setAttribute('inert', ''); else el.removeAttribute('inert'); } });
 
-  // una hoja que aún no existe: dice su código y quién la hace
-  function provisional(id) {
-    const h = (VETA.HOJAS || {})[id];
-    return {
-      titulo: () => h ? h.titulo : 'Hoja',
-      pinta: () => `<p class="hoja-x">${h ? `${h.cod} · pendiente del paquete ${h.paq}` : 'Esta hoja no existe todavía.'}</p>` +
-        (h ? `<p class="hoja-x tenue">Va en js/hojas/${h.archivo}.</p>` : '') +
-        VETA.UI.boton({tipo: 'secundario', texto: 'Cerrar', datos: {cierra: '1'}})
-    };
-  }
+  // una hoja que no existe (un id mal escrito): lo dice y se cierra
+  const provisional = () => ({titulo: 'Hoja', pinta: () => '<p class="hoja-x">Esta hoja no existe todavía.</p>' + VETA.UI.boton({tipo: 'secundario', texto: 'Cerrar', datos: {cierra: '1'}})});
 
   VETA.hoja = (id, d) => {
     const h = $h(); if (!h) return;

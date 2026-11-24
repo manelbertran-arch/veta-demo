@@ -20,7 +20,7 @@
   };
   // un contacto que no lleva nadie (Pau Ríos, Lucía Gómez) es una decisión más, como Carmen: su ficha es asunto/:id
   const CONTACTO = {
-    'pau-rios': {pasa: 'Nadie lo lleva · busca un local', primero: 'Yo se lo daría a David'},
+    'pau-rios': {pasa: 'Nadie lo lleva · busca un local', primero: 'Yo se lo daría a David', pastilla: 'Nadie lo lleva'},
     lucia: {pasa: 'Nadie la lleva · quiere vender', primero: 'Yo se la daría a Marc'}
   };
   const cosa = e => {

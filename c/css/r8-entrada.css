@@ -14,7 +14,7 @@
 /* ---- entrar (E2): lema, dos tarjetas de una línea, enlace y aviso (E-2, E-4) ---- */
 .c-entrar-c{gap:var(--e5)}
 .c-lema .c-entrar-c{gap:var(--e5)}
-.c-entrar-h,.c-entrar .campo-e,.c-entrar-e,.c-entrar-papel,.c-entrar-err{font-weight:700}
+.c-entrar-h,.c-entrar .campo-e,.c-entrar-papel,.c-entrar-err{font-weight:700}
 .c-entrar-papel{font-weight:500}
 .c-papel{min-height:var(--fila-1);padding:var(--e2) var(--e4)}
 .c-cuenta,.c-papel .c-cuenta-t{font:700 var(--f-cuerpo)/1.2 var(--body)}

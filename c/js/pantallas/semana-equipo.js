@@ -56,7 +56,7 @@
         (editando ? `<div data-i="0">${UI.campo({etiqueta: 'Lo estás cambiando', area: true, filas: 10, id: 'd-resumen-t', valor: resumenTexto()})}</div>`
           : r7.doc({i: 0, datos: [resumenTexto() === RESUMEN ? 'Te lo dejo escrito' : 'Te lo dejo escrito · lo cambiaste tú'], texto: resumenTexto()}));
     },
-    botonFijo: () => enviado() ? '' : editando ? r7.botones({texto: 'Listo', accion: 'editar'}) : r7.botones({texto: 'Enviar a las 4 personas', accion: 'enviar'}),
+    botonFijo: () => enviado() ? '' : editando ? r7.botones({texto: 'Guardar', accion: 'editar'}) : r7.botones({texto: 'Enviar a las 4 personas', accion: 'enviar'}),
     alMontar: el => { if (editando) { const t = el.querySelector('#d-resumen-t'); if (t) try { t.focus({preventScroll: true}); } catch (e) {} } },
     acciones: {
       editar() { if (editando) guardaTexto(); editando = !editando; VETA.repinta(); },

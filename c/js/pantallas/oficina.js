@@ -21,6 +21,7 @@
         n ? {nombre: 'Me lo has enseñado tú', dato: n, hoja: 'd-ensenado'} : null
       ], {i: 0});
     },
-    botonFijo: () => r7.botones({texto: 'Enséñale a Veta', ir: 'dictar/libre'})
+    // el mismo botón que en la raíz Veta de la agente: con su micro y a enseñar (dictar/orden); «¿Qué me cuentas?» ya es el micro de la barra
+    botonFijo: () => r7.botones({texto: 'Enséñale a Veta', icono: 'mic', ir: 'dictar/orden'})
   });
 })();

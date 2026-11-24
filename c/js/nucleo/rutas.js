@@ -1,7 +1,7 @@
 /* Veta demo · núcleo · rutas.js
    El mapa entero (sección 2), el registro de pantallas, la navegación y el armazón (barra, barra lateral, columnas).
-   - Toda ruta del mapa queda registrada al cargar con una pantalla «pendiente» que dice su código; el paquete que la
-     construye la sustituye con VETA.pantalla('<código>', {...}) y hereda del mapa lo que no diga (ruta, destino, completa…).
+   - Cada pantalla se registra con VETA.pantalla('<código>', {...}) y hereda del mapa lo que no diga (ruta, destino, completa…).
+     Toda fila del mapa tiene su pantalla (las provisionales de la ronda 1 se fueron en el cierre de la ronda 8).
    - Ronda 8 (PLAN_R8.md): cuatro sitios y el micro en la barra, cabecera de raíz (56) y de detalle (60, con el nombre de donde
      vienes sobre el título), sin «?», redirecciones de las rutas que se funden, pie con nota. Referencia: analisis/PARTE_N.md.
    - Pila propia con el nombre real de la anterior, almohadilla (#/hoy) y botón atrás del navegador, dirección de la
@@ -19,25 +19,23 @@
     ['A18', 'primer-dia/:paso', 'Primer día', null, 'C', 'primer-dia.js', 'E1', 'primer-dia/0', {completa: true, grupo: G.E}],
     ['A18m', 'mapa', 'Mi mapa de trabajo', 'veta', 'C', 'mapa.js', 'A15', null, {grupo: G.E}],
     ['A1', 'hoy', 'Hoy', 'hoy', 'A', 'hoy.js', null, null, {grupo: G.A}],
-    ['A2', 'mensaje/:id', 'Editar mensaje', 'hoy', 'A', 'mensaje.js', 'A1', 'mensaje/c-marta', {grupo: G.A}],
+    ['A2', 'mensaje/:id', 'Cambiar el mensaje', 'hoy', 'A', 'mensaje.js', 'A1', 'mensaje/c-marta', {grupo: G.A}],
     ['A3', 'dictar/:guion', 'Dictar', null, 'A', 'dictar.js', 'A1', 'dictar/libre', {completa: true, grupo: G.A}],
     ['A4', 'acta/:id', 'Nota de la visita', 'hoy', 'A', 'acta.js', 'A1', 'acta/elena', {completa: true, grupo: G.A}],
     ['A4b', 'entendido-dictado/:id', 'Lo que he entendido', 'hoy', 'A', 'dictado.js', 'A1', 'entendido-dictado/tarea', {completa: true, grupo: G.A}],
     ['A7', 'espera', 'Lo que vigilo por ti', 'hoy', 'A', 'espera.js', 'A1', null, {grupo: G.A}],
-    ['A12', 'informe/:id', 'Informe al propietario', 'hoy', 'A', 'informe.js', 'A1', 'informe/pere', {grupo: G.A}],
+    ['A12', 'informe/:id', 'Informe para el propietario', 'hoy', 'A', 'informe.js', 'A1', 'informe/pere', {grupo: G.A}],
     ['A5', 'clientes', 'Clientes', 'clientes', 'B', 'clientes.js', null, null, {grupo: G.B}],
-    ['A5b', 'clientes/al-dia', 'Los que no te necesitan hoy', 'clientes', 'B', 'clientes.js', 'A5', null, {grupo: G.B}],
-    ['A5p', 'pregunta/:id', 'Pregunta a Veta', 'clientes', 'B', 'pregunta.js', 'A5', 'pregunta/jordi', {grupo: G.B}],
+    ['A5p', 'pregunta/:id', 'Pregúntale a Veta', 'clientes', 'B', 'pregunta.js', 'A5', 'pregunta/jordi', {grupo: G.B}],
     ['A6', 'cliente/:id', 'Ficha de cliente', 'clientes', 'B', 'ficha.js', 'A5', 'cliente/pere', {grupo: G.B, tituloCliente: true}],
-    ['A6d', 'cliente/:id/documentos', 'Documentos y fechas', 'clientes', 'B', 'documentos.js', 'A6', 'cliente/pere/documentos', {grupo: G.B}],
-    ['A16', 'cliente/:id/historia', 'Historia', 'clientes', 'B', 'historia.js', 'A6', 'cliente/pere/historia', {grupo: G.B}],
+    ['A6d', 'cliente/:id/documentos', 'Papeles y fechas', 'clientes', 'B', 'documentos.js', 'A6', 'cliente/pere/documentos', {grupo: G.B}],
+    ['A16', 'cliente/:id/historia', 'Lo que ha pasado', 'clientes', 'B', 'historia.js', 'A6', 'cliente/pere/historia', {grupo: G.B}],
     ['A8', 'veta', 'Veta', 'veta', 'C', 'veta.js', null, null, {grupo: G.C}],
-    ['A9', 'reglas', 'Lo que hago por ti', 'veta', 'C', 'reglas.js', 'A8', null, {grupo: G.C}],
-    ['A9b', 'reglas/semana-pasada', 'La semana pasada', 'veta', 'C', 'reglas.js', 'A9', null, {grupo: G.C}],
-    ['A10', 'regla/:id', 'Un trabajo', 'veta', 'C', 'regla.js', 'A9', 'regla/r-valoraciones', {grupo: G.C}],
-    ['A10b', 'regla/:id/nivel', 'Hasta dónde llega', 'veta', 'C', 'regla.js', 'A10', 'regla/r-valoraciones/nivel', {grupo: G.C}],
-    ['A11', 'entendido/:id', 'Así lo he entendido', 'veta', 'C', 'entendido.js', 'A9', 'entendido/recordatorios', {grupo: G.C}],
-    ['A13', 'aprendido', 'Lo que he aprendido', 'veta', 'C', 'aprendido.js', 'A8', null, {grupo: G.C}],
+    ['A9b', 'reglas/semana-pasada', 'La semana pasada', 'veta', 'C', 'reglas.js', 'A8', null, {grupo: G.C}],
+    ['A10', 'regla/:id', 'Un trabajo', 'veta', 'C', 'regla.js', 'A8', 'regla/r-valoraciones', {grupo: G.C}],
+    ['A10b', 'regla/:id/nivel', '¿Quién lo hace?', 'veta', 'C', 'regla.js', 'A10', 'regla/r-valoraciones/nivel', {grupo: G.C}],
+    ['A11', 'entendido/:id', 'Esto he entendido', 'veta', 'C', 'entendido.js', 'A13', 'entendido/recordatorios', {grupo: G.C}],
+    ['A13', 'aprendido', 'Lo he aprendido de ti', 'veta', 'C', 'aprendido.js', 'A8', null, {grupo: G.C}],
     ['A13b', 'mejora', 'Proponer una mejora', 'veta', 'C', 'aprendido.js', 'A13', null, {grupo: G.C}],
     ['A14', 'semana', 'Tu semana', 'veta', 'C', 'semana.js', 'A8', null, {grupo: G.C}],
     ['A15', 'cuenta', 'Cuenta y privacidad', 'veta', 'C', 'cuenta.js', 'A8', null, {grupo: G.C}],
@@ -46,23 +44,23 @@
     ['G1', 'equipo', 'Equipo', 'equipo', 'D', 'equipo.js', null, null, {grupo: G.D}],
     ['G2', 'asunto/:id', 'Qué ha pasado', 'equipo', 'D', 'asunto.js', 'G1', 'asunto/carmen', {grupo: G.D}],
     ['G2b', 'regla-oficina/:id', 'Un trabajo para la oficina', 'equipo', 'D', 'regla-oficina.js', 'G1', 'regla-oficina/dossier', {grupo: G.D}],
-    ['G3', 'semana-equipo', 'Semana', 'equipo', 'D', 'semana-equipo.js', 'G1', null, {grupo: G.D}],
+    ['G3', 'semana-equipo', 'La semana pasada', 'equipo', 'D', 'semana-equipo.js', 'G1', null, {grupo: G.D}],
     ['G3b', 'semana-equipo/resumen', 'Enviar el resumen', 'equipo', 'D', 'semana-equipo.js', 'G3', null, {grupo: G.D}],
-    ['G3c', 'reunion', 'Para la reunión del lunes', 'equipo', 'D', 'semana-equipo.js', 'G3', null, {grupo: G.D}],
+    ['G3c', 'reunion', 'Reunión del lunes', 'equipo', 'D', 'semana-equipo.js', 'G3', null, {grupo: G.D}],
     ['G3d', 'oficinas', 'Por oficina', 'equipo', 'D', 'semana-equipo.js', 'G3', null, {grupo: G.D}],
-    ['G3e', 'tiempo-equipo', 'El tiempo que gana el equipo', 'equipo', 'D', 'semana-equipo.js', 'G3', null, {grupo: G.D}],
+    ['G3e', 'tiempo-equipo', 'Tiempo ganado', 'equipo', 'D', 'semana-equipo.js', 'G3', null, {grupo: G.D}],
     ['G5', 'reparto', 'Reparto', 'equipo', 'D', 'reparto.js', 'G1', null, {grupo: G.D}],
     ['G5b', 'reparto/confirmar', 'Pasar sus clientes', 'equipo', 'D', 'reparto.js', 'G5', null, {grupo: G.D}],
-    ['G6', 'avisos', 'Avisos', 'equipo', 'D', 'avisos.js', 'G1', null, {grupo: G.D}],
+    ['G6', 'avisos', 'Tus avisos', 'equipo', 'D', 'avisos.js', 'G1', null, {grupo: G.D}],
     ['G7', 'conexiones', 'Conexiones y ajustes', 'equipo', 'D', 'conexiones.js', 'G1', null, {grupo: G.D}],
-    ['G7b', 'confianza', 'Qué ves tú y qué ve cada persona', 'equipo', 'D', 'conexiones.js', 'G7', null, {grupo: G.D}],
+    ['G7b', 'confianza', 'Qué ve cada uno', 'equipo', 'D', 'conexiones.js', 'G7', null, {grupo: G.D}],
     ['G7c', 'piloto', 'Parte diario del piloto', 'equipo', 'D', 'conexiones.js', 'G7', null, {grupo: G.D}],
     ['G8', 'informe-completo', 'Informe completo', 'equipo', 'D', 'informe-completo.js', 'G3', null, {grupo: G.D}],
     ['G9', 'entra', 'Lo que entra', 'equipo', 'D', 'entra.js', 'G1', null, {grupo: G.D}],
-    ['A19', 'que-hace', 'Qué hace Veta por ti', 'veta', 'C', 'que-hace.js', 'A8', null, {grupo: G.C}],
+    ['A19', 'que-hace', 'Cómo funciona Veta', 'veta', 'C', 'que-hace.js', 'A8', null, {grupo: G.C}],
     ['A20', 'antes-ahora', 'Antes y ahora', 'veta', 'C', 'antes-ahora.js', 'A8', null, {grupo: G.C}],
-    ['G15', 'oficina-que-hace', 'Qué hace Veta por tu oficina', 'equipo', 'D', 'oficina-que-hace.js', 'G1', null, {grupo: G.D}],
-    ['G16', 'oficina-antes-ahora', 'Antes y ahora de la oficina', 'equipo', 'D', 'oficina-antes-ahora.js', 'G1', null, {grupo: G.D}],
+    ['G15', 'oficina-que-hace', 'Lo que ya hago', 'equipo', 'D', 'oficina-que-hace.js', 'G1', null, {grupo: G.D}],
+    ['G16', 'oficina-antes-ahora', 'Antes y ahora', 'equipo', 'D', 'oficina-antes-ahora.js', 'G1', null, {grupo: G.D}],
     ['G17', 'operaciones', 'Operaciones', 'equipo', 'D', 'operaciones.js', 'G1', null, {grupo: G.D}],
     ['G18', 'operacion/:id', 'Una operación', 'equipo', 'D', 'operacion.js', 'G17', 'operacion/marta', {grupo: G.D}],
     ['G19', 'persona/:id', 'Una persona del equipo', 'equipo', 'D', 'persona.js', 'G1', 'persona/laura', {grupo: G.D}],
@@ -77,7 +75,6 @@
     ['A22', 'visita/:id', 'Una visita', 'visitas', 'A', 'visita.js', 'A21', 'visita/elena', {grupo: G.A}],
     ['A24', 'salida/:id', '¿Cómo ha ido?', 'visitas', 'A', 'visita.js', 'A22', 'salida/elena', {completa: true, grupo: G.A}],
     ['A23', 'toca/:id', 'Te toca a ti', 'hoy', 'A', 'hoy.js', 'A1', 'toca/c-marta', {grupo: G.A}],
-    ['G20', 'decidir', 'Decidir', 'decidir', 'D', 'decidir.js', 'R0', null, {grupo: G.D}],
     ['G21', 'oficina', 'Veta', 'oficina', 'D', 'oficina.js', 'R0', null, {grupo: G.D}]
   ];
   const MAPA = {};
@@ -91,23 +88,24 @@
     A8: {padre: 'R0'},
     G1: {padre: 'R0'},
     G17: {padre: 'R0', destino: 'operaciones'},
-    A3: {titulo: 'Enséñale a Veta', padre: 'R0'}, A4b: {padre: 'A3'},
+    A3: {titulo: '¿Qué me cuentas?', padre: 'R0'}, A4b: {padre: 'A3'},
     // FC (defectos 5 y 10): Cuenta no es ninguna caja, la barra no marca nada; «Veta en un minuto» vive en Cuenta; lo aprendido cuelga de «Ya lo hago yo» y «Tu semana» de «Antes y ahora»
-    A15: {titulo: 'Cuenta', padre: 'R0', destino: null}, A15b: {destino: null}, A15c: {destino: null}, A18m: {destino: null}, A19: {padre: 'A15', destino: null}, A13: {padre: 'A9'}, A14: {padre: 'A20'},
+    A15: {titulo: 'Cuenta', padre: 'R0', destino: null}, A15b: {destino: null}, A15c: {destino: null}, A18m: {destino: null}, A19: {padre: 'A15', destino: null}, A14: {padre: 'A20'},
     A4: {titulo: 'Acta de la visita', destino: 'visitas', padre: 'A22'}, A12: {titulo: 'Informe para el propietario', destino: 'visitas', padre: 'A22'},
     A2: {padre: 'A23'},   // FA · «Cambiar el mensaje» cuelga de la tarjeta de su persona (toca/:id), no de la lista
-    A7: {padre: 'A9', destino: 'veta'},   // FN · «Lo que vigilo por ti» se abre desde Veta › «Ya lo hago yo»: en frío cuelga de ahí, no de Te toca
-    G2: {destino: 'decidir', padre: 'G20'}, G18: {destino: 'operaciones'},
+    G2: {destino: 'decidir'}, G18: {destino: 'operaciones'},
     G3: {destino: 'oficina', padre: 'G21'}, G3b: {destino: 'oficina'}, G3c: {destino: 'oficina'}, G3d: {destino: 'oficina'}, G3e: {destino: 'oficina'}, G8: {destino: 'oficina'},
     G15: {destino: 'oficina', padre: 'G21'}, G16: {destino: 'oficina', padre: 'G21'}, G2b: {destino: 'oficina', padre: 'G21'},
     // FD: Conexiones y Tus avisos cuelgan de Cuenta (A15), con su misma caja marcada; Lo que entra, de Operaciones
     G7: {padre: 'A15', destino: null}, G7b: {destino: null}, G7c: {destino: null}, G6: {padre: 'A15', destino: null},
-    G5: {destino: 'decidir', padre: 'G20'}, G5b: {destino: 'decidir'}, G9: {destino: 'operaciones', padre: 'G17'},
+    G5: {destino: 'decidir'}, G5b: {destino: 'decidir'}, G9: {destino: 'operaciones', padre: 'G17'},
     // FD: lo aprendido, lo que aún no hago y cómo trabajamos van dentro de «Lo que ya hago por la oficina» (G15)
     G10: {destino: 'oficina', padre: 'G15'}, G11: {destino: 'oficina', padre: 'G15'}, G12: {destino: 'oficina', padre: 'G15'}, G14: {destino: 'oficina', padre: 'G15'}, G13: {destino: 'oficina'}
   };
   Object.keys(R7).forEach(c => Object.assign(MAPA[c], R7[c]));
   // ronda 8 · el mapa nuevo (PLAN_R8.md, 2.3): padres para entrar en frío y para el «volver», y los documentos a pantalla completa.
+  // Las tres pantallas que se fundieron (A5b clientes/al-dia, A9 reglas, G20 decidir) ya no están en el mapa: sus rutas las lleva redirige().
+  // «decidir» sigue siendo el `destino` de lo que solo abre dirección desde su Inicio (asunto, reparto): lo lee vedada().
   // Con la cuenta de dirección, «Te toca a ti» (A1) es un detalle que cuelga de Inicio, y de él cuelgan su tarjeta, lo que vigila y su semana.
   // La agente abre «Cómo trabajamos» (G10) y «Lo que sabe tu oficina» (G14) desde «Lo he aprendido de ti».
   const esDir = () => VETA.yo().papel === 'direccion';
@@ -122,22 +120,13 @@
   Object.keys(R8).forEach(c => Object.assign(MAPA[c], R8[c]));
   VETA.MAPA = MAPA;
 
-  // ---- las 42 hojas: código → título y quién la hace ----
-  const H = [
-    ['H01', 'De dónde sale', 'N', 'comunes.js'], ['H02', 'Otra cosa…', 'N', 'comunes.js'], ['H03', 'Registro', 'A', 'dia.js'], ['H04', 'Lo que he leído', 'A', 'dia.js'],
-    ['H05', 'Hechas hoy', 'A', 'dia.js'], ['H06', 'Día cerrado', 'A', 'dia.js'], ['H07', 'Lo que dijiste', 'A', 'dia.js'], ['H08', '¿Qué puedo decir?', 'A', 'dia.js'],
-    ['H09', 'No es eso', 'A', 'dia.js'], ['H10', 'Mensaje de Pere', 'B', 'clientes.js'], ['H11', 'Otras acciones', 'B', 'clientes.js'], ['H12', 'Compartir resumen', 'B', 'clientes.js'],
-    ['H13', 'Fuera del radar', 'B', 'clientes.js'], ['H14', 'Petición lista', 'B', 'clientes.js'], ['H15', '¿Qué pasó con…?', 'B', 'clientes.js'], ['H16', 'Detalle de historia', 'B', 'clientes.js'],
-    ['H17', 'Foto ampliada', 'N', 'comunes.js'], ['H18', 'Un caso', 'C', 'veta.js'], ['H19', 'Los 11 casos como yo', 'C', 'veta.js'], ['H20', 'Otra cosa…', 'C', 'veta.js'],
-    ['H21', 'Qué he entendido', 'C', 'veta.js'], ['H22', 'Subir un nivel', 'C', 'veta.js'], ['H23', 'Una práctica de la oficina', 'C', 'veta.js'], ['H24', 'Tu tiempo en esta tarea', 'C', 'veta.js'],
-    ['H25', 'Una semana anterior', 'C', 'veta.js'], ['H26', 'Aspecto', 'N', 'comunes.js'], ['H28', 'Sin señal', 'C', 'veta.js'],
-    ['H29', 'Texto legal', 'N', 'comunes.js'], ['H30', '¿Qué chat borras?', 'C', 'veta.js'], ['H31', 'Poner Veta en la pantalla de inicio', 'C', 'veta.js'], ['H32', 'Un hallazgo del mapa', 'C', 'veta.js'],
-    ['H33', 'Calendario', 'C', 'veta.js'], ['H34', 'Los 3 temas de hoy', 'D', 'direccion.js'], ['H35', '¿A quién se lo asignas?', 'D', 'direccion.js'], ['H36', 'Cómo habría ido', 'D', 'direccion.js'],
-    ['H37', 'Un aviso puesto', 'D', 'direccion.js'], ['H38', 'Coste por hora', 'D', 'direccion.js'], ['H39', 'Anotar una queja', 'B', 'clientes.js'], ['H40', 'Clientes con dos chats', 'D', 'direccion.js'],
-    ['H41', 'Texto de un parte', 'N', 'comunes.js'], ['H42', '¿Cómo quieres enviarlo?', 'A', 'dia.js']
-  ];
-  VETA.HOJAS = {};
-  H.forEach(([cod, titulo, paq, archivo]) => { VETA.HOJAS[cod.toLowerCase()] = {cod, id: cod.toLowerCase(), titulo, paq, archivo}; });
+  // ---- las hojas: lo que hay definido de verdad (VETA.hojaDef y las tres plantillas), id → código y título ----
+  // La tabla fija de 42 de la ronda 1 se fue: nombraba hojas borradas (H08, H13, H37) y títulos viejos. El título de una hoja que
+  // depende de sus datos sale vacío aquí (lo pone la hoja al abrirse). Las del muestrario (mu-…: página de trabajo, fuera del mapa) no cuentan.
+  Object.defineProperty(VETA, 'HOJAS', {configurable: true, get: () => {
+    const o = {}; Object.keys(VETA.hojaDefs || {}).filter(id => id.indexOf('mu-') !== 0).forEach(id => { const tt = VETA.hojaDefs[id].titulo; o[id] = {cod: id.toUpperCase(), id, titulo: typeof tt === 'string' ? tt : ''}; });
+    return o;
+  }});
 
   // ---- registro ----
   const pantallas = {};
@@ -149,23 +138,6 @@
     d._partes = d.ruta.split('/');
     pantallas[id] = d;
   };
-
-  // la pantalla provisional de cada ruta del mapa
-  const hijos = cod => Object.values(MAPA).filter(m => m.padre === cod);
-  Object.values(MAPA).forEach(m => {
-    if (m.cod === 'E1') return;
-    VETA.pantalla(m.cod, {
-      pendiente: true,
-      titulo: m.tituloCliente ? (p => ((VETA.modelo.cliente(p.id) || {}).nombre || m.titulo)) : m.titulo,
-      pinta: () => {
-        const h = hijos(m.cod);
-        return `<div class="pendiente tarjeta" data-i="0">${UI.etiqueta('a-prueba', m.cod + ' · provisional')}<h2 class="bloque-t">${esc(m.titulo)}</h2>` +
-          `<p class="bloque-sub">Pantalla provisional. La construye el paquete ${esc(m.paq)} en js/pantallas/${esc(m.archivo)}.</p></div>` +
-          (h.length ? UI.bloque({titulo: 'Desde aquí se llega a', i: 1, html: UI.lista(h.map(x => ({titulo: x.titulo, sub: x.cod + ' · #/' + x.ejemplo, ir: x.ejemplo})))}) : '') +
-          (m.cod === 'A1' ? UI.bloque({titulo: 'Del núcleo', i: 2, html: UI.lista([{titulo: 'Muestrario de componentes', sub: '#/muestrario', ir: 'muestrario' }, {titulo: 'Portada', sub: 'E1 · #/portada', ir: 'portada'}])}) : '');
-      }
-    });
-  });
 
   // ---- buscar la pantalla de una ruta ----
   function resuelve(ruta) {
@@ -344,12 +316,9 @@
       `<div class="cab-c"><span class="cab-de">${ant}</span><h1 class="cab-t">${tt}</h1></div>${derecha(e)}</header>`;
   }
   // la línea de apoyo (pieza 15): el subtítulo, primera línea del contenido, y la nota, sobre el botón del pie.
-  // Mientras su carril no la pase a `sub`, la instrucción de paso de antes (`frase` + `fraseCuerpo`) se sigue pintando en ese mismo sitio.
   const subDe = e => {
     const s = seguro(() => val(e.def.sub, e.p), '');
-    if (s) return `<p class="r7-sub" data-i="0">${esc(s)}</p>`;
-    const f = seguro(() => (val(e.def.fraseCuerpo, e.p) ? val(e.def.frase, e.p) : ''), '');
-    return f ? `<p class="pant-frase" data-i="0">${esc(f)}</p>` : '';
+    return s ? `<p class="r7-sub" data-i="0">${esc(s)}</p>` : '';
   };
   const notaDe = e => {
     const n = seguro(() => val(e.def.nota, e.p), '');
@@ -371,7 +340,7 @@
     const fijo = e.def.botonFijo ? e.def.botonFijo(e.p) : '';
     // el pie (80 px; 108 con nota): la nota va dentro, sobre el botón. Sin botón no hay pie ni nota
     col.innerHTML = cabecera(e, modo) + (navigator.onLine === false ? UI.sinRed() : '') +
-      `<div class="desplaza" tabindex="-1"><section class="pant pant-${esc(e.def.cod)}${e.def.pendiente ? ' pant-pendiente' : ''}" data-pant="${esc(e.def.cod)}" aria-label="${esc(titulo(e))}"><div class="pant-cuerpo">${modo === 'lista' ? '' : subDe(e)}${cuerpo}</div></section></div>` +
+      `<div class="desplaza" tabindex="-1"><section class="pant pant-${esc(e.def.cod)}" data-pant="${esc(e.def.cod)}" aria-label="${esc(titulo(e))}"><div class="pant-cuerpo">${modo === 'lista' ? '' : subDe(e)}${cuerpo}</div></section></div>` +
       (fijo ? `<div class="fijo">${notaDe(e)}${fijo}</div>` : '');
     const d = col.querySelector('.desplaza');
     if (o.scroll) d.scrollTop = o.scroll;

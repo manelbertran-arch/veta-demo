@@ -8,7 +8,7 @@
   const esc = VETA.esc, M = VETA.modelo, X = VETA.dir, D = VETA.datos, r7 = VETA.r7;
 
   // ---- en pantalla ----
-  const grupo = (rotulo, html, i) => `<section class="r7-grupo" data-i="${i}"><h2 class="r7-rotulo">${esc(rotulo)}</h2>${html}</section>`;
+  const grupo = (rotulo, html, i) => VETA.r7.grupo(rotulo, html, {i});
   const papel = (rotulo, filas, i) => grupo(rotulo, r7.doc({secciones: [{filas}]}), i);
   const filasDe = pares => pares.map(([nombre, valor]) => ({nombre, valor}));
   const captacion = I => I.captacion.map(([t, n]) => [t === 'Sin responder' ? 'Sin contestar' : t, n]);
@@ -45,7 +45,7 @@
         grupo('Por oficina', r7.doc({secciones: [oficina('Gràcia', [92, 84], [78, 70], 3), oficina('Sant Gervasi', [64, 57], [54, 48], 1)]}), 2) +
         r7.lista(par.map(o => ({nombre: (M.cliente(o.cliente) || {}).nombre || o.texto, pasa: o.texto + ' · ' + o.estadoTexto.replace('Parada · ', '').replace(/ · queja$/, ''), ir: 'operacion/' + o.cliente})),
           {rotulo: 'Lo que está parado · ' + par.length, i: 3}) +
-        grupo('Lo aprendido · 7 cosas', r7.doc({secciones: [{lineas: D.aprendidoSemana}]}), 4) +
+        grupo('Lo aprendido · 7', r7.doc({secciones: [{lineas: D.aprendidoSemana}]}), 4) +
         papel('Decisiones', filasDe([I.decisiones[0], ['Tienes que decidir hoy', decidir]]), 4) +
         enPapel(n, I, par, decidir);
     },

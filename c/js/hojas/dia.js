@@ -131,7 +131,7 @@
   });
 
   // ================= ronda 8 =================
-  const cuantas = n => (n === 1 ? 'Vigilo 1 cosa' : `Vigilo ${n} cosas`);
+  // la opción se llama como la pantalla que abre («Lo que vigilo por ti»), con su número detrás, igual que «Ya lo he cerrado yo · 2»
 
   // ---- r8-hoy · Hoy he hecho yo (Inicio): lo que Veta cerró sola, lo que vigila y lo que ha leído ----
   VETA.hojaAcciones('r8-hoy', {
@@ -139,7 +139,7 @@
     opciones: () => {
       const q = VETA.A.q(), nc = VETA.A.cerradas(q).length, nl = ((M.lectura() || {}).hoy || {}).chats || 0;
       return [nc ? {texto: `Ya lo he cerrado yo · ${nc}`, hoja: 'r8-cerradas'} : null,
-        {texto: cuantas(VETA.A.esperaPend(q).length), ir: 'espera'},
+        {texto: `Lo que vigilo por ti · ${VETA.A.esperaPend(q).length}`, ir: 'espera'},
         {texto: nl === 1 ? 'He leído 1 chat desde ayer' : `He leído ${nl} chats desde ayer`, hoja: 'h04'}].filter(Boolean);
     }
   });
@@ -160,7 +160,7 @@
 
   // ---- r8-mas · «Más» de un documento (acta o informe): todo lo que no es enviar. datos: {que: 'acta' | 'informe', id} ----
   VETA.hojaAcciones('r8-mas', {
-    titulo: 'Más',
+    titulo: d => (d.que === 'acta' ? 'El acta' : 'El informe'),   // como las demás hojas de «Más»: se llama como aquello de lo que va («El resumen», el nombre de la persona)
     opciones: d => (d.que === 'acta' ? VETA.a2.masActa(d.id) : VETA.a2.masInforme(d.id))
   });
 

@@ -7,7 +7,6 @@
   'use strict';
   const esc = VETA.esc, ic = VETA.ic, $ = VETA.$, $$ = VETA.$$, UI = VETA.UI;
   const V = VETA.vivo = {};
-  let nId = 0;
   const vistos = new Set();          // claves de lo que ya se dibujó una vez: la segunda vez sale quieto
 
   // ---- 1 · oro ----
@@ -20,79 +19,12 @@
   };
   V.pastilla = (texto, icono) => `<span class="v-pastilla">${icono ? ic(icono, 16) : ''}${esc(texto)}</span>`;
 
-  // ---- 2 · anillo ----
-  // VETA.vivo.anillo({van: 11, de: 14, tam: 's'|'m'|'l', texto: '11 de 14 casos'}) · VETA.vivo.anillo({veces: 9})
-  V.anillo = o => {
-    const veces = o.veces != null, N = Math.max(1, veces ? o.veces : o.de), van = Math.min(veces ? o.veces : o.van, N), tam = o.tam || 'm';
-    // a tamaño «s» caben como mucho 8 tramos que se lean: si hay más, cada tramo agrupa varias veces (14 veces → 7 tramos)
-    const g = tam === 's' ? Math.ceil(N / 8) : 1, S = Math.ceil(N / g);
-    const seg = N <= 24, L = S * 10, k = Math.round(van / N * L * 100) / 100, hueco = seg && S > 1 ? Math.round((tam === 's' ? 30 : 16) * S) / 100 : 0, id = 'v-m' + (++nId);
-    const c = `cx="18" cy="18" r="15.9155" pathLength="${L}"`;
-    const svg = `<svg viewBox="0 0 36 36" aria-hidden="true">` +
-      (seg ? `<mask id="${id}"><circle ${c} fill="none" stroke="#fff" stroke-width="8" stroke-dasharray="${10 - hueco} ${hueco}" stroke-dashoffset="${-hueco / 2}"/></mask>` : '') +
-      `<g${seg ? ` mask="url(#${id})"` : ''}><circle class="v-an-p" ${c}/><circle class="v-an-o" ${c} stroke-dasharray="${k} ${L + 10}" style="--v-l:${k}"/></g></svg>`;
-    const dentro = tam === 's' ? '' : `<span class="v-an-i"><b class="v-an-n">${van}</b>${tam === 'l' ? `<span class="v-an-de">${veces ? 'veces' : 'de ' + N}</span>` : ''}</span>`;
-    const voz = o.voz || (veces ? van + ' veces' : van + ' de ' + N);
-    return `<span class="v-anillo v-an-${tam}" data-vivo="anillo"><span class="v-an-c" role="img" aria-label="${esc(voz)}">${svg}${dentro}</span>${o.texto ? `<span class="v-an-t">${esc(o.texto)}</span>` : ''}</span>`;
-  };
-
-  // ---- 3 · escalera ----
-  // mini: VETA.vivo.escalera({nivel: 2, desde: 'el 12 nov', mini: true})
-  // completa (de arriba abajo, de «Lo haces tú» a «Lo hago yo»; `nota`: una frase bajo el paso de ahora, sin botón):
-  // VETA.vivo.escalera({nivel: 2, desde: 'el 12 nov', nota: 'Hecho. …', sube: {hechas: 14, corregidas: 1, pregunta: '¿Apunto yo la tarea sin preguntarte?', boton: 'Sí, hazlo tú', accion: 'subir', de: 'r-x'}})
+  // ---- 3 · los cinco pasos de «¿Quién lo hace?» (los lee js/pantallas/regla.js y regla-oficina.js). La escalera dibujada se fue en la ronda 8 ----
   const NIVELES = () => (VETA.datos.c && VETA.datos.c.niveles) || [
     {n: 1, nombre: 'Solo te aviso', texto: 'Te digo que toca. Lo haces tú.'}, {n: 2, nombre: 'Te lo dejo escrito', texto: 'Te dejo el mensaje listo. Tú lo envías.'},
     {n: 3, nombre: 'Lo apunto yo', texto: 'Apunto, marco y guardo yo. No envío nada.'}, {n: 4, nombre: 'Lo hago yo y te lo cuento', texto: 'Lo dejo hecho y te lo cuento.'},
     {n: 5, nombre: 'Lo envío yo', texto: 'Todavía no. Nada se envía sin ti.', cerrado: true}];
   V.niveles = NIVELES;
-  V.escalera = o => {
-    const niv = NIVELES(), n = Math.max(1, Math.min(o.nivel || 1, niv.length)), aqui = niv[n - 1], desde = o.desde ? ' · desde ' + esc(o.desde) : '';
-    if (o.mini) {
-      return `<span class="v-mini"><span class="v-mini-b" role="img" aria-label="Paso ${n} de ${niv.length}">` +
-        niv.map(x => `<i style="--n:${x.n}" class="${x.cerrado ? 'cerrado' : x.n === n ? 'aqui' : x.n < n ? 'on' : ''}"></i>`).join('') + `</span><span>${esc(aqui.enLista || aqui.nombre)}${desde}</span></span>`;
-    }
-    return '<div class="v-esc-c"><p class="v-esc-ext">Lo haces tú</p><ol class="v-esc">' + niv.map(x => {
-      const est = x.cerrado ? 'cerrado' : x.n === n ? 'aqui-p' : x.n < n ? 'hecho' : 'falta';
-      let h = `<li class="v-esc-p v-esc-${est}"><span class="v-esc-nom">${x.cerrado ? ic('candado', 18) : ''}${esc(x.nombre)}</span>`;
-      if (x.n === n) h += `<span class="v-esc-aqui" data-vt="v-aqui" data-muda>Ahora está aquí${desde}</span>`;
-      h += `<span class="v-esc-tx">${esc(x.texto)}</span>`;
-      if (x.n === n && o.nota) h += `<p class="v-esc-nota">${esc(o.nota)}</p>`;
-      const s = o.sube;
-      if (s && x.n === n + 1 && !x.cerrado) {
-        const cuenta = s.hechas != null ? `Lo he hecho ${s.hechas} ${s.hechas === 1 ? 'vez' : 'veces'} y me corregiste ${s.corregidas || 0}. ` : '';
-        h += `<div class="v-esc-sube"><p>${esc(cuenta + (s.pregunta || ''))}</p>${UI.boton({tipo: 'principal', texto: s.boton || 'Sí, hazlo tú', accion: s.accion, de: s.de, hoja: s.hoja, datos: s.datos})}</div>`;
-      }
-      return h + '</li>';
-    }).join('') + '</ol><p class="v-esc-ext">Lo hago yo</p></div>';
-  };
-
-  // ---- 4 · hilo ----
-  // VETA.vivo.hilo([{paso: 'Dijo', texto: '«Si baja de 300.000…»', cuando: 'Pere · 6 nov'}, …], {scroll: true})
-  V.hilo = (nodos, o) => `<ol class="v-hilo" data-vivo="hilo"${o && o.scroll ? ' data-scroll' : ''}>` + (nodos || []).map((n, k) =>
-    `<li class="v-hilo-n" style="--k:${k}"><span class="v-hilo-k">${esc(n.paso)}</span><p class="v-hilo-t">${n.html || esc(n.texto)}</p>${n.cuando ? `<span class="v-hilo-c">${esc(n.cuando)}</span>` : ''}</li>`).join('') + '</ol>';
-
-  // ---- 5 · cuenta ----
-  // `Hoy te tocan ${VETA.vivo.cuenta({de: 9, a: 6})}` · rueda de 9 a 6 al entrar en pantalla (formato: VETA.horas…)
-  const formatos = {};
-  V.cuenta = o => {
-    const f = o.formato || VETA.num; let fk = '';
-    if (o.formato) { fk = 'f' + (++nId); formatos[fk] = o.formato; }
-    return `<span class="v-cuenta" data-vivo="cuenta" data-de="${Number(o.de) || 0}" data-a="${Number(o.a) || 0}"${fk ? ` data-f="${fk}"` : ''}${o.clave ? ` data-clave="${esc(o.clave)}"` : ''}>${esc(f(o.a))}</span>`;
-  };
-
-  // ---- 6 · antes y ahora ----
-  // VETA.vivo.antesAhora({antes: {rotulo: 'El primer día', valor: 46, unidad: 'cosas tuyas por semana', filas: ['…']}, ahora: {rotulo: 'Hoy', valor: 21, …}, semanas: [46, 41, 37, 30, 25, 21]})
-  V.antesAhora = o => {
-    const s = o.semanas || [], max = Math.max.apply(null, s), min = Math.min.apply(null, s), n = s.length;
-    const pts = s.map((v, i) => [n > 1 ? i / (n - 1) * 100 : 50, max === min ? 50 : 8 + (max - v) / (max - min) * 84]);
-    const col = (c, hoy) => `<div class="v-aa-col${hoy ? ' v-aa-hoy' : ''}"><span class="v-aa-r">${esc(c.rotulo)}</span>` +
-      `<b class="v-aa-n">${hoy && o.antes && o.antes.valor != null ? V.cuenta({de: o.antes.valor, a: c.valor}) : esc(VETA.num(c.valor))}</b>` +
-      `<span class="v-aa-u">${esc(c.unidad || '')}</span>${c.filas && c.filas.length ? `<ul class="v-aa-l">${c.filas.map(f => `<li>${esc(f)}</li>`).join('')}</ul>` : ''}</div>`;
-    return `<div class="v-aa" data-vivo="aa"><div class="v-aa-cols">${col(o.antes, false)}${col(o.ahora, true)}</div>` +
-      (n > 1 ? `<div class="v-aa-g" role="img" aria-label="${esc(o.voz || 'De ' + s[0] + ' a ' + s[n - 1] + ' desde que empezamos')}"><svg viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><polyline pathLength="1" points="${pts.map(p => p[0].toFixed(1) + ',' + p[1].toFixed(1)).join(' ')}"/></svg>` +
-        pts.map(p => `<i style="left:${p[0].toFixed(1)}%;top:${p[1].toFixed(1)}%"></i>`).join('') + `</div>` +
-        `<div class="v-aa-ejes"><span>${esc(o.ejeAntes || 'Cuando empezamos · ' + s[0])}</span><span>${esc(o.ejeAhora || 'La semana pasada · ' + s[n - 1])}</span></div>` : '') + '</div>';
-  };
 
   // ---- 7 · escena «Veta lee» ----
   // VETA.vivo.escena() (Marta, con datos del modelo) · VETA.vivo.escena({cosa: 'c-pere', ir: 'hoy', boton: 'Verla en Hoy', clave: 'que-hace'})
@@ -178,16 +110,10 @@
     h.classList.toggle('on', !!on);
   };
 
-  // ---- 9 · paso ----
-  // VETA.vivo.paso(() => { …cambia el modelo…; VETA.repinta(); }) · lo que lleve data-vt="id" viaja a su sitio nuevo
-  // (con data-muda no parpadea: para la fila que se muda de bloque). Sin View Transitions, cambia y ya.
-  V.paso = fn => VETA.mov.transiciona(() => { fn(); return null; }, 'cambia');
-
   // ---- despertar ----
   function enciende(el) {
     const t = el.dataset.vivo;
     if (t === 'escena') { juega(el); return; }
-    if (t === 'cuenta') VETA.rueda(el, Number(el.dataset.a), el.dataset.f ? {formato: formatos[el.dataset.f]} : null);
     if (t === 'pulso') late(el);
     el.classList.remove('v-antes');
     if (el.dataset.clave) vistos.add(el.dataset.clave);
@@ -202,12 +128,10 @@
       if (red || (el.dataset.clave && vistos.has(el.dataset.clave))) return;      // estado final, sin movimiento
       const t = el.dataset.vivo;
       if (t === 'escena') prepara(el);
-      else if (t === 'cuenta') { const f = el.dataset.f ? formatos[el.dataset.f] : VETA.num, a = f(Number(el.dataset.de)); el.dataset.rueda = a; el.textContent = a; }
       else if (t !== 'pulso') el.classList.add('v-antes');
       if (io) io.observe(el); else requestAnimationFrame(() => enciende(el));
     });
   };
-  V.olvida = clave => { if (clave) vistos.delete(clave); else vistos.clear(); };
   if ('MutationObserver' in window) {
     let pendiente = false;
     new MutationObserver(() => { if (pendiente) return; pendiente = true; Promise.resolve().then(() => { pendiente = false; V.despierta(); }); })

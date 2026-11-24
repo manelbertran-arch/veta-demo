@@ -1,7 +1,7 @@
 /* Veta demo · ronda 8 · pantallas · regla-oficina.js · carril D
    G2b · Un trabajo para la oficina · #/regla-oficina/<id> — dossier (propuesta), mismo-dia (a prueba) y actas (en marcha).
    Una tarjeta de Veta (la propuesta) y una lista de datos: quién lo hace («Paso 1 de 5», en texto), cómo va la prueba y desde cuándo.
-   Pie: propuesta → par «Otra cosa…» / «Pruébalo» y la nota; tras la prueba → «Extenderla a todo el equipo» → confirmación
+   Pie: propuesta → «Pruébalo» y la nota (lo demás, en «Más», como en un asunto); tras la prueba → «Extenderla a todo el equipo» → confirmación
    (a quién, qué cambia, desde cuándo) → «En marcha · la usa todo el equipo · Deshacer». Ya en marcha, pregunta si da un paso más. */
 (function () {
   'use strict';
@@ -34,12 +34,16 @@
     VETA.aviso('Hecho: lo hago yo y os lo cuento después.', {deshacer: () => { const u = X.lee('nivelOf', {}); delete u[id]; X.guarda('nivelOf', u); VETA.repinta(); }, ensena: 'Vale. Sigo pidiendo permiso cada vez.'});
   };
   VETA.d1.subeRegla = sube;   // lo llama la hoja «Más» (d-regla-mas)
+  // la fase de un trabajo de la oficina, para «Cómo trabajamos» (G10): la misma práctica no puede decir dos cosas. null si no tiene pantalla aquí
+  VETA.d1.faseRegla = id => ((VETA.datos.reglasOficina || {})[id] ? fase(id) : null);
 
   VETA.pantalla('G2b', {
     titulo: p => R(p.id).corto || R(p.id).titulo,
     sub: p => confirmando === p.id ? 'Vas a extenderlo a todo el equipo.' : '',
     nota: p => confirmando !== p.id && fase(p.id).f === 'propuesta' ? 'Dos semanas de prueba, sin que salga nada.' : '',
-    mas: p => { const e = fase(p.id); return confirmando !== p.id && puedeSubir(p.id, e) && extiende(p.id, e) ? {hoja: 'd-regla-mas', datos: {regla: p.id}} : null; },
+    // «Más»: en la propuesta, lo que no es probarla (descartarla, para luego…), como en un asunto; en marcha y con el pie ocupado, dejar de pedir permiso
+    mas: p => { const e = fase(p.id); if (confirmando === p.id) return null;
+      return e.f === 'propuesta' ? {hoja: 'd-regla-otra', datos: {regla: p.id}} : puedeSubir(p.id, e) && extiende(p.id, e) ? {hoja: 'd-regla-mas', datos: {regla: p.id}} : null; },
     casoDictado: p => ({de: 'regla-' + p.id, titulo: R(p.id).titulo, texto: R(p.id).frase}),
     pinta: p => {
       const r = R(p.id), e = fase(p.id);
@@ -59,14 +63,14 @@
       else if (e.f === 'a-prueba') { const dia = r.dia || 1; filas.push({nombre: `A prueba · día ${dia} de 14`,
         pasa: dia >= 9 ? 'Hasta hoy, el equipo lo habría dejado igual en 9 de cada 10 casos.' : 'Hasta el 7 de diciembre. Al acabar, te pregunto si se queda.'}); }
       else if (e.f === 'en-marcha') filas.push({nombre: 'En marcha', pasa: e.propio ? 'La usa todo el equipo' : 'La usan ' + (r.usan || '4 de 6') + ' personas del equipo'});
-      filas.push({nombre: 'Desde que empezamos', pasa: r.desde.replace(/ desde que empezamos\.$/, '.')});
+      filas.push({nombre: 'Desde que empezamos', pasa: r.desde.replace(/( desde que empezamos)?\.$/, '')});
       h += r7.lista(filas, {i: 2});
       return h;
     },
     botonFijo: p => {
       const e = fase(p.id);
       if (confirmando === p.id) return r7.botones({texto: 'Sí, extenderla', accion: 'extender'}, {texto: 'Cancelar', accion: 'cancelar'});
-      if (e.f === 'propuesta') return r7.botones({texto: 'Pruébalo', accion: 'probar'}, {texto: 'Otra cosa…', hoja: 'd-regla-otra', datos: {regla: p.id}});
+      if (e.f === 'propuesta') return r7.botones({texto: 'Pruébalo', accion: 'probar'});
       if (extiende(p.id, e)) return r7.botones({texto: 'Extenderla a todo el equipo', accion: 'confirmar'});
       if (puedeSubir(p.id, e)) return r7.botones({texto: 'Sí, hazlo tú', accion: 'subir-of'});
       return '';

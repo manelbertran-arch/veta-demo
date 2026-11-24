@@ -1,7 +1,7 @@
 /* Veta demo · ronda 8 · pantallas · acta.js · carril A
    A4 · Acta de la visita · #/acta/<id de la visita> (elena, casals, toni, sergi-font). Documento a pantalla completa (PLAN_R8.md, 8.1):
    un papel (foto, datos, la impresión en una frase, lo que le gustó, lo que no y qué toca ahora), «Más» arriba y un botón abajo.
-   · Pie: «Enviar el acta» (abre «¿Cómo lo envías?»), con su nota. Enviada o guardada: «Siguiente: informe para Pere ›» o «Hecho. Ir a Visitas ›».
+   · Pie: «Enviar el acta» (abre «¿Cómo lo envías?»), con su nota. Enviada o guardada: «Siguiente: informe para Pere» (sin flecha: ningún botón la lleva).
    · «Más»: Editar · Seguir dictando · Contarlo otra vez · Guardar para mí · Ver de dónde sale.
    · Al enviarla o guardarla se cierra su cosa del día (c-elena) y con eso queda apuntada la llamada (modelo.js): lo dice la línea
      «Apuntado: … · en tu calendario», con «Deshacer». */
@@ -65,7 +65,7 @@
       if (!d.estado) return r7.botones(enviar);
       if (A2().viejo(d)) return '';   // un acta de antes: se enseña como quedó
       // el camino recto: lo que sigue va en negro
-      if (A2().falta(v.id) === 'informe') return r7.botones({texto: 'Siguiente: informe para ' + A2().corto(v.propietario) + ' ›', accion: 'sigue'});
+      if (A2().falta(v.id) === 'informe') return r7.botones({texto: 'Siguiente: informe para ' + A2().corto(v.propietario), accion: 'sigue'});
       const fin = A2().fin();
       return d.estado === 'enviada' ? (fin ? r7.botones(fin) : '') : r7.botones(enviar);
     },
