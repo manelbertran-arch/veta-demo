@@ -1,0 +1,11 @@
+/* Veta demo · ronda 8 · css/r7-d2.css · carril D · Una operación (G18)
+   Solo variables de temas.css. Las piezas comunes (fila, lista, tarjeta, botones) están en css/r7.css. */
+
+/* «Qué toca ahora»: la pastilla roja y, a su lado, desde cuándo */
+.d2-toca-q{display:flex;align-items:center;gap:var(--e2);flex-wrap:wrap;margin-top:var(--e2);color:var(--t2);font:500 var(--f-apoyo)/var(--l-fila) var(--body)}
+/* dentro de los plegables: lo último (una línea por cosa) y los cinco pasos en una línea, con el de ahora en negro */
+.d2-hitos{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:var(--e1)}
+.d2-hitos b{color:var(--t1);font-weight:700}
+.d2-pasos{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:var(--e1) var(--e2)}
+.d2-pasos li+li::before{content:'›';margin-right:var(--e2);color:var(--t3)}
+.d2-pasos .d2-aqui{color:var(--t1);font-weight:700}

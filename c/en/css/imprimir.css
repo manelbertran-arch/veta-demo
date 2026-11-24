@@ -1,0 +1,27 @@
+/* Veta demo · ronda 8 · css · imprimir.css · carril D (Dirección)
+   Estilos de impresión del informe completo (G8) y del resumen (G3b). Se enlaza con media="print".
+   Solo sale la pantalla que se imprime: sin barras, cabeceras, botones ni la lista de la izquierda.
+   Del informe sale su versión en papel (.d-papel: tablas de verdad, todo seguido), no los bloques de pantalla. */
+@page{size:A4;margin:16mm 14mm}
+html,body{background:#fff!important;color:#000!important;height:auto!important;overflow:visible!important}
+.lateral,#lateral,#barra,.barra,#aviso,#velo,#hoja,.reloj,.cab,.fijo,.sinred{display:none!important}
+.app,.marco,#marco,.col,.desplaza{display:block!important;position:static!important;height:auto!important;max-height:none!important;overflow:visible!important;width:auto!important;box-shadow:none!important;border:0!important;background:none!important}
+.col:not(:has(.pant-G8,.pant-G3b)){display:none!important}
+.pant{max-width:none!important;padding:0!important;margin:0!important}
+.pant *{animation:none!important;transition:none!important;box-shadow:none!important}
+.pant-G8 .pant-cuerpo{display:block!important}
+.pant-G8 .pant-cuerpo>:not(.d-papel){display:none!important}
+.pant-G8 .d-papel{display:block!important}
+.pant-G8 .d-papel>*{margin:0 0 6mm}
+.pie{font-size:10pt;color:#333!important}
+.d-inf-dos{display:grid!important;grid-template-columns:1fr 1fr;gap:6mm}
+.d-tabla,.d-pares,.d-inf-l{width:100%;border:0.4pt solid #888!important;border-radius:0!important;background:none!important;font-size:10.5pt;break-inside:avoid}
+.d-tabla thead th{background:#eee!important;color:#000!important}
+.d-tabla th,.d-tabla td{padding:2mm 3mm!important;border-top:0.4pt solid #bbb}
+.d-tabla td,.d-pares dd{font-size:10.5pt!important}
+.d-pares>div{padding:2mm 3mm!important;border-top:0.4pt solid #bbb!important}
+.d-inf-l{padding:3mm 3mm 3mm 8mm!important}
+.d-inf-s{break-inside:avoid}
+.d-inf-h{font-size:11pt;margin:0 0 2mm;color:#000}
+/* el resumen para el equipo: el papel, sin aro */
+.pant-G3b .r7-doc{background:none!important}

@@ -1,0 +1,9 @@
+/* Veta demo · ronda 8 · css/r7-a1.css · carril A · una cosa de hoy (#/toca/:id). Todo lo demás son piezas de css/r7.css. */
+.a1-toca{display:flex;flex-direction:column;gap:var(--e3)}
+.a1-msg{white-space:pre-line}
+.a1-aviso{font-weight:700}
+/* lo que cambiaste de mi mensaje: lo quitado, tachado (lo nuevo va en oro: .v-oro, de vivo.css) */
+.a1-toca s,.a-r6-quita{color:var(--t3);text-decoration:line-through;text-decoration-thickness:1.5px}
+
+/* «lo primero» de Inicio se abre también tocando la tarjeta entera */
+.r7-primero[data-ir]{cursor:pointer;-webkit-tap-highlight-color:transparent}

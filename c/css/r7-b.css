@@ -1,0 +1,11 @@
+/* Veta demo · ronda 8 · css/r7-b.css · B (Clientes). Las piezas son las del núcleo (r7.css): aquí solo va lo que no es una pieza.
+   Solo variables de temas.css y base.css. */
+
+/* A5 · lo de debajo del buscador (se repinta al buscar). La fila de filtros se esconde mientras se busca ([hidden]) */
+.rb-zona{display:flex;flex-direction:column;gap:var(--e3)}
+
+/* H11 · el teléfono, arriba, a 20 px */
+.hoja-x.rb-tel{font:700 var(--f-hoja)/var(--l-tit) var(--body);font-variant-numeric:tabular-nums}
+
+/* A5 · un respiro entre lo que filtra (buscador y filtros) y la lista */
+.pant-A5 .rb-filtros{margin-bottom:var(--e3)}

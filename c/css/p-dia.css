@@ -1,0 +1,40 @@
+/* Veta demo · ronda 8 · css/p-dia.css · carril A · las hojas del día (js/hojas/dia.js) y la caja de «Cambiar el mensaje» (mensaje.js).
+   Solo variables de base.css y temas.css. Letra de 15, 17 o 20 px; pesos 500 y 700. */
+
+/* ---- «Cambiar el mensaje»: la caja crece con el texto; lo nuevo de Veta, subrayado en oro debajo de las letras ---- */
+.a-msg .campo-caja{position:relative}
+.a-msg .campo-i{position:relative;min-height:120px;resize:none;overflow:hidden;font-size:var(--f-cuerpo);line-height:var(--l-lee)}
+.a-msg-oro{position:absolute;color:transparent;white-space:pre-wrap;overflow-wrap:break-word;pointer-events:none;box-sizing:border-box}
+
+/* ---- hojas: Lo que enviaste, Lo que he leído, Lo que dijiste ---- */
+.a-h-sec{display:flex;flex-direction:column;gap:var(--e1)}
+.a-h-txt{font:500 var(--f-cuerpo)/var(--l-lee) var(--body)}
+.a-h-gris{display:flex;gap:var(--e2);align-items:flex-start;font:500 var(--f-apoyo)/var(--l-fila) var(--body);color:var(--t2)}
+.a-h-gris svg{flex:none;margin-top:1px}
+.a-h-marca{font-variant-numeric:tabular-nums}
+.a-h-aun{color:var(--t2)}
+.a-canales{display:flex;flex-direction:column;margin:0;padding:0 var(--e4);list-style:none;border:1px solid var(--borde);border-radius:var(--r-2)}
+.a-canales li{display:flex;align-items:center;gap:var(--e3);min-height:var(--toque)}
+.a-canales li+li{border-top:1px solid var(--borde)}
+.a-verde{width:8px;height:8px;border-radius:50%;background:var(--opo-t);flex:none}
+.a-can-n{flex:1;min-width:0;font:700 var(--f-apoyo)/var(--l-fila) var(--body)}
+.a-can-h{flex:none;font:500 var(--f-apoyo)/var(--l-fila) var(--body);color:var(--t3)}
+.a-h-lista{display:flex;flex-direction:column;gap:var(--e1);margin:0;padding:0;list-style:none}
+.a-h-lista li{font:500 var(--f-cuerpo)/var(--l-lee) var(--body)}
+.a-h-dijo{margin:0;padding-left:var(--e4);border-left:2px solid var(--veta);font:500 var(--f-cuerpo)/var(--l-lee) var(--body)}
+
+/* ---- hojas: Lo que has hecho hoy y Ya lo he cerrado yo (una línea por cosa, con su «Deshacer») ---- */
+.a-h-hechas{display:flex;flex-direction:column;border:1px solid var(--borde);border-radius:var(--r-2)}
+.a-hl{display:flex;align-items:center;gap:var(--e1);padding:0 var(--e1) 0 var(--e4);min-height:var(--fila-1)}
+.a-hl+.a-hl{border-top:1px solid var(--borde)}
+.a-hl-a{flex:1;min-width:0;min-height:var(--toque);display:flex;align-items:center;gap:var(--e3);padding:var(--e2) 0;text-align:left;color:var(--t1)}
+.a-hl .btn-texto{flex:none}
+.a-dia-h{flex:none;width:44px;font:500 var(--f-apoyo)/var(--l-fila) var(--body);color:var(--t3);font-variant-numeric:tabular-nums}
+.a-dia-t{min-width:0;font:500 var(--f-apoyo)/var(--l-fila) var(--body);color:var(--t1)}
+.a-dia-t b{font-weight:700}
+
+/* ---- hoja: Día cerrado (tres recuentos, a letra de título de hoja) ---- */
+.a-h-cifras{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--e2)}
+.a-h-cifras div{display:flex;flex-direction:column;gap:var(--e1);padding:var(--e3);border-radius:var(--r-2);background:var(--s2)}
+.a-h-cifras b{font:700 var(--f-hoja)/1 var(--display);font-variant-numeric:tabular-nums}
+.a-h-cifras span{font:500 var(--f-apoyo)/var(--l-fila) var(--body);color:var(--t2)}

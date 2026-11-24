@@ -1,0 +1,74 @@
+/* Veta demo · ronda 8 · css · p-direccion.css · carril D (Dirección)
+   Lo poco que las pantallas y hojas de dirección pintan fuera del juego de piezas (css/r7.css):
+   el dibujo del traspaso de cartera (G5b), el informe en papel (G8, solo al imprimir) y dos hojas (temas y coste).
+   Solo variables (temas.css, base.css): ningún color a mano. Pesos 500 y 700. */
+
+/* ---------- G5b · Pasar sus clientes: qué cambia y cuánto ---------- */
+.d-confirma{display:flex;flex-direction:column;background:var(--s1);border-radius:var(--r-3);box-shadow:var(--somb),inset 0 0 0 1px var(--borde);overflow:hidden}
+.d-confirma>div{display:flex;flex-direction:column;gap:var(--e1);padding:var(--e4)}
+.d-confirma>div+div{box-shadow:inset 0 1px 0 var(--borde)}
+.d-confirma dt{font:700 var(--f-apoyo)/1.2 var(--body);color:var(--t3)}
+.d-confirma dd{margin:0;font:500 var(--f-cuerpo)/var(--l-lee) var(--body);color:var(--t1)}
+@media (max-width:899px){.d-confirma .d-solo-ancho{display:none}}
+
+/* el dibujo: de Teresa a quien los recibe, con el número que viaja */
+.d-traspaso{display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:var(--e3);padding:var(--e5) var(--e4);background:var(--s1);border-radius:var(--r-3);box-shadow:var(--somb),inset 0 0 0 1px var(--borde)}
+.d-tr-p{display:flex;flex-direction:column;align-items:center;gap:var(--e2);min-width:72px}
+.d-tr-p b{font:700 var(--f-apoyo)/1.2 var(--body);text-align:center}
+.d-tr-avs{display:flex}
+.d-tr-dos .d-tr-avs .av+.av{margin-left:-16px;box-shadow:0 0 0 2px var(--s1)}
+.d-tr-via{position:relative;height:40px;display:flex;align-items:center;justify-content:center}
+.d-tr-linea{position:absolute;left:0;right:0;top:50%;height:2px;margin-top:-1px;border-radius:2px;background:var(--top-acento);transform-origin:left center}
+.d-tr-linea::after{content:"";position:absolute;right:-1px;top:-5px;width:12px;height:12px;border-top:2px solid var(--top-acento);border-right:2px solid var(--top-acento);transform:rotate(45deg)}
+/* el número, sobre la línea: un dato, no una pastilla (solo hay pastillas rojas) */
+.d-tr-n{position:relative;padding:0 var(--e2);background:var(--s1);color:var(--t1);font:700 var(--f-cuerpo)/1.4 var(--body);font-variant-numeric:tabular-nums}
+
+/* ---------- G8 · el informe en papel: solo se ve al imprimir (css/imprimir.css) ---------- */
+.d-papel{display:none}
+.d-tabla{width:100%;border-collapse:separate;border-spacing:0;font:500 var(--f-apoyo)/1.35 var(--body)}
+.d-tabla th,.d-tabla td{padding:var(--e3) var(--e4);text-align:left;vertical-align:top}
+.d-tabla thead th{font-weight:700}
+.d-tabla td{font:700 var(--f-cuerpo)/1.3 var(--body);font-variant-numeric:tabular-nums;text-align:right;white-space:nowrap}
+.d-tabla thead th:not(:first-child){text-align:right}
+.d-tabla td span,.d-tabla th span{display:block;font:500 var(--f-apoyo)/1.3 var(--body);color:var(--t3)}
+.d-tabla tbody th{font-weight:500}
+.d-tabla-8 td{min-width:84px}
+.d-inf-s{display:flex;flex-direction:column;gap:var(--e2)}
+.d-inf-h{font:700 var(--f-apoyo)/1.2 var(--body);margin-top:var(--e2)}
+.d-pares{display:flex;flex-direction:column}
+.d-pares>div{display:flex;align-items:baseline;justify-content:space-between;gap:var(--e3);padding:var(--e3) var(--e4)}
+.d-pares dt{font:500 var(--f-apoyo)/1.35 var(--body);color:var(--t2)}
+.d-pares dd{margin:0;font:700 var(--f-cuerpo)/1.2 var(--body);font-variant-numeric:tabular-nums;text-align:right}
+.d-inf-l{display:flex;flex-direction:column;gap:var(--e2);padding:var(--e4) var(--e4) var(--e4) var(--e6);font:500 var(--f-cuerpo)/1.4 var(--body)}
+
+/* ---------- hojas ---------- */
+/* d-tema: la cifra del tema */
+.d-dato{font:500 var(--f-cuerpo)/1.4 var(--body);color:var(--t2)}
+.d-dato b{font:700 var(--f-hoja)/1 var(--display);color:var(--t1);font-variant-numeric:tabular-nums;margin-right:var(--e1)}
+/* h34: elegir hasta tres temas */
+.d-tema-op{gap:var(--e3)}
+.d-tema-n{flex:none;font:700 var(--f-cuerpo)/1 var(--body);font-variant-numeric:tabular-nums;color:var(--t2)}
+.d-tema-op[aria-disabled=true]{opacity:.45}
+.d-tema-op[aria-checked=true]{background:var(--tinte)}
+.d-tema-op[aria-checked=true] .d-tema-n{color:var(--t1)}
+.d-temas-h,.d-temas-h+.d-cuenta{margin-bottom:var(--e3)}
+.d-cuenta{font:500 var(--f-apoyo)/1.3 var(--body);color:var(--t2);text-align:center}
+/* h38: coste por hora */
+.d-coste-caja{display:flex;align-items:center}
+.d-coste-caja .campo-i{font:700 var(--f-hoja)/1.2 var(--display)}
+.d-coste-u{flex:none;padding:0 var(--e4);font:700 var(--f-hoja)/1 var(--display);color:var(--t2)}
+#hoja .lista{margin-bottom:var(--e3)}
+
+/* ---------- movimiento propio (apagado con «Reducir movimiento») ---------- */
+@keyframes d-crece-x{from{transform:scaleX(0)}}
+@keyframes d-viaja{from{transform:translateX(-90px) scale(.8);opacity:0}60%{opacity:1}}
+@keyframes d-llega{0%,55%{transform:scale(.86);opacity:.4}100%{transform:none;opacity:1}}
+html:not([data-mov=reducido]) .d-tr-linea{animation:d-crece-x var(--t-largo) var(--c-entra) both;animation-delay:var(--t-corto)}
+html:not([data-mov=reducido]) .d-tr-n{animation:d-viaja calc(2 * var(--t-largo)) var(--c-entra) both;animation-delay:var(--t-corto)}
+html:not([data-mov=reducido]) .d-tr-p:last-child{animation:d-llega calc(2 * var(--t-largo)) var(--c-muelle) both;animation-delay:var(--t-corto)}
+
+/* ---------- ordenador (900 px o más) ---------- */
+@media (min-width:900px){
+  .d-traspaso{padding:var(--e6)}
+  .col-panel .pant-G2 .pant-cuerpo,.col-panel .pant-G2b .pant-cuerpo{max-width:640px}
+}

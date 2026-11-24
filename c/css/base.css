@@ -1,0 +1,128 @@
+/* Veta demo · núcleo · base.css
+   Letras, variables (5.1), armazón de móvil y reglas de ergonomía (5.2). Los colores salen de temas.css
+   (12 paletas × 2 modos, copiado de la demo antigua); aquí solo se definen sombras y velos como variables. */
+@font-face{font-family:"Clash";src:url("../fonts/ClashDisplay-Variable.woff2") format("woff2");font-weight:200 700;font-display:swap}
+@font-face{font-family:"Satoshi";src:url("../fonts/Satoshi-Variable.woff2") format("woff2");font-weight:300 900;font-display:swap}
+/* el espacio de Clash mide .14 em y con el tracking negativo las palabras se juntan («¿Loenviaste?»): en toda letra de títulos
+   el espacio sale de Satoshi (.265 em). Arreglo de raíz para todo lo que usa var(--display); no hace falta word-spacing. */
+@font-face{font-family:"Hueco";src:url("../fonts/Satoshi-Variable.woff2") format("woff2");font-weight:300 900;font-display:swap;unicode-range:U+0020}
+@font-face{font-family:"Signos";src:local("Helvetica Neue"),local("Helvetica"),local("Arial"),local("Roboto");unicode-range:U+00A1,U+00BF}
+
+:root{
+  --display:"Signos","Hueco","Clash","Satoshi",system-ui,sans-serif;
+  --body:"Signos","Satoshi",system-ui,sans-serif;
+  /* cinco tamaños y ni uno más */
+  --f-apoyo:.9375rem; --f-cuerpo:1.0625rem; --f-hoja:1.25rem; --f-titulo:1.75rem; --f-cifra:2.5rem;
+  /* espacio, rejilla de 4 */
+  --e1:4px; --e2:8px; --e3:12px; --e4:16px; --e5:24px; --e6:32px; --e7:48px; --margen:16px;
+  /* ronda 8 · dos radios: 12 (botón, campo, foto) y 20 (tarjeta, lista, documento, hoja); más píldora y círculo */
+  --r-1:12px; --r-2:12px; --r-btn:12px; --r-3:20px; --r-4:20px; --r-pill:999px;
+  --banda:56px; --cab:56px; --cab-det:60px; --tab-h:64px; --btn:56px; --btn-2:48px; --toque:48px; --fila:72px; --fila-1:56px; --pie:80px;
+  /* tres interlineados: titulares, filas y apoyo, lectura */
+  --l-tit:1.1; --l-fila:1.3; --l-lee:1.45;
+  --mic:58px; --mic-sube:26px; --col-max:560px;
+  /* movimiento (5.4) */
+  /* ronda 8 · nada de lo que se usa a diario pasa de 300 ms: la duración larga baja de 400 a 300 */
+  --t-toque:100ms; --t-corto:200ms; --t-medio:300ms; --t-largo:300ms; --t-paso:40ms;
+  --c-estandar:cubic-bezier(.2,0,0,1); --c-entra:cubic-bezier(.05,.7,.1,1); --c-sale:cubic-bezier(.4,0,1,1);
+  --c-muelle:cubic-bezier(.16,1,.3,1);
+  /* sombras y velos (no son colores de paleta) */
+  --velo:rgba(17,17,16,.4);
+  --sombra-banda:0 8px 18px -12px rgba(0,0,0,.55);
+  --sombra-mic:inset 0 0 0 1px var(--mic-borde,transparent),0 0 0 5px var(--tab-b),0 10px 22px -8px rgba(0,0,0,.45);
+  --brillo:rgba(255,255,255,.45);
+  --rojo-b:var(--urg-t); --rojo-t:var(--urg-b);
+}
+@supports (transition-timing-function:linear(0,1)){:root{
+  --c-muelle:linear(0,.016,.056,.111,.177,.247,.318,.388,.455,.518,.576,.63,.678,.721,.76,.794,.824,.85,.873,.893,.909,.924,.936,.947,.956,.964,.97,.975,.98,.983,.987,.989,.991,.993,.994,.996,.997,.997,.998,.998,1);
+}}
+html[data-modo=oscuro]{--brillo:rgba(255,255,255,.07)}
+
+/* ---- base ---- */
+*,*::before,*::after{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%;background:var(--fondo)}
+html,body{height:100%;margin:0}
+body{background:var(--fondo);color:var(--t1);font:500 var(--f-cuerpo)/1.4 var(--body);overflow:hidden;-webkit-font-smoothing:antialiased;-webkit-tap-highlight-color:transparent}
+h1,h2,h3,p,ul,ol{margin:0}
+ul,ol{padding:0;list-style:none}
+button{font:inherit;color:inherit;background:none;border:0;padding:0;margin:0;cursor:pointer;text-align:inherit;-webkit-appearance:none;appearance:none}
+button:disabled{cursor:default;opacity:.5}
+img{display:block;max-width:100%}
+input,textarea{font:500 var(--f-cuerpo)/1.4 var(--body);color:var(--t1)}
+:focus{outline:none}
+:focus-visible{outline:2px solid var(--acento);outline-offset:2px}
+.desplaza:focus-visible{outline:none}
+.solo-lector{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+[hidden]{display:none!important}
+.ic{flex:none;display:block}
+mark{background:var(--tinte);color:inherit;border-radius:4px;padding:0 2px}
+
+/* ---- armazón de móvil ---- */
+.app{position:fixed;inset:0;display:flex;flex-direction:column;background:var(--fondo);overflow:hidden}
+.reloj{flex:none;height:env(safe-area-inset-top,0px);background:var(--top-b)}
+.lateral{display:none}
+.marco{flex:1;min-height:0;display:flex;position:relative}
+.col{flex:1;min-width:0;min-height:0;display:flex;flex-direction:column;background:var(--fondo);position:relative;timeline-scope:--desp}
+#col-b:empty{display:none}
+.desplaza{flex:1;min-height:0;overflow-y:auto;overflow-x:hidden;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;scroll-timeline:--desp block}
+.pant{width:100%;max-width:calc(var(--col-max) + 2*var(--margen));margin:0 auto;padding:var(--e4) var(--margen) var(--e6)}
+.pant-cuerpo{display:flex;flex-direction:column;gap:var(--e3)}
+.app[data-completa=si] .barra{display:none}
+
+/* ---- cabeceras (ronda 8 · pieza 1): raíz de 56 sin «volver», detalle de 60 con el nombre de donde vienes sobre el título ---- */
+.cab{flex:none;min-height:var(--cab);display:flex;align-items:center;gap:var(--e3);padding:0 var(--margen);position:relative;z-index:3;background:var(--fondo)}
+.cab-t{min-width:0;font:700 var(--f-hoja)/var(--l-tit) var(--display);letter-spacing:-.01em}
+.cab-raiz{justify-content:space-between}
+.cab-raiz .cab-t,.cab-lista .cab-t{font-size:var(--f-titulo);letter-spacing:-.02em}
+.cab-det{min-height:var(--cab-det);display:grid;grid-template-columns:44px minmax(0,1fr) auto;gap:0;padding:0 var(--e2) 0 var(--e1)}
+.cab-atras{width:44px;height:44px;display:grid;place-items:center;border-radius:50%;color:var(--t1)}
+.cab-c{min-width:0;display:flex;flex-direction:column;gap:2px;padding:var(--e2) 0}
+.cab-de{color:var(--t3);font:500 var(--f-apoyo)/1.2 var(--body);white-space:nowrap;overflow:hidden}
+/* arriba a la derecha, una cosa o ninguna: la cara, el teléfono, «Más», «Saltar», los puntos de paso o «Imprimir» */
+.cab-der{flex:none;justify-self:end;display:flex;align-items:center;gap:var(--e1)}
+.cab-b{min-width:44px;height:44px;display:grid;place-items:center;border-radius:var(--r-pill);color:var(--t1)}
+.cab-b-t{padding:0 var(--e2);font:700 var(--f-cuerpo)/1 var(--body)}
+.cab-raiz .cab-der{margin-right:calc(-1*var(--e2))}
+.cab-puntos{display:flex;align-items:center;gap:6px;height:44px;padding:0 var(--e2)}
+.cab-puntos i{display:block;width:8px;height:8px;border-radius:50%;background:var(--s2);box-shadow:inset 0 0 0 1px var(--borde)}
+.cab-puntos i.on{background:var(--t1);box-shadow:none}
+.cab-lista{min-height:0;padding:var(--e5) var(--margen) var(--e2)}
+
+/* ---- el pie (pieza 7 y 15): 80 px con un botón o un par; 108 con la nota encima. El contenido se funde 24 px antes, siempre ---- */
+.fijo{flex:none;position:relative;z-index:2;background:var(--fondo);padding:var(--e3) var(--margen);display:flex;flex-direction:column;gap:var(--e2);align-items:center}
+.fijo::before{content:"";position:absolute;left:0;right:0;top:-24px;height:24px;pointer-events:none;background:linear-gradient(to bottom,color-mix(in srgb,var(--fondo) 0%,transparent),var(--fondo))}
+.fijo>*{width:100%;max-width:var(--col-max)}
+.app[data-vista=movil]:not([data-completa=si]) .col-movil .pant{padding-bottom:var(--e6)}
+/* a pantalla completa (documentos, Dictar) no hay barra: el pie guarda la zona segura del iPhone */
+.app[data-completa=si] .fijo{padding-bottom:calc(var(--e3) + env(safe-area-inset-bottom,0px))}
+
+/* ---- barra de abajo (pieza 2): 64 px, cuatro sitios y el micro en el centro. Sin número: un punto de 8 px en Inicio ---- */
+.barra{flex:none;position:relative;z-index:4;height:calc(var(--tab-h) + env(safe-area-inset-bottom,0px));padding:0 var(--e2) env(safe-area-inset-bottom,0px);background:var(--tab-b);border-top:1px solid var(--borde)}
+.tabs{height:var(--tab-h);display:grid;grid-template-columns:1fr 1fr 64px 1fr 1fr;min-width:0}
+.tabs[data-papel=direccion]{grid-template-columns:1fr 1fr 56px 1.3fr .8fr}
+.tab{position:relative;min-width:0;height:var(--tab-h);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:var(--e1);color:var(--t3);font:500 var(--f-apoyo)/var(--l-tit) var(--body)}
+.tab.on{color:var(--tab-on,var(--t1));font-weight:700}
+.tab-ic{position:relative}
+.tab-p{white-space:nowrap}
+.tab-punto{position:absolute;top:-2px;right:-6px;width:8px;height:8px;border-radius:50%;background:var(--t1);box-shadow:0 0 0 2px var(--tab-b)}
+.tab-mic{align-self:center;justify-self:center;width:var(--btn);height:var(--btn);display:grid;place-items:center;border-radius:50%}
+.tab-mic-c{width:48px;height:48px;display:grid;place-items:center;border-radius:50%;background:var(--t1);color:var(--top-acento)}
+.tab-mic.on .tab-mic-c{box-shadow:0 0 0 2px var(--tab-b),0 0 0 3.5px var(--top-acento)}
+/* el micro del menú de ordenador */
+.mic-c{width:44px;height:44px;border-radius:50%;display:grid;place-items:center;background:var(--mic-b);color:var(--top-acento)}
+
+/* ---- capas: velo, hoja, aviso ---- */
+.velo{position:fixed;inset:0;z-index:20;background:var(--velo);opacity:0}
+.velo.on{opacity:1}
+.hoja{position:fixed;left:0;right:0;bottom:0;z-index:21;max-height:86dvh;overflow-y:auto;overscroll-behavior:contain;background:var(--s1);color:var(--t1);border-radius:var(--r-4) var(--r-4) 0 0;padding:0 var(--margen) calc(var(--e6) + env(safe-area-inset-bottom,0px));box-shadow:var(--flota);transform:translateY(105%)}
+.hoja.on{transform:none}
+.hoja>*{max-width:var(--col-max);margin-left:auto;margin-right:auto}
+.aviso{position:fixed;left:var(--margen);right:var(--margen);bottom:var(--aviso-b,104px);z-index:30;margin:0 auto;max-width:var(--col-max);min-height:var(--toque);display:flex;align-items:center;justify-content:space-between;gap:var(--e3);padding:var(--e2) var(--e2) var(--e2) var(--e4);border-radius:var(--r-3);background:var(--t1);color:var(--fondo);font:500 var(--f-apoyo)/var(--l-fila) var(--body);box-shadow:var(--flota);opacity:0;translate:0 8px}
+.aviso.on{opacity:1;translate:0 0}
+.aviso .btn-texto{color:var(--fondo);text-decoration:underline;text-underline-offset:3px}
+/* móviles bajos (375×667): un poco menos de aire arriba y entre bloques de la tarjeta, para que el botón principal
+   de la primera tarjeta quede por encima del micro */
+@media (max-width:899px) and (max-height:700px){
+  .app[data-vista=movil] .pant{padding-top:var(--e1)}
+  .app[data-vista=movil] .tarjeta{gap:var(--e2);padding:var(--e3) var(--e4)}
+}

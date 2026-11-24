@@ -1,0 +1,24 @@
+/* Veta demo · css · p-clientes.css · B (Clientes) · ronda 8
+   Lo propio de las pantallas y hojas del carril que no es una pieza del núcleo. Solo variables (temas.css, base.css):
+   ningún color a mano. Pesos 500 y 700; letra de 15, 17 y 20. */
+
+/* ---- A5p · mientras busca la respuesta ---- */
+.b-carga{display:flex;flex-direction:column;gap:var(--e3)}
+.b-carga-t{margin:0;padding:0 var(--e1);color:var(--t2);font:500 var(--f-apoyo)/var(--l-fila) var(--body)}
+.b-respuesta{display:flex;flex-direction:column;gap:var(--e3)}
+.fijo.b-espera{visibility:hidden}
+
+/* ---- A6 · las marcas de dirección (líneas de hecho) ---- */
+.b-marcas{display:flex;flex-direction:column;gap:var(--e2)}
+
+/* ---- hojas ---- */
+.b-voz{display:flex;flex-direction:column;gap:var(--e2)}
+.b-resumen{display:flex;flex-direction:column;gap:var(--e1);padding:var(--e3) var(--e4);border-radius:var(--r-btn);background:var(--s1);border:1px solid var(--borde)}
+.b-resumen p{font:500 var(--f-apoyo)/1.4 var(--body)}
+.b-resumen p:first-child{font-weight:700;font-size:var(--f-cuerpo)}
+.b-acta{display:flex;flex-direction:column;gap:2px}
+.b-acta + .b-acta{margin-top:var(--e3)}
+.b-acta b{font:700 var(--f-apoyo)/1.2 var(--body);color:var(--t2)}
+.b-paso-t{font:700 var(--f-cuerpo)/1.35 var(--body)}
+.b-cruce-c{gap:var(--e2)}
+.b-cruce-c .foto-ancha{border-radius:var(--r-2)}

@@ -1,0 +1,36 @@
+/* Veta demo · ronda 8 · css/r8-entrada.css · carril E (portada, entrar, primer día). Va enlazado el último: lo que se escriba aquí pisa lo de antes. */
+
+/* ---- portada (E1): el idioma, un par de botones con la letra de la app (E-1). Pisa la órbita de componentes.css y movimiento.css ---- */
+.m-pick{gap:var(--e6)}
+.m-idiomas{width:100%;max-width:21rem;gap:var(--e3)}
+.m-elige{letter-spacing:0;text-transform:none;opacity:1;color:var(--port-t2);font:500 var(--f-apoyo)/1.4 var(--body)}
+.m-elige i{opacity:1}
+.m-par{width:100%}
+.m-par .m-idioma{position:static;transform:none;animation:none;opacity:1;flex:1 1 0;min-width:0;min-height:var(--btn);padding:var(--e2) var(--e3);border-radius:var(--r-btn);text-indent:0;letter-spacing:0;text-transform:none;font:700 var(--f-cuerpo)/1.2 var(--body);background:var(--port-btn-b);color:var(--port-btn-t);border:0;box-shadow:none}
+.m-par .m-idioma.r7-boton-claro{background:transparent;color:var(--port-t);box-shadow:inset 0 0 0 1.5px color-mix(in srgb,var(--port-t) 40%,transparent)}
+.m-par .m-idioma:active{transform:scale(.98)}
+@media (hover:hover) and (pointer:fine){.m-par .m-idioma:hover{border:0}}
+
+/* ---- entrar (E2): lema, dos tarjetas de una línea, enlace y aviso (E-2, E-4) ---- */
+.c-entrar-c{gap:var(--e5)}
+.c-lema .c-entrar-c{gap:var(--e5)}
+.c-entrar-h,.c-entrar .campo-e,.c-entrar-papel,.c-entrar-err{font-weight:700}
+.c-entrar-papel{font-weight:500}
+.c-papel{min-height:var(--fila-1);padding:var(--e2) var(--e4)}
+.c-cuenta,.c-papel .c-cuenta-t{font:700 var(--f-cuerpo)/1.2 var(--body)}
+.c-papel-chev{color:var(--port-t2)}
+.c-primer{justify-content:flex-start}
+.c-primer .r7-enlace{color:var(--port-3);padding:0}
+.port-aviso{margin-top:var(--e5);color:var(--port-t2);font:500 var(--f-apoyo)/1.4 var(--body)}
+.c-entrar .port-acc .btn-texto{font-weight:700}
+
+/* ---- primer día (A18): cabecera de paso, tarjeta con comillas, un botón (E-3) ---- */
+.c-pd{gap:var(--e4)}
+.c-pd-h{font-weight:700}
+.c-busca-l,.c-nudo{font-weight:500}
+.c-pd-c .r7-ficha p{margin:0}
+.c-pd-orig{font-weight:500;color:var(--t2)}
+/* la escena «Veta lee» del primer paso, sin «Ver otra vez», sin subrayado amarillo en la cita y sin la pastilla de origen (E-3) */
+.c-pd .v-es-salta,.c-pd .v-es-prueba .v-pastilla{display:none}
+.c-pd .v-oro{background:none;border-radius:0}
+.c-pd .v-es-cab{min-height:0}
