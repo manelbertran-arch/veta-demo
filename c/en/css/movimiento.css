@@ -1,0 +1,146 @@
+/* Veta demo · núcleo · movimiento.css
+   Los 16 efectos de la sección 5.4. Cuatro duraciones (100, 200, 300, 400), cuatro curvas (estándar, entra, sale, muelle).
+   Solo se mueven solos grabar (onda) y cargar (silueta). Con «Reducir movimiento» (html[data-mov=reducido]) se apaga todo:
+   sin animaciones, sin desplazamientos; quedan fundidos de 100 ms en hoja, velo y aviso. */
+
+/* 1 · el botón responde al dedo */
+.btn,.tab,.mic,.op,.paleta,.cita,.hecho-a,.cab-atras,.cab-yo,.lat-d,.lat-mic,.lat-yo,.interr,.selector button,.fila,.foto,.guia-i,.miga-b,.enlace{transition:transform var(--t-corto) var(--c-muelle),opacity var(--t-corto) var(--c-muelle),background-color var(--t-corto) var(--c-estandar)}
+.btn:active,.tab:active,.mic:active,.op:active,.paleta:active,.cita:active,.hecho-a:active,.cab-atras:active,.cab-yo:active,.lat-d:active,.lat-mic:active,.lat-yo:active,.interr:active,.selector button:active,.foto:active,.guia-i:active,.miga-b:active,.enlace:active{transform:scale(.97);opacity:.9;transition-duration:var(--t-toque);transition-timing-function:var(--c-estandar)}
+.fila:active{transform:scale(.985);opacity:.9;transition-duration:var(--t-toque);transition-timing-function:var(--c-estandar)}
+@media (hover:hover){.fila:hover,.op:hover{background-color:color-mix(in srgb,var(--tinte) 55%,transparent)}}
+
+/* 2, 3, 4, 7, 16 · View Transitions: la columna activa se llama «pantalla»; la barra y la lista, aparte */
+.col.activa{view-transition-name:pantalla}
+#col-a.col-lista:not(.activa){view-transition-name:lista}
+#barra{view-transition-name:barra}
+#lateral{view-transition-name:lateral}
+::view-transition-old(root),::view-transition-new(root){animation-duration:var(--t-corto)}
+::view-transition-group(*){animation-duration:var(--t-medio);animation-timing-function:var(--c-estandar)}
+::view-transition-group(foco-foto),::view-transition-group(foco-nombre),::view-transition-group(foco-piso){animation-timing-function:var(--c-muelle)}
+html[data-dir=adelante]::view-transition-old(pantalla){animation:vt-sale var(--t-toque) var(--c-sale) both}
+html[data-dir=adelante]::view-transition-new(pantalla){animation:vt-entra var(--t-medio) var(--c-muelle) 60ms both}
+html[data-dir=atras]::view-transition-old(pantalla){animation:vt-sale var(--t-toque) var(--c-sale) both}
+html[data-dir=atras]::view-transition-new(pantalla){animation:vt-entra-atras var(--t-medio) var(--c-muelle) 60ms both}
+html[data-dir=pestana]::view-transition-old(pantalla){animation:vt-sale var(--t-toque) var(--c-sale) both}
+html[data-dir=pestana]::view-transition-new(pantalla){animation:vt-funde var(--t-corto) var(--c-estandar) 60ms both}
+html[data-dir=cambia]::view-transition-old(pantalla){animation:none;opacity:0}
+html[data-dir=cambia]::view-transition-new(pantalla){animation:none}
+::view-transition-group(pantalla),::view-transition-group(lista),::view-transition-group(barra),::view-transition-group(lateral){animation-duration:0s}
+@keyframes vt-sale{to{opacity:0}}
+@keyframes vt-entra{from{opacity:0;transform:translateX(12px)}}
+@keyframes vt-entra-atras{from{opacity:0;transform:translateX(-12px)}}
+@keyframes vt-funde{from{opacity:0}}
+/* sin la API: la nueva entra con la misma animación en CSS y la vieja desaparece seca */
+.entra-adelante{animation:vt-entra var(--t-medio) var(--c-muelle) both}
+.entra-atras{animation:vt-entra-atras var(--t-medio) var(--c-muelle) both}
+.entra-pestana{animation:vt-funde var(--t-corto) var(--c-estandar) both}
+
+/* 5 · cascada al entrar (5 escalones de 40 ms como mucho) */
+.tac .tac-b{animation:tac var(--t-corto) var(--c-entra) both;animation-delay:calc(var(--i,0) * var(--t-paso))}
+@keyframes tac{from{opacity:0;transform:translateY(10px)}}
+
+/* 6 · la hoja sube; el velo funde */
+.hoja{transition:transform var(--t-corto) var(--c-sale)}
+.hoja.on{transition:transform var(--t-medio) var(--c-muelle)}
+.velo{transition:opacity var(--t-corto) var(--c-estandar)}
+
+/* 7 · cambio en el sitio: lo viejo se va antes de que entre lo nuevo, así ningún texto se ve doble (crítica 2.5) */
+::view-transition-old(*.sitio){animation:vt-sale 110ms var(--c-sale) both}
+::view-transition-new(*.sitio){animation:vt-funde var(--t-corto) var(--c-estandar) 110ms both}
+/* 7b · paso (ronda 6): con data-muda, lo nombrado viaja entero a su sitio nuevo, sin fundido (la fila que se muda de bloque) */
+::view-transition-group(*.muda){animation-duration:var(--t-largo);animation-timing-function:var(--c-muelle)}
+::view-transition-old(*.muda){animation:none;opacity:0}
+::view-transition-new(*.muda){animation:none}
+/* 4b · paso: la tarjeta se abre desde su sitio (data-foco="tarjeta" en la tarjeta tocada y en su destino). El contenido no se estira: se recorta */
+::view-transition-group(foco-tarjeta){animation-duration:var(--t-largo);animation-timing-function:var(--c-muelle);overflow:clip;border-radius:var(--r-3)}
+::view-transition-old(foco-tarjeta),::view-transition-new(foco-tarjeta){width:100%;height:100%;object-fit:none;object-position:0 0}
+::view-transition-old(foco-tarjeta){animation:vt-sale var(--t-toque) var(--c-sale) both}
+::view-transition-new(foco-tarjeta){animation:vt-funde var(--t-corto) var(--c-estandar) 60ms both}
+/* 7 · hecho en el sitio: se dibuja el visto */
+.hecho .visto path{animation:dibuja var(--t-corto) var(--c-estandar) 100ms both}
+@keyframes dibuja{from{stroke-dashoffset:1}}
+
+/* 8 · aviso negro: sube 8 px y aparece */
+.aviso{transition:opacity var(--t-corto) var(--c-sale),translate var(--t-corto) var(--c-sale)}
+.aviso.on{transition:opacity var(--t-corto) var(--c-muelle),translate var(--t-corto) var(--c-muelle)}
+
+/* 10 · sombra bajo la cabecera y sobre el botón fijo, ligada al desplazamiento */
+@supports (animation-timeline:scroll()){
+  html:not([data-mov=reducido]) .cab-banda{animation:sombra-banda linear both;animation-timeline:--desp;animation-range:0 8px}
+  html:not([data-mov=reducido]) .cab-detalle,html:not([data-mov=reducido]) .cab-panel{animation:linea-cab linear both;animation-timeline:--desp;animation-range:0 8px}
+  html:not([data-mov=reducido]) .fijo{animation:sombra-fijo linear both;animation-timeline:--desp}
+}
+@keyframes sombra-banda{to{box-shadow:var(--sombra-banda)}}
+@keyframes linea-cab{to{box-shadow:0 1px 0 var(--borde)}}
+@keyframes sombra-fijo{0%,96%{box-shadow:var(--sombra-fijo)}100%{box-shadow:none}}
+@supports not (animation-timeline:scroll()){
+  .col.desplazado .cab-banda{box-shadow:var(--sombra-banda)}
+  .col.desplazado .cab-detalle,.col.desplazado .cab-panel{box-shadow:0 1px 0 var(--borde)}
+}
+html[data-mov=reducido] .col.desplazado .cab-banda{box-shadow:var(--sombra-banda)}
+html[data-mov=reducido] .col.desplazado .cab-detalle,html[data-mov=reducido] .col.desplazado .cab-panel{box-shadow:0 1px 0 var(--borde)}
+
+/* 11 · en el informe, la foto se encoge un poco al bajar */
+@supports (animation-timeline:view()){
+  html:not([data-mov=reducido]) .foto-encoge{animation:encoge linear both;animation-timeline:view();animation-range:exit 0% exit 100%;transform-origin:50% 100%}
+}
+@keyframes encoge{to{transform:scale(.94)}}
+
+/* 12 · silueta de carga (bucle permitido: cargar) */
+.sil-b::after{animation:brillo 1.2s linear infinite}
+@keyframes brillo{to{translate:100% 0}}
+
+/* 13 · onda de dictar (bucle permitido: grabar) */
+.onda i{animation:onda 1.2s ease-in-out infinite alternate}
+.onda i:nth-child(even){animation-duration:1.6s}
+.onda i:nth-child(2){animation-delay:-120ms}.onda i:nth-child(3){animation-delay:-360ms}.onda i:nth-child(4){animation-delay:-600ms}.onda i:nth-child(5){animation-delay:-240ms}.onda i:nth-child(6){animation-delay:-480ms}
+.onda.pausada i{animation-play-state:paused}
+@keyframes onda{from{transform:scaleY(.25)}to{transform:scaleY(1)}}
+
+/* 14 · portada: la veta se descubre una vez, de derecha a izquierda */
+.port-veta.descubre{animation:descubre 1.2s var(--c-entra) both}
+@keyframes descubre{from{clip-path:inset(0 0 0 100%)}to{clip-path:inset(0)}}
+
+/* 17 · marca e idioma (E1; la luz también en E2): son los tiempos de la portada de la web, no los de la app.
+   La luz deriva (42 y 55 s), el logotipo y su halo respiran (4,4 s), el carrusel da una vuelta cada 10 s y el que da la cara
+   se enciende. Al apoyar el dedo se para (.quieto); con ratón, al pasar por encima. Con «Reducir movimiento», nada de esto. */
+.m-luz{animation:m-deriva 42s ease-in-out infinite alternate}
+.m-luz.dos{animation:m-deriva2 55s ease-in-out infinite alternate}
+@keyframes m-deriva{from{transform:translate3d(-2%,-1%,0) scale(1.04)}to{transform:translate3d(3%,2%,0) scale(1.12)}}
+@keyframes m-deriva2{from{transform:translate3d(2%,1%,0) scale(1.08)}to{transform:translate3d(-3%,-2%,0) scale(1.02)}}
+.m-pick{animation:m-aparece 1.1s ease .15s both}
+@keyframes m-aparece{from{opacity:0}}
+.m-logo img{animation:m-respira 4.4s ease-in-out infinite}
+@keyframes m-respira{0%,to{transform:scale(1);opacity:.94}50%{transform:scale(1.055);opacity:1}}
+.m-halo{animation:m-halo 4.4s ease-in-out infinite}
+@keyframes m-halo{0%,to{opacity:.65;transform:translate(-50%,-50%) scale(1)}50%{opacity:1;transform:translate(-50%,-50%) scale(1.18)}}
+/* los dos idiomas circulan, media vuelta de desfase: el riel lleva la x (ida y vuelta, 5 s cada tramo) y el botón la y y la
+   profundidad, un cuarto de vuelta por detrás; así trazan una elipse. El de delante (abajo) se enciende como en la web */
+.m-via{animation:m-orb-x 5s cubic-bezier(.37,0,.63,1) infinite alternate;animation-delay:calc(var(--i) * -5s)}
+.m-idioma{animation:m-orb-y 5s cubic-bezier(.37,0,.63,1) infinite alternate;animation-delay:calc(var(--i) * -5s - 2.5s)}
+@keyframes m-orb-x{from{transform:translateX(5.75rem)}to{transform:translateX(-5.75rem)}}
+@keyframes m-orb-y{from{transform:translate(-50%,-50%) translateY(-2rem) scale(.96);opacity:.66;color:#C3BFB8;text-shadow:none;border-color:rgba(245,236,220,.14)}
+  to{transform:translate(-50%,-50%) translateY(2rem) scale(1.06);opacity:1;color:#F5ECDC;text-shadow:0 0 26px rgba(232,190,120,.55);border-color:rgba(232,190,120,.5)}}
+.m-orbita.quieto .m-via,.m-orbita.quieto .m-idioma{animation-play-state:paused}
+@media (hover:hover) and (pointer:fine){.m-orbita:hover .m-via,.m-orbita:hover .m-idioma{animation-play-state:paused}}
+
+/* 15 · interruptor y selector: el pomo se desliza; el flechín de un plegable gira */
+.interr-v::before{transition:background-color var(--t-corto) var(--c-estandar)}
+.interr-v::after{transition:translate var(--t-corto) var(--c-muelle),background-color var(--t-corto) var(--c-estandar)}
+.selector::before{transition:translate var(--t-corto) var(--c-muelle)}
+.chev-gira{transition:transform var(--t-corto) var(--c-muelle)}
+[aria-expanded=true] .chev-gira{transform:rotate(180deg)}
+
+/* 16 · cambio de tema, de paleta o de perfil: los colores funden */
+html.cambia-tema *,html.cambia-tema *::before,html.cambia-tema *::after{transition:background-color var(--t-corto) var(--c-estandar),color var(--t-corto) var(--c-estandar),border-color var(--t-corto) var(--c-estandar),fill var(--t-corto) var(--c-estandar),stroke var(--t-corto) var(--c-estandar),box-shadow var(--t-corto) var(--c-estandar)!important}
+
+/* ---- Reducir movimiento: todo apagado ---- */
+html[data-mov=reducido] *,html[data-mov=reducido] *::before,html[data-mov=reducido] *::after{animation:none!important;transition-property:opacity!important;transition-duration:var(--t-toque)!important;transition-delay:0s!important;scroll-behavior:auto!important}
+html[data-mov=reducido] .hoja{transform:none!important;opacity:0}
+html[data-mov=reducido] .hoja.on{opacity:1}
+html[data-mov=reducido] .aviso{translate:none}
+html[data-mov=reducido] :active{transform:none!important}
+html[data-mov=reducido] ::view-transition-group(*),html[data-mov=reducido] ::view-transition-old(*),html[data-mov=reducido] ::view-transition-new(*){animation:none!important}
+
+/* ronda 7 · la cabecera única gana su línea al desplazar */
+.col.desplazado .cab-r7{box-shadow:0 1px 0 var(--borde)}

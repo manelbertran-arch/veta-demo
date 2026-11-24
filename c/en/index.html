@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="en" data-modo="claro" data-color="veta" data-mov="normal">
+<head>
+<meta charset="utf-8">
+<!-- Veta demo · núcleo · index.html — el armazón. Enlaza todos los archivos; después nadie más lo toca (PLAN_DEMO.md, 7.2). -->
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Veta">
+<meta name="theme-color" content="#0A0906">
+<meta name="description" content="Veta · demo with made-up data">
+<meta name="robots" content="noindex,nofollow">
+<title>Veta</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/png" href="assets/icono-180.png">
+<link rel="apple-touch-icon" href="assets/icono-180.png">
+<script>
+/* tema antes del primer pintado (lo mismo que hace js/nucleo/tema.js) */
+(function(){var r=document.documentElement,p={},s={};try{p=JSON.parse(localStorage.getItem('veta_pref_v1')||'{}')||{}}catch(e){}
+try{s=JSON.parse(sessionStorage.getItem('veta_demo_en_v1')||'{}')||{}}catch(e){}
+var mm=function(q){return !!(window.matchMedia&&matchMedia(q).matches)};var m=p.modo||'claro';if(m==='auto')m=mm('(prefers-color-scheme: dark)')?'oscuro':'claro';
+r.setAttribute('data-modo',m==='oscuro'?'oscuro':'claro');r.setAttribute('data-color',p.color||'veta');
+var red=p.mov==='reducido'||s.mov==='reducido'||/[?&]mov=reducido/.test(location.search)||mm('(prefers-reduced-motion: reduce)');r.setAttribute('data-mov',red?'reducido':'normal')})();
+</script>
+<link rel="stylesheet" href="css/base.css">
+<link rel="stylesheet" href="css/temas.css">
+<link rel="stylesheet" href="css/componentes.css">
+<link rel="stylesheet" href="css/movimiento.css">
+<link rel="stylesheet" href="css/vivo.css">
+<link rel="stylesheet" href="css/ordenador.css">
+<link rel="stylesheet" href="css/p-dia.css">
+<link rel="stylesheet" href="css/p-clientes.css">
+<link rel="stylesheet" href="css/p-veta.css">
+<link rel="stylesheet" href="css/p-direccion.css">
+<!-- ronda 7: piezas comunes (N2) y una hoja de estilos por agente -->
+<link rel="stylesheet" href="css/r7.css">
+<link rel="stylesheet" href="css/r7-a1.css">
+<link rel="stylesheet" href="css/r7-a2.css">
+<link rel="stylesheet" href="css/r7-e.css">
+<link rel="stylesheet" href="css/r7-b.css">
+<link rel="stylesheet" href="css/r7-c.css">
+<link rel="stylesheet" href="css/r7-d1.css">
+<link rel="stylesheet" href="css/r7-d2.css">
+<link rel="stylesheet" href="css/imprimir.css" media="print">
+</head>
+<body>
+<div id="app" class="app" data-completa="no">
+  <div class="reloj" aria-hidden="true"></div>
+  <aside id="lateral" class="lateral" aria-label="Destinations"></aside>
+  <main id="marco" class="marco">
+    <div id="col-a" class="col"></div>
+    <div id="col-b" class="col"></div>
+  </main>
+  <aside id="cajon" class="cajon" aria-label="Guide"></aside>
+  <nav id="barra" class="barra" aria-label="Destinations"></nav>
+</div>
+<div id="guia" class="guia" role="status" hidden></div>
+<div id="aviso" class="aviso" role="status" aria-live="polite" hidden></div>
+<div id="velo" class="velo" hidden></div>
+<div id="hoja" class="hoja" role="dialog" aria-modal="true" tabindex="-1" hidden></div>
+<noscript><p style="padding:16px">Veta needs JavaScript.</p></noscript>
+
+<!-- núcleo -->
+<script src="js/nucleo/veta.js"></script>
+<script src="js/nucleo/estado.js"></script>
+<script src="js/nucleo/iconos.js"></script>
+<script src="js/nucleo/tema.js"></script>
+<script src="js/nucleo/movimiento.js"></script>
+<script src="js/nucleo/ui.js"></script>
+<script src="js/nucleo/plantillas.js"></script>
+<script src="js/nucleo/hoja.js"></script>
+<script src="js/nucleo/aviso.js"></script>
+<script src="js/nucleo/modelo.js"></script>
+<script src="js/nucleo/vivo.js"></script>
+<script src="js/nucleo/rutas.js"></script>
+<script src="js/nucleo/guia.js"></script>
+<!-- datos (los extra-*.js son de cada paquete) -->
+<script src="js/datos/base.js"></script>
+<script src="js/datos/dia.js"></script>
+<script src="js/datos/clientes.js"></script>
+<script src="js/datos/veta.js"></script>
+<script src="js/datos/oficina.js"></script>
+<script src="js/datos/extra-a.js"></script>
+<script src="js/datos/extra-b.js"></script>
+<script src="js/datos/extra-c.js"></script>
+<script src="js/datos/extra-d.js"></script>
+<!-- ronda 6: un archivo de datos por paquete (A, C, D) -->
+<script src="js/datos/r6-dia.js"></script>
+<script src="js/datos/r6-veta.js"></script>
+<script src="js/datos/r6-direccion.js"></script>
+<!-- ronda 7: datos por agente y piezas comunes (r7.js va después de los datos y antes de las pantallas) -->
+<script src="js/datos/r7-a1.js"></script>
+<script src="js/datos/r7-a2.js"></script>
+<script src="js/datos/r7-e.js"></script>
+<script src="js/datos/r7-b.js"></script>
+<script src="js/datos/r7-c.js"></script>
+<script src="js/datos/r7-d1.js"></script>
+<script src="js/datos/r7-d2.js"></script>
+<script src="js/nucleo/r7.js"></script>
+<!-- pantallas: núcleo, A, B, C, D -->
+<script src="js/pantallas/portada.js"></script>
+<script src="js/pantallas/muestrario.js"></script>
+<script src="js/pantallas/hoy.js"></script>
+<script src="js/pantallas/mensaje.js"></script>
+<script src="js/pantallas/dictar.js"></script>
+<script src="js/pantallas/acta.js"></script>
+<script src="js/pantallas/dictado.js"></script>
+<script src="js/pantallas/espera.js"></script>
+<script src="js/pantallas/informe.js"></script>
+<script src="js/pantallas/clientes.js"></script>
+<script src="js/pantallas/pregunta.js"></script>
+<script src="js/pantallas/ficha.js"></script>
+<script src="js/pantallas/documentos.js"></script>
+<script src="js/pantallas/historia.js"></script>
+<script src="js/pantallas/veta.js"></script>
+<script src="js/pantallas/reglas.js"></script>
+<script src="js/pantallas/regla.js"></script>
+<script src="js/pantallas/entendido.js"></script>
+<script src="js/pantallas/aprendido.js"></script>
+<script src="js/pantallas/semana.js"></script>
+<script src="js/pantallas/cuenta.js"></script>
+<script src="js/pantallas/entrar.js"></script>
+<script src="js/pantallas/primer-dia.js"></script>
+<script src="js/pantallas/mapa.js"></script>
+<script src="js/pantallas/oficina-veta.js"></script>
+<script src="js/pantallas/equipo.js"></script>
+<script src="js/pantallas/asunto.js"></script>
+<script src="js/pantallas/regla-oficina.js"></script>
+<script src="js/pantallas/semana-equipo.js"></script>
+<script src="js/pantallas/reparto.js"></script>
+<script src="js/pantallas/avisos.js"></script>
+<script src="js/pantallas/conexiones.js"></script>
+<script src="js/pantallas/informe-completo.js"></script>
+<script src="js/pantallas/entra.js"></script>
+<!-- ronda 6: pantallas nuevas (C: que-hace, antes-ahora · D: oficina-que-hace, oficina-antes-ahora) -->
+<script src="js/pantallas/que-hace.js"></script>
+<script src="js/pantallas/antes-ahora.js"></script>
+<script src="js/pantallas/oficina-que-hace.js"></script>
+<script src="js/pantallas/oficina-antes-ahora.js"></script>
+<!-- ronda 6 · D: operaciones, una operación, una persona -->
+<script src="js/pantallas/operaciones.js"></script>
+<script src="js/pantallas/operacion.js"></script>
+<script src="js/pantallas/persona.js"></script>
+<!-- ronda 7: Inicio (N2), visitas y visita (A2), decidir (D1), oficina (D2) -->
+<script src="js/pantallas/inicio.js"></script>
+<script src="js/pantallas/visitas.js"></script>
+<script src="js/pantallas/visita.js"></script>
+<script src="js/pantallas/decidir.js"></script>
+<script src="js/pantallas/oficina.js"></script>
+<!-- hojas: comunes (núcleo), A, B, C, D -->
+<script src="js/hojas/comunes.js"></script>
+<script src="js/hojas/dia.js"></script>
+<script src="js/hojas/clientes.js"></script>
+<script src="js/hojas/veta.js"></script>
+<script src="js/hojas/direccion.js"></script>
+</body>
+</html>

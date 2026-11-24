@@ -1,0 +1,45 @@
+/* Veta demo · ronda 7 · css/r7-b.css · B (Clientes): rejilla de caras, las dos pastillas de arriba y «Qué toca ahora».
+   Solo variables de temas.css. Texto de 15 px o más; tocables de 48 px o más. */
+
+/* ---- buscador y pastillas ---- */
+.rb-buscar .campo-caja{min-height:48px}
+.rb-filtros{display:flex;gap:var(--e2)}
+.rb-filtros[hidden]{display:none}
+.rb-filtro{display:inline-flex;align-items:center;gap:6px;min-height:48px;padding:0 var(--e4);border-radius:var(--r-pill);background:var(--s1);color:var(--t1);
+  box-shadow:inset 0 0 0 1px var(--borde);font:600 var(--f-cuerpo)/1 var(--body);-webkit-tap-highlight-color:transparent;transition:background-color var(--t-toque) var(--c-estandar)}
+.rb-filtro b{font-weight:800}
+.rb-filtro[aria-pressed=true]{background:var(--t1);color:var(--fondo);box-shadow:none}
+
+/* ---- rejilla de caras: tres por fila ---- */
+.rb-zona{display:flex;flex-direction:column;gap:var(--e3)}
+.rb-rejilla{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:var(--e2)}
+.rb-cara{display:flex;flex-direction:column;align-items:center;gap:2px;min-width:0;padding:var(--e3) 4px var(--e3);border-radius:var(--r-3);
+  background:var(--s1);color:var(--t1);text-align:center;box-shadow:inset 0 0 0 1px var(--borde);-webkit-tap-highlight-color:transparent;
+  transition:transform var(--t-toque) var(--c-estandar)}
+.rb-cara:active{transform:scale(.97)}
+.rb-cara:focus-visible{outline:2px solid var(--t1);outline-offset:2px}
+.rb-cara-f{position:relative;display:block;margin-bottom:6px}
+.rb-punto{position:absolute;top:1px;right:1px;width:16px;height:16px;border-radius:50%;box-shadow:0 0 0 3px var(--s1)}
+.rb-rojo{background:var(--urg-t)}
+.rb-oro{background:var(--top-acento,var(--veta))}
+.rb-cara-n,.rb-cara-p{display:block;max-width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rb-cara-n{font:700 var(--f-cuerpo)/1.25 var(--body)}
+.rb-cara-p{color:var(--t2);font:500 var(--f-cuerpo)/1.25 var(--body)}
+.rb-nadie{padding:var(--e4) var(--e2);color:var(--t2);font:500 var(--f-cuerpo)/1.4 var(--body);text-align:center}
+
+/* ---- ficha: su cara y «Qué toca ahora» ---- */
+.rb-toca-a{display:flex;align-items:center;gap:var(--e3)}
+.rb-toca-a>.av{flex:none}
+.rb-toca-c{display:flex;flex-direction:column;gap:2px;min-width:0}
+.rb-toca-t{margin:0;font:600 var(--f-cuerpo)/1.35 var(--body);text-wrap:pretty}
+.rb-borrador{margin:0;padding:var(--e3);border-radius:var(--r-2);background:var(--fondo);font:500 var(--f-cuerpo)/1.45 var(--body);white-space:pre-line}
+.rb-ya{display:flex;align-items:center;gap:var(--e2);margin:0;color:var(--t2);font:600 var(--f-cuerpo)/1.3 var(--body)}
+
+@media (min-width:1024px){
+  .rb-rejilla{grid-template-columns:repeat(auto-fill,minmax(132px,1fr))}
+}
+
+/* ---- la lupa de la cabecera (abre el buscador; abierta, es la cruz) ---- */
+.rb-lupa{display:inline-flex;align-items:center;justify-content:center;width:48px;height:48px;border-radius:50%;color:var(--t1);background:transparent;-webkit-tap-highlight-color:transparent}
+.rb-lupa:active{background:var(--s1)}
+.rb-lupa[aria-expanded=true]{background:var(--s1);box-shadow:inset 0 0 0 1px var(--borde)}
