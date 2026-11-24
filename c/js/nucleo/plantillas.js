@@ -36,12 +36,14 @@
   }));
 
   // ---- hoja de acciones: opciones como filas de 56 (sin «Cancelar» abajo: V7) ----
-  // VETA.hojaAcciones('H11', {titulo: d => '…', texto, opciones: d => [{texto, sub, icono, hace: (d, el) => {}, ir, hoja, datos, peligro}]})
+  // VETA.hojaAcciones('H11', {titulo: d => '…', texto, opciones: d => [{texto, sub, cara, hace: (d, el) => {}, ir, hoja, datos, peligro}]})
+  // Ronda 8: a la izquierda de una fila solo va una cara (`cara`); `icono` se ignora. Las tres plantillas de hoja son estas:
+  // acciones (filas), texto (lectura) y elegir (opciones con una marcada). Nunca una hoja sobre otra.
   VETA.hojaAcciones = (id, o) => VETA.hojaDef(id, {
     titulo: o.titulo,
     pinta: d => (o.texto ? `<p class="hoja-x">${esc(val(o.texto, d))}</p>` : '') +
       `<div class="ops">${(val(o.opciones, d) || []).map((op, k) => `<button type="button" class="op${op.peligro ? ' op-peligro' : ''}" data-accion="op" data-n="${k}">` +
-        `${op.icono ? VETA.ic(op.icono, 22) : ''}<span class="op-c"><span class="op-t">${esc(op.texto)}</span>${op.sub ? `<span class="op-s">${esc(op.sub)}</span>` : ''}</span></button>`).join('')}</div>` +
+        `${op.cara ? VETA.av(op.cara, 40) : ''}<span class="op-c"><span class="op-t">${esc(op.texto)}</span>${op.sub ? `<span class="op-s">${esc(op.sub)}</span>` : ''}</span></button>`).join('')}</div>` +
       '',   // F2 · V7: sin «Cancelar» abajo (solo cerraba; «Cerrar» va arriba a la derecha)
     acciones: Object.assign({
       op(ev, el, d) {

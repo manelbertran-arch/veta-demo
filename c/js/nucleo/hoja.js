@@ -14,7 +14,7 @@
 
   const $h = () => document.getElementById('hoja');
   const $v = () => document.getElementById('velo');
-  const FONDO = ['#lateral', '#marco', '#barra', '#guia'];
+  const FONDO = ['#lateral', '#marco', '#barra'];
   const inerte = on => FONDO.forEach(q => { const el = document.querySelector(q); if (el) { if (on) el.setAttribute('inert', ''); else el.removeAttribute('inert'); } });
 
   // una hoja que aún no existe: dice su código y quién la hace
@@ -46,7 +46,6 @@
       h.classList.add('on'); $v().classList.add('on'); document.body.classList.add('hoja-on'); inerte(true);
     }
     if (def.alMontar) def.alMontar(h, d);
-    if (VETA.guia) VETA.guia.calla();
     try { (h.querySelector('[autofocus]') || h).focus({preventScroll: true}); } catch (e) {}
   };
 

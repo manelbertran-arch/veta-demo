@@ -3,14 +3,13 @@
    Regla del oro: --oro solo donde Veta ha encontrado, aprendido o cerrado algo. Nunca de adorno.
    Cómo se mueven: lo escrito aquí es el ESTADO FINAL. vivo.js pone .v-antes (el estado de salida) solo si hay movimiento
    y lo quita cuando la pieza entra en pantalla; la transición hace el resto. Sin JS o con «Reducir movimiento», se ve el final. */
-:root{--oro:#BF953F;--oro-trazo:rgba(219,172,78,.62);--oro-suave:rgba(219,172,78,.18);--v-pista:color-mix(in srgb,var(--t1) 14%,transparent)}
-html[data-modo=oscuro]{--oro:#D4AA70;--oro-trazo:rgba(212,170,112,.5);--oro-suave:rgba(212,170,112,.16)}
+:root{--oro:var(--top-acento);--oro-trazo:color-mix(in srgb,var(--top-acento) 62%,transparent);--oro-suave:var(--av-ic-b);--v-pista:color-mix(in srgb,var(--t1) 14%,transparent)}
 
 /* 1 · Oro: trazo de rotulador bajo la frase que prueba algo. Con varias líneas se dibuja seguido, una tras otra */
 .v-oro{background:linear-gradient(transparent 60%,var(--oro-trazo) 60%,var(--oro-trazo) 93%,transparent 93%) no-repeat 0 0/100% 100%;border-radius:2px;transition:background-size var(--t-largo) var(--c-estandar) var(--v-ret,260ms)}
 .v-oro.v-antes{background-size:0% 100%}
 .hoja .v-oro{--v-ret:420ms}
-.v-pastilla{display:inline-flex;align-items:center;gap:6px;min-height:28px;padding:2px var(--e3);border-radius:var(--r-pill);background:var(--s2);color:var(--t2);font:600 var(--f-apoyo)/1.2 var(--body);white-space:nowrap}
+.v-pastilla{display:inline-flex;align-items:center;gap:6px;min-height:28px;padding:2px var(--e3);border-radius:var(--r-pill);background:var(--s2);color:var(--t2);font:700 var(--f-apoyo)/1.2 var(--body);white-space:nowrap}
 
 /* 2 · Anillo: casos contados (un tramo por caso) o veces vistas. Tres tamaños: s 28, m 56, l 104 */
 .v-anillo{display:inline-flex;align-items:center;gap:var(--e2);vertical-align:middle;--v-d:56px;--v-g:3.6}
@@ -34,7 +33,7 @@ html[data-modo=oscuro]{--oro:#D4AA70;--oro-trazo:rgba(212,170,112,.5);--oro-suav
 .v-mini-b i.on{background:var(--t1)}.v-mini-b i.aqui{width:9px;height:9px;background:var(--oro)}
 .v-mini-b i.cerrado{background:none;box-shadow:inset 0 0 0 1.5px var(--t3)}
 .v-esc-c{display:flex;flex-direction:column}
-.v-esc-ext{font:600 var(--f-apoyo)/1.2 var(--body);color:var(--t2)}
+.v-esc-ext{font:500 var(--f-apoyo)/1.2 var(--body);color:var(--t2)}
 .v-esc-ext:first-child{margin-bottom:var(--e3)}
 .v-esc{display:flex;flex-direction:column;list-style:none}
 .v-esc-p{position:relative;display:flex;flex-wrap:wrap;align-items:center;gap:2px var(--e2);padding:0 0 var(--e4) 30px;--v-c:var(--v-pista)}
@@ -47,10 +46,10 @@ html[data-modo=oscuro]{--oro:#D4AA70;--oro-trazo:rgba(212,170,112,.5);--oro-suav
 .v-esc-aqui-p::after{background:var(--oro);box-shadow:0 0 0 4px var(--oro-suave)}
 .v-esc-cerrado::after{display:none}
 .v-esc-cerrado .v-esc-nom svg{position:absolute;left:-1px;top:3px;color:var(--t3)}
-.v-esc-nom{font:600 var(--f-cuerpo)/1.5 var(--body)}
+.v-esc-nom{font:500 var(--f-cuerpo)/1.5 var(--body)}
 .v-esc-tx{flex-basis:100%;font:500 var(--f-apoyo)/1.35 var(--body);color:var(--t2)}
 .v-esc-falta .v-esc-nom,.v-esc-cerrado .v-esc-nom{color:var(--t2)}
-.v-esc-aqui{display:inline-flex;align-items:center;min-height:26px;padding:2px var(--e3);border-radius:var(--r-pill);background:var(--oro-suave);box-shadow:inset 0 0 0 1px var(--oro);font:600 var(--f-apoyo)/1.2 var(--body);color:var(--t1)}
+.v-esc-aqui{display:inline-flex;align-items:center;min-height:26px;padding:2px var(--e3);border-radius:var(--r-pill);background:var(--oro-suave);box-shadow:inset 0 0 0 1px var(--oro);font:500 var(--f-apoyo)/1.2 var(--body);color:var(--t1)}
 .v-esc-sube{flex-basis:100%;display:flex;flex-direction:column;align-items:flex-start;gap:var(--e2);margin-top:var(--e2);padding:var(--e3);border-radius:var(--r-2);background:var(--tinte)}
 .v-esc-sube p{font:500 var(--f-cuerpo)/1.4 var(--body);color:var(--t1)}
 .v-esc-sube .btn{width:100%}
@@ -63,7 +62,7 @@ html[data-modo=oscuro]{--oro:#D4AA70;--oro-trazo:rgba(212,170,112,.5);--oro-suav
 .v-hilo-n{position:relative;display:flex;flex-direction:column;gap:2px;transition:opacity var(--t-medio) var(--c-estandar) calc(var(--k,0) * 90ms),translate var(--t-medio) var(--c-muelle) calc(var(--k,0) * 90ms)}
 .v-hilo-n::before{content:"";position:absolute;left:-28px;top:4px;width:12px;height:12px;border-radius:50%;background:var(--oro)}
 .v-hilo.v-antes .v-hilo-n{opacity:0;translate:0 6px}
-.v-hilo-k{font:600 var(--f-apoyo)/1.2 var(--body);color:var(--veta)}
+.v-hilo-k{font:500 var(--f-apoyo)/1.2 var(--body);color:var(--veta)}
 .v-hilo-t{font:500 var(--f-cuerpo)/1.35 var(--body)}
 .v-hilo-c{font:500 var(--f-apoyo)/1.3 var(--body);color:var(--t3)}
 @supports (animation-timeline:view()){
@@ -79,8 +78,8 @@ html[data-modo=oscuro]{--oro:#D4AA70;--oro-trazo:rgba(212,170,112,.5);--oro-suav
 .v-aa-cols{display:grid;grid-template-columns:1fr 1fr;gap:var(--e2)}
 .v-aa-col{display:flex;flex-direction:column;gap:var(--e1);padding:var(--e3);border-radius:var(--r-2);background:var(--s2);min-width:0}
 .v-aa-hoy{background:var(--oro-suave);box-shadow:inset 0 0 0 1px var(--oro)}
-.v-aa-r{font:600 var(--f-apoyo)/1.2 var(--body);color:var(--t2)}
-.v-aa-n{font:600 var(--f-cifra)/1 var(--display);letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+.v-aa-r{font:500 var(--f-apoyo)/1.2 var(--body);color:var(--t2)}
+.v-aa-n{font:500 var(--f-cifra)/1 var(--display);letter-spacing:-.02em;font-variant-numeric:tabular-nums}
 .v-aa-u{font:500 var(--f-apoyo)/1.3 var(--body);color:var(--t2)}
 .v-aa-l{list-style:none;display:flex;flex-direction:column;gap:2px;margin-top:var(--e1);font:500 var(--f-apoyo)/1.35 var(--body);color:var(--t1)}
 .v-aa-g{position:relative;height:76px;margin:0 7px}
@@ -102,13 +101,13 @@ html[data-modo=oscuro]{--oro:#D4AA70;--oro-trazo:rgba(212,170,112,.5);--oro-suav
 .v-es-chat{display:none;flex-direction:column;gap:var(--e2);position:absolute;left:0;right:0;top:0;transition:opacity var(--t-corto) var(--c-sale)}
 .v-es-b{max-width:88%;align-self:flex-start;padding:var(--e2) var(--e3);border-radius:var(--r-btn);border-bottom-left-radius:4px;background:var(--s2);display:flex;flex-direction:column;gap:2px;transition:opacity var(--t-medio) var(--c-estandar),translate var(--t-largo) var(--c-muelle)}
 /* las tres son mensajes que llegan (de tres chats): todas a la izquierda; la derecha es de «tú» */
-.v-es-b b{font:600 var(--f-apoyo)/1.2 var(--body);color:var(--t2)}
+.v-es-b b{font:500 var(--f-apoyo)/1.2 var(--body);color:var(--t2)}
 .v-es-b p{font:500 var(--f-cuerpo)/1.4 var(--body);display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
-.v-es-b .v-oro{transition-duration:600ms;transition-delay:0s}
+.v-es-b .v-oro{transition-duration:var(--t-largo);transition-delay:0s}
 .v-es-fin{transition:opacity var(--t-medio) var(--c-estandar)}
 .v-es-quien{display:flex;align-items:center;gap:var(--e3)}
 .v-es-quien span{display:flex;flex-direction:column;gap:2px;min-width:0}
-.v-es-quien b{font:600 var(--f-cuerpo)/1.2 var(--body)}
+.v-es-quien b{font:500 var(--f-cuerpo)/1.2 var(--body)}
 .v-es-quien span span{font:500 var(--f-apoyo)/1.3 var(--body);color:var(--t2)}
 .v-es-cita{font:500 var(--f-cuerpo)/1.4 var(--body)}
 .v-es-frase{display:block;transition:translate 480ms var(--c-muelle)}
@@ -135,7 +134,7 @@ html[data-modo=oscuro]{--oro:#D4AA70;--oro-trazo:rgba(212,170,112,.5);--oro-suav
 .v-pulso.cambia .v-pulso-t{opacity:0}
 @property --v-ang{syntax:"<angle>";inherits:false;initial-value:0deg}
 .v-halo{position:fixed;inset:0;z-index:40;pointer-events:none;padding:4px;opacity:0;transition:opacity var(--t-medio) var(--c-estandar);
-  background:conic-gradient(from var(--v-ang),transparent 0 6%,var(--oro) 20%,#F4E2B4 28%,var(--oro) 36%,transparent 52% 56%,var(--oro) 70%,#F4E2B4 78%,var(--oro) 86%,transparent 100%);
+  background:conic-gradient(from var(--v-ang),transparent 0 6%,var(--oro) 20%,color-mix(in srgb,var(--top-acento) 45%,var(--s1)) 28%,var(--oro) 36%,transparent 52% 56%,var(--oro) 70%,color-mix(in srgb,var(--top-acento) 45%,var(--s1)) 78%,var(--oro) 86%,transparent 100%);
   -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask:linear-gradient(#000 0 0) content-box exclude,linear-gradient(#000 0 0)}
 .v-halo.on{opacity:1;animation:v-gira 3.6s linear infinite}
 @keyframes v-gira{to{--v-ang:360deg}}
@@ -149,7 +148,7 @@ html[data-mov=reducido] .v-halo{background:var(--oro)}
 .aviso-an circle:last-child{stroke-dasharray:1;animation:v-atras var(--v-ms,5000ms) linear both}
 @keyframes v-atras{to{stroke-dashoffset:1}}
 .aviso.ensena .aviso-t{display:flex;align-items:center;gap:var(--e2)}
-.aviso.ensena .aviso-t::before{content:"";flex:none;width:8px;height:8px;border-radius:50%;background:#D4AA70}
+.aviso.ensena .aviso-t::before{content:"";flex:none;width:8px;height:8px;border-radius:50%;background:var(--top-acento)}
 
 /* 11 · «De dónde sale» (H01): la frase literal subrayada y su fecha en una pastilla */
 .burbuja.v-clave{max-width:92%;box-shadow:inset 0 0 0 1px var(--oro)}
@@ -159,5 +158,5 @@ html[data-mov=reducido] .v-halo{background:var(--oro)}
 
 /* muestrario: rótulo de cada pieza */
 .v-mu{display:flex;flex-direction:column;gap:var(--e3)}
-.v-mu-r{font:600 var(--f-apoyo)/1.3 var(--body);color:var(--t2);margin-top:var(--e2)}
+.v-mu-r{font:500 var(--f-apoyo)/1.3 var(--body);color:var(--t2);margin-top:var(--e2)}
 .v-mu-fila{display:flex;flex-wrap:wrap;align-items:center;gap:var(--e4)}

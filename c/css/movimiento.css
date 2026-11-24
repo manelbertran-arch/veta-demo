@@ -1,11 +1,11 @@
 /* Veta demo · núcleo · movimiento.css
-   Los 16 efectos de la sección 5.4. Cuatro duraciones (100, 200, 300, 400), cuatro curvas (estándar, entra, sale, muelle).
+   Los 16 efectos de la sección 5.4. Tres duraciones (100, 200, 300; la larga también vale 300 desde la ronda 8), cuatro curvas (estándar, entra, sale, muelle).
    Solo se mueven solos grabar (onda) y cargar (silueta). Con «Reducir movimiento» (html[data-mov=reducido]) se apaga todo:
    sin animaciones, sin desplazamientos; quedan fundidos de 100 ms en hoja, velo y aviso. */
 
 /* 1 · el botón responde al dedo */
-.btn,.tab,.mic,.op,.paleta,.cita,.hecho-a,.cab-atras,.cab-yo,.lat-d,.lat-mic,.lat-yo,.interr,.selector button,.fila,.foto,.guia-i,.miga-b,.enlace{transition:transform var(--t-corto) var(--c-muelle),opacity var(--t-corto) var(--c-muelle),background-color var(--t-corto) var(--c-estandar)}
-.btn:active,.tab:active,.mic:active,.op:active,.paleta:active,.cita:active,.hecho-a:active,.cab-atras:active,.cab-yo:active,.lat-d:active,.lat-mic:active,.lat-yo:active,.interr:active,.selector button:active,.foto:active,.guia-i:active,.miga-b:active,.enlace:active{transform:scale(.97);opacity:.9;transition-duration:var(--t-toque);transition-timing-function:var(--c-estandar)}
+.btn,.tab,.mic,.op,.paleta,.cita,.hecho-a,.cab-atras,.cab-b,.tab-mic,.r7-filtro,.r7-enlace,.cab-yo,.lat-d,.lat-mic,.lat-yo,.interr,.selector button,.fila,.foto,.miga-b,.enlace{transition:transform var(--t-corto) var(--c-muelle),opacity var(--t-corto) var(--c-muelle),background-color var(--t-corto) var(--c-estandar)}
+.btn:active,.tab:active,.mic:active,.op:active,.paleta:active,.cita:active,.hecho-a:active,.cab-atras:active,.cab-b:active,.tab-mic:active,.r7-filtro:active,.r7-enlace:active,.cab-yo:active,.lat-d:active,.lat-mic:active,.lat-yo:active,.interr:active,.selector button:active,.foto:active:active,.miga-b:active,.enlace:active{transform:scale(.98);opacity:.9;transition-duration:var(--t-toque);transition-timing-function:var(--c-estandar)}
 .fila:active{transform:scale(.985);opacity:.9;transition-duration:var(--t-toque);transition-timing-function:var(--c-estandar)}
 @media (hover:hover){.fila:hover,.op:hover{background-color:color-mix(in srgb,var(--tinte) 55%,transparent)}}
 
@@ -67,18 +67,16 @@ html[data-dir=cambia]::view-transition-new(pantalla){animation:none}
 /* 10 · sombra bajo la cabecera y sobre el botón fijo, ligada al desplazamiento */
 @supports (animation-timeline:scroll()){
   html:not([data-mov=reducido]) .cab-banda{animation:sombra-banda linear both;animation-timeline:--desp;animation-range:0 8px}
-  html:not([data-mov=reducido]) .cab-detalle,html:not([data-mov=reducido]) .cab-panel{animation:linea-cab linear both;animation-timeline:--desp;animation-range:0 8px}
-  html:not([data-mov=reducido]) .fijo{animation:sombra-fijo linear both;animation-timeline:--desp}
+  html:not([data-mov=reducido]) .cab-det,html:not([data-mov=reducido]) .cab-panel{animation:linea-cab linear both;animation-timeline:--desp;animation-range:0 8px}
 }
 @keyframes sombra-banda{to{box-shadow:var(--sombra-banda)}}
 @keyframes linea-cab{to{box-shadow:0 1px 0 var(--borde)}}
-@keyframes sombra-fijo{0%,96%{box-shadow:var(--sombra-fijo)}100%{box-shadow:none}}
 @supports not (animation-timeline:scroll()){
   .col.desplazado .cab-banda{box-shadow:var(--sombra-banda)}
-  .col.desplazado .cab-detalle,.col.desplazado .cab-panel{box-shadow:0 1px 0 var(--borde)}
+  .col.desplazado .cab-det,.col.desplazado .cab-panel{box-shadow:0 1px 0 var(--borde)}
 }
 html[data-mov=reducido] .col.desplazado .cab-banda{box-shadow:var(--sombra-banda)}
-html[data-mov=reducido] .col.desplazado .cab-detalle,html[data-mov=reducido] .col.desplazado .cab-panel{box-shadow:0 1px 0 var(--borde)}
+html[data-mov=reducido] .col.desplazado .cab-det,html[data-mov=reducido] .col.desplazado .cab-panel{box-shadow:0 1px 0 var(--borde)}
 
 /* 11 · en el informe, la foto se encoge un poco al bajar */
 @supports (animation-timeline:view()){
@@ -142,5 +140,5 @@ html[data-mov=reducido] .aviso{translate:none}
 html[data-mov=reducido] :active{transform:none!important}
 html[data-mov=reducido] ::view-transition-group(*),html[data-mov=reducido] ::view-transition-old(*),html[data-mov=reducido] ::view-transition-new(*){animation:none!important}
 
-/* ronda 7 · la cabecera única gana su línea al desplazar */
-.col.desplazado .cab-r7{box-shadow:0 1px 0 var(--borde)}
+/* la cabecera de raíz gana su línea al desplazar */
+.col.desplazado .cab-raiz{box-shadow:0 1px 0 var(--borde)}

@@ -1,7 +1,9 @@
 /* Veta demo · núcleo · ui.js
    Los componentes de la sección 5.3 como funciones que devuelven HTML (texto). Ninguna pinta efectos:
    el movimiento lo pone el núcleo al montar. Clases en css/componentes.css.
-   Atributos comunes que aceptan casi todos: ir, hoja, accion, de, g (guía «Título|Frase»), datos ({clave: valor} → data-clave),
+   Las piezas de la ronda 8 (fila, lista, botones, filtros, documento…) están en js/nucleo/r7.js; aquí quedan las de siempre:
+   campo, interruptor, línea de hecho, vacío, foto, avatar.
+   Atributos comunes que aceptan casi todos: ir, hoja, accion, de, datos ({clave: valor} → data-clave),
    vt (nombre para el efecto «hecho en el sitio»), i (escalón de cascada). */
 (function () {
   'use strict';
@@ -60,7 +62,9 @@
 
   UI.etiqueta = (tipo, texto) => {
     const e = ETQ[tipo] || ['neutro', null, tipo];
-    return `<span class="etq etq-${e[0]}">${e[1] ? ic(e[1], 16) : ''}<span>${esc(texto || e[2])}</span></span>`;
+    // ronda 8 · el color de estado es solo el rojo (y el oro de Veta): ámbar, verde y azul salen en gris
+    const tono = e[0] === 'rojo' || e[0] === 'oro' ? e[0] : 'neutro';
+    return `<span class="etq etq-${tono}">${e[1] ? ic(e[1], 16) : ''}<span>${esc(texto || e[2])}</span></span>`;
   };
   UI.ETIQUETAS = ETQ;
 
