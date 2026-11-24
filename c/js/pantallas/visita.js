@@ -1,16 +1,18 @@
 /* Veta demo · ronda 8 · pantallas · visita.js · carril A
    A22 · Una visita · #/visita/<id>. Dos caras de la misma pantalla:
      · antes de contarla: quién, cuándo y dónde, lo que sabes de la persona y el botón negro «He salido de la visita».
-     · contada: dos filas (Acta de la visita e Informe para el propietario) con cómo está cada una, y «Lo que me has contado».
+     · contada: el índice de sus papeles (el acta y el de la visita para el propietario), con cómo está cada uno, y «Lo que me has
+       contado». Sin botón en el pie: repetiría una fila. Aquí se llega desde Visitas o volviendo del acta.
    A24 · ¿Cómo ha ido? · #/salida/<id>. El micro es de mentira: al tocarlo, el texto va saliendo como si se hablara (otro toque lo para);
-     siempre hay «o escríbelo». Al acabar vuelve a la visita, ya con los dos papeles hechos.
+     siempre hay «o escríbelo». Al acabar abre el acta, que es lo que sigue (D6); el índice queda detrás, en «volver».
+     Cuando ya lo ha oído todo, el micro dice «Otra vez» y tocarlo es contarlo otra vez (D19).
      «Seguir dictando» (desde «Más» del acta) entra aquí con lo ya contado delante, para añadirle algo.
    Veta no estuvo en la visita: todo lo que escribe sale de lo que cuenta la persona. Nada se envía solo.
    Aguanta cualquier id (el de la visita, o el del cliente o el propietario: VETA.a2.de). */
 (function () {
   'use strict';
   const UI = VETA.UI, r7 = VETA.r7, esc = VETA.esc, A2 = () => VETA.a2;
-  const noHay = () => UI.vacio({titulo: 'No encuentro esta visita', texto: 'Mira en tus visitas: ahí están todas.', icono: 'cal'});
+  const noHay = () => r7.vacio('No encuentro esta visita.');
 
   VETA.pantalla('A22', {
     titulo: p => { const v = A2().de(p.id); return v ? 'Visita con ' + v.corto : 'Una visita'; },
@@ -24,17 +26,15 @@
         return r7.lista([{cara: v.cliente, nombre: v.nombre, pasa: v.cuando}, {foto: v.piso, nombre: v.lugar, pasa: v.calle}], {i: 0}) +
           (v.sabes ? r7.tarjeta({i: 1, de: 'Lo que sabes de ' + (v.corto || v.nombre), texto: v.sabes}) : '');
       }
-      return r7.lista([{nombre: 'Acta de la visita', dato: A2().estadoDoc(e.acta || {}, true), ir: 'acta/' + v.id},
-        {nombre: 'Informe para ' + A2().corto(v.propietario), dato: A2().estadoDoc(e.informe || {}), ir: 'informe/' + v.id}], {i: 0}) +
+      // el estado de cada papel va en la segunda línea (no es un número ni una fecha: no va en la cola)
+      return r7.lista([{nombre: 'Acta de la visita', pasa: 'Para ' + v.corto + ' · ' + A2().estadoDoc(e.acta || {}, true).toLowerCase(), ir: 'acta/' + v.id},
+        {nombre: A2().nombreInforme(v.id), pasa: A2().estadoDoc(e.informe || {}), ir: 'informe/' + v.id}], {i: 0}) +
         r7.lista([{nombre: 'Lo que me has contado', hoja: 'h07', datos: {visita: v.id}}], {i: 1});
     },
     botonFijo: p => {
       const v = A2().de(p.id); if (!v) return '';
       if (!A2().est(v.id).contada) return r7.botones({texto: v.hoy ? 'He salido de la visita' : 'Cuéntame cómo ha ido', accion: 'salgo', icono: 'mic'});
-      const falta = A2().falta(v.id);
-      if (falta === 'acta') return r7.botones({texto: 'Abrir el acta', ir: 'acta/' + v.id});
-      if (falta === 'informe') return r7.botones({texto: 'Abrir el informe para ' + A2().corto(v.propietario), ir: 'informe/' + v.id});
-      return '';
+      return '';   // contada: las filas ya abren cada papel
     },
     acciones: {
       // el botón lleva un micro: al llegar a «¿Cómo ha ido?» ya escucha, sin otro toque
@@ -61,9 +61,12 @@
     const d = c.querySelector('.a2-dicho');
     if (voz && voz.reloj) { para(); pon('dicho', 'En pausa. Toca para seguir.'); return; }
     if (!voz || voz.id !== v.id) voz = {id: v.id, i: 0, palabras: v.dicho.split(' '), seg: 0};
-    if (voz.i >= voz.palabras.length && !voz.mas) { voz.i = 0; voz.seg = 0; d.textContent = ''; }
-    const fin = () => { para(); voz.i = voz.palabras.length; if (!voz.mas) d.textContent = v.dicho; pon('dicho', 'Ya lo tengo.'); listo(true); };
-    if (VETA.reducido()) { fin(); return; }
+    // ya lo había oído todo y se toca el micro («Otra vez»): se cuenta otra vez desde el principio
+    const otra = voz.i >= voz.palabras.length && !voz.mas;
+    if (otra) { voz.i = 0; voz.seg = 0; d.textContent = ''; listo(false); }
+    const fin = () => { para(); voz.i = voz.palabras.length; if (!voz.mas) d.textContent = v.dicho; pon('dicho', 'Otra vez'); listo(true); };
+    // con «Reducir movimiento» no hay fase de escucha: el primer toque lo da por dicho; «Otra vez» vuelve al principio, a la espera
+    if (VETA.reducido()) { if (otra) { voz = null; pon('quieto', 'Toca y dímelo'); } else fin(); return; }
     pon('habla', 'Te escucho · ' + mmss(voz.seg));
     voz.reloj = setInterval(() => {
       if (!d.isConnected) { para(); return; }
@@ -122,7 +125,8 @@
         pon('prepara');
         setTimeout(() => {
           A2().pon(v.id, {contada: true, dicho, escrito});
-          if (caja() && caja().isConnected) VETA.ir('visita/' + v.id);
+          // lo que sigue es el acta: se abre en el sitio de esta pantalla (volver lleva a la visita, con sus papeles)
+          if (caja() && caja().isConnected) VETA.ir('acta/' + v.id, {reemplaza: true});
         }, VETA.reducido() ? 200 : 1300);
       }
     }

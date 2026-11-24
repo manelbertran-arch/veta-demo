@@ -47,7 +47,7 @@
       fila: 'Un trabajo para toda la oficina', get filaSub() { return 'Informe del piso al día siguiente · ' + (VETA.dir.laPropuso() ? 'lo propone Laura' : 'lo propongo yo'); }, ficha: 'regla-oficina/dossier', lineas: {hecha: 'Decidido · Informe del piso al día siguiente'}},
     {id: 'd-teresa', quien: 'equipo', tipo: 'reparto', titulo: 'Teresa Gil está de baja', av: 'teresa', nota: false,
       quienEs: 'Sus clientes, sin atender', etiqueta: 'por-decidir', etiquetaTexto: 'Tienes que decidir',
-      resumen: 'Desde el lunes 16. Tiene 34 conversaciones abiertas con 12 clientes y 3 visitas esta semana.',
+      resumen: 'Desde el 16 nov. Tiene 34 conversaciones abiertas con 12 clientes y 3 visitas esta semana.',
       propone: 'Yo se las pasaría a Laura, que trabaja en la misma oficina.',
       boton: {texto: 'Pasar sus clientes a otra persona', ir: 'reparto'},
       fila: 'Teresa está de baja', filaSub: '34 conversaciones sin atender', ficha: 'reparto', lineas: {hecha: 'Clientes de Teresa, pasados'}},
@@ -59,7 +59,7 @@
       boton: {texto: 'Pedir a Marc que le llame hoy', accion: 'pedir-marc'}, secundarios: [{texto: 'Ver qué ha pasado', ir: 'asunto/joan-serra'}, otra],
       otraCosa: [{texto: 'Le llamo yo', estado: 'hecha', linea: 'Joan Serra · le llamas tú'}, {texto: 'Para luego', estado: 'para-manana', linea: 'Para luego · Joan Serra'},
         {texto: 'Descartarlo', estado: 'quitada', linea: 'Descartada · queja de Joan Serra'}],
-      fila: 'Queja de Joan Serra, propietario', filaSub: 'Lo lleva Marc · sábado 21, 20:05', ficha: 'asunto/joan-serra', lineas: {hecha: 'Pedido a Marc: llamar a Joan Serra hoy'},
+      fila: 'Queja de Joan Serra, propietario', filaSub: 'Lo lleva Marc · sáb 21, 20:05', ficha: 'asunto/joan-serra', lineas: {hecha: 'Pedido a Marc: llamar a Joan Serra hoy'},
       alResolver: {flag: 'marc-llama-joan'}}
   ];
 
@@ -67,13 +67,13 @@
   D.espera.montse = [
     {id: 'em-guillem', quien: 'montse', tipo: 'espera', fechaISO: '2026-11-25', fecha: 'Mié 25', cliente: 'guillem', titulo: 'Guillem Roig', texto: 'Visita'},
     {id: 'em-ruben', quien: 'montse', tipo: 'espera', fechaISO: '2026-11-27', fecha: 'Vie 27', cliente: 'ruben', titulo: 'Rubén Gil', texto: 'Le llamas'},
-    {id: 'em-silvia', quien: 'montse', tipo: 'espera', fechaISO: '2026-11-30', fecha: 'Lun 30', cliente: 'silvia', titulo: 'Sílvia Prat', texto: 'Respuesta del banco'}
+    {id: 'em-silvia', quien: 'montse', tipo: 'espera', fechaISO: '2026-11-30', fecha: '30 nov', cliente: 'silvia', titulo: 'Sílvia Prat', texto: 'Respuesta del banco'}
   ];
 
   // contactos sin responder (5), de ellos 3 sin dueño
   D.contactos = [
     {id: 'carmen', nombre: 'Carmen López', sinDueno: true, cita: 'Busco piso de 3 habitaciones en Gràcia, hasta 450.000 €', cuando: 'ayer, 19:10', propone: 'laura'},
-    {id: 'pau-rios', nombre: 'Pau Ríos', sinDueno: true, cita: '¿Tenéis algún local en el Eixample para alquilar?', cuando: 'sábado 21, 13:20', propone: 'david'},
+    {id: 'pau-rios', nombre: 'Pau Ríos', sinDueno: true, cita: '¿Tenéis algún local en el Eixample para alquilar?', cuando: 'sáb 21, 13:20', propone: 'david'},
     {id: 'lucia', nombre: 'Lucía Gómez', sinDueno: true, cita: 'Quiero vender el piso de mis padres en Sant Gervasi. ¿Cómo trabajáis?', cuando: 'hoy, 7:40', propone: 'marc'},
     {id: 'ramon', nombre: 'Ramon Pujol', sinDueno: false, lleva: 'teresa', cita: '¿Sigue en pie la visita del jueves?', cuando: 'ayer, 17:30'},
     {id: 'sin-nombre', nombre: 'Número sin nombre', sinDueno: false, cita: '¿Precio del piso de Verdi?', cuando: 'hoy, 8:55'}

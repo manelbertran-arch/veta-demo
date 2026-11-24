@@ -101,7 +101,7 @@
 
   // ---- lo que se puede dictar, por papel: las cinco filas de «O elige qué es» ----
   const ELIGE = {
-    agente: [['acta', 'Una visita'], ['tarea', 'Una tarea'], ['nota', 'Algo de un cliente'], ['pregunta', 'Una pregunta'], ['orden', 'Algo que haces siempre']],
+    agente: [['acta', 'Una visita'], ['tarea', 'Una tarea'], ['nota', 'Algo de un cliente'], ['pregunta', 'Una pregunta'], ['orden', 'Enséñale algo a Veta']],
     direccion: [['aviso', 'Un aviso'], ['operacion', 'Una pregunta sobre una operación'], ['queja', 'Una queja'], ['mejorar', 'Qué mejorar'], ['orden', 'Cómo trabaja la oficina']]
   };
   const puntos = n => ({tipo: 'puntos', paso: n});
@@ -110,6 +110,7 @@
   const antesDe = () => { const l = VETA.pila(), k = l.findIndex(x => /^dictar\//.test(x.ruta)); return (k >= 0 ? k : l.length - 1) - 1; };
 
   // ============ paso 1 · contarlo ============
+  const SIN_RED = 'Sin señal: se guarda en tu móvil.';
   let v = null;       // {g, fase: 'quieto' | 'oye' | 'dicho' | 'escribe', texto, leccion, n (palabras dichas), pausa, t}
   let reloj = null;
   const mmss = s => Math.floor(s / 60) + ':' + String(Math.floor(s % 60)).padStart(2, '0');
@@ -134,7 +135,7 @@
     sub: p => { const d = dictado(p); return d ? d.frase : p.guion === 'libre' ? '' : P().frase; },
     cabDerecha: p => (ensena(p) && !(p.guion === 'libre' && vivo(p).fase === 'quieto') ? puntos(1) : null),
     // sin señal, lo dictado no se pierde: se dice solo entonces
-    nota: () => (navigator.onLine === false ? 'Sin señal: se guarda en tu móvil.' : ''),
+    nota: () => (navigator.onLine === false ? SIN_RED : ''),
     pinta: p => {
       const s = vivo(p), d = dictado(p), c = d ? null : caso(p);
       const arriba = c ? r7.lista([{cara: c.cara, nombre: c.nombre, pasa: c.pasa}], {rotulo: 'Sobre esto', i: 0}) : '';
@@ -144,11 +145,13 @@
       }
       if (s.fase === 'oye' || s.fase === 'dicho') {
         const w = palabras(s.texto), dicho = s.fase === 'dicho';
-        return arriba + r7.micro(Object.assign({i: 1, clase: dicho || s.pausa ? '' : 'e-oye', texto: dicho ? 'Esto has dicho' : (s.pausa ? 'En pausa · ' : 'Te escucho · ') + mmss(seg(s))}, dicho ? {} : {accion: 'pausar'})) +
+        // ya lo ha oído todo: el micro dice «Otra vez» y tocarlo es dictarlo otra vez (D19); lo dicho queda en su tarjeta
+        return arriba + r7.micro({i: 1, clase: dicho || s.pausa ? '' : 'e-oye', texto: dicho ? 'Otra vez' : (s.pausa ? 'En pausa · ' : 'Te escucho · ') + mmss(seg(s)), accion: dicho ? 'repite' : 'pausar'}) +
           r7.tarjeta({i: 2, html: `<p role="status">«<span class="e-dicho-t">${esc((dicho ? w : w.slice(0, s.n)).join(' '))}</span>»</p>`});
       }
       const micro = r7.micro({i: 1, accion: 'habla', texto: d ? d.toca : ''});
-      const escribe = r7.enlace({i: 3, texto: 'o escríbelo', accion: 'escribe', clase: 'e-escribe'});
+      // sin señal y sin pie (aún no hay botón): la nota va aquí, bajo «o escríbelo»
+      const escribe = r7.enlace({i: 3, texto: 'o escríbelo', accion: 'escribe', clase: 'e-escribe'}) + (navigator.onLine === false ? r7.nota(SIN_RED) : '');
       if (d) return micro + r7.tarjeta({i: 2, de: 'Por ejemplo', texto: '«' + primera(d.dices) + '»'}) + escribe;
       if (p.guion === 'libre') return arriba + micro + r7.lista(ELIGE[papel()].map(([g, t]) => ({nombre: t, ir: 'dictar/' + g})), {rotulo: 'O elige qué es', i: 2}) + escribe;
       return arriba + micro + r7.lista(ejemplos(p).map(id => ({nombre: E().lecciones[id].corto, pasa: '«' + E().lecciones[id].dices + '»', accion: 'habla', datos: {leccion: id}})), {rotulo: 'O toca un ejemplo', i: 2}) + escribe;
@@ -156,7 +159,7 @@
     botonFijo: p => {
       const s = vivo(p), ya = {texto: 'Ya está', accion: 'listo'};
       if (s.fase === 'oye') return r7.botones(ya, {texto: s.pausa ? 'Seguir' : 'Pausar', accion: 'pausar'});
-      if (s.fase === 'dicho') return r7.botones(ya, {texto: 'Otra vez', accion: 'otra'});
+      if (s.fase === 'dicho') return r7.botones(ya);   // «Otra vez» es el micro
       if (s.fase === 'escribe') return r7.botones(ya, {texto: 'Mejor lo digo', accion: 'otra'});
       return '';
     },
@@ -195,6 +198,13 @@
       pausar(ev, el, p) { const s = vivo(p); if (s.fase !== 'oye') return; s.pausa = !s.pausa; s.t = Date.now(); VETA.repinta(); },
       escribe(ev, el, p) { const s = vivo(p); s.fase = 'escribe'; s.texto = ''; s.leccion = null; s.n = 0; s.t = Date.now(); VETA.repinta(); },
       otra(ev, el, p) { const s = vivo(p); s.fase = 'quieto'; s.texto = ''; s.leccion = null; s.n = 0; s.pausa = false; sinMedias(); VETA.repinta(); },
+      // «Otra vez» (el micro, cuando ya lo ha oído): se dicta otra vez lo mismo, desde el principio.
+      // Con «Reducir movimiento» no hay fase de escucha: vuelve al principio, a la espera de un toque
+      repite(ev, el, p) {
+        const s = vivo(p); if (s.fase !== 'dicho') return;
+        if (VETA.reducido() || !s.texto) { s.fase = 'quieto'; s.texto = ''; s.leccion = null; s.n = 0; s.pausa = false; sinMedias(); VETA.repinta(); return; }
+        s.fase = 'oye'; s.n = 0; s.pausa = false; s.t = Date.now(); guardaMedias(s); VETA.repinta();
+      },
       listo(ev, el, p) {
         const s = vivo(p), d = dictado(p), texto = String(s.texto || '').trim();
         if (!texto) { const t = document.getElementById('e-texto'); if (t) t.focus(); VETA.aviso(d ? 'Escribe primero lo que querías decir.' : 'Escribe primero qué quieres que aprenda.'); return; }
@@ -229,9 +239,10 @@
     cabDerecha: () => puntos(2),
     pinta: p => {
       const c = curso(p), l = leccion(c);
-      // cuatro filas de dos líneas; la que se puede cambiar lleva «›» y abre sus opciones
+      // lo que haré, en oro (no se cambia tocando: se dice de otra forma con «No es eso»); debajo, lo que sí se cambia, con «›»
       return r7.tarjeta({i: 0, de: 'Lo que dijiste', texto: '«' + l.dices + '»'}) +
-        r7.lista(FILAS.map(([campo, nombre]) => Object.assign({nombre, pasa: valor(l, c, campo)}, opciones(l, campo).length > 1 ? {hoja: 'e-cambia', datos: {campo, guion: p.guion}} : {})), {i: 1});
+        r7.tarjeta({i: 1, veta: true, de: FILAS[0][1], texto: valor(l, c, 'que')}) +
+        r7.lista(FILAS.slice(1).map(([campo, nombre]) => Object.assign({nombre, pasa: valor(l, c, campo)}, opciones(l, campo).length > 1 ? {hoja: 'e-cambia', datos: {campo, guion: p.guion}} : {})), {i: 2});
     },
     botonFijo: () => r7.botones({texto: 'Sí, es eso', accion: 'si'}, {texto: 'No es eso', accion: 'no'}),
     acciones: {
@@ -268,7 +279,7 @@
         r7.tarjeta({i: 1, veta: true, de: soloAviso(c) ? 'De esto te habría avisado' : dir() ? 'Esto habría hecho yo' : 'Esto te habría dejado escrito', texto: soloAviso(c) ? k.toca : k.hice}) +
         (l.casos.length > 1 ? r7.enlace({i: 2, texto: 'Ver otro caso', accion: 'otro'}) : '');
     },
-    botonFijo: () => r7.botones({texto: 'Sí, hazlo así', accion: 'si'}),
+    botonFijo: () => r7.botones({texto: 'Sí, hazlo así desde hoy', accion: 'si'}),
     acciones: {
       otro(ev, el, p) { const c = curso(p); c.caso = (c.caso || 0) + 1; ponCurso(c); VETA.repinta(); },
       // al llegar a «Hecho» los pasos salen del camino: atrás lleva a la pantalla desde la que se empezó, no a «Pruébalo»
@@ -279,7 +290,7 @@
   // ============ paso 4 · «Hecho. Ya lo sé hacer.» ============
   const desdeCaso = () => { const k = antesDe(); return k > 0 ? k : -1; };                   // > 0: no es Inicio
   paso('A3d', 'hecho', 'Hecho. Ya lo sé hacer.', 'R0', {   // abierto en frío cuelga de Inicio, no de «Pruébalo»
-    sub: p => (dir() ? 'Empiezo hoy. Nada sale sin una persona.' : soloAviso(curso(p)) ? 'Empiezo hoy. Te aviso y lo haces tú.' : 'Empiezo hoy. Nada sale sin ti.'),
+    sub: p => (dir() ? 'Empiezo hoy. Nada sale sin una persona.' : soloAviso(curso(p)) ? 'Empiezo hoy. Te aviso y lo haces tú.' : 'Empiezo hoy. ' + VETA.PROMESA.nada),
     cabDerecha: () => puntos(4),
     pinta: p => {
       const c = curso(p), l = leccion(c);

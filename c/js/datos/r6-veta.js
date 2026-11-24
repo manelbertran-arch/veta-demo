@@ -15,7 +15,7 @@
     {n: 2, nombre: 'Te lo dejo escrito', texto: 'Te dejo el mensaje listo. Tú lo envías.'},
     {n: 3, nombre: 'Lo apunto yo', texto: 'Apunto, marco y guardo yo. No envío nada.'},
     {n: 4, nombre: 'Lo hago yo y te lo cuento', texto: 'Lo dejo hecho y te lo cuento. Si hay que enviar algo, antes me dices que sí.'},
-    {n: 5, nombre: 'Lo envío yo', texto: 'Todavía no. Nada se envía sin ti.', cerrado: true}
+    {n: 5, nombre: 'Lo envío yo', texto: 'Todavía no. Nada sale sin ti.', cerrado: true}
   ];
 
   // ---- dónde está cada cosa que hago (paso 1-4) y la pregunta para subir, con sus casos ----
@@ -33,6 +33,7 @@
   // ---- el trabajo nuevo que se puede subir de verdad: confirmar las visitas el día antes ----
   // pulido: al decir que sí pasa a 'prueba' y ahí se queda (una prueba que empieza hoy no tiene historial: no pregunta otra vez)
   // su sitio vive en VETA.r6.reglaVisitas(): 'propuesta' (paso 1) → 'prueba' (paso 2) → 'sola' (paso 3)
+  const F = iso => VETA.fecha.corta(iso);
   V.visitas = {
     id: 'r-visitas', nombre: 'Confirmar las visitas el día antes', corto: 'Confirmar las visitas el día antes',
     paso: {propuesta: 1, prueba: 2, sola: 3},
@@ -49,19 +50,19 @@
     },
     // los 9 casos en que confirmaste tú (inventados para la demo, con clientes que ya existen)
     casos: [
-      {cuando: 'vie 20 nov', nombre: 'Elena Vives', av: 'elena', dijo: 'Sí, mañana a las 11:00 nos vemos en el portal'},
-      {cuando: '13 nov', nombre: 'Marta Puig', av: 'marta', dijo: 'Perfecto, allí estaré'},
-      {cuando: '7 nov', nombre: 'Jordi Ferrer', av: 'jordi', dijo: 'Sí, a las 18:00 me va bien'},
-      {cuando: '31 oct', nombre: 'Sergi Font', av: 'sergi', dijo: 'Confirmado, gracias'},
-      {cuando: '24 oct', nombre: 'Anna Bosch', av: 'anna-bosch', dijo: 'Sí, vamos los dos'},
-      {cuando: '17 oct', nombre: 'Toni Ribas', av: 'toni', dijo: '¿Podemos a las 12:00 en vez de a las 11:00?', distinto: 'Cambiasteis la hora'},
-      {cuando: '10 oct', nombre: 'Família Casals', av: 'casals', dijo: 'Sí, allí estaremos'},
-      {cuando: '3 oct', nombre: 'Núria Camps', av: 'nuria', dijo: 'Sí, perfecto'},
-      {cuando: '26 sep', nombre: 'Rosa Vidal', av: 'rosa', dijo: 'Ahí estaré'}
+      {cuando: F('2026-11-20'), nombre: 'Elena Vives', av: 'elena', dijo: 'Sí, mañana a las 11:00 nos vemos en el portal'},
+      {cuando: F('2026-11-13'), nombre: 'Marta Puig', av: 'marta', dijo: 'Perfecto, allí estaré'},
+      {cuando: F('2026-11-07'), nombre: 'Jordi Ferrer', av: 'jordi', dijo: 'Sí, a las 18:00 me va bien'},
+      {cuando: F('2026-10-31'), nombre: 'Sergi Font', av: 'sergi', dijo: 'Confirmado, gracias'},
+      {cuando: F('2026-10-24'), nombre: 'Anna Bosch', av: 'anna-bosch', dijo: 'Sí, vamos los dos'},
+      {cuando: F('2026-10-17'), nombre: 'Toni Ribas', av: 'toni', dijo: '¿Podemos a las 12:00 en vez de a las 11:00?', distinto: 'Cambiasteis la hora'},
+      {cuando: F('2026-10-10'), nombre: 'Família Casals', av: 'casals', dijo: 'Sí, allí estaremos'},
+      {cuando: F('2026-10-03'), nombre: 'Núria Camps', av: 'nuria', dijo: 'Sí, perfecto'},
+      {cuando: F('2026-09-26'), nombre: 'Rosa Vidal', av: 'rosa', dijo: 'Ahí estaré'}
     ],
     hechas: 9, corregidas: 1,
     // lo que digo al empezar la prueba, en el sitio de la pregunta (sin historial: empieza hoy)
-    hecho: 'Hecho. El viernes te dejo escritos los mensajes de Marta y Elena. Cuando lo haya hecho unas cuantas veces, te pregunto si doy un paso más.',
+    hecho: 'El viernes te dejo escritos los mensajes de Marta y Elena. Cuando lo haya hecho unas cuantas veces, te pregunto si doy un paso más.',
     // lo que pregunta cada paso para subir al siguiente
     sube: {
       propuesta: {pregunta: 'Esto lo has hecho 9 veces. ¿Te lo dejo escrito yo el día antes?', boton: 'Sí, déjamelo escrito'}

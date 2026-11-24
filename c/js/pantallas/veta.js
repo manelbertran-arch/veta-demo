@@ -1,5 +1,5 @@
 /* Veta demo · pantallas · veta.js · carril C (Veta y cuenta)
-   - A8 · Veta · #/veta   (la raíz de la agente: lo que propone, lo que ya hace y «Además»; absorbe «Ya lo hago yo», A9)
+   - A8 · Veta · #/veta   (la raíz de la agente: lo que propone, lo que ya hace y «Cómo voy»; absorbe «Ya lo hago yo», A9)
    Y lo que comparten las pantallas del carril C (VETA.c): cuentas de chats, nombres y pasos de cada trabajo,
    lo que cerró sola, lo aprendido y «Lo que dirección ve de ti». Se carga antes que el resto de pantallas de C. */
 (function () {
@@ -83,21 +83,22 @@
     ];
   };
 
-  // ---- A8 · Veta: tres listas con rótulo. Cada trabajo abre su pantalla (regla/:id); el pie enseña algo nuevo ----
+  // ---- A8 · Veta: tres listas con rótulo. Cada trabajo abre su pantalla (regla/:id). Sin botón fijo (D2): el micro de la barra ya
+  // enseña, y la puerta escrita es el enlace del final. La cola no lleva «9 veces»: lo dice la segunda línea («Lo has hecho 9 veces») ----
   VETA.pantalla('A8', {
     titulo: 'Veta',
     pinta: () => {
       const pr = C.propuestas(), hago = C.hago(), fuera = C.noHago(), apr = C.aprendidoN();
-      return (pr.length ? R7().lista(pr.map(x => ({nombre: C.corto(x.id), dato: vecesTexto(x.veces), ir: 'regla/' + x.id})), {rotulo: 'Te lo propongo', i: 0}) : '') +
-        (hago.length ? R7().lista(hago.map(x => ({nombre: C.corto(x.id), pasa: x.prueba || null, ir: 'regla/' + x.id})), {rotulo: 'Ya lo hago yo', i: 1}) : '') +
+      const yaNo = fuera.length ? [{nombre: 'Lo que ya no hago', dato: fuera.length, hoja: 'c-nohago'}] : [];
+      return (pr.length ? R7().lista(pr.map(x => ({nombre: C.corto(x.id), pasa: `Lo has hecho ${vecesTexto(x.veces)}`, ir: 'regla/' + x.id})), {rotulo: 'Te lo propongo', i: 0}) : '') +
+        (hago.length || yaNo.length ? R7().lista(hago.map(x => ({nombre: C.corto(x.id), pasa: x.prueba || null, ir: 'regla/' + x.id})).concat(yaNo), {rotulo: 'Ya lo hago yo', i: 1}) : '') +
         R7().lista([
           {nombre: 'Lo he aprendido de ti', dato: apr || null, ir: 'aprendido'},
           {nombre: 'Tu semana', ir: 'semana'},
           {nombre: 'Antes y ahora', ir: 'antes-ahora'},
-          {nombre: 'La semana pasada', ir: 'reglas/semana-pasada'},
-          fuera.length ? {nombre: 'Lo que ya no hago', dato: fuera.length, hoja: 'c-nohago'} : null
-        ], {rotulo: 'Además', i: 2});
-    },
-    botonFijo: () => R7().botones({texto: 'Enséñale a Veta', icono: 'mic', ir: 'dictar/orden'})
+          {nombre: 'La semana pasada', ir: 'reglas/semana-pasada'}
+        ], {rotulo: 'Cómo voy', i: 2}) +
+        R7().enlace({texto: 'Enséñale algo a Veta', ir: 'dictar/orden', i: 3});
+    }
   });
 })();

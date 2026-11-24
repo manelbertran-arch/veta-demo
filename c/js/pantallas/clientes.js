@@ -1,7 +1,10 @@
 /* Veta demo · pantallas · clientes.js · B (Clientes) · ronda 8
-   - A5 · Clientes · #/clientes: el buscador siempre a la vista (un nombre o una pregunta a Veta), cinco filtros con su
-     cuenta (Todos · Te necesitan · Oportunidades · Parados · Esperando) y la lista: cada cliente con su cara y su motivo.
-     Pastilla roja, solo en quien está «Sin contestar». Al tocar el buscador vacío salen las tres preguntas preparadas.
+   - A5 · Clientes · #/clientes: el buscador siempre a la vista (un nombre o una pregunta a Veta; de marcador, una pregunta
+     de verdad), cinco filtros con su cuenta (Todos · Te necesitan · Parados · Oportunidades · Esperando) y la lista: cada
+     cliente con su cara y su motivo, en un renglón. Pastilla roja, solo en quien está «Sin contestar».
+     Al tocar el buscador vacío salen las tres preguntas preparadas.
+     Las caras (D16): quien tiene una operación contigo lleva su foto y va delante; quien solo ha pasado (una visita, una
+     valoración) lleva sus iniciales y va detrás, por orden alfabético. Nunca una foto suelta entre iniciales.
      «Te necesitan» son las mismas personas que el Inicio (VETA.r7.quienes('hoy'), una sola fuente).
      Dirección ve solo sus clientes: a los de otra persona se llega desde Equipo, por un asunto concreto.
    - La ruta vieja #/clientes/al-dia la redirige el núcleo aquí y deja dicho el filtro «Todos» (VETA.est 'r8.filtroClientes').
@@ -18,13 +21,15 @@
   // te necesita = está en lo que te toca hoy: las mismas personas que el Inicio
   const hoyIds = () => [...new Set(r7.quienes('hoy'))];
   const necesita = (c, s) => (Array.isArray(s) ? s : hoyIds()).includes(c.id);
+  // con operación (abierta o cerrada) = cliente de ficha completa, con su foto; el resto son contactos, con iniciales
+  const conOperacion = c => !!c.operacion;
   const enOrden = l => { const s = hoyIds(); return l.slice().sort((a, b) => (necesita(b, s) - necesita(a, s)) || (RANGO[a.estado] ?? 4) - (RANGO[b.estado] ?? 4) ||
-    (a.estado === 'cerrado') - (b.estado === 'cerrado') || (necesita(a, s) ? ord(a.id) - ord(b.id) : a.nombre.localeCompare(b.nombre, 'es'))); };
+    (conOperacion(b) - conOperacion(a)) || (a.estado === 'cerrado') - (b.estado === 'cerrado') || (necesita(a, s) ? ord(a.id) - ord(b.id) : a.nombre.localeCompare(b.nombre, 'es'))); };
   const todos = () => enOrden(mios());
   const teNecesitan = () => hoyIds().map(id => B.cli(id)).filter(Boolean);   // en el orden del Inicio
   const de = estado => () => todos().filter(c => c.estado === estado);
   const FILTROS = [{id: 'todos', texto: 'Todos', l: todos}, {id: 'necesitan', texto: 'Te necesitan', l: teNecesitan},
-    {id: 'oportunidad', texto: 'Oportunidades', l: de('oportunidad')}, {id: 'parado', texto: 'Parados', l: de('parado')}, {id: 'esperando', texto: 'Esperando', l: de('esperando')}];
+    {id: 'parado', texto: 'Parados', l: de('parado')}, {id: 'oportunidad', texto: 'Oportunidades', l: de('oportunidad')}, {id: 'esperando', texto: 'Esperando', l: de('esperando')}];
   const VACIO = {todos: 'Todavía no llevas ningún cliente.', necesitan: 'Ahora nadie te necesita.', oportunidad: 'Ahora no hay oportunidades.',
     parado: 'No tienes a nadie parado.', esperando: 'No esperas la respuesta de nadie.'};
 
@@ -53,11 +58,11 @@
       const base = todos().concat(teNecesitan().filter(c => c.cartera === false)), pregunta = esPregunta(st.q);
       const hay = (pregunta ? nombrados(base, st.q) : base.filter(c => B.norm(c.nombre).includes(q))).map(fila);
       const preg = {cara: 'veta', nombre: 'Preguntárselo a Veta', pasa: `«${st.q.trim()}»`, ir: B.rutaPregunta(st.q), datos: {limpia: '1'}};
-      return (pregunta || hay.length ? '' : UI.vacio({titulo: 'Nadie se llama así.'})) + r7.lista(pregunta ? [preg].concat(hay) : hay.concat([preg]));
+      return (pregunta || hay.length ? '' : r7.vacio('Nadie se llama así.')) + r7.lista(pregunta ? [preg].concat(hay) : hay.concat([preg]));
     }
     if (st.foco) return r7.lista(Object.entries(B.preguntas()).map(([k, x]) => ({nombre: x.pregunta, ir: 'pregunta/' + k})), {rotulo: 'Pregunta a Veta'});
     const f = FILTROS.find(x => x.id === st.vista) || FILTROS[0], l = f.l();
-    return l.length ? r7.lista(l.map(fila)) : UI.vacio({titulo: VACIO[f.id]});
+    return l.length ? r7.lista(l.map(fila)) : r7.vacio(VACIO[f.id]);
   }
   const buscando = () => !!st.q.trim() || st.foco;
   const refresca = el => { const z = el.querySelector('.rb-zona'), f = el.querySelector('.rb-filtros'); if (z) z.innerHTML = zona(); if (f) f.hidden = buscando(); };
@@ -70,7 +75,8 @@
       // quien llega por la ruta vieja de «los que no te necesitan» ve a todos
       if (VETA.est.lee('r8.filtroClientes', null)) { st.vista = 'todos'; st.q = ''; VETA.est.quita('r8.filtroClientes'); }
       st.foco = false;
-      return UI.campo({buscar: true, id: 'b-buscar', placeholder: 'Busca un nombre o pregunta algo', valor: st.q}) +
+      // el marcador es una pregunta de verdad (la primera de las preparadas de quien mira): así se ve qué se puede preguntar
+      return UI.campo({buscar: true, id: 'b-buscar', placeholder: (Object.values(B.preguntas())[0] || {}).pregunta || 'Busca un nombre', valor: st.q}) +
         `<div class="rb-filtros"${buscando() ? ' hidden' : ''}>${r7.filtros(FILTROS.map(f => ({id: f.id, texto: f.texto, cuenta: f.l().length})), {valor: st.vista, accion: 'vista', etiqueta: 'Qué clientes ver'})}</div>` +
         `<div class="rb-zona">${zona()}</div>`;
     },

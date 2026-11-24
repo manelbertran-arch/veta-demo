@@ -1,20 +1,16 @@
 /* Veta demo · pantallas · reparto.js · paquete D (Dirección)
-   G5 · Reparto · #/reparto — la cartera de Teresa (de baja) y los contactos que nadie lleva. Ronda 8: dos tarjetas (lo que pasa y, en oro,
-   lo que haría Veta), la lista de contactos sin pastillas y un botón. «Más» (hoja d-reparto-mas): elegir a otra persona · clientes con dos chats.
+   G5 · Reparto · #/reparto — los clientes de Teresa (de baja): una sola decisión. Dos tarjetas (lo que pasa y, en oro, lo que haría Veta)
+   y un botón. «Más» (hoja d-reparto-mas): elegir a otra persona · clientes con dos chats · enseñarle a Veta con este caso.
+   Los contactos que nadie lleva ya no salen aquí (D4): cada uno es una decisión de Inicio.
+   Al pasarlos, el final de toda la app (D12): «✓ Pasados a Laura · 9:41 · Deshacer» arriba y «Siguiente: …» en el pie.
    G5b · Pasar la cartera · #/reparto/confirmar — de quién, a quién, cuánto y qué cambia, antes de tocar nada. */
 (function () {
   'use strict';
   const esc = VETA.esc, M = VETA.modelo, X = VETA.dir, r7 = VETA.r7;
+  const BAJA = '2026-11-16', VISITA = '2026-11-26T10:00';   // desde cuándo está de baja Teresa · su próxima visita
 
   const destino = a => a === 'dos' ? 'Laura y Anna' : X.persona(a).corto;
   const lineaCartera = a => a === 'dos' ? '34 conversaciones de Teresa, repartidas entre Laura y Anna' : '34 conversaciones de Teresa, pasadas a ' + destino(a);
-
-  // cada contacto que nadie lleva: sin pastilla (las tres dirían lo mismo); la segunda línea dice a quién se lo daría Veta
-  const contactoFila = c => {
-    const as = X.asignado(c.id), ap = X.aparcado(c.id);
-    return {cara: c.id, nombre: c.nombre, ir: 'asunto/' + c.id, datos: {vt: 'contacto-' + c.id},
-      pasa: as ? (as.a === VETA.yo().id ? 'Ahora lo llevas tú' : 'Ahora con ' + X.persona(as.a).corto) : ap ? (ap.que === 'luego' ? 'Lo dejaste para luego' : 'Lo descartaste') : 'Yo se lo daría a ' + X.persona(c.propone).corto};
-  };
   const propone = a => ({
     de: a === 'laura' ? 'Yo se los pasaría a Laura' : a === 'anna' ? 'Has elegido a Anna' : 'Has elegido repartirlos entre Laura y Anna',
     texto: a === 'dos' ? 'Trabajan en Gràcia, como Teresa: 17 conversaciones cada una.' : 'Trabaja en Gràcia, como Teresa.'});
@@ -27,20 +23,18 @@
     casoDictado: () => ({de: 'reparto', quien: 'teresa', titulo: 'Los clientes de Teresa', texto: propone(X.carteraA()).de + '. ' + propone(X.carteraA()).texto}),
     pinta: () => {
       const hecha = X.cartera(), a = X.carteraA();
-      const sin = (VETA.datos.contactos || []).filter(c => c.sinDueno);
-      let h = r7.tarjeta({de: 'Teresa Gil, de baja desde el lunes 16', texto: '34 conversaciones con 12 clientes. 3 visitas esta semana.', vt: 'cola-d-teresa', i: 0});
-      h += hecha ? r7.tarjeta({de: 'Decidido' + (hecha.hora ? ' a las ' + hecha.hora : ''), texto: (hecha.extra && hecha.extra.linea) || lineaCartera(a), i: 1})
-        : r7.tarjeta(Object.assign({veta: true, i: 1}, propone(a)));
-      h += r7.lista(sin.map(contactoFila), {i: 2});
-      return h;
+      return (hecha ? r7.hecho({texto: a === 'dos' ? 'Repartidos entre Laura y Anna' : 'Pasados a ' + destino(a), hora: hecha.hora ? VETA.fecha.hora(hecha.hora) : '', deshacer: 'deshacer-cartera', vt: 'd-teresa'}) : '') +
+        r7.tarjeta({de: 'Teresa Gil, de baja desde el ' + VETA.fecha.corta(BAJA, {frase: true}), texto: '34 conversaciones con 12 clientes. 3 visitas esta semana.', vt: 'cola-d-teresa', i: 0}) +
+        (hecha ? '' : r7.tarjeta(Object.assign({veta: true, i: 1}, propone(a))));
     },
     botonFijo: () => {
-      if (X.cartera()) return r7.botones(null, {texto: 'Deshacer', accion: 'deshacer-cartera'});
+      if (X.cartera()) return r7.sigue(VETA.d1.siguiente());
       const a = X.carteraA();
       return r7.botones({texto: a === 'dos' ? 'Repartirlos entre las dos' : 'Pasárselos a ' + destino(a), ir: 'reparto/confirmar'});
     },
     acciones: {
-      'deshacer-cartera'() { M.deshaz('d-teresa'); VETA.repinta({hecho: 'd-teresa'}); VETA.d1.numeros(); }
+      'deshacer-cartera'() { M.deshaz('d-teresa'); VETA.repinta({hecho: 'd-teresa'}); VETA.d1.numeros(); },
+      'd-sigue': (ev, el) => VETA.d1.sigue(ev, el)
     }
   });
 
@@ -58,8 +52,8 @@
       // «Qué cambia» va primero, justo bajo el dibujo; «De quién / A quién» repiten el dibujo y en el móvil no salen
       h += `<dl class="d-confirma" data-i="1">` +
         `<div><dt>Qué cambia</dt><dd>${dos ? 'Laura y Anna las verán' : esc(destino(a)) + ' las verá'} mañana en su Inicio. Los clientes no reciben nada: ${dos ? 'cada una decide' : esc(destino(a)) + ' decide'} cuándo escribe a cada uno.</dd></div>` +
-        `<div><dt>Cuánto</dt><dd>34 conversaciones de 12 clientes activos, con 3 visitas esta semana. La próxima: jueves 26, 10:00, con Ramon Pujol.</dd></div>` +
-        `<div class="d-solo-ancho"><dt>De quién</dt><dd>Teresa Gil, de baja desde el lunes 16.</dd></div>` +
+        `<div><dt>Cuánto</dt><dd>34 conversaciones de 12 clientes activos, con 3 visitas esta semana. La próxima: ${esc(VETA.fecha.corta(VISITA, {frase: true}))}, con Ramon Pujol.</dd></div>` +
+        `<div class="d-solo-ancho"><dt>De quién</dt><dd>Teresa Gil, de baja desde el ${esc(VETA.fecha.corta(BAJA, {frase: true}))}.</dd></div>` +
         `<div class="d-solo-ancho"><dt>A quién</dt><dd>${dos ? 'Laura Martí y Anna Costa, oficina de Gràcia: 17 conversaciones cada una.' : esc(X.persona(a).nombre) + ', oficina de Gràcia.'}</dd></div></dl>`;
       return h;
     },
@@ -71,8 +65,7 @@
       pasar() {
         const a = X.carteraA();
         M.marca('d-teresa', 'hecha', {a, linea: lineaCartera(a)});
-        X.vuelve(); VETA.d1.numeros();
-        setTimeout(() => VETA.aviso(lineaCartera(a) + '.', {deshacer: () => { M.deshaz('d-teresa'); VETA.repinta(); VETA.d1.numeros(); }}), 60);
+        X.vuelve(); VETA.d1.numeros();   // vuelve al Reparto, que ya enseña su «hecho» con «Deshacer»: sin aviso negro
       }
     }
   });

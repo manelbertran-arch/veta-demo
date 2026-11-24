@@ -7,7 +7,7 @@
   'use strict';
   const raiz = document.documentElement;
   const COLORES = ['veta', 'joya', 'medianoche', 'nube', 'lima', 'coral', 'lavanda', 'mocha', 'cobalto', 'zafiro', 'aurora', 'salvia'];
-  const NOMBRES = {veta: 'Veta', joya: 'Joya', medianoche: 'Medianoche', nube: 'Nube y petróleo', lima: 'Bosque y lima', coral: 'Coral', lavanda: 'Lavanda', mocha: 'Mocha y musgo', cobalto: 'Cobalto y lima', zafiro: 'Zafiro y ámbar', aurora: 'Aurora', salvia: 'Salvia y terracota'};
+  const NOMBRES = {veta: 'Veta', joya: 'Joya', medianoche: 'Medianoche', nube: 'Nube', lima: 'Bosque', coral: 'Coral', lavanda: 'Lavanda', mocha: 'Mocha', cobalto: 'Cobalto', zafiro: 'Zafiro', aurora: 'Aurora', salvia: 'Salvia'};
   const MODOS = {claro: 'Claro', oscuro: 'Oscuro', auto: 'Automático'};
   const mm = q => !!(window.matchMedia && matchMedia(q).matches);
 

@@ -1,7 +1,7 @@
 /* Veta demo · hojas · veta.js · carril C (Veta y cuenta)
    Todas salen de las tres plantillas (acciones, texto, elegir), salvo las que llevan campos (h24, c-avisos) y las instrucciones de h31;
    ninguna lleva iconos a la izquierda.
-   De siempre: h18 Un caso · h19 Los casos iguales · h20 Cambiar algo (de un trabajo) · h21 Qué he entendido · h22 Subir un paso ·
+   De siempre: h18 Un caso · h19 Los casos iguales · h20 Cambiar algo (de un trabajo; con la forma de «Más») · h21 Qué he entendido · h22 Subir un paso ·
    h23 Una práctica · h24 Tus tiempos · h25 Una semana anterior · h28 Sin señal · h30 ¿Qué chat borras? · h31 Poner Veta en la pantalla
    de inicio · h32 Un hallazgo del mapa · h33 Calendario · c-mano (lo que aún haces a mano) · c-avisos · c-anadir (añadir un chat).
    Ronda 8 (lo que antes se desplegaba en la fila, ahora en una hoja): c-lee (un texto corto, según `que`) · c-veces (los casos de un
@@ -46,7 +46,7 @@
 
   // ---- h19 · Los casos iguales ----
   VETA.hojaTexto('h19', {
-    titulo: d => (d.regla === 'r-recordatorios' ? 'Los 6 casos' : 'Las 11 veces iguales'),
+    titulo: d => (d.regla === 'r-recordatorios' ? 'Dónde habría tocado' : `${(((M.regla(d.regla) || {}).casos || {}).comoYo || []).length} veces lo hiciste igual`),
     bloques: d => {
       const r = M.regla(d.regla) || {}, l = d.regla === 'r-recordatorios' ? (r.casos || []) : ((r.casos || {}).comoYo || []);
       return [{texto: d.regla === 'r-recordatorios' ? 'Un comprador tardó más de tres días en contestarte. Aquí habría tocado un recordatorio.' : 'Alguien pidió una valoración y al día siguiente le enviaste el informe del piso.'},
@@ -54,32 +54,32 @@
     }
   });
 
-  // ---- c-veces · Los casos de un trabajo: los iguales (h19) y, uno a uno, los distintos o los de la prueba (h18) ----
+  // ---- c-veces · Las veces que lo hiciste distinto, una a una (h18). Las iguales (h19) y los casos de la prueba se abren desde la pantalla ----
   VETA.hojaAcciones('c-veces', {
-    titulo: d => (d.regla === 'r-cancelaciones' ? 'Lo que te habría propuesto' : `Las ${C.veces(M.regla(d.regla))} veces`),
+    titulo: d => `${((((M.regla(d.regla) || {}).casos || {}).distinto) || []).length} veces lo hiciste distinto`,
     opciones: d => {
-      if (d.regla === 'r-cancelaciones') return D().aPrueba.map(c => ({texto: `${c.nombre} · ${c.cuando}`, sub: c.propone, hoja: 'h18', datos: {caso: c.id}}));
-      const r = M.regla(d.regla) || {}, k = r.casos || {}, ex = C.excepciones(d.regla);
-      return [{texto: `${(k.comoYo || []).length} veces lo hiciste igual`, sub: 'Al día siguiente enviaste el informe', hoja: 'h19'}].concat((k.distinto || []).map(c =>
-        ({texto: `${c.nombre} · ${c.cuando}`, sub: ((D().distinto[c.cliente] || {}).motivo || 'Lo hiciste distinto') + (ex.includes(c.cliente) ? ' · con él, no' : ''), hoja: 'h18', datos: {caso: c.cliente}})));
+      const k = (M.regla(d.regla) || {}).casos || {}, ex = C.excepciones(d.regla);
+      return (k.distinto || []).map(c => ({cara: c.cliente, texto: `${c.nombre} · ${c.cuando}`, sub: ((D().distinto[c.cliente] || {}).motivo || 'Lo hiciste distinto') + (ex.includes(c.cliente) ? ' · con él, no' : ''), hoja: 'h18', datos: {caso: c.cliente}}));
     }
   });
 
-  // ---- h20 · Cambiar algo (de un trabajo) ----
-  VETA.hojaAcciones('h20', {
+  // ---- h20 · Cambiar algo (de un trabajo): la forma de «Más». Lo frecuente primero, «Decirlo de otra forma» (lleva a Dictar con
+  // este trabajo como caso) y lo que lo quita, al final y en rojo. «No con un cliente» sale aquí solo en una propuesta: cuando el
+  // trabajo ya lo hago yo, es una fila de su pantalla ----
+  VETA.hojaMas('h20', {
     titulo: 'Cambiar algo',
+    ensena: 'Decirlo de otra forma',
     opciones: d => {
       const r = M.regla(d.de) || {}, activa = r.estado === 'activa', ofi = C.lee('aOficina', {})[d.de];
       return [
         r.estado === 'a-prueba' ? {texto: 'Que lo haga ya, sin esperar al 7 dic', hace: () => C.cambiaRegla(d.de, 'activa', 'Ya lo hago yo · te lo dejaré en Inicio')} : null,
-        {texto: activa ? 'Dejar de hacerlo' : 'No lo quiero', peligro: true, hace: () => C.cambiaRegla(d.de, 'descartada', activa ? 'Ya no lo hago · lo dejé de hacer hoy' : 'Ya no lo hago · no te lo volveré a proponer')},
-        {texto: 'Decirlo de otra forma', ir: 'dictar/orden'},
-        {texto: 'No con un cliente', hoja: 'c-excepto'},
-        ofi ? null : {texto: 'Proponérselo a la oficina', sub: 'Montse lo verá con tu nombre y decidirá si lo prueba toda la oficina.', hace: () => {
+        r.estado === 'propuesta' || r.estado === 'nueva' ? {texto: 'No con un cliente', hoja: 'c-excepto'} : null,
+        ofi ? null : {texto: 'Proponérselo a la oficina', hace: () => {
           const o = C.lee('aOficina', {}); o[d.de] = VETA.ahora(); C.pon('aOficina', o); VETA.repinta();
           VETA.aviso('Se lo he propuesto a la oficina, con tu nombre', {deshacer: () => { const x = C.lee('aOficina', {}); delete x[d.de]; C.pon('aOficina', x); VETA.repinta(); }});
-        }}
-      ].filter(Boolean);
+        }},
+        {texto: activa ? 'Dejar de hacerlo' : 'No lo quiero', peligro: true, hace: () => C.cambiaRegla(d.de, 'descartada', activa ? 'Ya no lo hago · lo dejé de hacer hoy' : 'Ya no lo hago · no te lo volveré a proponer')}
+      ];
     }
   });
   // ---- c-excepto · No con un cliente ----
@@ -197,7 +197,7 @@
   VETA.hojaAcciones('h30', {
     titulo: d => (d.de ? 'Qué se ha borrado' : '¿Qué chat borras?'),
     texto: d => (d.de ? '' : 'Desaparece en 72 h y te digo qué se ha borrado.'),
-    bloques: d => (d.de ? [{titulo: d.de, texto: '1 conversación · pedido hoy · borrado completo antes del jueves 26'}, {texto: 'Lo que ya estaba en la ficha de un cliente se queda en la ficha.'}] : null),
+    bloques: d => (d.de ? [{titulo: d.de, texto: `1 conversación · pedido hoy · borrado completo antes del ${VETA.fecha.corta('2026-11-26', {frase: true})}`}, {texto: 'Lo que ya estaba en la ficha de un cliente se queda en la ficha.'}] : null),
     opciones: d => (d.de ? [] : borrables().map(n => ({texto: n, peligro: true, cierra: false,
       hace: () => { C.pon('borrados', C.lee('borrados', []).concat([{nombre: n, hora: VETA.ahora()}])); VETA.hoja('h30', {de: n}); repintaSiVe('cuenta/chats'); }})))
   });
@@ -254,7 +254,7 @@
   // ---- c-mano · Lo que aún haces a mano (A14) ----
   VETA.hojaTexto('c-mano', {
     titulo: 'Lo que aún haces a mano',
-    bloques: () => [{texto: 'Trabajos que se repiten en tus chats y que todavía haces tú.'}, {lista: D().aMano.map(([t, n]) => `${t} · ${n} veces`)}],
+    bloques: () => [{texto: 'Trabajos que se repiten en tus chats y que todavía haces tú.'}, {lista: D().aMano.map(([t, n]) => `${t} · lo has hecho ${n} veces`)}],
     boton: {texto: 'Ver el primero', ir: 'regla/r-valoraciones'}
   });
 
@@ -264,7 +264,7 @@
     pinta: () => {
       const av = C.lee('avisos', false);
       return `<p class="hoja-x">Te aviso solo de lo que no puede esperar.</p>` +
-        (av ? UI.lineaHecho({texto: 'Avisos permitidos', hora: av, boton: {texto: 'Deshacer', accion: 'quita'}}) : UI.boton({texto: 'Permitir avisos', accion: 'permite'})) +
+        (av ? R7().hecho({texto: 'Avisos permitidos', hora: av, deshacer: 'quita'}) : UI.boton({texto: 'Permitir avisos', accion: 'permite'})) +
         R7().lista([UI.interruptor({texto: 'Recibir el parte a las 19:30', on: C.lee('parteCorreo', false), accion: 'parte'})]);
     },
     acciones: {

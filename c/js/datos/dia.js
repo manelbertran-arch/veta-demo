@@ -121,6 +121,8 @@
     {texto: 'Hoy hablaste con Marta, Elena, Pere, Núria y Jordi.'},
     {titulo: 'Prometiste', texto: 'Llamar a Elena el jueves 26.'},
     {titulo: 'Vence mañana', texto: 'Nada.'},
-    {titulo: 'Esta semana', lista: ['Mié 25 · la nómina de Elena', 'Jue 26 · llamar a Elena y la respuesta de Marta', 'Vie 27 · el certificado de Pere']},
+    // `semana`: lo mismo con su fecha, para la hoja «Día cerrado» (filas con la fecha a la derecha, por VETA.fecha)
+    {titulo: 'Esta semana', lista: ['Mié 25 · la nómina de Elena', 'Jue 26 · llamar a Elena y la respuesta de Marta', 'Vie 27 · el certificado de Pere'],
+      semana: [{iso: '2026-11-25', que: 'La nómina de Elena'}, {iso: '2026-11-26', que: 'Llamar a Elena'}, {iso: '2026-11-26', que: 'La respuesta de Marta'}, {iso: '2026-11-27', que: 'El certificado de Pere'}]},
     {texto: 'Sigo vigilando lo que queda abierto. Mañana abres la app y lo urgente ya está preparado.'}]};
 })();

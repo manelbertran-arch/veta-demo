@@ -13,15 +13,15 @@
       contacto: 'carmen', tipo: 'contacto', zona: 'Gràcia', decision: 'd-carmen', propone: 'laura',
       etiqueta: 'No la lleva nadie · Gràcia',
       pide: {texto: 'Busco piso de 3 habitaciones en Gràcia, hasta 450.000 €', origen: 'WhatsApp de la oficina · ayer, 19:10'},
-      paso: [{cuando: 'Ayer 19:10', texto: 'Escribe al WhatsApp de la oficina'}, {cuando: 'Ayer 19:11', texto: 'Nadie lleva los contactos que llegan fuera de horario'}, {cuando: 'Hoy 8:00', texto: 'Sigue sin respuesta: 13 horas'}],
+      paso: [{cuando: 'Ayer, 19:10', texto: 'Escribe al WhatsApp de la oficina'}, {cuando: 'Ayer, 19:11', texto: 'Nadie lleva los contactos que llegan fuera de horario'}, {cuando: 'Hoy, 8:00', texto: 'Sigue sin respuesta: 13 horas'}],
       encaja: {piso: 'verdi', texto: 'Verdi 42 · 3 habitaciones · 395.000 €', pega: 'Sin ascensor'},
       pueden: [{id: 'laura', sub: 'Gràcia · yo se lo daría'}, {id: 'anna', sub: 'Gràcia'}, {id: 'montse', sub: 'Sant Gervasi', tu: true}]
     },
     'pau-rios': {
       contacto: 'pau-rios', tipo: 'contacto', zona: 'Eixample', propone: 'david',
       etiqueta: 'No lo lleva nadie · Eixample',
-      pide: {texto: '¿Tenéis algún local en el Eixample para alquilar?', origen: 'WhatsApp de la oficina · sábado 21, 13:20'},
-      paso: [{cuando: 'Sáb 21, 13:20', texto: 'Escribe al WhatsApp de la oficina'}, {cuando: 'Sáb 21, 13:21', texto: 'Nadie lleva los contactos del fin de semana'}, {cuando: 'Hoy 8:00', texto: 'Sigue sin respuesta: 2 días'}],
+      pide: {texto: '¿Tenéis algún local en el Eixample para alquilar?', origen: 'WhatsApp de la oficina · sáb 21, 13:20'},
+      paso: [{cuando: 'Sáb 21, 13:20', texto: 'Escribe al WhatsApp de la oficina'}, {cuando: 'Sáb 21, 13:21', texto: 'Nadie lleva los contactos del fin de semana'}, {cuando: 'Hoy, 8:00', texto: 'Sigue sin respuesta: 2 días'}],
       noHay: 'No tenéis ningún local en el Eixample. Queda apuntado en «Piden lo que no tenéis».',
       pueden: [{id: 'david', sub: 'Sant Gervasi · yo se lo daría'}, {id: 'marc', sub: 'Sant Gervasi'}, {id: 'montse', sub: 'Sant Gervasi', tu: true}]
     },
@@ -29,15 +29,15 @@
       contacto: 'lucia', tipo: 'contacto', zona: 'Sant Gervasi', propone: 'marc',
       etiqueta: 'No la lleva nadie · Sant Gervasi',
       pide: {texto: 'Quiero vender el piso de mis padres en Sant Gervasi. ¿Cómo trabajáis?', origen: 'WhatsApp de la oficina · hoy, 7:40'},
-      paso: [{cuando: 'Hoy 7:40', texto: 'Escribe al WhatsApp de la oficina'}, {cuando: 'Hoy 7:41', texto: 'Llega antes de que abra la oficina'}, {cuando: 'Hoy 8:00', texto: 'Sigue sin respuesta'}],
+      paso: [{cuando: 'Hoy, 7:40', texto: 'Escribe al WhatsApp de la oficina'}, {cuando: 'Hoy, 7:41', texto: 'Llega antes de que abra la oficina'}, {cuando: 'Hoy, 8:00', texto: 'Sigue sin respuesta'}],
       noHay: 'Quiere vender: es un piso nuevo para Sant Gervasi.',
       pueden: [{id: 'marc', sub: 'Sant Gervasi · yo se lo daría'}, {id: 'david', sub: 'Sant Gervasi'}, {id: 'montse', sub: 'Sant Gervasi', tu: true}]
     },
     'joan-serra': {
       contacto: 'joan-serra', tipo: 'queja', decision: 'd-joan', lleva: 'marc',
       etiqueta: 'Queja de un propietario',
-      pide: {texto: 'Llevo diez días sin noticias del piso. Si nadie me dice nada, me voy a otra agencia.', origen: 'WhatsApp · sábado 21, 20:05'},
-      paso: [{cuando: 'Jue 12 nov', texto: 'La venta de su casa de Sant Cugat se para en la fase de oferta'}, {cuando: 'Sáb 21, 20:05', texto: 'Escribe por WhatsApp: se queja'}, {cuando: 'Hoy 8:00', texto: 'Sigue abierta desde el sábado'}],
+      pide: {texto: 'Llevo diez días sin noticias del piso. Si nadie me dice nada, me voy a otra agencia.', origen: 'WhatsApp · sáb 21, 20:05'},
+      paso: [{cuando: '12 nov', texto: 'La venta de su casa de Sant Cugat se para en la fase de oferta'}, {cuando: 'Sáb 21, 20:05', texto: 'Escribe por WhatsApp: se queja'}, {cuando: 'Hoy, 8:00', texto: 'Sigue abierta desde el sábado'}],
       operacion: 'Venta de la casa de Sant Cugat · parada · 10 días · fase Oferta'
     }
   });
@@ -65,7 +65,7 @@
     quieren: ['Lucía Gómez · quiere vender en Sant Gervasi', 'Carmen López · quiere comprar en Gràcia', 'Pau Ríos · busca local para alquilar', '… y 6 más'],
     contactos: null,
     respuesta: ['De lunes a viernes, en horario: 1 h 50 min', 'Fuera de horario y en fin de semana: 14 h', 'Mejor día: martes'],
-    visitas: ['Miércoles 25 · Muntaner 214', 'Jueves 26, 10:00 · con Ramon Pujol', 'Sábado 28 · dos visitas en Gràcia', 'Sábado 28 · una visita en Sants']
+    visitas: ['Mié 25 · Muntaner 214', 'Jue 26, 10:00 · con Ramon Pujol', 'Sáb 28 · dos visitas en Gràcia', 'Sáb 28 · una visita en Sants']
   });
 
   // ---- G3e · semana a semana (casos preparados); 16 nov = 156 del cuadro de ocho ----
@@ -74,16 +74,16 @@
   // ---- G6 · avisos ----
   pon('avisos', {
     ejemplos: [
-      {id: 'ej-2h', corto: '2 h sin respuesta', texto: 'Un contacto nuevo lleve 2 horas sin respuesta', casos: ['Dom 22, 19:10 · Carmen López, contacto nuevo', 'Sáb 21, 13:20 · Pau Ríos, contacto nuevo', 'Jue 19, 21:05 · un número sin nombre', 'Mar 17, 14:30 · una compradora de Sants', 'Lun 16, 20:45 · un vendedor de Gràcia']},
-      {id: 'ej-firma', corto: 'Firma sin papel', texto: 'Se acerque una firma sin la nota simple', casos: ['Vie 20 · firma de Poblenou, 1 dic, sin nota simple', 'Mié 11 · firma de Horta, a 5 días', 'Lun 2 · firma de Sants, a 4 días', 'Mar 27 oct · firma de Gràcia, a 6 días', 'Jue 15 oct · firma de Sant Gervasi, a 3 días']},
-      {id: 'ej-parada', corto: '10 días parada', texto: 'Una operación lleve más de 10 días parada', casos: ['Hoy · una venta en Gràcia, 12 días en Visitas', 'Hoy · la casa de Sant Cugat, 10 días en Oferta', 'Vie 13 · un local, 6 semanas en Contacto', 'Lun 2 · una compra en Sants, 11 días', 'Mié 21 oct · una venta en Horta, 14 días']}
+      {id: 'ej-2h', corto: '2 h sin respuesta', texto: 'Un contacto nuevo lleve 2 horas sin respuesta', casos: ['Ayer, 19:10 · Carmen López, contacto nuevo', 'Sáb 21, 13:20 · Pau Ríos, contacto nuevo', 'Jue 19, 21:05 · un número sin nombre', 'Mar 17, 14:30 · una compradora de Sants', '16 nov, 20:45 · un vendedor de Gràcia']},
+      {id: 'ej-firma', corto: 'Firma sin papel', texto: 'Se acerque una firma sin la nota simple', casos: ['Vie 20 · firma de Poblenou, 1 dic, sin nota simple', '11 nov · firma de Horta, a 5 días', '2 nov · firma de Sants, a 4 días', '27 oct · firma de Gràcia, a 6 días', '15 oct · firma de Sant Gervasi, a 3 días']},
+      {id: 'ej-parada', corto: '10 días parada', texto: 'Una operación lleve más de 10 días parada', casos: ['Hoy · una venta en Gràcia, 12 días en Visitas', 'Hoy · la casa de Sant Cugat, 10 días en Oferta', '13 nov · un local, 6 semanas en Contacto', '2 nov · una compra en Sants, 11 días', '21 oct · una venta en Horta, 14 días']}
     ],
     puestos: [
-      {id: 'av-queja', texto: 'Un propietario se queje', salto: 'te avisó el sábado 21, 20:05', saltoLargo: 'Te avisó el sábado 21 a las 20:05: queja de Joan Serra.'},
+      {id: 'av-queja', texto: 'Un propietario se queje', salto: 'te avisó el sáb 21, 20:05', saltoLargo: 'Te avisó el sáb 21 a las 20:05: queja de Joan Serra.'},
       {id: 'av-sabado', texto: 'Se cancele una visita del sábado', salto: 'todavía no te ha avisado'},
       {id: 'av-valoracion', texto: 'Alguien pida una valoración fuera de horario', salto: 'todavía no te ha avisado'}
     ],
-    generico: ['Dom 22 · un caso parecido en Gràcia', 'Vie 20 · un caso parecido en Sant Gervasi', 'Mar 17 · un caso parecido en Sants']
+    generico: ['Ayer · un caso parecido en Gràcia', 'Vie 20 · un caso parecido en Sant Gervasi', 'Mar 17 · un caso parecido en Sants']
   });
 
   // ---- G7 · lo que escucha Veta ----
@@ -93,11 +93,11 @@
 
   // ---- G7c · parte diario del piloto y los cinco anteriores (inventados por D) ----
   pon('partesPiloto', [
-    {dia: 'Viernes 20', texto: 'Leídos 38 chats. Detectados 24 casos; preparados 21; completados 18. Esperan aprobación 3.'},
-    {dia: 'Jueves 19', texto: 'Leídos 44 chats. Detectados 29 casos; preparados 25; completados 22.'},
-    {dia: 'Miércoles 18', texto: 'Leídos 35 chats. Detectados 22 casos; preparados 19; completados 17.'},
-    {dia: 'Martes 17', texto: 'Leídos 41 chats. Detectados 27 casos; preparados 23; completados 19.'},
-    {dia: 'Lunes 16', texto: 'Leídos 47 chats. Detectados 31 casos; preparados 26; completados 21.'}
+    {dia: 'Vie 20', texto: 'Leídos 38 chats. Detectados 24 casos; preparados 21; completados 18. Esperan aprobación 3.'},
+    {dia: 'Jue 19', texto: 'Leídos 44 chats. Detectados 29 casos; preparados 25; completados 22.'},
+    {dia: 'Mié 18', texto: 'Leídos 35 chats. Detectados 22 casos; preparados 19; completados 17.'},
+    {dia: 'Mar 17', texto: 'Leídos 41 chats. Detectados 27 casos; preparados 23; completados 19.'},
+    {dia: '16 nov', texto: 'Leídos 47 chats. Detectados 31 casos; preparados 26; completados 21.'}
   ]);
 
   // ---- G8 · captación, radiografía y decisiones ----
@@ -111,11 +111,11 @@
   // ---- G9 · lo que entra (los dos «escriben dos veces» y el «parking», inventados por D) ----
   pon('entra', {
     dosVeces: [{id: 'ramon', texto: 'Ramon Pujol · 2 mensajes desde ayer'}, {id: 'sin-nombre', texto: 'Número sin nombre · 2 mensajes hoy'}],
-    noTenemos: [{texto: 'Local en el Eixample, para alquilar', sub: 'Pau Ríos · sábado 21'}, {texto: 'Piso con parking en Sant Gervasi', sub: 'Un comprador · jueves 19'}]
+    noTenemos: [{texto: 'Local en el Eixample, para alquilar', sub: 'Pau Ríos · sáb 21'}, {texto: 'Piso con parking en Sant Gervasi', sub: 'Un comprador · jue 19'}]
   });
 
   // ---- H40 · clientes con dos chats (inventados por D) ----
-  pon('dosChats', [{texto: 'Elena Vives', sub: 'El WhatsApp de la oficina y el de su agente · unidos el martes 17'}, {texto: 'Ramon Pujol', sub: 'El WhatsApp de la oficina y el de su agente · unidos el jueves 19'}]);
+  pon('dosChats', [{texto: 'Elena Vives', sub: 'El WhatsApp de la oficina y el de su agente · unidos el mar 17'}, {texto: 'Ramon Pujol', sub: 'El WhatsApp de la oficina y el de su agente · unidos el jue 19'}]);
 
   // =====================================================================================================
   // VETA.dir · utilidades de Dirección
