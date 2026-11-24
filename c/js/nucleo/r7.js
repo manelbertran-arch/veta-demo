@@ -143,7 +143,31 @@
   // ---- pieza 15 · línea de apoyo. Lo normal es declararlas en la pantalla (`sub`, `nota`) y que las pinte el armazón ----
   // sub('Propietario del piso de Verdi 42') · nota('No sale hasta que tú lo envíes.', {candado: true})
   const sub = (t, o) => `<p class="r7-sub"${o && o.i != null ? ` data-i="${esc(o.i)}"` : ''}>${esc(t)}</p>`;
-  const nota = (t, o) => `<p class="r7-nota">${o && o.candado ? ic('candado', 16) : ''}<span>${esc(t)}</span></p>`;
+  // La promesa de que nada sale solo se escribe de una manera (D22). Tres frases, por nombre, y siempre con candado:
+  //   nota('envio') → «No sale hasta que tú lo envíes.»   delante de un mensaje, un acta o un informe a punto de salir
+  //   nota('nada')  → «Nada sale sin ti.»                 cuando Veta habla de un trabajo suyo (una regla, un paso)
+  //   nota('chats') → «No ves sus chats.»                 dirección, delante de lo que es de otra persona
+  // Vale igual en el campo `nota` de la pantalla: nota: 'envio'. VETA.PROMESA.envio da el texto suelto.
+  const PROMESA = {envio: 'No sale hasta que tú lo envíes.', nada: 'Nada sale sin ti.', chats: 'No ves sus chats.'};
+  const esPromesa = t => Object.prototype.hasOwnProperty.call(PROMESA, t);
+  const nota = (t, o) => { const p = esPromesa(t); return `<p class="r7-nota">${p || (o && o.candado) ? ic('candado', 16) : ''}<span>${esc(p ? PROMESA[t] : t)}</span></p>`; };
+
+  // ---- pieza 18 · el final de una acción (D12, D13): una sola confirmación, la misma en todas las zonas ----
+  // Al enviar, decidir o guardar, la pantalla se repinta en el sitio (VETA.repinta({hecho: true})) con:
+  //   1) hecho({texto: 'Enviado a Marta', hora: VETA.ahora(), deshacer: 'deshacer'})  primera línea del contenido: ✓ + qué + hora + «Deshacer»
+  //   2) botonFijo: () => sigue({texto: 'Siguiente: Elena', ir: 'toca/c-elena'})       el siguiente paso; sin nada, sigue() → «Ir a Inicio»
+  // Y nada más: ni subtítulo que lo repita ni aviso negro (el núcleo calla el aviso si llega con un hecho nuevo a la vista).
+  // «Deshacer» es siempre esa palabra, vive en la fila y no caduca mientras la pantalla siga abierta; si ya no se puede deshacer, no se pone.
+  // `deshacer`: nombre de la acción, o {accion, de, datos}. El ✓ se dibuja una vez, cuando la fila es nueva (lo marca el núcleo al montar).
+  // Si lo hecho ya no está en pantalla (nace en una hoja, o la fila se ha ido de la lista): VETA.aviso('Pasadas a Laura.', {deshacer: fn}), 5 s.
+  const hecho = o => {
+    const d = o.deshacer ? (typeof o.deshacer === 'string' ? {accion: o.deshacer} : o.deshacer) : null;
+    return UI.lineaHecho({texto: o.texto, hora: o.hora, ir: o.ir, hoja: o.hoja, de: o.de, vt: o.vt, i: o.i == null ? 0 : o.i, boton: d ? Object.assign({de: o.de}, d, {texto: 'Deshacer'}) : null});
+  };
+  const sigue = o => { o = o || {}; return boton({texto: o.texto || 'Ir a Inicio', ir: o.ir || (o.accion || o.hoja ? null : 'inicio'), accion: o.accion, hoja: o.hoja, de: o.de, datos: o.datos}); };
+  // ---- el vacío: cuando no queda nada, una frase sola a 28 px en mitad de la pantalla. vacio('Hoy ya no te toca nada.') ----
+  // Sin icono, sin botón dentro (si hace falta uno, va en el pie). Para una búsqueda sin resultado vale igual: vacio('Nadie se llama así.')
+  const vacio = o => { o = typeof o === 'string' ? {texto: o} : o || {}; return `<div class="r7-vacio"${o.i != null ? ` data-i="${esc(o.i)}"` : ''}><p class="r7-vacio-t">${esc(o.texto)}</p></div>`; };
 
   // ---- pieza 9 · filtros: pastillas de 40 que se deslizan de lado. La elegida, negra; cada una con su cuenta en gris ----
   // filtros([{id: 'todos', texto: 'Todos', cuenta: 18}, {id: 'necesitan', texto: 'Te necesitan', cuenta: 6}], {valor: 'todos', accion: 'filtra'})
@@ -151,18 +175,54 @@
   const filtros = (l, o) => {
     o = o || {}; l = (l || []).filter(Boolean);
     if (l.length > 5) avisa('filtros: cinco como mucho; hay', l.length);
-    return `<div class="r7-filtros" role="group"${o.etiqueta ? ` aria-label="${esc(o.etiqueta)}"` : ''}${o.i != null ? ` data-i="${esc(o.i)}"` : ''}>${l.map(f =>
+    return `<div class="r7-filtros" role="group" data-r7-filtros="${esc(o.accion || '')}"${o.etiqueta ? ` aria-label="${esc(o.etiqueta)}"` : ''}${o.i != null ? ` data-i="${esc(o.i)}"` : ''}><i class="r7-filtros-f" aria-hidden="true"></i>${l.map(f =>
       `<button type="button" class="r7-filtro" data-r7-filtro aria-pressed="${f.id === o.valor}"${UI.attrs({accion: f.accion || o.accion, de: o.de, datos: {valor: f.id}})}>${esc(f.texto)}${f.cuenta != null ? ` <b>${esc(f.cuenta)}</b>` : ''}</button>`).join('')}</div>`;
   };
-  // el elegido se marca al tocar (la acción de la pantalla llega después y repinta)
+  // La fila de filtros, viva (D10 y 6.6): un fondo negro que se desliza bajo la pastilla elegida (180 ms), un fundido en el borde
+  // por el que queda algo sin ver, y la elegida siempre a la vista al entrar. La coloca el núcleo cada vez que monta una pantalla o una hoja.
+  let sale = null;   // de dónde sale el fondo: la pastilla que estaba elegida justo antes del toque
+  const bordes = g => { const m = g.scrollWidth - g.clientWidth; g.classList.toggle('r7-mas-d', m - g.scrollLeft > 4); g.classList.toggle('r7-mas-i', g.scrollLeft > 4); };
+  const caja = b => ({x: b.offsetLeft, y: b.offsetTop + 2, w: b.offsetWidth});
+  const ponFondo = (f, c) => { f.style.width = c.w + 'px'; f.style.transform = `translate(${c.x}px,${c.y}px)`; };
+  function filtrosVivos(raiz) {
+    VETA.$$('.r7-filtros', raiz || document).forEach(g => {
+      const f = g.querySelector('.r7-filtros-f'), b = g.querySelector('[data-r7-filtro][aria-pressed="true"]');
+      if (!g._r7) { g._r7 = true; g.addEventListener('scroll', () => bordes(g), {passive: true}); }
+      if (b && g.scrollWidth > g.clientWidth) {   // la elegida, a la vista (sin animar: es el estado de entrada)
+        const izq = b.offsetLeft - 16, der = b.offsetLeft + b.offsetWidth + 16 - g.clientWidth;
+        if (g.scrollLeft > izq) g.scrollLeft = Math.max(0, izq); else if (g.scrollLeft < der) g.scrollLeft = der;
+      }
+      bordes(g);
+      if (!f) return;
+      // el fondo aparte solo existe mientras se desliza (180 ms): en reposo la elegida es negra por sí misma, como sin núcleo
+      const de = sale && sale.clave === g.dataset.r7Filtros && Date.now() - sale.t < 400 ? sale : null;
+      if (!b || !de || VETA.reducido()) return;
+      sale = null;
+      const fin = () => { clearTimeout(g._desl); g.classList.remove('r7-desl'); };
+      f.style.transition = 'none'; ponFondo(f, de); g.classList.add('r7-desl');
+      void f.offsetWidth; f.style.transition = ''; ponFondo(f, caja(b));
+      f.addEventListener('transitionend', fin, {once: true}); clearTimeout(g._desl); g._desl = setTimeout(fin, 2500);
+    });
+  }
+  // el elegido se marca al tocar (la acción de la pantalla llega después y repinta: el fondo sale de donde estaba)
   document.addEventListener('click', ev => {
     const b = ev.target.closest && ev.target.closest('[data-r7-filtro]'); if (!b) return;
-    VETA.$$('[data-r7-filtro]', b.parentNode).forEach(x => x.setAttribute('aria-pressed', String(x === b)));
+    const g = b.parentNode, antes = g.querySelector('[data-r7-filtro][aria-pressed="true"]');
+    if (antes && antes !== b) sale = Object.assign(caja(antes), {clave: g.dataset.r7Filtros, t: Date.now()});
+    VETA.$$('[data-r7-filtro]', g).forEach(x => x.setAttribute('aria-pressed', String(x === b)));
+    // si la pantalla no repinta (cambia solo lo de dentro), el fondo se mueve aquí mismo
+    requestAnimationFrame(() => { if (g.isConnected && sale) filtrosVivos(g.parentNode); });
   }, true);
+  window.addEventListener('resize', () => filtrosVivos(document));
 
   // ---- pieza 12 · cifra y barras (solo en pantallas de resultado) ----
   // cifra({valor: 156, frase: 'cosas que os dejé listas. Hace un mes, 118.'}) → un número a 40 px con su frase al lado. Una por pantalla.
-  const cifra = o => `<div class="r7-cifra"${UI.attrs({i: o.i, id: o.id})}><b class="r7-cifra-n">${esc(typeof o.valor === 'number' ? VETA.num(o.valor) : o.valor)}</b><span class="r7-cifra-f">${esc(o.frase || '')}</span></div>`;
+  // D8 · número y frase son una unidad: en una línea solo si caben enteros (número de hasta tres cifras y frase de hasta 26 letras);
+  // si no, el número arriba y la frase debajo a todo el ancho, con los renglones igualados. Nunca una columna estrecha junto al número.
+  const cifra = o => {
+    const v = texto(typeof o.valor === 'number' ? VETA.num(o.valor) : o.valor), f = texto(o.frase);
+    return `<div class="r7-cifra${v.length <= 3 && f.length <= 26 ? ' r7-cifra-fila' : ''}"${UI.attrs({i: o.i, id: o.id})}><b class="r7-cifra-n">${esc(v)}</b>${f ? ` <span class="r7-cifra-f">${esc(f)}</span>` : ''}</div>`;
+  };
   // barras([{valor: 118, fecha: '26 oct'}, …, {valor: 156, fecha: '16 nov'}]) → la única gráfica: cuatro columnas como mucho, la última en oro,
   // el valor encima y la fecha debajo, sin ejes. Ya es una tarjeta: no se mete en otra. {texto: '156'} si el valor se escribe distinto de como se mide.
   // Si las columnas no son una serie en el tiempo (paradas por fase), {serie: false}: ninguna se destaca.
@@ -214,5 +274,32 @@
 
   // los ganchos de Inicio (los rellenan A y D desde sus ficheros; los lee js/pantallas/inicio.js)
   VETA.inicioDe = VETA.inicioDe || {};
-  VETA.r7 = Object.assign(VETA.r7 || {}, {cuentas, fuentes, quienes, caras, cara, pastilla, fila, lista, grupo, boton, botones, enlace, tarjeta, primero, sub, nota, filtros, cifra, barras, doc, elegir, micro, pasos});
+  // ---- lo que el núcleo hace con las piezas cada vez que monta una pantalla o una hoja (lo llaman rutas.js y hoja.js) ----
+  //   · coloca los filtros · marca como nuevo el «hecho» que no estaba (su ✓ se dibuja una vez) y calla el aviso negro que diga lo mismo
+  //   · centra en el hueco las pantallas de una o dos tarjetas con el botón abajo (6.2)
+  let ultimoHecho = 0;
+  const clavesHecho = raiz => VETA.$$('.hecho .hecho-txt', raiz).map(x => x.textContent);
+  function alMontar(raiz, o) {
+    o = o || {};
+    if (!raiz) return;
+    filtrosVivos(raiz);
+    if (o.antes) VETA.$$('.hecho', raiz).forEach(h => {
+      const t = h.querySelector('.hecho-txt'); if (!t || o.antes.includes(t.textContent)) return;
+      h.classList.add('nuevo'); ultimoHecho = Date.now();
+      if (h.querySelector('.btn') && VETA.avisoCalla) VETA.avisoCalla();   // la fila ya lo dice y ya deja deshacer
+    });
+    const c = raiz.querySelector('.pant-cuerpo');
+    if (c && o.centra !== false) {
+      const sc = raiz.querySelector('.desplaza');
+      const sola = o.centra === true || (o.pie && !c.querySelector('.r7-lista,.r7-doc,.r7-micro,.r7-filtros,.r7-barras,.campo,textarea,input,.r7-inicio,.r7-vacio') && !!c.querySelector('.r7-ficha'));
+      const h = c.children, alto = h.length ? h[h.length - 1].getBoundingClientRect().bottom - h[0].getBoundingClientRect().top : 0;
+      c.classList.toggle('r7-centro', !!(sola && sc && alto > 0 && sc.clientHeight - alto >= 144));
+    }
+  }
+  const hechoReciente = () => Date.now() - ultimoHecho < 1200 && !!VETA.$('.col.activa .hecho.nuevo .btn');
+
+  VETA.inicioDe = VETA.inicioDe || {};
+  VETA.PROMESA = PROMESA;
+  VETA.r7 = Object.assign(VETA.r7 || {}, {cuentas, fuentes, quienes, caras, cara, pastilla, fila, lista, grupo, boton, botones, enlace, tarjeta, primero, sub, nota, PROMESA, hecho, sigue, vacio, filtros, cifra, barras, doc, elegir, micro, pasos,
+    alMontar, clavesHecho, hechoReciente, filtrosVivos});
 })();

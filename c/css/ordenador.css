@@ -37,7 +37,8 @@
   .fijo>*{max-width:360px}
   .col-panel .borrador{max-width:560px}
 
-  /* pantallas completas y anchas */
+  /* pantallas completas y anchas. Sin menú lateral solo antes de entrar (portada, entrar, primer día): el acta, los informes y Dictar
+     lo conservan (D20; rutas.js les pone data-vista=ancha) */
   .app[data-vista=completa]{grid-template-columns:minmax(0,1fr)}
   .app[data-vista=completa] .lateral{display:none}
   .app[data-vista=completa] .marco{grid-column:1}
@@ -53,8 +54,7 @@
   .asa{height:16px;cursor:default}
   .asa i{visibility:hidden}
 
-  /* aviso: centrado en la zona de contenido */
-  .aviso{left:calc(240px + var(--margen))}
+  /* aviso: su sitio y su ancho son los de la columna activa (los pone aviso.js) */
 }
 
 /* «Dictar» marcado en el menú */

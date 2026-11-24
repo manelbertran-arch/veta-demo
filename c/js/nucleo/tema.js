@@ -13,7 +13,8 @@
 
   if (VETA.param('mov') === 'reducido') VETA.est.pon('mov', 'reducido');
 
-  const modo = () => (VETA.pref.lee('modo', 'claro') in MODOS ? VETA.pref.lee('modo', 'claro') : 'claro');
+  // D21 · quien no ha elegido sigue al móvil: el modo por defecto es «auto»
+  const modo = () => (VETA.pref.lee('modo', 'auto') in MODOS ? VETA.pref.lee('modo', 'auto') : 'auto');
   const color = () => (COLORES.includes(VETA.pref.lee('color', 'veta')) ? VETA.pref.lee('color', 'veta') : 'veta');
   const movPedido = () => VETA.est.lee('mov', null) || VETA.pref.lee('mov', 'normal');
   const reducido = () => movPedido() === 'reducido' || mm('(prefers-reduced-motion: reduce)');

@@ -289,6 +289,8 @@
   function derecha(e) {
     let d = e.def.cabDerecha ? seguro(() => e.def.cabDerecha(e.p), '') : '';
     if (!d) { const m = seguro(() => val(e.def.mas, e.p), null); if (m) d = Object.assign({tipo: 'mas'}, typeof m === 'string' ? {hoja: m} : m); }
+    // en una raíz, si no hay otra cosa, tu cara: es la misma puerta de Cuenta que en Inicio, en el mismo sitio de las cuatro pestañas
+    if (!d && esRaiz(e)) d = {tipo: 'cara'};
     const h = cabDer(d);
     return h ? `<span class="cab-der">${h}</span>` : '';
   }
@@ -324,12 +326,14 @@
     const n = seguro(() => val(e.def.nota, e.p), '');
     if (!n) return '';
     const o = typeof n === 'string' ? {texto: n} : n;
-    return o.texto ? `<p class="r7-nota">${o.candado ? VETA.ic('candado', 16) : ''}<span>${esc(o.texto)}</span></p>` : '';
+    return o.texto ? VETA.r7.nota(o.texto, o) : '';   // con un nombre de VETA.PROMESA ('envio', 'nada', 'chats') pinta la frase canónica y su candado
   };
 
   // ---- montar una pantalla en una columna ----
   function monta(col, e, modo, o) {
     o = o || {};
+    // si es la misma pantalla que se repinta, qué «hechos» había: el que aparezca ahora es nuevo y su ✓ se dibuja
+    const antes = col.dataset.ruta === e.ruta && col.dataset.pant === e.def.cod ? VETA.r7.clavesHecho(col) : null;
     col.className = 'col col-' + modo + (o.activa ? ' activa' : '');
     col.dataset.area = e.def.area || AREA[e.def.destino] || (e.def.completa ? 'voz' : 'yo');
     col.dataset.ruta = e.ruta; col.dataset.pant = e.def.cod;
@@ -346,6 +350,8 @@
     if (o.scroll) d.scrollTop = o.scroll;
     VETA.mov.vigilaDesplazamiento(d, col);
     if (e.def.alMontar) { try { e.def.alMontar(col.querySelector('.pant'), e.p); } catch (err) { setTimeout(() => { throw err; }); } }
+    // las piezas vivas: filtros, el ✓ del hecho nuevo y el centrado de las pantallas de una tarjeta (`centra: true | false` en la pantalla lo fuerza)
+    VETA.r7.alMontar(col, {antes, pie: !!fijo, centra: modo === 'lista' ? false : e.def.centra});
     return col;
   }
 
@@ -370,7 +376,7 @@
         donde = monta(a, e, e.def.completa ? 'completa' : 'movil', {activa: true, scroll: soloRepinta || dir === 'atras' ? scrollDe(e.ruta) : 0});
         b.innerHTML = ''; b.className = 'col'; delete b.dataset.ruta;
       } else if (e.def.completa || e.def.ancha || !raizDe(e)) {
-        app.dataset.vista = e.def.completa ? 'completa' : 'ancha';
+        app.dataset.vista = e.def.completa && esPre(e) ? 'completa' : 'ancha';   // D20 · un documento no se queda sin el menú lateral
         donde = monta(a, e, e.def.completa ? 'completa' : 'detalle', {activa: true, scroll: soloRepinta || dir === 'atras' ? scrollDe(e.ruta) : 0});
         b.innerHTML = ''; b.className = 'col'; delete b.dataset.ruta;
       } else {
@@ -387,20 +393,25 @@
         if (esRaiz(e)) {
           // panel vacío: se abre sola la primera fila de la lista
           // (si la lista marca qué va al panel con data-panel, manda eso: Hoy pone el cliente de su tarjeta abierta)
-          const pf = a.querySelector('.pant [data-panel]'), f = a.querySelector('.pant .fila[data-ir]');
+          const pf = a.querySelector('.pant [data-panel]'), f = a.querySelector('.pant :is(.r7-fila,.fila)[data-ir]');   // las filas de la ronda 8 son .r7-fila
           panel = pf && resuelve(pf.dataset.panel) ? resuelve(pf.dataset.panel) : f ? resuelve(f.dataset.ir) : null;
         }
         if (panel) donde = monta(b, panel, 'panel', {activa: true, scroll: soloRepinta || dir === 'atras' ? scrollDe(panel.ruta) : 0});
-        else { b.className = 'col col-panel activa'; b.innerHTML = UI.vacio({titulo: 'Elige algo de la lista', icono: 'hoy'}); delete b.dataset.ruta; donde = b; }
+        else { b.className = 'col col-panel activa'; b.innerHTML = VETA.r7.vacio('Elige algo de la lista'); delete b.dataset.ruta; donde = b; }
         VETA.$$('.marcada', a).forEach(x => x.classList.remove('marcada'));
         const r = panel ? panel.ruta : '';
         const m = VETA.$$('[data-ir]', a).find(x => x.dataset.ir === r) || VETA.$$('[data-ir]', a).find(x => r.indexOf(x.dataset.ir + '/') === 0);
         if (m) m.classList.add('marcada');
       }
       pintaBarra(); pintaLateral();
+      if (VETA.avisoRecoloca) VETA.avisoRecoloca();
       document.title = (e.def.cod === 'E1' ? 'Veta' : titulo(e) + ' · Veta');
       // la cascada arranca ya dentro del cambio, para que se vea durante la transición (solo al ir adelante o cambiar de pestaña)
-      if (!soloRepinta && (dir === 'adelante' || dir === 'pestana')) VETA.mov.cascada(donde && donde.querySelector ? donde.querySelector('.pant') : null);
+      // en una raíz (y en Inicio) no suben los bloques: entran escalonadas sus seis primeras filas. En el resto, la cascada de siempre
+      if (!soloRepinta && (dir === 'adelante' || dir === 'pestana')) {
+        const pant = donde && donde.querySelector ? donde.querySelector('.pant') : null;
+        if (esRaiz(e) || e.ruta === INICIO) VETA.mov.escalona(pant); else VETA.mov.cascada(pant);
+      }
       return donde;
     };
     const fin = donde => {
