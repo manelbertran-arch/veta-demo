@@ -12,29 +12,24 @@
 
   const b = D.b = {};
 
-  // ---- A5 · la línea de motivo de cada fila (inicial y tras resolver su cosa) ----
+  // ---- A5 · el motivo de cada fila de Clientes: la segunda línea (al empezar, mientras esperas su respuesta y tras resolver su cosa) ----
+  // Quien no está aquí lleva su `estadoTexto` («Parado · 7 semanas sin hablar») o lo último que hizo (`quienEs`).
   b.motivo = {
-    marta: {inicial: 'sin responder desde ayer', esperando: 'le propusiste el sábado a las 11:00'},
-    elena: {inicial: 'visita hoy, 9:00'},
-    pere: {inicial: 'informe de la semana', tras: 'pedirle el certificado energético', pedido: 'le pediste el certificado'},
-    jordi: {inicial: 'el informe del piso antes del jueves', esperando: 'le pasaste el informe del piso'},
-    nuria: {inicial: 'le encaja un piso en Sant Antoni', esperando: 'le contaste el piso de Sant Antoni'},
-    albert: {inicial: '7 semanas sin hablar'},
-    carmen: {inicial: 'te la ha asignado Montse', esperando: 'le escribiste por el piso de Verdi'},
-    ruben: {inicial: 'pregunta por las visitas del ático'},
-    guillem: {inicial: 'confirmar la visita del miércoles'},
-    silvia: {inicial: 'su oferta por el ático'}
+    marta: {inicial: 'Sin responder desde ayer', esperando: 'Le propusiste el sábado a las 11:00'},
+    elena: {inicial: 'Visita hoy, 9:00'},
+    pere: {inicial: 'Espera su informe', tras: 'Pedirle el certificado energético', pedido: 'Le pediste el certificado'},
+    jordi: {inicial: 'Informe del piso, antes del jueves', esperando: 'Le pasaste el informe del piso'},
+    nuria: {inicial: 'Le encaja un piso en Sant Antoni', esperando: 'Le contaste el piso de Sant Antoni'},
+    sergi: {inicial: 'Anna Costa ya le contestó'},
+    laia: {inicial: 'Va a firmar el 1 de diciembre'},
+    carmen: {inicial: 'Te la ha asignado Montse', esperando: 'Le escribiste por el piso de Verdi'},
+    ruben: {inicial: 'Pregunta por las visitas del ático'},
+    guillem: {inicial: 'Confirmar la visita del miércoles'},
+    silvia: {inicial: 'Su oferta por el ático'}
   };
   // orden de «quién te necesita» dentro de cada estado (el resto, detrás)
   b.orden = ['marta', 'elena', 'pere', 'jordi', 'nuria', 'albert', 'carmen', 'ruben', 'guillem', 'silvia'];
 
-  // ---- A6 · «Esperando respuesta»: qué le propusiste ----
-  b.espera = {
-    marta: 'Le propusiste ver el piso el sábado a las 11:00',
-    nuria: 'Le contaste el piso de Sant Antoni',
-    jordi: 'Le pasaste el informe del piso de Olzinelles',
-    carmen: 'Le propusiste ver el piso de Verdi'
-  };
   // ---- A6 · cerrado (Carme): el mensaje para pedirle una recomendación (inventado por B) ----
   b.recomendacion = {
     'carme-font': {texto: 'Vendió en Horta en junio. Te escribió el 14 de noviembre para darte las gracias.',
@@ -99,12 +94,12 @@
     'elena|c-elena': {tipo: 'Acta', titulo: 'Acta de la visita · Verdi 42', texto: 'Le gustó la luz; le preocupa el ruido', det: 'acta-elena'},
     'pere|c-pere': {tipo: 'Informe', titulo: 'Informe de la semana, enviado', texto: '3 visitas', det: 'informe-hoy'}
   };
-  // «Lo que sé de…»: dos líneas como mucho, cada una con su cita
+  // «Lo que sé de…»: dos cosas como mucho, cada una con su cita (el texto es el nombre de una fila: 28 letras como mucho)
   b.sabe = {
-    pere: [{texto: 'Quiere saber cada lunes cómo va el piso.', cita: 'Laura, ¿me cuentas cada lunes cómo va? Así no te llamo tanto.', origen: 'Pere · 2 oct, 19:20', chat: 'pere'},
-      {texto: 'Puede bajar a 385.000 €, no menos.', cita: 'Laura, si hace falta para cerrar, bajo a 385.000 €, pero no menos.', origen: 'Pere · sáb 21, 21:10', chat: 'pere-voz'}],
-    elena: [{texto: 'Busca dos habitaciones; lo que más le importa es la luz.', cita: 'Busco dos habitaciones, pero sobre todo luz.', origen: 'Elena · 12 nov', chat: 'elena'},
-      {texto: 'Le preocupa el ruido de la calle.', cita: '¿Se oye mucho la calle?', origen: 'Elena · 19 nov', chat: 'elena'}]
+    pere: [{texto: 'Quiere noticias cada lunes', cita: 'Laura, ¿me cuentas cada lunes cómo va? Así no te llamo tanto.', origen: 'Pere · 2 oct, 19:20', chat: 'pere'},
+      {texto: 'Puede bajar a 385.000 €', cita: 'Laura, si hace falta para cerrar, bajo a 385.000 €, pero no menos.', origen: 'Pere · sáb 21, 21:10', chat: 'pere-voz'}],
+    elena: [{texto: 'Busca dos habitaciones y luz', cita: 'Busco dos habitaciones, pero sobre todo luz.', origen: 'Elena · 12 nov', chat: 'elena'},
+      {texto: 'Le preocupa el ruido', cita: '¿Se oye mucho la calle?', origen: 'Elena · 19 nov', chat: 'elena'}]
   };
 
   // ---- A5p · las tres preguntas preparadas (el resto, «no lo encuentro») ----
@@ -115,7 +110,7 @@
     'sant-antoni': {pregunta: '¿Quién busca en Sant Antoni?', claves: [['sant antoni']], cliente: 'nuria',
       respuesta: 'Núria Camps busca en Sant Antoni, con balcón.',
       cita: {texto: 'Si sale algo en Sant Antoni con balcón, avísame, porfa.', origen: 'Núria · 3 nov, 20:15 · chat con Núria Camps', chat: 'nuria'}},
-    verdi: {pregunta: '¿Qué visitas tuvo el piso de Verdi?', claves: [['verdi', 'visit']],
+    verdi: {pregunta: '¿Qué visitas tuvo Verdi 42?', claves: [['verdi', 'visit']],
       respuesta: 'La semana pasada, 3 visitas. A los 3 les parece alto el precio.',
       filas: [{cliente: 'sergi-font', cuando: 'Mar 17', texto: 'Lo ve caro y sin ascensor'}, {cliente: 'toni', cuando: 'Jue 19', texto: 'Volverá con su arquitecto'},
         {cliente: 'casals', cuando: 'Sáb 21', texto: 'Les gusta; lo ven caro'}],
@@ -127,10 +122,10 @@
     ruben: {pregunta: '¿Qué me preguntó Rubén?', claves: [['ruben']], cliente: 'ruben',
       respuesta: 'Rubén quiere saber si ha venido alguien a ver el ático esta semana.',
       cita: {texto: '¿Ha venido alguien a ver el ático esta semana?', origen: 'Rubén · ayer, 20:15 · chat con Rubén Gil', chat: 'ruben'}},
-    silvia: {pregunta: '¿Cuánto ofreció Sílvia por el ático?', claves: [['silvia'], ['ofrec', 'atico']], cliente: 'silvia',
+    silvia: {pregunta: '¿Cuánto ofreció Sílvia?', claves: [['silvia'], ['ofrec', 'atico']], cliente: 'silvia',
       respuesta: 'Sílvia Prat ofreció 520.000 €. Rubén pide 545.000 €.',
       cita: {texto: 'Os ofrezco 520.000 € por el ático. Dejadme pensarlo el fin de semana.', origen: 'Sílvia · vie 20, 18:40 · chat con Sílvia Prat', chat: 'silvia'}},
-    guillem: {pregunta: '¿Cuándo es la visita de Guillem?', claves: [['guillem']], cliente: 'guillem',
+    guillem: {pregunta: '¿Cuándo viene Guillem?', claves: [['guillem']], cliente: 'guillem',
       respuesta: 'El miércoles. Guillem te pide que se la confirmes.',
       cita: {texto: '¿Me confirmas la visita del miércoles?', origen: 'Guillem · hoy, 8:12 · chat con Guillem Roig', chat: 'guillem'}}
   };
@@ -164,14 +159,21 @@
     c.bCosaHecha = !!(c.cosa && CUENTAN.includes(c.cosa.estado));
     return c;
   };
-  // la línea de motivo de la fila de Clientes
+  // el motivo de la fila de Clientes (su segunda línea): lo hecho hoy manda sobre lo que tocaba
   B.motivo = c => {
     const m = b.motivo[c.id] || {};
-    if (c.estado === 'esperando') return m.esperando || 'esperas su respuesta';
+    if (c.bLlamada) return 'Hablasteis hoy';
+    if (c.bResp) return 'Ya contestó';
+    if (c.estado === 'esperando') return m.esperando || 'Esperas su respuesta';
     if (c.id === 'pere' && B.pedido('pere', 'cert')) return m.pedido;
-    if (c.bCosaHecha && m.tras) return m.tras;
-    if (c.estado === 'al-dia' && c.bLlamada) return 'hablasteis hoy';
-    return m.inicial || c.estadoTexto || c.quienEs || '';
+    if (c.bCosaHecha) return m.tras || 'Hecho hoy';
+    return m.inicial || c.estadoTexto || (c.quienEs !== 'Nada pendiente' && c.quienEs) || '';
+  };
+  // «Lo que sé de…»: lo apuntado en b.sabe; si no hay nada, la primera frase suya de su chat (sin texto: la fila dice «De dónde sale»)
+  B.sabe = id => {
+    if (b.sabe[id]) return b.sabe[id];
+    const c = M().cliente(id), ch = c && c.chat && M().chat(c.chat), m = ch && ch.mensajes && ch.mensajes.find(x => !x.tu);
+    return m ? [{cita: m.texto, origen: `${B.corto(c)} · ${m.cuando}`, chat: c.chat}] : [];
   };
 
   // documentos con su estado vivo (marcados recibidos, reabiertos, pedidos)

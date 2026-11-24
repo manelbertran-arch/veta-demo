@@ -12,7 +12,7 @@
       {id: 'x-toni', cliente: 'toni', corto: 'Toni contestó', titulo: 'Toni Ribas ya contestó', texto: 'Lo cerré ayer, 21:10.',
         tuya: 'Escribir a Toni Ribas', abierta: 'Abierto otra vez. Te toca a ti.'},
       {id: 'x-casals', icono: 'check', corto: 'el DNI llegó', titulo: 'Llegó el DNI de Casals', texto: 'Lo cerré el viernes.',
-        tuya: 'Pedir el DNI a los Casals', abierta: 'Abierto otra vez. Te toca a ti.'}],
+        tuya: 'Pedir el DNI a Casals', abierta: 'Abierto otra vez. Te toca a ti.'}],
     // «Vigilo N cosas»: de qué tipo es cada cosa de En espera (lo que no esté aquí cuenta como «respuestas»)
     vigilo: {'e-elena': 'promesas', 'e-nuria': 'promesas', 'e-pere': 'papeles', 'e-jordi': 'papeles', 'e-laia': 'fechas', 'e-pere-encargo': 'fechas', 'e-llamar-elena': 'llamadas'},
     // «Lo que he aprendido de ti» · una regla con quién, cuándo y cuenta (regla r-informes: activa desde el 7 oct; lunes 12, 19 y 26 oct y 2, 9 y 16 nov = 6; «me cambiaste 1», inventado)
@@ -34,9 +34,7 @@
     // el siguiente borrador del mismo tipo, ya cambiado
     aplica: {cosa: 'c-nuria', corto: 'Núria',
       texto: 'Hola, Núria, soy Laura. Ha entrado un piso en Sant Antoni con balcón: 2 habitaciones, 289.000 €. ¿Te va mejor verlo el jueves a las 18:00 o el viernes a las 10:00?',
-      frase: 'el jueves a las 18:00 o el viernes a las 10:00', aviso: 'Aplicado lo que me acabas de enseñar.'},
-    // Dictar · lo que se lee bajo el ejemplo de la orden
-    ordenPie: 'Con esto, el recordatorio te lo dejo yo escrito. Tú lo miras y lo envías.'
+      frase: 'el jueves a las 18:00 o el viernes a las 10:00', aviso: 'Aplicado lo que me acabas de enseñar.'}
   });
 
   // «Hoy te tocan N»: la cuenta vive en VETA.r6.tocan (js/nucleo/vivo.js), una sola fuente.

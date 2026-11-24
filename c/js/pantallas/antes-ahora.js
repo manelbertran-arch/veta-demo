@@ -1,27 +1,23 @@
-/* Veta demo · pantallas · antes-ahora.js · ronda 6 · paquete C (P2)
-   A20 · #/antes-ahora · «Antes y ahora»: la lista de cuando empezamos al lado de la de hoy, la línea de seis
-   semanas (de 46 a 21 cosas por semana), lo que ya es tuyo (lo que hago yo, lo aprendido, tus correcciones)
-   y las horas «con tus tiempos · ejemplo». Cifras: VETA.datos.r6.veta.antesAhora y las que ya tenía la app. */
+/* Veta demo · pantallas · antes-ahora.js · carril C (Veta y cuenta)
+   A20 · #/antes-ahora · «Antes y ahora» (pantalla de resultado; PLAN_R8.md, 8.2): una cifra con su frase (las cosas por semana que ya
+   hace Veta), dos barras (cuando empezamos y la semana pasada) y una lista. Cifras: VETA.datos.r6.veta.antesAhora. */
 (function () {
   'use strict';
-  const esc = VETA.esc, M = VETA.modelo, C = VETA.c;
+  const M = VETA.modelo, C = VETA.c;
 
   VETA.pantalla('A20', {
     titulo: 'Antes y ahora',
-    frase: () => { const a = C.r6().antesAhora; return `Antes te tocaban ${a.antes.valor} cosas por semana. Ahora, ${a.ahora.valor}. Las otras ${a.antes.valor - a.ahora.valor} las hago yo.`; },
+    sub: () => (M.lee('tiempos', null) ? 'Desde el 3 de septiembre. Las horas, con tus tiempos.' : 'Desde el 3 de septiembre. Las horas son un ejemplo.'),
     pinta: () => {
-      const a = C.r6().antesAhora, s = a.semanas;
+      const R = VETA.r7, a = C.r6().antesAhora;
       const t = M.lee('tiempos', null), min = M.minutosLaura(t || {mensajes: 4, actas: 12, avisos: 2});
-      // lo que ya hago, lo aprendido y lo que te propongo están en Veta: aquí, solo el antes y el ahora
-      return `<div class="c-aa" data-i="0">${VETA.vivo.antesAhora({antes: Object.assign({}, a.antes, {filas: []}), ahora: Object.assign({}, a.ahora, {filas: []}), semanas: s, clave: 'c-aa',
-          ejeAntes: ' ', ejeAhora: ' ', voz: `De ${s[0]} a ${s[s.length - 1]} cosas por semana desde que empezamos, el 3 de septiembre`})}</div>` +
-        VETA.r7.lista([
-          {icono: 'check', oro: true, nombre: 'Qué ha cambiado', pasa: 'Lo que hacías tú y ahora hago yo', abre: `<p><b>Antes:</b> ${esc((a.antes.filas || []).join('. '))}.</p><p><b>Ahora:</b> ${esc((a.ahora.filas || []).join('. '))}.</p>`},
-          {icono: 'reloj', nombre: 'El tiempo que te ahorro', pasa: VETA.horas(min) + (t ? ' con tus tiempos' : ' con tiempos de ejemplo'), hoja: 'h24'},
-          {icono: 'editar', nombre: 'Me corregiste 4 veces', pasa: 'Ahora lo hago como tú', ir: 'aprendido'},
-          // ronda 7 · arreglos (FC, defecto 5): «Tu semana» ya no es fila de Veta: es el «ahora» de esta pantalla
-          {icono: 'cal', nombre: 'Tu semana', pasa: (n => n ? `Cerré ${n === 1 ? '1 cosa' : n + ' cosas'} sola` : `Te dejé ${C.semanaDe().preparados} mensajes escritos`)(C.cerradas().length), ir: 'semana'}
-        ], {i: 1, clase: 'r7c-tras'});
+      return R.cifra({valor: a.antes.valor - a.ahora.valor, frase: `cosas por semana ya las hago yo. Antes te tocaban ${a.antes.valor}; ahora, ${a.ahora.valor}.`, i: 0}) +
+        R.barras([{valor: a.antes.valor, fecha: a.antes.rotulo}, {valor: a.ahora.valor, fecha: a.ahora.rotulo}], {etiqueta: 'Cosas tuyas por semana', i: 1}) +
+        R.lista([
+          {nombre: 'Qué ha cambiado', hoja: 'c-lee', datos: {que: 'cambio'}},
+          {nombre: 'El tiempo que te ahorro', dato: VETA.horas(min), hoja: 'h24'},
+          {nombre: 'Me corregiste 4 veces', ir: 'aprendido'}
+        ], {i: 2});
     }
   });
 })();

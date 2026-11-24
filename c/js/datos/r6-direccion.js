@@ -152,7 +152,7 @@
 
   const resuelta = o => {
     if (o.cosa) { const c = M().cosa(o.cosa); return !!c && X.RES.includes(c.estado) && c.estado !== 'para-manana'; }
-    if (o.contacto) return !!llevaOp(o.id);
+    if (o.contacto) return !!llevaOp(o.id) || (X.aparcado(o.id) || {}).que === 'descartado';   // descartado: ya no hay que mirarlo
     return false;
   };
 
@@ -179,7 +179,8 @@
     if (contestada) { toca = 'Esperar a que conteste ' + pila; tocaCorto = 'Esperar a ' + pila; }
     toca = toca.replace(/\bla llamas\b/, (quien === 'Alguien' ? 'se la llama' : quien + ' la llama'));
     if (id === 'joan-serra' && M().lee('marc-llama-joan', false)) toca = 'Marc le llama hoy';
-    if (o.contacto && !lleva) toca = 'Elegir quién la lleva';
+    const fuera = o.contacto && !lleva ? X.aparcado(id) : null;   // «Para luego» o «Descartarlo» (ronda 8)
+    if (o.contacto && !lleva) toca = fuera ? (fuera.que === 'luego' ? 'Elegir quién la lleva. Lo dejaste para luego' : 'Nada: lo descartaste') : 'Elegir quién la lleva';
     if (o.contacto && lleva) toca = p.corto + ' le contesta';
     // las de Teresa, mientras está de baja, tienen dueña: son una sola decisión («Pasar sus clientes») y van aparte
     const deBaja = o.lleva === 'teresa' && lleva === 'teresa';

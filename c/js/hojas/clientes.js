@@ -1,11 +1,11 @@
 /* Veta demo · hojas · clientes.js · paquete B (Clientes)
-   H10 Mensaje de Pere · H11 Otras acciones · H12 Compartir resumen · H13 Fuera del radar · H14 Petición lista ·
+   H10 Mensaje de Pere · H11 Llamar o escribir (su teléfono arriba y las acciones) · H12 Compartir resumen · H13 Fuera del radar · H14 Petición lista ·
    H15 ¿Qué pasó con…? · H16 Detalle de historia · H39 Anotar una queja.
    data-de: un cliente («pere») o una cosa de la cola o de En espera («c-pere», «e-pere»); las hojas sacan de ahí el cliente. */
 (function () {
   'use strict';
   const UI = VETA.UI, esc = VETA.esc, B = VETA.B, M = VETA.modelo, D = VETA.datos;
-    const espera = id => M.espera(VETA.yo().id).find(x => x.id === id) || M.espera('laura').find(x => x.id === id) || null;
+  const espera = id => M.espera(VETA.yo().id).find(x => x.id === id) || M.espera('laura').find(x => x.id === id) || null;
   const cosaDe = id => M.cosa(id) || espera(id);
   const cliDe = d => { if (M.cliente(d.de)) return d.de; const k = cosaDe(d.de); return (k && k.cliente) || 'pere'; };
 
@@ -29,24 +29,27 @@
     }
   });
 
-  // ---- H11 · «Otras acciones» (título: el nombre del cliente) ----
+  // ---- H11 · «Llamar o escribir»: se abre con el teléfono de la cabecera de la ficha (o con «Más», si no hay teléfono) ----
+  // Arriba, su teléfono, a 20 px; debajo, las acciones. En dirección van aquí «Marcar como importante» y «Anotar una queja».
   const marca = (id, k, v) => { const m = Object.assign({}, B.mapa('marcas')[id] || {}); if (v == null) delete m[k]; else m[k] = v; B.ponEn('marcas', id, Object.keys(m).length ? m : null); VETA.repinta(); };
+  const telDe = d => { const id = cliDe(d); return VETA.ajeno(id) ? '' : (M.cliente(id) || {}).tel || ''; };
   VETA.hojaAcciones('h11', {
     titulo: d => (M.cliente(cliDe(d)) || {}).nombre || 'Llamar o escribir',
-    cancelar: false,
+    texto: telDe,
+    alMontar: (h, d) => { const t = h.querySelector('.hoja-x'); if (!t) return; if (telDe(d)) t.classList.add('rb-tel'); else t.remove(); },
     opciones: d => {
       const id = cliDe(d), c = M.cliente(id) || {}, nom = B.corto(c), m = B.mapa('marcas')[id] || {};
-      // dirección con el cliente de otra persona: solo sus marcas (preguntar, resumir o dictar leerían su chat)
+      // dirección con el cliente de otra persona: solo anota la queja (preguntar, resumir o dictar leerían su chat)
       const l = VETA.ajeno(id) ? [] : [
-        c.tel ? {texto: `Llamar a ${nom}`, sub: c.tel, icono: 'telefono', hace: () => VETA.aviso('En esta demo no se marca ningún teléfono.')} : null,
-        c.tel ? {texto: `Escribir a ${nom} por WhatsApp`, sub: 'Se abre su chat', icono: 'chat', hace: () => VETA.aviso('En esta demo WhatsApp no se abre.')} : null,
-        {texto: 'Compartir su resumen', sub: 'Cinco líneas para copiar', icono: 'compartir', hoja: 'h12'},
-        {texto: `Apuntar algo de ${nom}`, sub: 'Me lo cuentas y lo guardo en su ficha', icono: 'mic', ir: 'dictar/nota'}];
+        c.tel ? {texto: `Llamar a ${nom}`, hace: () => VETA.aviso('En esta demo no se marca ningún teléfono.')} : null,
+        c.tel ? {texto: `Escribir a ${nom} por WhatsApp`, hace: () => VETA.aviso('En esta demo WhatsApp no se abre.')} : null,
+        {texto: 'Compartir su resumen', hoja: 'h12'},
+        {texto: `Apuntar algo de ${nom}`, ir: 'dictar/nota'}];
       if (VETA.yo().papel === 'direccion') {
         // sin «Seguir de cerca»: dirección no vigila las operaciones de nadie; «importante», solo en sus clientes
-        if (!VETA.ajeno(id)) l.push(m.importante ? {texto: 'Quitar «importante»', icono: 'aviso', hace: () => marca(id, 'importante', null)}
-          : {texto: 'Marcar como importante', icono: 'aviso', hace: () => marca(id, 'importante', VETA.ahora())});
-        l.push({texto: 'Anotar una queja', icono: 'globo', hoja: 'h39'});
+        if (!VETA.ajeno(id)) l.push(m.importante ? {texto: 'Quitar «importante»', hace: () => marca(id, 'importante', null)}
+          : {texto: 'Marcar como importante', hace: () => marca(id, 'importante', VETA.ahora())});
+        l.push({texto: 'Anotar una queja', hoja: 'h39'});
       }
       return l.filter(Boolean);
     }
@@ -78,9 +81,9 @@
     pinta: () => {
       const l = (M.lectura().fuera || []).concat((M.lee('chats-fuera', []) || []).map(id => (M.cliente(id) || {}).nombre || id));
       return `<p class="hoja-x">${l.length} chats personales que no miro:</p>` +
-        UI.lista(l.map(n => ({titulo: n, icono: 'candado'}))) +
+        VETA.r7.lista(l.map(n => ({nombre: n}))) +
         `<p class="hoja-x tenue">No salen en ninguna pantalla más que en esta.</p>` +
-        UI.lista([{titulo: 'Cambiar esta lista', icono: 'editar', ir: 'cuenta/chats'}]);
+        VETA.r7.lista([{nombre: 'Cambiar esta lista', ir: 'cuenta/chats'}]);
     }
   });
 
@@ -139,22 +142,17 @@
       prop ? {texto: 'Firmó la exclusiva', linea: `Anotado · ${nom} firmó la exclusiva`} : null,
       {texto: 'Nada todavía', nada: true}].filter(Boolean);
   };
-  VETA.hojaDef('h15', {
+  VETA.hojaAcciones('h15', {
     titulo: d => `¿Qué pasó con ${B.corto(M.cliente(cliDe(d)))}?`,
-    pinta: d => `<div class="ops">${opcionesH15(d).map((o, k) => `<button type="button" class="op" data-accion="elige" data-n="${k}"><span class="op-c"><span class="op-t">${esc(o.texto)}</span></span></button>`).join('')}</div>`,
-    acciones: {
-      elige(ev, el, d) {
-        const o = opcionesH15(d)[Number(el.dataset.n)]; if (!o) return;
-        const id = cliDe(d), c = M.cliente(id) || {};
-        VETA.cierraHoja({foco: false});
-        if (o.nada) { VETA.aviso(`Sigo esperando. Si ${B.corto(c)} no contesta, te aviso el jueves.`); return; }
-        // la cosa de En espera de este cliente (la tocada o la suya), se recoge con su línea
-        const esp = (espera(d.de) && d.de) || ((M.espera(VETA.yo().id).find(x => x.cliente === id && x.tipo === 'espera' && !M.RESUELTOS.includes(x.estado)) || {}).id);
-        if (esp) M.marca(esp, 'hecha', {linea: o.linea});
-        B.ponEn('resp', id, {texto: o.linea, hora: VETA.ahora(), cosa: esp || null});
-        VETA.repinta(esp ? {hecho: esp} : {hecho: 'b-paso-' + id});
-      }
-    }
+    opciones: d => opcionesH15(d).map(o => ({texto: o.texto, hace: () => {
+      const id = cliDe(d), c = M.cliente(id) || {};
+      if (o.nada) { VETA.aviso(`Sigo esperando. Si ${B.corto(c)} no contesta, te aviso el jueves.`); return; }
+      // la cosa de En espera de este cliente (la tocada o la suya), se recoge con su línea
+      const esp = (espera(d.de) && d.de) || ((M.espera(VETA.yo().id).find(x => x.cliente === id && x.tipo === 'espera' && !M.RESUELTOS.includes(x.estado)) || {}).id);
+      if (esp) M.marca(esp, 'hecha', {linea: o.linea});
+      B.ponEn('resp', id, {texto: o.linea, hora: VETA.ahora(), cosa: esp || null});
+      VETA.repinta(esp ? {hecho: esp} : {hecho: 'b-paso-' + id});
+    }}))
   });
 
   // ---- H16 · Detalle de historia: acta (en frases, como A4), informe enviado o mensaje ----

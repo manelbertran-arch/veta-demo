@@ -28,7 +28,7 @@
         acta: {impresion: 'Le ha gustado mucho. Quiere volver con su pareja.',
           gusto: ['La luz del salón', 'La terraza', 'La cocina reformada'],
           no: ['El ruido de la calle por la noche', 'Que no haya ascensor: es un tercero'],
-          ahora: 'Llamar a Elena el jueves 26 para confirmar la segunda visita del sábado.', apunta: 'llamarla el jueves 26'},
+          ahora: 'Llamar a Elena el jueves 26 para confirmar la segunda visita del sábado.', apunta: 'llamar a Elena el jueves 26'},
         informe: {titulo: 'Visita de hoy a tu piso de Gràcia',
           resumen: 'Hoy ha venido Elena Vives a ver tu piso. Le ha gustado mucho y quiere volver el sábado con su pareja.',
           dijo: 'Le encantan la luz del salón, la terraza y la cocina reformada. Le frenan el ruido de la calle por la noche y que no haya ascensor.',
@@ -81,7 +81,7 @@
           {quien: 'Toni Ribas', texto: 'volverá con su arquitecto.'},
           {quien: 'Família Casals', texto: 'les gusta; lo ven caro.'}],
         paso: '¿Hablamos del precio el jueves?',
-        cifras: [{n: 3, t: 'visitas la semana pasada'}, {n: 1, t: 'quiere volver'}]}
+        cifras: [{n: 3, t: 'Visitas'}, {n: 3, t: 'Les gusta la luz'}, {n: 3, t: 'Lo ven caro'}]}
     }
   };
 })();
@@ -105,24 +105,22 @@
   // quien llega a un papel de una visita (también por enlace o recarga) la tiene ya contada. Se llama desde el título del papel,
   // que el armazón pide antes que el del padre: así el volver dice «Listo para enviar» y no «Visita con Elena»
   A2.llega = id => { const v = A2.visita(id); if (v && !A2.est(v.id).contada) A2.pon(v.id, {contada: true}); };
-  // la pastilla de la visita (una sola): Hoy · Falta el acta · Acta lista (oro: la dejó hecha Veta) · Acta guardada · Acta enviada
-  A2.pastilla = v => {
+  // cómo está el acta de una visita, en palabras (va en la segunda línea de su fila: ya no hay pastillas)
+  A2.estadoActa = v => {
     const e = A2.est(v.id), a = e.acta || {};
-    if (!e.contada) return v.hoy ? {texto: 'Hoy', tono: 'gris'} : {texto: 'Falta el acta', tono: 'gris'};
-    if (a.estado === 'enviada') return {texto: 'Acta enviada', tono: 'gris'};
-    if (a.estado === 'guardada') return {texto: 'Acta guardada', tono: 'gris'};
-    return {texto: 'Acta lista', tono: 'oro'};
+    if (!e.contada) return v.hoy ? '' : 'Falta el acta';
+    return a.estado === 'enviada' ? 'Acta enviada' : a.estado === 'guardada' ? 'Acta guardada' : 'Acta lista';
   };
-  // cómo está un papel: «Sin enviar» (oro: lo dejó hecho Veta y espera) · «Enviada» / «Guardada» (el acta) · «Enviado» / «Guardado» (el informe)
-  A2.pastillaDoc = (d, fem) => d.estado === 'enviada' ? {texto: fem ? 'Enviada' : 'Enviado', tono: 'gris'} : d.estado === 'guardada' ? {texto: fem ? 'Guardada' : 'Guardado', tono: 'gris'} : {texto: 'Sin enviar', tono: 'oro'};
+  // cómo está un papel (dato gris de su fila): «Sin enviar» · «Enviada» / «Guardada» (el acta) · «Enviado» / «Guardado» (el informe)
+  A2.estadoDoc = (d, fem) => d.estado === 'enviada' ? (fem ? 'Enviada' : 'Enviado') : d.estado === 'guardada' ? (fem ? 'Guardada' : 'Guardado') : 'Sin enviar';
   // el camino recto (FA): qué papel de la visita falta por enviar o guardar. Primero el acta, luego el informe; null = ya están los dos
   A2.falta = id => { const e = A2.est(id); return !(e.acta || {}).estado ? 'acta' : !(e.informe || {}).estado ? 'informe' : null; };
   // un papel de antes (su hora no es de hoy: «jue 19»): se enseña como quedó, sin botones de camino
   A2.viejo = d => !!(d && d.hora && !/^\d/.test(d.hora));
-  // el botón negro del final: lleva a la caja por la que se entró («Te toca» si se vino de ahí; si no, «Visitas»)
-  A2.fin = porDefecto => { const p = VETA.pila ? VETA.pila() : [], hoy = p.some(x => x.ruta === 'hoy');
-    if (hoy) return {texto: 'Hecho. Ir a Te toca ›', ir: 'hoy'};
-    return porDefecto === 'visitas' ? {texto: 'Hecho. Ir a Visitas ›', ir: 'visitas'} : null; };
+  // el botón negro del final: lleva al sitio por el que se entró (Visitas, o Inicio si se vino de la lista del día)
+  A2.fin = () => { const p = VETA.pila ? VETA.pila() : [];
+    if (p.some(x => x.ruta === 'visitas')) return {texto: 'Hecho. Ir a Visitas ›', ir: 'visitas'};
+    return p.length <= 3 && p[0] && p[0].ruta === 'inicio' && !p.some(x => /^cliente\//.test(x.ruta)) ? {texto: 'Hecho. Ir a Inicio ›', ir: 'inicio'} : null; };
   A2.corto = id => ((VETA.modelo.quien(id) || {}).corto) || ((VETA.modelo.quien(id) || {}).nombre || '').split(' ')[0] || '';
   A2.nombre = id => (VETA.modelo.quien(id) || {}).nombre || id;
   // el texto de un campo: lo que cambió la persona o lo que dejó Veta. Las listas viajan como líneas.

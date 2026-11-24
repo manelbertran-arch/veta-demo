@@ -44,13 +44,13 @@
 
   // ---- G2b · reglas y prácticas de la oficina (dossier es del plan; las otras dos frases, inventadas por D) ----
   pon('reglasOficina', {
-    dossier: {titulo: 'Informe del piso al día siguiente', decision: 'd-regla', get propone() { return VETA.dir.proponeRegla(); },
+    dossier: {titulo: 'Informe del piso al día siguiente', corto: 'Informe del piso', decision: 'd-regla', get propone() { return VETA.dir.proponeRegla(); },
       frase: 'Cuando alguien pide una valoración, preparo el informe del piso al día siguiente y el agente lo envía.',
       desde: '23 peticiones de valoración.'},
-    'mismo-dia': {titulo: 'Responder el mismo día', propone: 'Ya venía conmigo', estado: 'a-prueba', dia: 9,
+    'mismo-dia': {titulo: 'Responder el mismo día', corto: 'Responder el mismo día', propone: 'Ya venía conmigo', estado: 'a-prueba', dia: 9,
       frase: 'Cuando escribe un contacto nuevo, dejo la respuesta escrita el mismo día y el agente la envía.',
       desde: '301 contactos nuevos desde que empezamos.'},
-    actas: {titulo: 'Contar la visita al salir', propone: 'Lo propuso Anna Costa', estado: 'en-marcha', usan: '4 de 6',
+    actas: {titulo: 'Contar la visita al salir', corto: 'Contar la visita', propone: 'Lo propuso Anna Costa', estado: 'en-marcha', usan: '4 de 6',
       frase: 'Al salir de una visita, el agente me la cuenta en un minuto y yo dejo escrita el acta de la visita.',
       desde: '212 visitas desde que empezamos.'}
   });
@@ -74,9 +74,9 @@
   // ---- G6 · avisos ----
   pon('avisos', {
     ejemplos: [
-      {id: 'ej-2h', texto: 'Un contacto nuevo lleve 2 horas sin respuesta', casos: ['Dom 22, 19:10 · Carmen López, contacto nuevo', 'Sáb 21, 13:20 · Pau Ríos, contacto nuevo', 'Jue 19, 21:05 · un número sin nombre', 'Mar 17, 14:30 · una compradora de Sants', 'Lun 16, 20:45 · un vendedor de Gràcia']},
-      {id: 'ej-firma', texto: 'Se acerque una firma sin la nota simple', casos: ['Vie 20 · firma de Poblenou, 1 dic, sin nota simple', 'Mié 11 · firma de Horta, a 5 días', 'Lun 2 · firma de Sants, a 4 días', 'Mar 27 oct · firma de Gràcia, a 6 días', 'Jue 15 oct · firma de Sant Gervasi, a 3 días']},
-      {id: 'ej-parada', texto: 'Una operación lleve más de 10 días parada', casos: ['Hoy · una venta en Gràcia, 12 días en Visitas', 'Hoy · la casa de Sant Cugat, 10 días en Oferta', 'Vie 13 · un local, 6 semanas en Contacto', 'Lun 2 · una compra en Sants, 11 días', 'Mié 21 oct · una venta en Horta, 14 días']}
+      {id: 'ej-2h', corto: '2 h sin respuesta', texto: 'Un contacto nuevo lleve 2 horas sin respuesta', casos: ['Dom 22, 19:10 · Carmen López, contacto nuevo', 'Sáb 21, 13:20 · Pau Ríos, contacto nuevo', 'Jue 19, 21:05 · un número sin nombre', 'Mar 17, 14:30 · una compradora de Sants', 'Lun 16, 20:45 · un vendedor de Gràcia']},
+      {id: 'ej-firma', corto: 'Firma sin papel', texto: 'Se acerque una firma sin la nota simple', casos: ['Vie 20 · firma de Poblenou, 1 dic, sin nota simple', 'Mié 11 · firma de Horta, a 5 días', 'Lun 2 · firma de Sants, a 4 días', 'Mar 27 oct · firma de Gràcia, a 6 días', 'Jue 15 oct · firma de Sant Gervasi, a 3 días']},
+      {id: 'ej-parada', corto: '10 días parada', texto: 'Una operación lleve más de 10 días parada', casos: ['Hoy · una venta en Gràcia, 12 días en Visitas', 'Hoy · la casa de Sant Cugat, 10 días en Oferta', 'Vie 13 · un local, 6 semanas en Contacto', 'Lun 2 · una compra en Sants, 11 días', 'Mié 21 oct · una venta en Horta, 14 días']}
     ],
     puestos: [
       {id: 'av-queja', texto: 'Un propietario se queje', salto: 'te avisó el sábado 21, 20:05', saltoLargo: 'Te avisó el sábado 21 a las 20:05: queja de Joan Serra.'},
@@ -142,7 +142,7 @@
     asignado: id => {
       if (id === 'carmen') {
         const c = M().cosa('d-carmen');
-        if (!c || !RES.includes(c.estado) || c.estado === 'para-manana') return null;
+        if (!c || !RES.includes(c.estado) || c.estado === 'para-manana' || (c.extra && c.extra.aparca)) return null;
         return {a: (c.extra && c.extra.a) || 'laura', hora: c.hora, linea: (c.extra && c.extra.linea) || 'Carmen López, asignada a Laura', decision: true};
       }
       const x = lee('asignados', {})[id];
@@ -162,6 +162,23 @@
       if (id === 'carmen') { M().deshaz('d-carmen'); return; }
       const t = lee('asignados', {}); delete t[id]; guarda('asignados', t);
     },
+    // ronda 8 (capacidad 15 de la A) · un contacto que no lleva nadie también se puede dejar «para luego» o descartar.
+    // Carmen va por su decisión (d-carmen), como siempre; Pau y Lucía, por estado propio. Aparcado = sale de lo que espera decisión.
+    aparcado: id => {
+      if (id === 'carmen') { const c = M().cosa('d-carmen'); return c && RES.includes(c.estado) && c.extra && c.extra.aparca ? {que: c.extra.aparca, hora: c.hora, linea: c.extra.linea} : null; }
+      return lee('aparcados', {})[id] || null;
+    },
+    aparca: (id, que) => {
+      const nombre = ((D.contactos || []).find(x => x.id === id) || {}).nombre || id;
+      const linea = (que === 'luego' ? 'Para luego · ' : 'Descartado · ') + nombre;
+      if (id === 'carmen') { M().marca('d-carmen', que === 'luego' ? 'para-manana' : 'quitada', {aparca: que, linea}); return linea; }
+      const t = lee('aparcados', {}); t[id] = {que, hora: VETA.ahora(), linea}; guarda('aparcados', t);
+      return linea;
+    },
+    desaparca: id => {
+      if (id === 'carmen') { M().deshaz('d-carmen'); return; }
+      const t = lee('aparcados', {}); delete t[id]; guarda('aparcados', t);
+    },
     // la cartera de Teresa: a quién (elegido) y si ya se pasó
     carteraA: () => lee('carteraA', 'laura'),
     carteraTexto: a => a === 'dos' ? 'Laura y Anna' : VETA.dir.persona(a).corto,
@@ -175,7 +192,7 @@
     laPropuso: () => !!(VETA.est.lee('c.aOficina', {}) || {})['r-valoraciones'],
     proponeRegla: () => VETA.dir.laPropuso() ? 'Lo propone Laura Martí' : 'Lo propongo yo: lo he visto en la oficina',
     paradas: () => M().operaciones().filter(o => o.estado === 'parado'),
-    sinResponder: () => (D.contactos || []).filter(c => !VETA.dir.asignado(c.id)),
-    sinDueno: () => (D.contactos || []).filter(c => c.sinDueno && !VETA.dir.asignado(c.id))
+    sinResponder: () => (D.contactos || []).filter(c => !VETA.dir.asignado(c.id) && (VETA.dir.aparcado(c.id) || {}).que !== 'descartado'),
+    sinDueno: () => (D.contactos || []).filter(c => c.sinDueno && !VETA.dir.asignado(c.id) && !VETA.dir.aparcado(c.id))
   };
 })();

@@ -1,105 +1,24 @@
-/* Veta demo · css · p-clientes.css · paquete B (Clientes)
-   Estilos propios de las pantallas y hojas del paquete B. Solo variables (temas.css, base.css): ningún color a mano.
-   Todo lo que se mueve se apaga solo con «Reducir movimiento» (regla general de movimiento.css). */
+/* Veta demo · css · p-clientes.css · B (Clientes) · ronda 8
+   Lo propio de las pantallas y hojas del carril que no es una pieza del núcleo. Solo variables (temas.css, base.css):
+   ningún color a mano. Pesos 500 y 700; letra de 15, 17 y 20. */
 
-/* ---- caja de buscar y sugerencias (A5, A5b, A5p) ---- */
-.b-caja .campo-caja{min-height:52px;border-radius:var(--r-pill);padding:0 var(--e4);background:var(--s1)}
-.b-caja .campo-i{font-weight:500}
-.b-sug{display:grid;grid-template-rows:0fr;opacity:0;margin-top:calc(-1 * var(--e3));transition:grid-template-rows var(--t-medio) var(--c-muelle),opacity var(--t-corto) var(--c-estandar),margin var(--t-medio) var(--c-muelle)}
-.b-sug.on{grid-template-rows:1fr;opacity:1;margin-top:0}
-.b-sug-in{overflow:hidden;min-height:0;display:flex;flex-direction:column;gap:var(--e2)}
-.b-sug-r{font:600 var(--f-apoyo)/1.2 var(--body);color:var(--t3);margin-top:var(--e1)}
-.b-chips{display:flex;flex-wrap:wrap;gap:var(--e2)}
-.b-chip{min-height:var(--toque);padding:0 var(--e4);border-radius:var(--r-pill);background:var(--s1);border:1px solid var(--borde);font:600 var(--f-apoyo)/1 var(--body);color:var(--t1);
-  transform:translateY(6px);opacity:0;transition:transform var(--t-medio) var(--c-muelle),opacity var(--t-corto) var(--c-estandar),background var(--t-toque) var(--c-estandar);transition-delay:calc(var(--k,0) * 30ms)}
-.b-chip b{font-variant-numeric:tabular-nums;color:var(--acento)}
-.b-sug.on .b-chip{transform:none;opacity:1}
-.b-chip:active{background:var(--tinte)}
-.b-preg .fila{min-height:var(--toque)}
-
-/* ---- filas de clientes: etiqueta y motivo en una línea ---- */
-.b-mot{display:flex;flex-wrap:wrap;align-items:center;gap:var(--e1) var(--e2);margin-top:2px}
-.b-mot .etq{min-height:26px}
-.b-mot-t{font:500 var(--f-apoyo)/1.3 var(--body);color:var(--t2)}
-.b-mot-e{font-weight:700;color:var(--t1)}
-.b-preguntar .fila-t{color:var(--acento)}
-.b-filtro{display:flex;align-items:center;justify-content:space-between;gap:var(--e2);min-height:var(--toque);padding-left:var(--e3);border-radius:var(--r-pill);background:var(--tinte)}
-.b-filtro-t{display:inline-flex;align-items:center;gap:var(--e2);font:700 var(--f-apoyo)/1.2 var(--body);color:var(--acento)}
-.b-res{display:flex;flex-direction:column;gap:var(--e3)}
-.b-zona{display:flex;flex-direction:column;gap:var(--e3)}
-
-/* lo que entra al filtrar: filas en cascada corta (sustituye a la cascada de la pantalla) */
-@keyframes b-entra{from{opacity:0;transform:translateY(8px)}}
-.b-entra .fila,.b-entra .vacio,.b-entra .b-filtro{animation:b-entra var(--t-medio) var(--c-muelle) both}
-.b-entra .fila:nth-child(2){animation-delay:30ms}.b-entra .fila:nth-child(3){animation-delay:60ms}
-.b-entra .fila:nth-child(4){animation-delay:90ms}.b-entra .fila:nth-child(5){animation-delay:120ms}
-.b-entra .fila:nth-child(n+6){animation-delay:150ms}
-
-/* ---- A5p · respuesta ---- */
+/* ---- A5p · mientras busca la respuesta ---- */
 .b-carga{display:flex;flex-direction:column;gap:var(--e3)}
-.b-carga-t,.b-resp-r,.b-paso-r{display:inline-flex;align-items:center;gap:var(--e2);font:600 var(--f-apoyo)/1.2 var(--body);color:var(--acento)}
-.b-respuesta{display:flex;flex-direction:column;gap:var(--e4)}
-.b-resp-c{gap:var(--e3)}
-.b-resp-t{font:700 var(--f-hoja)/1.25 var(--display);letter-spacing:-.01em}
-@keyframes b-escribe{from{clip-path:inset(0 100% 0 0)}to{clip-path:inset(0 0 0 0)}}
-.tac .b-escribe,.b-respuesta .b-escribe{animation:b-escribe 520ms var(--c-entra) both 80ms}
+.b-carga-t{margin:0;padding:0 var(--e1);color:var(--t2);font:500 var(--f-apoyo)/var(--l-fila) var(--body)}
+.b-respuesta{display:flex;flex-direction:column;gap:var(--e3)}
 .fijo.b-espera{visibility:hidden}
 
-/* ---- A6 · ficha ---- */
-.b-cabt{display:inline-flex;align-items:center;gap:var(--e2);max-width:100%;min-width:0;vertical-align:middle}
-.b-cabt .av{flex:none}
-.b-cabt-n{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.b-ficha{display:flex;flex-direction:column;gap:var(--e4)}
-.b-arriba{display:flex;flex-direction:column;gap:var(--e3)}
-.b-quien{display:flex;flex-wrap:wrap;align-items:center;gap:var(--e2);font:500 var(--f-cuerpo)/1.35 var(--body);color:var(--t2)}
-.b-tel{display:flex;align-items:center;justify-content:space-between;gap:var(--e3);padding:var(--e1) var(--e1) var(--e1) var(--e4);border-radius:var(--r-pill);background:var(--s1);border:1px solid var(--borde)}
-.b-tel-n{display:inline-flex;align-items:center;gap:var(--e2);font:600 var(--f-cuerpo)/1 var(--body);font-variant-numeric:tabular-nums;letter-spacing:.02em}
-.b-tel-n .ic{color:var(--t3)}
-.b-tel-b{display:flex;gap:var(--e2)}
-.b-sig{gap:var(--e3)}
-.b-sig .bloque-t{margin-top:0}
-.b-ficha .tc-cab{display:none}
-.b-paso.abierta{box-shadow:var(--somb),inset 3px 0 0 var(--top-acento)}
-.b-paso-t{font:700 var(--f-cuerpo)/1.35 var(--body)}
+/* ---- A6 · las marcas de dirección (líneas de hecho) ---- */
 .b-marcas{display:flex;flex-direction:column;gap:var(--e2)}
-.b-sinop{display:flex;align-items:center;gap:var(--e2);font:500 var(--f-apoyo)/1.3 var(--body);color:var(--t2)}
-.b-cruce .fila-t{color:var(--acento)}
-/* la barra de la operación se llena al entrar */
-@keyframes b-llena{from{transform:scaleX(0)}}
-.b-barra .pasos-l i{transform-origin:0 50%;animation:b-llena 900ms var(--c-muelle) both 180ms}
-
-/* ---- A6d · documentos ---- */
-.b-doc{gap:var(--e2)}
-.b-doc.abierta{box-shadow:var(--somb),inset 3px 0 0 var(--top-acento)}
-.b-doc-cab{display:flex;align-items:center;justify-content:space-between;gap:var(--e2);flex-wrap:wrap}
-.b-doc-t{font:700 var(--f-cuerpo)/1.3 var(--body)}
-.b-docs{margin-top:var(--e1)}
-.b-doc-fila{padding-right:var(--e2)}
-.b-doc-fila .fila-ic{color:var(--opo-t);background:var(--opo-b)}
-.b-doc + .b-doc,.b-doc + .hecho,.hecho + .b-doc{margin-top:var(--e2)}
-
-/* ---- A16 · historia ---- */
-.b-hfila .fila-d{align-self:flex-start;padding-top:2px}
-.b-hist .lista{overflow:hidden}
-.b-entra.b-hist .fila,.b-hist.b-entra .fila{animation:b-entra var(--t-medio) var(--c-muelle) both}
-.b-sabe{display:flex;flex-direction:column;gap:var(--e1);padding:var(--e3) var(--e4);border-radius:var(--r-3);background:var(--s1);border:1px solid var(--borde)}
-.b-sabe + .b-sabe{margin-top:var(--e2)}
-.b-sabe-t{font:600 var(--f-cuerpo)/1.35 var(--body)}
 
 /* ---- hojas ---- */
 .b-voz{display:flex;flex-direction:column;gap:var(--e2)}
-.b-audio{display:flex;align-items:center;gap:var(--e3);min-height:var(--toque);padding:0 var(--e4);border-radius:var(--r-pill);background:var(--s2)}
-.b-audio-l{flex:1;height:6px;border-radius:var(--r-pill);background:var(--borde);overflow:hidden}
-.b-audio-l i{display:block;height:100%;width:100%;border-radius:inherit;background:var(--acento);transform:scaleX(0);transform-origin:0 50%}
-.b-audio.on .b-audio-l i{transform:scaleX(1);transition:transform var(--dur,4000ms) linear}
-.b-audio.fin .b-audio-l i{transform:scaleX(1)}
-.b-audio-t{flex:none;font:600 var(--f-apoyo)/1 var(--body);font-variant-numeric:tabular-nums;color:var(--t2)}
 .b-resumen{display:flex;flex-direction:column;gap:var(--e1);padding:var(--e3) var(--e4);border-radius:var(--r-btn);background:var(--s1);border:1px solid var(--borde)}
 .b-resumen p{font:500 var(--f-apoyo)/1.4 var(--body)}
 .b-resumen p:first-child{font-weight:700;font-size:var(--f-cuerpo)}
 .b-acta{display:flex;flex-direction:column;gap:2px}
 .b-acta + .b-acta{margin-top:var(--e3)}
 .b-acta b{font:700 var(--f-apoyo)/1.2 var(--body);color:var(--t2)}
+.b-paso-t{font:700 var(--f-cuerpo)/1.35 var(--body)}
 .b-cruce-c{gap:var(--e2)}
 .b-cruce-c .foto-ancha{border-radius:var(--r-2)}
-.b-ya{margin-top:var(--e2);opacity:.8}

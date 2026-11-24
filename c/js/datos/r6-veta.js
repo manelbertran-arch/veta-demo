@@ -45,7 +45,7 @@
     manana: {
       propuesta: 'El viernes te recordaré las visitas del sábado. Escribirles lo harás tú.',
       prueba: 'El viernes te dejo escritos los mensajes de Marta y Elena, que vienen el sábado.',
-      sola: 'El viernes miraré si Marta y Elena han dicho que vienen el sábado. Si lo han dicho, lo apunto yo. Si no, te dejo el mensaje escrito en Hoy.'
+      sola: 'El viernes miraré si Marta y Elena han dicho que vienen el sábado. Si lo han dicho, lo apunto yo. Si no, te dejo el mensaje escrito en Inicio.'
     },
     // los 9 casos en que confirmaste tú (inventados para la demo, con clientes que ya existen)
     casos: [

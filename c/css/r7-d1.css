@@ -1,45 +1,7 @@
-/* Veta demo · ronda 7 · css/r7-d1.css · D1 (Decidir y Equipo): decidir.js, asunto.js, equipo.js, persona.js.
-   Solo variables de temas.css. Lo común (filas, fichas, pastillas, botones) está en css/r7.css. */
+/* Veta demo · ronda 8 · css/r7-d1.css · carril D
+   El Inicio de dirección, Un asunto, Equipo y Una persona se pintan solo con las piezas de css/r7.css.
+   (Se fueron la rejilla de Equipo, los tonos de las iniciales y los ejemplos-botón de Avisos.) */
 
-/* caras del equipo sin foto: iniciales en un círculo, todas del mismo tono crema y gris (R5; arreglo FD, defecto 15) */
-.av[class*="d1-t-"]{background:var(--s2);color:var(--t1);box-shadow:inset 0 0 0 1px var(--borde)}
-
-/* lo que no es lo principal de la lista (decididas, lo que cuelga, los datos de una persona) va tras un poco de aire */
-.r7-lista .d1-sep,.r7-lista .r7-fila-d:has(> .d1-sep){margin-top:var(--e5)}
-
-/* Equipo: rejilla de caras grandes */
-.d1-equipo{display:flex;flex-direction:column;gap:var(--e5)}
-.d1-rejilla{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:var(--e3)}
-.d1-per{display:flex;flex-direction:column;align-items:flex-start;gap:2px;min-height:48px;padding:var(--e3) var(--e4) var(--e4);border-radius:var(--r-3);background:var(--s1);color:var(--t1);
-  box-shadow:var(--somb),inset 0 0 0 1px var(--borde);text-align:left}
-.d1-per .av{width:56px;height:56px;margin-bottom:var(--e2)}
-.d1-per-n{max-width:100%;font:700 var(--f-cuerpo)/1.25 var(--body);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.d1-per-q{color:var(--t2);font:500 var(--f-apoyo)/1.3 var(--body)}
-.d1-per-ok{color:var(--t3);font:500 var(--f-apoyo)/1.3 var(--body);min-height:26px;display:flex;align-items:center}
-.d1-per .r7-pastilla{margin-top:2px}
-.d1-per .r7-pastilla{max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-
-/* Decidir: lo decidido hoy, una línea por cosa */
-.d1-hechas{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:var(--e2)}
-.d1-hechas li{display:flex;gap:var(--e2);align-items:flex-start;color:var(--t2);font:500 var(--f-apoyo)/1.35 var(--body)}
-.d1-hechas li svg{flex:none;margin-top:2px;color:var(--t1)}
-
-/* Un asunto: ficha del cliente y ficha de Veta */
-.d1-asunto{display:flex;flex-direction:column;gap:var(--e3)}
-.d1-asunto .r7-ficha p{margin:0}
-.d1-asunto .r7-lista{margin-top:var(--e2)}
-.d1-nota{color:var(--t2);font:500 var(--f-apoyo)/1.35 var(--body)}
-.d1-hecho p{display:flex;gap:var(--e2);align-items:center}
-.d1-pasos{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:var(--e2)}
-.d1-pasos li{display:grid;grid-template-columns:6.5em 1fr;gap:var(--e2);font:500 var(--f-apoyo)/1.35 var(--body)}
-.d1-pasos b{color:var(--t2);font-weight:600}
-
-/* Una persona: lo que he aprendido de ella */
-.d1-aprende{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:var(--e3)}
-.d1-aprende li{display:flex;flex-direction:column;gap:2px}
-.d1-aprende b{font:600 var(--f-apoyo)/1.35 var(--body)}
-.d1-aprende span{color:var(--t2);font:500 var(--f-apoyo)/1.3 var(--body)}
-
-/* Avisos: los ejemplos, enteros, bajo «Avísame cuando…» */
-.d1-ejemplos{display:flex;flex-direction:column;align-items:flex-start;gap:var(--e2);margin:var(--e3) 0 var(--e4)}
-.d1-ej{min-height:48px;padding:var(--e2) var(--e4);border-radius:var(--r-btn);background:var(--s1);color:var(--t1);box-shadow:inset 0 0 0 1px var(--borde);text-align:left;font:500 var(--f-apoyo)/1.3 var(--body)}
+/* las iniciales de una cara van en 700, como dice .av: sin esto, el <b> de dentro las sube a 900 (solo hay pesos 500 y 700).
+   Petición al núcleo: `.av b{font-weight:inherit}` en componentes.css, y esta regla sobra. */
+.r7-inicio[data-papel=direccion] .av b,.pant-G1 .av b,.pant-G2 .av b,.pant-G5 .av b,.pant-G5b .av b,.pant-G6 .av b,.pant-G17 .av b,.pant-G18 .av b,.pant-G19 .av b{font-weight:inherit}

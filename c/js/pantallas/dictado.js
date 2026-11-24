@@ -1,31 +1,29 @@
-/* Veta demo · pantallas · dictado.js · paquete A (El día)
-   A4b · Lo que he entendido: tarea o nota · #/entendido-dictado/<tarea|nota>.
-   «Guardar la tarea» / «Guardar la nota» vuelve a la anterior con «Guardada · … · Deshacer» en el sitio.
-   Ronda 7 (agente E): cabecera con frase, bloque de oro y botones abajo con VETA.r7.botones. */
+/* Veta demo · ronda 8 · pantallas · dictado.js · carril A (El día)
+   A4b · Lo que he entendido: una tarea o una nota · #/entendido-dictado/<tarea|nota> (Dictar › «Una tarea» o «Algo de un cliente» › «Ya está»).
+   Una lista de dos filas (qué y cuándo; el día se cambia en la hoja a-dia), la fila «Lo que dijiste» y el par «No es eso» / «Guardar».
+   «Guardar» vuelve a la pantalla de la que se venía, con «Guardada · … · Deshacer». */
 (function () {
   'use strict';
-  const UI = VETA.UI, esc = VETA.esc, ic = VETA.ic;
+  const UI = VETA.UI, M = VETA.modelo, r7 = VETA.r7;
   const def = p => ((VETA.datos.diaA || {}).entendido || {})[p.id] || ((VETA.datos.diaA || {}).entendido || {}).tarea;
   const idLocal = e => 'a-' + e.tipo + '-' + e.cliente;
   const diaElegido = e => { const d = VETA.est.lee('a.dia.' + e.cliente, 'jue'); return (e.dias || []).find(x => x.id === d) || (e.dias || [])[0]; };
   const dijiste = g => { const u = VETA.est.lee('a.ultimoDictado', null); return VETA.A.mmss(u && u.guion === g ? u.seg : ((VETA.datos.diaA || {}).duracion || {})[g] || 0); };
 
   VETA.pantalla('A4b', {
-    titulo: p => (def(p) || {}).tipo === 'nota' ? 'Una nota' : 'Una tarea',
-    // ronda 7 · una frase arriba, lo que he escrito en un bloque de oro y los botones abajo (R2, R4)
-    frase: p => { const e = def(p); return VETA.A.local(idLocal(e)) ? 'Ya está guardada.' : e.tipo === 'tarea' ? 'Esto he entendido. Guárdala o cambia el día.' : 'Esto he entendido. La guardo en su ficha.'; },
+    titulo: 'Lo que he entendido',
+    // la promesa va sobre el botón: «La vigilo yo y la pongo en tu calendario.» / «Queda en su Historia.»
+    nota: p => def(p).pie,
     pinta: p => {
-      const e = def(p), u = VETA.est.lee('a.ultimoDictado', null);
-      const dijo = u && u.guion === e.tipo ? u.texto : ((VETA.datos.dictados || {})[e.tipo] || {}).frase;
-      const dia = e.tipo === 'tarea' ? `<span class="e-cosa-d">${ic('cal', 20)}<span>${esc(diaElegido(e).texto)}</span></span>` : '';
-      return `<div class="r7-ficha r7-oro e-cosa" data-i="0"><span class="r7-ficha-de">Te lo he escrito yo</span><p>${esc(e.tipo === 'tarea' ? e.que : e.texto)}</p>${dia}</div>` +
-        VETA.r7.lista([{icono: 'mic', nombre: 'Lo que dijiste · ' + dijiste(e.tipo), pasa: '«' + (dijo || '') + '»', hoja: 'h07', datos: {guion: e.tipo}}], {i: 1});
+      const e = def(p), g = VETA.A.local(idLocal(e));
+      const hecho = g ? UI.lineaHecho({i: 0, texto: g.linea, hora: g.hora, boton: {texto: 'Deshacer', accion: 'deshacer-a4b'}}) : '';
+      const filas = e.tipo === 'tarea' ? [{nombre: 'Una tarea', pasa: e.que}, Object.assign({nombre: 'Cuándo', pasa: diaElegido(e).texto}, g ? {} : {hoja: 'a-dia', datos: {cliente: e.cliente}})]
+        : [{nombre: 'Una nota', pasa: e.texto}, {cara: e.cliente, nombre: (M.quien(e.cliente) || {}).nombre || ''}];
+      return hecho + r7.lista(filas, {i: 1}) + r7.lista([{nombre: 'Lo que dijiste', dato: dijiste(e.tipo), hoja: 'h07', datos: {guion: e.tipo}}], {i: 2});
     },
     botonFijo: p => {
-      const e = def(p), g = VETA.A.local(idLocal(e));
-      if (g) return UI.lineaHecho({texto: g.linea, hora: g.hora, boton: {texto: 'Deshacer', accion: 'deshacer-a4b'}});
-      return VETA.r7.botones({texto: e.boton, accion: 'guardar'},
-        [e.tipo === 'tarea' ? {texto: 'Cambiar el día', hoja: 'a-dia', datos: {cliente: e.cliente}} : null, {texto: 'No es eso', hoja: 'h09', datos: {guion: e.tipo}}]);
+      const e = def(p);
+      return VETA.A.local(idLocal(e)) ? '' : r7.botones({texto: 'Guardar', accion: 'guardar'}, {texto: 'No es eso', hoja: 'h09', datos: {guion: e.tipo}});
     },
     acciones: {
       guardar(ev, el, p) {
@@ -33,9 +31,8 @@
         const t = {id, tipo: e.tipo, hecha: true, linea: e.linea, cliente: e.cliente};
         if (e.tipo === 'tarea') { const d = diaElegido(e); Object.assign(t, {fecha: d.fecha, fechaISO: d.fechaISO, titulo: 'Llamar a Jordi', texto: 'Tarea tuya · ' + d.texto.split(', ')[1]}); }
         VETA.A.ponLocal(t);
-        const pila = VETA.pila(), ant = pila.length > 1 ? pila[pila.length - 2].ruta : null;
         VETA.atras();
-        if (ant && ant !== 'hoy') VETA.aviso(e.linea + '.', {deshacer: () => { VETA.A.quitaLocal(id); VETA.repinta(); }});
+        VETA.aviso(e.linea + '.', {deshacer: () => { VETA.A.quitaLocal(id); VETA.repinta(); }});
       },
       'deshacer-a4b'(ev, el, p) { VETA.A.quitaLocal(idLocal(def(p))); VETA.repinta(); }
     }

@@ -40,17 +40,6 @@
         voz: 'Pere te dejó un mensaje el sábado'}
     },
 
-    // A4 · acta de la visita (textos del plan)
-    acta: {
-      elena: {cosa: 'c-elena', cliente: 'elena', nombre: 'Elena', entendido: 'He entendido: acta de la visita con Elena', donde: 'Hoy, 9:00 · piso de Gràcia, c/ Verdi 42',
-        bloques: [
-          {id: 'gusto', titulo: 'Lo que le gustó', texto: 'La luz del salón, la terraza y la cocina reformada.'},
-          {id: 'preocupa', titulo: 'Lo que le preocupa', texto: 'El ruido de la calle por la noche. Que no haya ascensor: es un tercero.'},
-          {id: 'siguiente', titulo: 'Siguiente paso', texto: 'Segunda visita el sábado por la tarde, con su pareja, para oír la calle.'}],
-        tarea: 'Llamar a Elena el jueves 26 para confirmar la visita del sábado', tareaPie: 'La pongo en tu calendario.',
-        lineaTarea: 'He apuntado: llamar a Elena el jueves 26', propietario: 'pere'}
-    },
-
     // A4b · tarea o nota (textos del plan)
     entendido: {
       tarea: {tipo: 'tarea', entendido: 'He entendido: una tarea', que: 'Llamar a Jordi Ferrer', cliente: 'jordi',
@@ -62,13 +51,6 @@
         pie: 'Queda en su Historia.', boton: 'Guardar la nota', linea: 'Guardada · Nota en la ficha de Pere'}
     },
 
-    // A3 · contexto de cada guion y H08 · «¿Qué puedo decir?»
-    contexto: {acta: 'Después de la visita con Elena Vives', nota: 'Una nota para la ficha de Pere Soler'},
-    queDecir: [
-      {guion: 'acta', texto: 'Cómo ha ido una visita'}, {guion: 'tarea', texto: 'Una tarea'},
-      {guion: 'orden', texto: 'Una orden para Veta'},
-      {guion: 'aviso', texto: 'Un aviso', papel: 'direccion'}, {guion: 'operacion', texto: 'Una pregunta sobre una operación', papel: 'direccion'},
-      {guion: 'queja', texto: 'Una queja de un cliente', papel: 'direccion'}, {guion: 'mejorar', texto: 'Qué mejorar', papel: 'direccion'}],
     // duración por defecto de «Lo que dijiste» si se entra sin dictar (segundos)
     duracion: {acta: 72, tarea: 4, nota: 5, orden: 6, pregunta: 2},
 
@@ -82,9 +64,6 @@
     yaNo: {cosa: 'c-sergi', texto: 'Sergi Mas: Anna le contestó el viernes'},
 
     // A1 vacía · «¿Me enseñas esto?»
-    ensenas: {regla: 'r-valoraciones', titulo: '¿Me enseñas esto?', texto: 'He visto que cuando alguien pide una valoración envías el informe del piso al día siguiente. ¿Lo preparo yo?', ir: 'regla/r-valoraciones'},
-
-    // A7 · pie
-    esperaPie: 'Tu familia y tus amigos nunca salen aquí. Veta solo sigue tu trabajo.'
+    ensenas: {regla: 'r-valoraciones', titulo: '¿Me enseñas esto?', texto: 'He visto que cuando alguien pide una valoración envías el informe del piso al día siguiente. ¿Lo preparo yo?', ir: 'regla/r-valoraciones'}
   };
 })();

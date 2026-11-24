@@ -1,6 +1,7 @@
-/* Veta demo · css · imprimir.css · paquete D (Dirección)
-   Estilos de impresión del informe completo (G8) y del resumen. Se enlaza con media="print".
-   Solo sale la pantalla que se imprime: sin barras, cabeceras, botones ni la lista de la izquierda. */
+/* Veta demo · ronda 8 · css · imprimir.css · carril D (Dirección)
+   Estilos de impresión del informe completo (G8) y del resumen (G3b). Se enlaza con media="print".
+   Solo sale la pantalla que se imprime: sin barras, cabeceras, botones ni la lista de la izquierda.
+   Del informe sale su versión en papel (.d-papel: tablas de verdad, todo seguido), no los bloques de pantalla. */
 @page{size:A4;margin:16mm 14mm}
 html,body{background:#fff!important;color:#000!important;height:auto!important;overflow:visible!important}
 .lateral,#lateral,#barra,.barra,#guia,.cajon,#aviso,#velo,#hoja,.reloj,.cab,.fijo,.sinred{display:none!important}
@@ -9,12 +10,10 @@ html,body{background:#fff!important;color:#000!important;height:auto!important;o
 .pant{max-width:none!important;padding:0!important;margin:0!important}
 .pant *{animation:none!important;transition:none!important;box-shadow:none!important}
 .pant-G8 .pant-cuerpo{display:block!important}
-.pant-G8 .pant-cuerpo>*{margin:0 0 6mm}
-.d-solo-movil{display:none!important}
-.d-solo-ord{display:block!important}
-.d-periodo{font-size:13pt;color:#000!important}
-.bloque-t{font-size:14pt;margin:0 0 2mm}
-.bloque-sub,.pie{font-size:10pt;color:#333!important}
+.pant-G8 .pant-cuerpo>:not(.d-papel){display:none!important}
+.pant-G8 .d-papel{display:block!important}
+.pant-G8 .d-papel>*{margin:0 0 6mm}
+.pie{font-size:10pt;color:#333!important}
 .d-inf-dos{display:grid!important;grid-template-columns:1fr 1fr;gap:6mm}
 .d-tabla,.d-pares,.d-inf-l{width:100%;border:0.4pt solid #888!important;border-radius:0!important;background:none!important;font-size:10.5pt;break-inside:avoid}
 .d-tabla thead th{background:#eee!important;color:#000!important}
@@ -24,3 +23,5 @@ html,body{background:#fff!important;color:#000!important;height:auto!important;o
 .d-inf-l{padding:3mm 3mm 3mm 8mm!important}
 .d-inf-s{break-inside:avoid}
 .d-inf-h{font-size:11pt;margin:0 0 2mm;color:#000}
+/* el resumen para el equipo: el papel, sin aro */
+.pant-G3b .r7-doc{background:none!important}

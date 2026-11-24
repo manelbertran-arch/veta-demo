@@ -1,6 +1,7 @@
-/* Veta demo · ronda 7 · js/datos/r7-c.js · C · Veta
-   - corto: el nombre de cada trabajo en una línea (R3), para las filas de Veta y de «Ya lo hago yo».
-     También es el título de regla/:id; el nombre largo (VETA.c.nombre) sigue en Te toca a ti y en las hojas. */
+/* Veta demo · js/datos/r7-c.js · carril C (Veta y cuenta)
+   Los dos nombres cortos de cada trabajo; el nombre largo (VETA.c.nombre) sigue en el Inicio y en las hojas.
+   - corto: en una línea (28 letras como mucho), para las filas de la raíz Veta.
+   - titulo: para la cabecera de regla/:id (24 letras como mucho, para que quepa también en inglés). */
 (function () {
   'use strict';
   VETA.datos.r7c = {
@@ -14,6 +15,14 @@
       'r-contestado': 'Marcar quién ha contestado',
       'r-firmas': 'Avisarte antes de una firma',
       'r-recordatorios': 'Recordar al que no contesta'
+    },
+    titulo: {
+      'r-valoraciones': 'Informe al valorar',
+      'r-actas': 'Pedirte el acta',
+      'r-promesas': 'Lo que te prometen',
+      'r-contestado': 'Quién ha contestado',
+      'r-firmas': 'Avisarte de una firma',
+      'r-recordatorios': 'Recordar si no contesta'
     }
   };
 })();

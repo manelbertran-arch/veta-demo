@@ -31,27 +31,19 @@
       cita: 'Me ha surgido un viaje, ¿podemos cambiar la visita?', origen: 'Anna · WhatsApp · jue 19, 16:30',
       borrador: 'Hola, Anna, soy Laura. Claro. ¿Te va bien el sábado 21 a las 10:00?'}
   ];
-  // A10b · los cinco niveles
-  C.niveles = [
-    {n: 1, nombre: 'Ordena', texto: 'Apunta y ordena lo que ve.'},
-    {n: 2, nombre: 'Prepara', texto: 'Te deja el mensaje listo.'},
-    {n: 3, nombre: 'Hace lo de dentro', texto: 'Apunta, marca y guarda. No envía nada.'},
-    {n: 4, nombre: 'Envía con tu visto bueno', texto: 'Un toque tuyo y sale.'},
-    {n: 5, nombre: 'Lo hace sola', texto: 'Hoy está cerrado: ningún mensaje sale solo.', cerrado: true}
-  ];
   // A11 · la orden dictada y sus partes (H21)
   C.orden = {
     dijiste: 'Cuando un comprador no me conteste en tres días, prepárame un recordatorio.',
     partes: [
       {id: 'cuando', titulo: 'Cuándo actúa', texto: 'Cuando un comprador lleva 3 días sin contestarte.'},
       {id: 'comprueba', titulo: 'Qué comprueba', texto: 'Que el último mensaje sea tuyo y que no haya una visita apuntada.'},
-      {id: 'hace', titulo: 'Qué hace', texto: 'Te prepara un recordatorio en Hoy.'},
+      {id: 'hace', titulo: 'Qué hace', texto: 'Te prepara un recordatorio en Inicio.'},
       {id: 'llega', titulo: 'Hasta dónde llega', texto: 'Prepara. Tú lo envías.'}
     ]
   };
   // A9b · la semana pasada: la del 16 al 22 (pulido 2: hoy es lunes 23; las mismas cifras que la pestaña Veta y C.semanas '16-nov')
   C.semanaPasada = [
-    {titulo: 'Mensajes que te dejé escritos', derecha: '31', sub: 'Enviaste 27'},
+    {titulo: 'Mensajes que te dejé escritos', derecha: '31'},
     {titulo: 'Actas de visita guardadas', derecha: '3'}, {titulo: 'Promesas apuntadas', derecha: '4'},
     {titulo: 'Informes de propietario', derecha: '1'}, {titulo: 'Respuestas marcadas', derecha: '8'}
   ];
@@ -64,8 +56,7 @@
   C.oficinaDice = ['Las visitas se apuntan en la ficha el mismo día.', 'El certificado energético se pide antes de anunciar el precio.'];
   // A13b · ejemplos de mejora
   C.mejoras = ['Llamar en 48 horas a quien pide ver un piso', 'Confirmar las visitas el día antes', 'Pedir el certificado energético al captar el piso'];
-  // A14 · tu lista de cada día (hoja) y lo que aún haces a mano (hoja)
-  C.lista = {antes: 46, semanas: [['26 oct', 34], ['2 nov', 29], ['9 nov', 25], ['16 nov', 21]]};
+  // A14 · lo que aún haces a mano (hoja c-mano)
   C.aMano = [['Preparar el informe del piso antes de una valoración', 14], ['Confirmar las visitas el día antes', 9], ['Pedir el certificado energético', 6]];
   // H25 · semanas anteriores (casos preparados de la oficina, los de G3e; mensajes de Laura inventados)
   C.semanas = [
@@ -106,16 +97,16 @@
         citas: [{texto: 'Sí, mañana a las 11:00 nos vemos en el portal', origen: 'Elena · vie 20'}]}]}
   ];
 
-  // G10 · cómo trabajamos (H23)
+  // G10 · cómo trabajamos (H23). `corto`: el nombre en una línea para la fila y el título de la hoja
   C.practicas = [
-    {id: 'actas', titulo: 'Actas de visita contadas al salir', estado: 'en-marcha', estadoTexto: 'En marcha', usan: 'la usan 4 de 6', propuso: 'la propuso Anna Costa',
+    {id: 'actas', titulo: 'Actas de visita contadas al salir', corto: 'Actas contadas al salir', estado: 'en-marcha', estadoTexto: 'En marcha', usan: 'la usan 4 de 6', propuso: 'la propuso Anna Costa',
       caso: 'Nació de las visitas de septiembre: las actas de visita se escribían dos días después, o nunca.'},
     {id: 'mismo-dia', titulo: 'Responder el mismo día', estado: 'a-prueba', estadoTexto: 'Lo estamos probando · día 9 de 14', usan: 'a prueba con todo el equipo', propuso: 'vino con Veta',
       caso: 'Venía preparada con Veta: los contactos que esperan más de un día se enfrían.'},
-    {id: 'dossier', titulo: 'Informe del piso al día siguiente', estado: 'propuesta', estadoTexto: 'Te lo propongo', usan: 'la usa Laura Martí', propuso: 'de Laura Martí',
+    {id: 'dossier', titulo: 'Informe del piso al día siguiente', corto: 'Informe al día siguiente', estado: 'propuesta', estadoTexto: 'Te lo propongo', usan: 'la usa Laura Martí', propuso: 'de Laura Martí',
       caso: 'Nació de los chats de Laura: 14 valoraciones desde agosto, 11 con el informe del piso al día siguiente.'}
   ];
-  C.practicaClaudia = {id: 'llamar-48', titulo: 'Llamar en 48 horas a quien pide una visita', estado: 'propuesta', estadoTexto: 'Te lo propongo', usan: 'todavía no la usa nadie',
+  C.practicaClaudia = {id: 'llamar-48', titulo: 'Llamar en 48 horas a quien pide una visita', corto: 'Llamar en 48 horas', estado: 'propuesta', estadoTexto: 'Te lo propongo', usan: 'todavía no la usa nadie',
     propuso: 'sale de un caso', caso: 'Nació del caso de Clàudia Ribas: pidió ver un piso de Sants y nadie la llamó.'};
   // G11 · dónde se paran las operaciones y cómo aprende Veta
   C.paradas = [['Contacto', 1], ['Visitas', 2], ['Oferta', 1], ['Arras', 0]];

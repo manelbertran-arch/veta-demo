@@ -1,7 +1,8 @@
-/* Veta demo · hojas · dia.js · paquete A (El día)
+/* Veta demo · ronda 8 · hojas · dia.js · carril A (El día)
    H03 Registro · H04 Lo que he leído · H05 Hechas hoy · H06 Día cerrado · H07 Lo que dijiste · H09 No es eso.
-   (H08 «¿Qué puedo decir?» está en pantallas/dictar.js y H42 «¿Cómo quieres enviarlo?» en pantallas/informe.js,
-   junto a la pantalla que las usa.) */
+   Ronda 8: r8-hoy «Hoy he hecho yo» · r8-cerradas «Ya lo he cerrado yo» · r8-mas «Más» de un documento · y las hojas de acciones de las
+   filas que antes se desplegaban: r8-dictado «Lo que me contabas», r8-pregunta «Montse te pregunta», r8-dia «Día cerrado», r8-vigilo (una cosa vigilada).
+   (H08 «¿Qué puedo decir?» ya no existe: es la pantalla Dictar. H42 «¿Cómo lo envías?» está en pantallas/informe.js.) */
 (function () {
   'use strict';
   const UI = VETA.UI, M = VETA.modelo, esc = VETA.esc, ic = VETA.ic;
@@ -97,17 +98,23 @@
     }
   });
 
-  // ---- H07 · Lo que dijiste ----
+  // ---- H07 · Lo que dijiste ---- datos: {guion} (lo último dictado) o {visita: id} (lo que contaste de esa visita)
   VETA.hojaDef('h07', {
     titulo: 'Lo que dijiste',
     pinta: d => {
+      const vis = d.visita && VETA.a2 ? VETA.a2.de(d.visita) : null;
+      if (vis) {
+        const e = VETA.a2.est(vis.id);
+        return `<p class="hoja-x">${esc(vis.cuando)} · ${esc(e.escrito ? 'Lo escribiste tú' : vis.dur)}</p><blockquote class="a-h-dijo">«${esc(e.dicho || vis.dicho)}»</blockquote>` +
+          `<p class="a-h-gris">No guardo el audio: solo el texto.</p>`;
+      }
       const g = d.guion || 'acta', u = VETA.est.lee('a.ultimoDictado', null);
       const mio = u && u.guion === g ? u : null;
       const texto = mio ? mio.texto : ((VETA.datos.dictados || {})[g] || {}).frase;
       const seg = mio ? mio.seg : (DA().duracion || {})[g] || 0;
       return `<p class="hoja-x">Hoy, ${esc(mio ? mio.hora : '9:47')} · ${esc(VETA.A.mmss(seg))}</p>` +
         `<blockquote class="a-h-dijo">«${esc(texto || '')}»</blockquote>` +
-        `<p class="a-h-gris">No guardo el audio: solo el texto.</p>`;   // ronda 7: sin «Cerrar» abajo (ya está arriba a la derecha)
+        `<p class="a-h-gris">No guardo el audio: solo el texto.</p>`;
     }
   });
 
@@ -121,5 +128,81 @@
       const va = ((VETA.datos.dictados || {})[o.guion] || {}).va || 'entendido-dictado/tarea';
       setTimeout(() => VETA.ir(va, {reemplaza: true}), 0);
     }}))
+  });
+
+  // ================= ronda 8 =================
+  const cuantas = n => (n === 1 ? 'Vigilo 1 cosa' : `Vigilo ${n} cosas`);
+
+  // ---- r8-hoy · Hoy he hecho yo (Inicio): lo que Veta cerró sola, lo que vigila y lo que ha leído ----
+  VETA.hojaAcciones('r8-hoy', {
+    titulo: 'Hoy he hecho yo',
+    opciones: () => {
+      const q = VETA.A.q(), nc = VETA.A.cerradas(q).length, nl = ((M.lectura() || {}).hoy || {}).chats || 0;
+      return [nc ? {texto: `Ya lo he cerrado yo · ${nc}`, hoja: 'r8-cerradas'} : null,
+        {texto: cuantas(VETA.A.esperaPend(q).length), ir: 'espera'},
+        {texto: nl === 1 ? 'He leído 1 chat desde ayer' : `He leído ${nl} chats desde ayer`, hoja: 'h04'}].filter(Boolean);
+    }
+  });
+
+  // ---- r8-cerradas · Ya lo he cerrado yo: cada cosa con su «Deshacer» (vuelve a tu lista) ----
+  VETA.hojaDef('r8-cerradas', {
+    titulo: 'Ya lo he cerrado yo',
+    pinta: () => {
+      const l = VETA.A.cerradas(VETA.A.q());
+      if (!l.length) return `<p class="hoja-x">Ahora no hay nada cerrado por mí.</p>`;
+      return `<div class="a-h-hechas">${l.map(x => `<div class="a-hl"><div class="a-hl-a"><span class="a-dia-t"><b>${esc(x.titulo)}.</b> ${esc(x.texto)}</span></div>` +
+        UI.boton({tipo: 'texto', texto: 'Deshacer', accion: 'reabre', de: x.id, ancho: false}) + '</div>').join('')}</div>`;
+    },
+    acciones: {
+      reabre(ev, el) { VETA.A.reabre(el.dataset.de); VETA.cierraHoja({foco: false}); VETA.repinta(); VETA.pintaBarra(); VETA.aviso('Vale. No lo cierro sin preguntarte.'); }
+    }
+  });
+
+  // ---- r8-mas · «Más» de un documento (acta o informe): todo lo que no es enviar. datos: {que: 'acta' | 'informe', id} ----
+  VETA.hojaAcciones('r8-mas', {
+    titulo: 'Más',
+    opciones: d => (d.que === 'acta' ? VETA.a2.masActa(d.id) : VETA.a2.masInforme(d.id))
+  });
+
+  // ---- r8-dictado · Lo que me contabas (el dictado a medias) ----
+  VETA.hojaAcciones('r8-dictado', {
+    titulo: 'Lo que me contabas',
+    texto: () => { const d = VETA.A.dictado(); return d ? `Lo dejaste a medias (${VETA.A.mmss(d.seg)}).` : ''; },
+    opciones: () => {
+      const d = VETA.A.dictado(); if (!d) return [];
+      return [{texto: 'Seguir', ir: 'dictar/' + d.guion}, {texto: 'Borrarlo', hace: () => { VETA.est.pon('a.dictado', null); VETA.repinta(); }}];
+    }
+  });
+
+  // ---- r8-pregunta · Montse te pregunta. datos: {k} ----
+  const pregunta = d => VETA.A.preguntas(VETA.A.q()).find(x => VETA.A.idPreg(x) === d.k) || null;
+  VETA.hojaAcciones('r8-pregunta', {
+    titulo: () => (((VETA.datos.personas || {}).montse || {}).corto || 'Montse') + ' te pregunta',
+    texto: d => { const x = pregunta(d); return x ? `Sobre ${x.nombre}, hoy a las ${x.hora}: «${x.texto}»` : ''; },
+    opciones: d => {
+      const x = pregunta(d); if (!x) return [];
+      return [{texto: 'Ya le he contestado', hace: () => { VETA.A.contesta(d.k); VETA.repinta(); VETA.pintaBarra(); VETA.aviso('Hecho. Se lo digo a Montse.'); }},
+        (VETA.datos.clientes || {})[x.op] ? {texto: 'Ver la ficha', ir: 'cliente/' + x.op} : null].filter(Boolean);
+    }
+  });
+
+  // ---- r8-dia · Día cerrado ----
+  VETA.hojaAcciones('r8-dia', {
+    titulo: 'Día cerrado',
+    texto: 'Mañana a las 8:00, lista nueva.',
+    opciones: () => [{texto: 'Abrir el día otra vez', hace: () => { VETA.est.pon('a.cerrado', null); VETA.repinta(); }}]
+  });
+
+  // ---- r8-vigilo · una cosa que vigilo (A7). data-de = id de la cosa ----
+  VETA.hojaAcciones('r8-vigilo', {
+    titulo: d => (VETA.A.vigilo.cosa(d.de) || {}).titulo || 'Lo que vigilo por ti',
+    texto: d => { const c = VETA.A.vigilo.cosa(d.de); return c ? c.fecha + ' · ' + c.texto : ''; },
+    opciones: d => {
+      const c = VETA.A.vigilo.cosa(d.de), b = c && c.boton; if (!c) return [];
+      return [b ? (b.hoja ? {texto: b.texto, hoja: b.hoja, datos: {de: c.id}} : b.ir ? {texto: b.texto, ir: b.ir} : {texto: b.texto, hace: () => VETA.A.vigilo.principal(c.id)}) : null,
+        {texto: c.local ? 'Ya está hecha' : 'Se cumplió', hace: () => VETA.A.vigilo.cumplio(c.id)},
+        c.cliente ? {texto: 'Ver su ficha', ir: 'cliente/' + c.cliente} : null,
+        c.chat || c.cita ? {texto: 'De dónde sale', hoja: 'h01', datos: {de: c.id}} : null].filter(Boolean);
+    }
   });
 })();

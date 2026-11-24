@@ -118,7 +118,7 @@
   D.temas = [
     {id: 'esperando', texto: 'Esperando respuesta', cifra: '11'}, {id: 'promesas', texto: 'Promesas sin constancia', cifra: '7'},
     {id: 'quieren', texto: 'Quieren vender o comprar', cifra: '9'}, // la cifra de contactos sale de lo mismo que «Lo que entra» (baja al asignar)
-    {id: 'contactos', texto: 'Contactos nuevos sin responder', get cifra() { return String(VETA.dir.sinResponder().length); }},
+    {id: 'contactos', texto: 'Contactos nuevos sin responder', corto: 'Contactos sin responder', get cifra() { return String(VETA.dir.sinResponder().length); }},
     {id: 'respuesta', texto: 'Tiempo de respuesta habitual', cifra: '2 h 40 min'}, {id: 'visitas', texto: 'Visitas sin confirmar', cifra: '4'}
   ];
   D.temasIniciales = ['contactos', 'promesas', 'visitas'];

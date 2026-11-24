@@ -1,12 +1,13 @@
-/* Veta demo · pantallas · hoy.js · paquete A (El día) · ronda 7: A1 «Te toca a ti»
-   A1 · Te toca a ti · #/hoy (la lista) y A23 · #/toca/:id (la tarjeta de una persona). Además, VETA.A: lo que comparten las pantallas y hojas del paquete A
-   (tareas y notas guardadas desde lo dictado, la línea «en el sitio», el dictado a medias y el «principal» con el 409 de Jordi). */
+/* Veta demo · ronda 8 · pantallas · hoy.js · carril A (El día)
+   · El Inicio de la agente (gancho VETA.inicioDe.agente): «lo primero» con su botón, la lista del resto y la fila «Hoy he hecho yo».
+   · A1 · Te toca a ti · #/hoy: para dirección, su día como detalle (lo mismo, más «Tu semana»). La agente va a Inicio.
+   · A23 · #/toca/:id: una cosa de hoy (el mensaje de la persona, el que deja escrito Veta y un botón).
+   Además, VETA.A: lo que comparten las pantallas y hojas del carril (tareas y notas guardadas desde lo dictado, el dictado a medias,
+   lo que Veta aprende de un mensaje cambiado y el «principal» con el 409 de Jordi). */
 (function () {
   'use strict';
-  const UI = VETA.UI, M = VETA.modelo, esc = VETA.esc, ic = VETA.ic;
+  const UI = VETA.UI, M = VETA.modelo, esc = VETA.esc;
   const PEND = ['por-hacer', 'pregunta-envio'];
-  const HECHAS = ['enviada', 'hecha', 'quitada'];
-  const DA = () => VETA.datos.diaA || {};
 
   // ---- VETA.A: estado propio del paquete (prefijo «a.») ----
   const A = VETA.A = {};
@@ -61,12 +62,6 @@
   A.dictado = () => VETA.est.lee('a.dictado', null);
   A.mmss = s => { s = Math.max(0, Math.round(s || 0)); return Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0'); };
 
-  // vuelve a «Te toca a ti»: atrás si es la anterior; si no, a la caja (camino nuevo, V4)
-  A.aHoy = () => {
-    const p = VETA.pila();
-    if (p.length > 1 && p[p.length - 2].ruta === 'hoy') VETA.atras(); else VETA.ir('hoy');
-  };
-
   // ---- ronda 6 · lo que Veta aprende y hace sola (datos en VETA.datos.r6.dia; claves propias «a.r6.») ----
   const R6 = () => (VETA.datos.r6 || {}).dia || {};
   const vivo = VETA.vivo, r6 = VETA.r6;
@@ -85,7 +80,7 @@
     while (x < n && y < m) { if (ma[x] === mb[y]) { ops.push(['=', ma[x]]); x++; y++; } else if (T[x + 1][y] >= T[x][y + 1]) ops.push(['-', ma[x++]]); else ops.push(['+', mb[y++]]); }
     while (x < n) ops.push(['-', ma[x++]]); while (y < m) ops.push(['+', mb[y++]]);
     // contexto: lo que queda de la misma frase a cada lado (seis palabras como mucho)
-    const fin = w => /[.!?…]$/.test(w);
+    const fin = w => /[.!?]$/.test(w);
     let pi = i; while (pi > 0 && i - pi < 6 && !fin(a[pi - 1])) pi--;
     let pf = a.length - j; while (pf < a.length && pf - (a.length - j) < 6 && !(pf > a.length - j && fin(a[pf - 1]))) pf++;
     const pre = a.slice(pi, i), post = a.slice(a.length - j, pf);
@@ -94,7 +89,7 @@
       const cierra = () => { if (run.length) { out.push(env(run.join(' '))); run = []; } };
       ops.forEach(([o, w]) => { if (o === sig) run.push(w); else if (o === '=') { cierra(); out.push(esc(w)); } });
       cierra();
-      return (pi > 0 ? '… ' : '') + pre.map(esc).concat(out, post.map(esc)).join(' ') + (pf < a.length ? ' …' : '');
+      return pre.map(esc).concat(out, post.map(esc)).join(' ');
     };
     return {cambia: n + m > 0, quita: n > 0,
       antes: lado('-', t => `<s class="a-r6-quita">${esc(t)}</s>`), ahora: lado('+', t => vivo.oro(t)),
@@ -113,19 +108,22 @@
     return false;
   };
 
-  // ---- ronda 7 · «Te toca a ti» (A1, #/hoy) y la tarjeta de una persona (A23, #/toca/:id) ----
-  // A1 es solo la lista (R2, R3). Lo de Veta («Esto lo hago yo», «Lo que he aprendido de ti», «¿Lo hago yo?») vive en la caja Veta.
-  const R7 = VETA.r7, ic7 = (n, w) => ic(n, w);
+  // ---- el día: lo que te toca (Inicio de la agente y A1 de dirección) y una cosa de hoy (A23, #/toca/:id) ----
+  const R7 = VETA.r7;
   const P7 = () => (VETA.datos.r7a1 || {}), pal = c => ((P7().cosas || {})[c.id]) || {};
-  const plural = (n, uno, varios) => n + ' ' + (n === 1 ? uno : varios);
   const pendientes = q => M.cola(q).filter(c => PEND.includes(c.estado));
   const abiertas = () => E('abiertas', []);
   const cerradas = () => (R6().cerradas || []).filter(x => !abiertas().includes(x.id));
   const reabiertas = q => q === 'laura' ? (R6().cerradas || []).filter(x => abiertas().includes(x.id)) : [];
+  const cerrado = () => VETA.est.lee('a.cerrado', null);
+  A.cerradas = q => (q === 'laura' ? cerradas() : []);
+  A.reabre = id => { const ab = abiertas(); if (!ab.includes(id)) ab.push(id); P('abiertas', ab); };
 
-  // lo que dirección le pregunta: cuenta en la lista hasta que dices «Ya le he contestado» (clave a.r7.contestadas)
+  // lo que dirección le pregunta: cuenta en la lista hasta que dices «Ya le he contestado» (clave a.r6.contestadas)
   const idPreg = x => x.op + '|' + x.hora + '|' + x.texto;
+  A.idPreg = idPreg;
   A.preguntas = q => (r6.preguntas ? r6.preguntas(q) : []).filter(x => !E('contestadas', []).includes(idPreg(x)));
+  A.contesta = k => P('contestadas', E('contestadas', []).concat([k]));
 
   // la cosa de una tarjeta: una de la lista, lo que Veta cerró y has vuelto a abrir (x-…), o la que toca de un cliente (toca/marta)
   function cosaDe(id) {
@@ -137,6 +135,7 @@
   }
   const nombreCorto = c => c.corto && !/\s/.test(c.corto) ? c.corto : String(c.titulo || '').split(' ')[0];
   const rutaDe = c => pal(c).ir || 'toca/' + c.id;
+  const borradorDe = c => { const x = c.extra || {}; return x.borradorHtml ? {html: x.borradorHtml} : (x.borrador || c.borrador) ? {texto: String(x.borrador || c.borrador).replace(/<[^>]+>/g, '')} : null; };
 
   // la siguiente que te toca, por el orden de la lista (si Veta acaba de cambiar un mensaje con lo aprendido, esa)
   function siguiente(c) {
@@ -147,81 +146,86 @@
     return l.find(y => cola.indexOf(y) > i) || l[0] || null;
   }
 
-  // «¿Lo hago siempre así?»: toca preguntarlo cuando el mensaje que salió no era el mío
+  // «¿Lo escribo siempre así?»: toca preguntarlo cuando el mensaje que salió no era el mío
   const porAprender = c => { const k = E('cambio'); return k && k.id === c.id && c.estado === 'enviada' && !k.resuelto ? k : null; };
   const aprendido = c => { const k = E('cambio'); return k && k.id === c.id && k.resuelto && k.seq === A.seq() ? k : null; };
 
-  // ---- A1 · la lista ----
+  // ---- el día: «lo primero» con su botón, la lista del resto y lo de Veta ----
+  // una fila por cosa. La pastilla, solo roja y solo si nadie ha contestado; lo demás lo dice la segunda línea
   function filaCosa(c) {
     const d = pal(c), x = c.extra || {}, preg = c.estado === 'pregunta-envio';
     const pasa = preg ? '¿Lo enviaste? Dímelo aquí' : x.r6 ? 'Ya cambiado con lo que me enseñaste' : x.cambiado ? 'Te ha vuelto a escribir' : (d.pasa || c.filaSub || '');
-    return {cara: c.av || c.cliente || null, icono: c.icono || 'punto', nombre: c.titulo, pasa, pastilla: preg || x.r6 ? null : d.pastilla, tono: d.tono, ir: rutaDe(c)};
+    const boton = preg ? 'Abrir' : c.tipo === 'visita' || d.ir ? 'Abrir la visita' : borradorDe(c) ? 'Ver mi respuesta' : 'Abrir';
+    return {cara: c.av || c.cliente || null, nombre: c.titulo, pasa, pastilla: !preg && !x.r6 && d.tono === 'rojo' ? d.pastilla : null, ir: rutaDe(c), boton};
   }
-  const mini = (texto, o) => `<button type="button" class="a1-mini"${UI.attrs(o)}>${esc(texto)}</button>`;
-
-  function filas(q) {
-    const l = pendientes(q).map(filaCosa);
-    reabiertas(q).forEach(x => l.push({cara: x.cliente || null, icono: x.icono || 'check', nombre: x.cliente ? ((M.quien(x.cliente) || {}).nombre || x.tuya) : x.tuya, pasa: 'Lo vuelves a llevar tú', ir: 'toca/' + x.id}));
-    A.preguntas(q).forEach(x => {
-      const op = VETA.datos.clientes && VETA.datos.clientes[x.op], quien = ((VETA.datos.personas || {}).montse || {}).corto || 'Montse';
-      l.push({cara: 'montse', nombre: quien + ' te pregunta', pasa: x.texto, abre: `<p>Sobre ${esc(x.nombre)}, hoy a las ${esc(x.hora)}: «${esc(x.texto)}»</p>` +
-        `<p class="a1-minis">${mini('Ya le he contestado', {accion: 'r7-contestada', datos: {k: idPreg(x)}})}${op ? mini('Ver la ficha', {ir: 'cliente/' + x.op}) : ''}</p>`});
-    });
-    const dic = A.dictado();
-    if (dic) l.push({icono: 'mic', nombre: 'Lo que me contabas', pasa: 'Lo dejaste a medias (' + A.mmss(dic.seg) + ')',
-      abre: `<p class="a1-minis">${mini('Seguir', {ir: 'dictar/' + dic.guion})}${mini('Borrarlo', {accion: 'borrar-dictado'})}</p>`});
-    const hechas = A.hechas(q), nMan = M.manana(q).length;
-    if (hechas.length) l.push({icono: 'check', nombre: 'Lo que has hecho hoy', pasa: hechas[hechas.length - 1].texto + (nMan ? ' · ' + plural(nMan, 'pasa', 'pasan') + ' a mañana' : ''), numero: hechas.length, hoja: 'h05'});
-    if (VETA.est.lee('a.cerrado', null)) l.push({icono: 'reloj', nombre: 'Día cerrado', pasa: 'Mañana a las 8:00, lista nueva', abre: `<p class="a1-minis">${mini('Abrir el día otra vez', {accion: 'abrir-dia'})}</p>`});
-    const cer = q === 'laura' ? cerradas() : [];
-    if (cer.length) l.push({icono: 'check', oro: true, clase: 'a1-cerradas', nombre: 'Ya lo he cerrado yo', pasa: cer.map(x => x.corto).join(' y '), numero: cer.length,
-      abre: cer.map(x => `<div class="a1-cer"><p><b>${esc(x.titulo)}.</b> ${esc(x.texto)}</p>${mini('Deshacer', {accion: 'r6-reabre', de: x.id})}</div>`).join('')});
+  const cuantas = (n, uno, varias) => (n === 1 ? uno : varias);
+  // «Hoy he hecho yo»: lo que Veta cerró sola, lo que vigila y lo que ha leído, en una fila que abre su hoja
+  function deVeta(q) {
+    const nc = A.cerradas(q).length, nv = A.esperaPend(q).length, nl = ((M.lectura() || {}).hoy || {}).chats || 0;
+    const t = [];
+    if (nc) t.push(cuantas(nc, '1 cerrada', `${nc} cerradas`));
+    if (nv) t.push(cuantas(nv, '1 vigilada', `${nv} vigiladas`));
+    if (nl) t.push(cuantas(nl, '1 chat leído', `${nl} chats leídos`));
+    return {nombre: 'Hoy he hecho yo', pasa: t.join(' · '), hoja: 'r8-hoy'};
+  }
+  // las filas que solo salen cuando ocurren, de una línea: cada una abre su hoja
+  function ocasionales(q) {
+    const l = [], dic = A.dictado(), hechas = A.hechas(q);
+    if (dic) l.push({nombre: 'Lo que me contabas', dato: A.mmss(dic.seg), hoja: 'r8-dictado'});
+    A.preguntas(q).forEach(x => l.push({cara: 'montse', nombre: (((VETA.datos.personas || {}).montse || {}).corto || 'Montse') + ' te pregunta', hoja: 'r8-pregunta', datos: {k: idPreg(x)}}));
+    if (hechas.length) l.push({nombre: 'Lo que has hecho hoy', dato: hechas.length, hoja: 'h05'});
+    if (cerrado()) l.push({nombre: 'Día cerrado', hoja: 'r8-dia'});
     return l;
   }
-
-  function fraseHoy() {
-    if (VETA.est.lee('a.cerrado', null)) return 'Día cerrado. Mañana a las 8:00 te dejo la lista nueva.';
-    const n = R7.cuentas().hoy, yo = A.q() === 'laura';
-    const base = n === 0 ? 'Hoy ya no te toca nada.' : `Hoy te ${n === 1 ? 'toca 1 cosa' : 'tocan ' + n + ' cosas'}.`;
-    return base + (yo ? ` Hace un mes eran ${P7().haceUnMes || R6().haceUnMes || 9}: el resto ya lo hago yo.` : ' Toca una y te digo qué hacer.');
+  // semana: la fila «Tu semana» del día de dirección (A1)
+  function cuerpoDia(q, semana) {
+    const l = pendientes(q).map(filaCosa);
+    reabiertas(q).forEach(x => l.push({cara: x.cliente || null, nombre: x.cliente ? ((M.quien(x.cliente) || {}).nombre || x.tuya) : x.tuya, pasa: 'Lo vuelves a llevar tú', ir: 'toca/' + x.id, boton: 'Abrir'}));
+    const uno = l[0], resto = l.slice(1).map(f => Object.assign({}, f, {boton: null}));
+    return (uno ? R7.primero({i: 0, cara: uno.cara, nombre: uno.nombre, pasa: uno.pasa, pastilla: uno.pastilla, boton: {texto: uno.boton, ir: uno.ir}}) : '') +
+      (resto.length ? R7.lista(resto, {i: 1}) : '') +
+      R7.lista([deVeta(q)].concat(semana ? [{nombre: 'Tu semana', ir: 'semana'}] : [], ocasionales(q)), {i: 2});
   }
+  const fraseDia = () => {
+    if (cerrado()) return 'Día cerrado. Mañana a las 8:00, lista nueva.';
+    const n = R7.cuentas().hoy;
+    return n > 1 ? `Hoy te tocan ${n} cosas.` : n === 1 ? 'Hoy te toca 1 cosa.' : 'Hoy ya no te toca nada.';
+  };
+  // con 0 cosas (y el día sin cerrar), el pie ofrece cerrarlo
+  const pieDia = q => (R7.cuentas().hoy || cerrado() || !M.cola(q).length ? '' : R7.botones({texto: 'Cerrar el día', accion: 'cerrar-dia'}));
 
-  // si en la caja Veta se olvidó lo aprendido, el mensaje que Veta cambió vuelve a ser el de antes
+  // si en Veta se olvidó lo aprendido, el mensaje que Veta cambió vuelve a ser el de antes
   function alDia() {
     if (A.q() !== 'laura' || r6.siempre()) return false;
     const k = E('cambio'); let toca = A.r6.limpia();
     if (k && k.resuelto === 'siempre') { P('cambio', null); toca = true; }
     return toca;
   }
-
-  const comunes = {
-    'borrar-dictado'() { VETA.est.pon('a.dictado', null); VETA.repinta(); VETA.pintaBarra(); },
-    'abrir-dia'() { VETA.est.pon('a.cerrado', null); VETA.repinta(); },
-    'r7-contestada'(ev, el) { P('contestadas', E('contestadas', []).concat([el.dataset.k])); VETA.repinta(); VETA.pintaBarra(); VETA.aviso('Hecho. Se lo digo a Montse.'); },
-    // lo que Veta cerró sola: «Deshacer» lo vuelve a poner en tu lista
-    'r6-reabre'(ev, el) {
-      const id = el.dataset.de, ab = abiertas(); if (!ab.includes(id)) ab.push(id);
-      P('abiertas', ab); VETA.repinta(); VETA.pintaBarra(); VETA.aviso('Vale. No lo cierro sin preguntarte.');
-    }
+  const accionesDia = {
+    'cerrar-dia'() { VETA.est.pon('a.cerrado', VETA.ahora()); VETA.repinta(); VETA.hoja('h06'); }
   };
+  const montaDia = () => { if (alDia()) VETA.repinta(); };
 
-  VETA.pantalla('A1', {
-    titulo: 'Te toca a ti',
-    frase: fraseHoy,
-    guia: ['Aquí está lo que te toca hoy: una fila por persona.', 'Toca una y ves su mensaje y el que te dejo escrito.', 'Lo envías tú. Lo demás ya lo hago yo.'],
-    pinta: () => R7.lista(filas(A.q()), {i: 0, clase: 'a1-lista'}),
-    botonFijo: () => {
-      const q = A.q();
-      if (R7.cuentas().hoy || VETA.est.lee('a.cerrado', null) || !M.cola(q).length) return '';
-      return R7.botones({texto: 'Cerrar el día', accion: 'cerrar-dia'});
-    },
-    alMontar: () => { if (alDia()) VETA.repinta(); },
-    acciones: Object.assign({
-      'cerrar-dia'() { VETA.est.pon('a.cerrado', VETA.ahora()); VETA.repinta(); VETA.hoja('h06'); }
-    }, comunes)
+  // el Inicio de la agente (la cáscara, la fecha y el saludo son de js/pantallas/inicio.js)
+  VETA.inicioDe.agente = yo => ({
+    html: cuerpoDia(yo.id),
+    frase: cerrado() ? fraseDia() : '',
+    pie: pieDia(yo.id),
+    acciones: accionesDia,
+    alMontar: montaDia
   });
 
-  // ---- A23 · la tarjeta de una persona ----
+  // A1 · para dirección, su día: lo mismo que el Inicio de la agente, más «Tu semana»
+  VETA.pantalla('A1', {
+    titulo: 'Te toca a ti',
+    sub: fraseDia,
+    pinta: () => cuerpoDia(A.q(), VETA.yo().papel === 'direccion'),
+    botonFijo: () => pieDia(A.q()),
+    alMontar: montaDia,
+    acciones: accionesDia
+  });
+
+  // ---- A23 · una cosa de hoy ----
   function estadoDe(c) {
     if (!c) return 'nada';
     if (c.reabierta) return c.estado === 'por-hacer' ? 'reabierta' : 'cerrada';
@@ -229,120 +233,114 @@
     if (c.estado === 'pregunta-envio') return 'preguntar';
     return PEND.includes(c.estado) ? 'toca' : 'hecha';
   }
-  const quedan = () => R7.cuentas().hoy;
-  const borradorDe = c => { const x = c.extra || {}; return x.borradorHtml ? {html: x.borradorHtml} : (x.borrador || c.borrador) ? {texto: String(x.borrador || c.borrador).replace(/<[^>]+>/g, '')} : null; };
-  const msgHtml = b => b ? `<p class="a1-msg">${b.html ? b.html : esc(b.texto)}</p>` : '';
-  const suMensaje = c => c.cita ? `<div class="r7-ficha" data-i="0"><span class="r7-ficha-de">${esc(c.cita.origen || c.titulo)}</span><p>${esc(c.cita.texto)}</p></div>` : '';
   const tieneOtra = c => (c.secundarios || []).some(s => s.hoja === 'h02');
   const editar = c => (c.secundarios || []).find(s => s.ir && /^mensaje\//.test(s.ir));
-
-  function fraseToca(p) {
-    const c = cosaDe(p.id), st = estadoDe(c), n = quedan();
-    const resto = n === 0 ? 'Ya no te queda nada hoy.' : `Te ${n === 1 ? 'queda 1 cosa' : 'quedan ' + n + ' cosas'}.`;
-    if (st === 'nada') return 'Esto ya no está en tu lista.';
-    if (st === 'reabierta') return 'Lo había cerrado yo. Ahora lo llevas tú, o me lo devuelves.';
-    if (st === 'cerrada') return 'Esto ya lo he cerrado yo. ' + resto;
-    if (st === 'aprender') return 'Enviado. Has cambiado mi mensaje: ¿lo escribo siempre así?';
-    if (st === 'preguntar') return `¿Has enviado el mensaje a ${nombreCorto(c)}? Dímelo y lo quito de tu lista.`;
-    if (st === 'hecha') return 'Hecho. ' + resto;
-    const d = pal(c);
-    if (d.frase) return d.frase;
-    if (c.tipo === 'visita') return 'Tienes una visita. Al salir, me cuentas cómo ha ido.';
-    return borradorDe(c) ? `${nombreCorto(c)} te ha escrito. Mira mi respuesta y envíala tú.` : (c.momento || c.filaSub || '');
+  // el botón negro de la cosa y, si la cosa trae otra cosa que hacer (copiar otra vez, ver de dónde sale), su enlace
+  function botonDe(c) {
+    const d = pal(c), x = c.extra || {};
+    if (d.ir) return {negro: {texto: 'Abrir la visita', ir: d.ir}, enlace: null};
+    const b = Object.assign({}, c.boton || {}, x.boton || {}); if (!b.ir && !b.hoja && !b.accion) b.accion = 'principal';
+    if (d.boton && !x.boton) b.texto = d.boton;
+    const ed = editar(c);
+    const otros = (x.secundarios || c.secundarios || []).filter(s => s.hoja !== 'h02' && s !== ed && !(s.ir && /^(cliente|mensaje)\//.test(s.ir)));
+    // todo mensaje que deja escrito Veta se puede cambiar
+    const enlace = otros[0] ? Object.assign({de: c.id}, otros[0]) : borradorDe(c) && b.accion === 'principal' ? {texto: 'Cambiar el mensaje', ir: 'mensaje/' + c.id} : null;
+    return {negro: Object.assign({de: c.id}, b), enlace};
   }
 
   function cuerpoToca(c) {
     const d = pal(c), x = c.extra || {}, b = borradorDe(c);
-    let h = suMensaje(c);
-    if (c.bloqueo) h += `<div class="r7-ficha r7-oro" data-i="1"><span class="r7-ficha-de">Lo he mirado yo</span><p>${esc(c.bloqueo)}</p></div>`;
+    let h = c.cita ? R7.tarjeta({i: 0, de: c.cita.origen || c.titulo, texto: c.cita.texto}) : '';
+    if (c.bloqueo) h += R7.tarjeta({i: 1, veta: true, de: 'Lo he mirado yo', texto: c.bloqueo});
     else if (b || c.resumen || c.encaja || c.momento) {
-      let v = `<span class="r7-ficha-de">${esc(d.hecho || (b ? 'Te lo dejo escrito' : 'Lo que sé'))}</span>`;
-      if (x.aviso) v += `<p class="a1-aviso">${esc(x.aviso)}</p>`;
-      if (c.momento) v += `<p>${esc(c.momento)}</p>`;
-      if (c.encaja) v += `<div class="a1-piso">${UI.foto(c.encaja.piso, {tam: 'mini'})}<span>${esc(c.encaja.texto)}</span></div>`;
-      if (c.resumen) v += `<p>${esc(c.resumen)}</p>`;
-      v += msgHtml(b);
-      if (b || c.resumen) v += R7.ensena({datos: {caso: c.id}});
-      h += `<div class="r7-ficha r7-oro" data-i="1">${v}</div>`;
+      const v = (x.aviso ? `<p class="a1-aviso">${esc(x.aviso)}</p>` : '') + (c.momento ? `<p>${esc(c.momento)}</p>` : '') + (c.encaja ? `<p>${esc(c.encaja.texto)}</p>` : '') +
+        (c.resumen ? `<p>${esc(c.resumen)}</p>` : '') + (b ? `<p class="a1-msg">${b.html ? b.html : esc(b.texto)}</p>` : '');
+      h += R7.tarjeta({i: 1, veta: true, de: d.hecho || (b ? 'Te lo dejo escrito' : 'Lo que sé'), html: v});
     }
-    if (c.sale) h += `<p class="a1-nota" data-i="2">${ic7('candado', 16)}<span>No sale hasta que tú lo envíes.${c.pie ? ' ' + esc(c.pie) : ''}</span></p>`;
-    if (tieneOtra(c)) h += `<button type="button" class="enlace a1-otra" data-hoja="h02" data-de="${esc(c.id)}" data-i="2">Hacer otra cosa con ${esc(nombreCorto(c))}</button>`;
-    return h;
+    const e = botonDe(c).enlace;
+    return h + (e ? R7.enlace(Object.assign({i: 2}, e)) : '');
   }
 
   function cuerpoHecha(c) {
     const sale = c.estado === 'enviada', k = aprendido(c);
-    let h = `<div class="r7-ficha a1-hecho" data-i="0"><p class="a1-hecho-t">${ic7('check', 20)}<span>${esc((c.extra || {}).linea || (c.lineas || {})[c.estado] || (sale ? 'Enviado a ' + nombreCorto(c) : 'Hecho'))}${c.hora && c.estado !== 'para-manana' ? ' · ' + esc(c.hora) : ''}</span></p>` +
-      `<p class="a1-minis">${sale ? mini('Ver lo que enviaste', {hoja: 'h03', de: c.id}) : ''}${mini(sale ? 'No lo envié' : 'Deshacer', {accion: sale ? 'no-lo-envie' : 'deshacer', de: c.id})}</p></div>`;
+    let h = UI.lineaHecho({i: 0, texto: (c.extra || {}).linea || (c.lineas || {})[c.estado] || (sale ? 'Enviado a ' + nombreCorto(c) : 'Hecho'), hora: c.estado !== 'para-manana' ? c.hora : null,
+      boton: {texto: sale ? 'No lo envié' : 'Deshacer', accion: sale ? 'no-lo-envie' : 'deshacer', de: c.id}});
     if (k) {
       const t = A.tipoCambio(k.antes, k.ahora), d = A.dif(k.antes, k.ahora), ap = R6().aplica, sig = k.resuelto === 'siempre' && ap && M.cosa(ap.cosa);
       const que = k.resuelto !== 'siempre' ? vivo.oro('Con ' + nombreCorto(c) + ' lo hago así') + '.'
         : t.tipo === 'dos-horas' ? vivo.oro(R6().aprendidoDosHoras) + '.'
         : d.ahora && /v-oro/.test(d.ahora) ? 'Desde ahora, en los mensajes como este escribo: «' + d.ahora + '»' : 'Desde ahora, en los mensajes como este quito: «' + d.antes + '»';
       const aplicado = sig && (sig.extra || {}).r6 && sig.estado === 'por-hacer';
-      h += `<div class="r7-ficha r7-oro" data-i="1" data-vt="a-r6-apr"><span class="r7-ficha-de">Aprendido</span><p>${que}</p>` +
-        `<p class="a1-apl">${aplicado ? 'Ya he cambiado el mensaje de ' + esc(ap.corto) + '.' : k.resuelto === 'siempre' ? 'Lo verás en el próximo mensaje como este.' : 'Lo verás en su próximo mensaje.'}</p>` +
-        `<p class="a1-minis">${mini('Deshacer', {accion: 'r6-desaprende'})}</p></div>`;
+      h += R7.tarjeta({i: 1, veta: true, vt: 'a-r6-apr', de: 'Aprendido', html: `<p>${que}</p>` +
+        `<p>${aplicado ? 'Ya he cambiado el mensaje de ' + esc(ap.corto) + '.' : k.resuelto === 'siempre' ? 'Lo verás en el próximo mensaje como este.' : 'Lo verás en su próximo mensaje.'}</p>`});
     }
+    if (sale) h += R7.lista([{nombre: 'Lo que enviaste', hoja: 'h03', de: c.id}], {i: 2});
+    if (k) h += R7.enlace({i: 3, texto: 'Deshacer lo aprendido', accion: 'r6-desaprende'});
     return h;
   }
 
+  // «¿Lo escribo siempre así?»: lo que cambiaste y tres respuestas (tres filas de elegir, sin pie)
   function cuerpoAprender(c, k) {
-    const d = A.dif(k.antes, k.ahora);
-    return `<div class="r7-ficha r7-oro a1-dif" data-i="0" data-vt="a-r6-apr">${d.quita ? `<span class="r7-ficha-de">Yo puse</span><p>${d.antes}</p>` : ''}<span class="r7-ficha-de">Tú has puesto</span><p>${d.ahora}</p></div>`;
+    const d = A.dif(k.antes, k.ahora), t = A.tipoCambio(k.antes, k.ahora);
+    return R7.tarjeta({i: 0, veta: true, vt: 'a-r6-apr', clase: 'a1-dif', html: (d.quita ? `<span class="r7-ficha-de">Yo puse</span><p>${d.antes}</p>` : '') + `<span class="r7-ficha-de">Tú has puesto</span><p>${d.ahora}</p>`}) +
+      R7.elegir([{id: 'siempre', texto: t.si}, {id: 'cliente', texto: 'Solo con ' + nombreCorto(c)}, {id: 'vez', texto: 'Solo esta vez'}], {i: 1, accion: 'r6-aprende', etiqueta: '¿Lo escribo siempre así?'});
   }
 
   VETA.pantalla('A23', {
-    // el título dice lo que se hace («Contestar a Marta», «Informe de la semana»), no el nombre: así el volver nunca repite el título (9b)
+    // el título dice lo que se hace («Contestar a Marta», «Informe de la semana»), no el nombre: así el volver nunca repite el título
     titulo: p => { const c = cosaDe(p.id); if (!c) return 'Te toca a ti'; return pal(c).titulo || (c.reabierta ? c.titulo : c.tipo === 'visita' ? 'Visita con ' + nombreCorto(c) : borradorDe(c) ? 'Contestar a ' + nombreCorto(c) : c.titulo); },
-    frase: fraseToca,
-    // cuando la pantalla pregunta algo («¿Lo has enviado?», «¿lo escribo siempre así?»), la pregunta se queda en el cuerpo, sobre sus botones
-    fraseCuerpo: p => ['aprender', 'preguntar'].includes(estadoDe(cosaDe(p.id))),
-    guia: ['Aquí ves lo que te ha escrito y lo que te dejo escrito yo.', 'Lo envías tú desde tu WhatsApp. Si lo cambias, te pregunto si lo hago siempre así.', 'Al acabar, pasas a la siguiente.'],
+    sub: p => {
+      const c = cosaDe(p.id), st = estadoDe(c), n = R7.cuentas().hoy;
+      const resto = n === 0 ? 'Ya no te queda nada hoy.' : n === 1 ? 'Te queda 1 cosa.' : `Te quedan ${n} cosas.`;
+      if (st === 'reabierta') return 'Ahora lo llevas tú, o me lo devuelves.';
+      if (st === 'cerrada') return 'Esto ya lo he cerrado yo. ' + resto;
+      if (st === 'aprender') return 'Has cambiado mi mensaje. ¿Siempre así?';
+      if (st === 'preguntar') return `¿Has enviado el mensaje a ${nombreCorto(c)}?`;
+      if (st === 'hecha') return resto;
+      return st === 'toca' && c.pie ? c.pie : '';
+    },
+    // «Más»: lo que no es lo principal («Ya lo llevé por teléfono», «Hoy no», «Está mal», su ficha)
+    mas: p => { const c = cosaDe(p.id); return estadoDe(c) === 'toca' && tieneOtra(c) ? {hoja: 'h02', de: c.id} : null; },
+    nota: p => {
+      const c = cosaDe(p.id), st = estadoDe(c);
+      if (st === 'preguntar') return 'En esta demo no sale ningún mensaje.';
+      return st === 'toca' && c.sale && !pal(c).ir ? {texto: 'No sale hasta que tú lo envíes.', candado: true} : '';
+    },
+    // de qué va la pantalla, para cuando se toca el micro («Enséñale a Veta» sobre este mensaje)
+    casoDictado: p => {
+      const c = cosaDe(p.id); if (!c || c.reabierta) return null;
+      const br = borradorDe(c);
+      return {de: c.id, quien: c.cliente, titulo: c.titulo, texto: br ? (br.texto || String(br.html).replace(/<[^>]+>/g, '')) : (c.resumen || '')};
+    },
     pinta: p => {
       const c = cosaDe(p.id), st = estadoDe(c);
-      if (st === 'nada') return UI.vacio({titulo: 'Esto ya no está', texto: 'Lo que te toca está en la lista.', icono: 'check'});
+      if (st === 'nada') return UI.vacio({titulo: 'Esto ya no está', texto: 'Lo que te toca está en Inicio.', icono: 'check'});
       const panel = c.cliente ? ` data-panel="cliente/${esc(c.cliente)}"` : '';
       let h;
-      if (st === 'reabierta' || st === 'cerrada') h = `<div class="r7-ficha r7-oro" data-i="0"><span class="r7-ficha-de">Lo había cerrado yo</span><p><b>${esc(c.x.titulo)}.</b> ${esc(c.x.texto)}</p></div>`;
+      if (st === 'reabierta' || st === 'cerrada') h = R7.tarjeta({i: 0, veta: true, de: 'Lo había cerrado yo', html: `<p><b>${esc(c.x.titulo)}.</b> ${esc(c.x.texto)}</p>`});
       else if (st === 'aprender') h = cuerpoAprender(c, porAprender(c));
-      else if (st === 'preguntar') { const b = borradorDe(c); h = (b ? `<div class="r7-ficha r7-oro" data-i="0"><span class="r7-ficha-de">El mensaje</span>${msgHtml(b)}</div>` : '') + `<p class="a1-nota" data-i="1">${ic7('info', 16)}<span>En esta demo WhatsApp no se abre: no sale ningún mensaje.</span></p>`; }
+      else if (st === 'preguntar') { const b = borradorDe(c); h = b ? R7.tarjeta({i: 0, veta: true, de: 'El mensaje', html: `<p class="a1-msg">${b.html ? b.html : esc(b.texto)}</p>`}) : ''; }
       else if (st === 'hecha') h = cuerpoHecha(c);
       else h = cuerpoToca(c);
       return `<div class="a1-toca"${panel}>${h}</div>`;
     },
     botonFijo: p => {
       const c = cosaDe(p.id), st = estadoDe(c);
-      if (st === 'nada' || st === 'cerrada') return '';
+      if (st === 'nada' || st === 'cerrada' || st === 'aprender') return '';
       if (st === 'reabierta') return R7.botones({texto: 'Ciérralo tú', accion: 'r6-recierra', de: c.id});
-      if (st === 'preguntar') return R7.botones({texto: 'Sí, enviado', accion: 'si-enviado', de: c.id}, [{texto: 'Todavía no', accion: 'todavia-no', de: c.id}]);
-      if (st === 'aprender') {
-        const k = porAprender(c), t = A.tipoCambio(k.antes, k.ahora);
-        return R7.botones({texto: t.si, accion: 'r6-aprende', datos: {ambito: 'siempre'}},
-          [{texto: 'Solo con ' + nombreCorto(c), accion: 'r6-aprende', datos: {ambito: 'cliente'}}, {texto: 'Solo esta vez', accion: 'r6-aprende', datos: {ambito: 'vez'}}]);
-      }
+      if (st === 'preguntar') return R7.botones({texto: 'Sí, enviado', accion: 'si-enviado', de: c.id}, {texto: 'Todavía no', accion: 'todavia-no', de: c.id});
       if (st === 'hecha') { const s = siguiente(c); return s ? R7.botones({texto: 'Siguiente: ' + nombreCorto(s) + ' ›', accion: 'r7-siguiente', datos: {ruta: rutaDe(s)}}) : ''; }
-      // la tarjeta: el negro es lo principal de la cosa; claros, «Editar» o lo que traiga (sin «Otra cosa…» ni la ficha, que van en «Otra cosa…»)
-      const d = pal(c), x = c.extra || {};
-      if (d.ir) return R7.botones({texto: 'Abrir la visita', ir: d.ir});
-      const b = Object.assign({}, c.boton || {}, x.boton || {}); if (!b.ir && !b.hoja && !b.accion) b.accion = 'principal';
-      if (d.boton && !x.boton) b.texto = d.boton;
-      const ed = editar(c);
-      const claros = (x.secundarios || c.secundarios || []).filter(s => s.hoja !== 'h02' && !(s.ir && /^cliente\//.test(s.ir)))
-        .map(s => s === ed ? Object.assign({}, s, {texto: 'Editar'}) : s).map(s => Object.assign({de: c.id}, s));
-      // todo mensaje que deja escrito Veta se puede cambiar (Núria no lo traía)
-      if (!ed && borradorDe(c) && b.accion === 'principal') claros.unshift({texto: 'Editar', ir: 'mensaje/' + c.id});
-      return R7.botones(Object.assign({de: c.id}, b), claros);
+      return R7.botones(botonDe(c).negro);
     },
-    alMontar: () => { if (alDia()) VETA.repinta(); },
-    acciones: Object.assign({
+    alMontar: montaDia,
+    acciones: {
       principal(ev, el) { A.principal(el); VETA.pintaBarra(); },
       'r7-siguiente'(ev, el) { VETA.ir(el.dataset.ruta, {reemplaza: true}); },
       'r6-recierra'(ev, el) { P('abiertas', abiertas().filter(x => x !== el.dataset.de)); VETA.pintaBarra(); VETA.aviso('Hecho. Lo cierro yo.'); VETA.atras(); },
       // «Sí, siempre» · «Solo con Marta» · «Solo esta vez»
       'r6-aprende'(ev, el) {
         const k = E('cambio'), c = k && M.cosa(k.id); if (!c) return;
-        const amb = el.dataset.ambito;
+        const amb = el.dataset.valor;
         if (amb === 'vez') { P('cambio', null); VETA.repinta(); VETA.aviso('Vale. Solo esta vez.'); return; }
         const d = A.dif(k.antes, k.ahora), t = A.tipoCambio(k.antes, k.ahora), ap = R6().aplica;
         if (amb === 'siempre') {
@@ -358,14 +356,6 @@
         if (k.resuelto === 'siempre') { r6.olvida(); A.r6.limpia(); } else P('solo', null);
         delete k.resuelto; delete k.seq; P('cambio', k); VETA.repinta();
       }
-    }, comunes)
+    }
   });
-
-  // «Enséñale a Veta» junto a un mensaje: deja dicho de qué caso sale (clave r7.caso), para que el dictado lo enseñe arriba
-  document.addEventListener('click', ev => {
-    const b = ev.target.closest && ev.target.closest('.r7-ensena[data-caso]'); if (!b) return;
-    const c = M.cosa(b.dataset.caso); if (!c) return;
-    const br = borradorDe(c);
-    VETA.est.pon('r7.caso', {de: c.id, quien: c.cliente, titulo: c.titulo, texto: br ? (br.texto || String(br.html).replace(/<[^>]+>/g, '')) : (c.resumen || '')});
-  }, true);
 })();

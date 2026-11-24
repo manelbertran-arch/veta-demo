@@ -1,18 +1,18 @@
-/* Veta demo · pantallas · dictar.js · ronda 7 · agente E · «Enséñale a Veta»
-   Cuatro pasos, uno por pantalla, a pantalla completa (ESTRATEGIA_R7.md, 6):
-   - A3  · #/dictar/<guion>            1 · «Enséñale a Veta»: micro grande, tres ejemplos que se tocan y «o escríbelo»
-   - A3b · #/dictar/<guion>/entendido  2 · «Esto he entendido»: qué haré, cuándo, con quién y hasta dónde llego; cada una con «Cambiar»
+/* Veta demo · ronda 8 · pantallas · dictar.js · carril A · Dictar (el micro del centro de la barra)
+   - A3  · #/dictar/libre              «¿Qué me cuentas?»: micro grande, «O elige qué es» (cinco filas por papel) y «o escríbelo».
+           #/dictar/<guion>            lo elegido: una visita, una tarea, algo de un cliente, una pregunta (un solo paso: se cuenta y se
+                                       abre lo que sale), o enseñarle algo a Veta («orden» o el id de una lección: cuatro pasos).
+   - A3b · #/dictar/<guion>/entendido  2 · «Esto he entendido»: qué haré, cuándo, con quién y hasta dónde llego; cada fila se puede cambiar
    - A3c · #/dictar/<guion>/prueba     3 · «Pruébalo»: un caso de sus chats y lo que habría hecho
    - A3d · #/dictar/<guion>/hecho      4 · «Hecho. Ya lo sé hacer.» y un botón que lleva a verlo en Veta
-   Guiones: «libre» y «orden» enseñan (los cuatro pasos); el id de una lección (recordatorios, visitas, valoraciones, contactos,
-   acta-dia, informe-piso) enseña con esa lección por delante; acta, tarea, nota, pregunta, aviso, operacion, queja y mejorar
-   son de un solo paso (se cuenta y se abre lo que sale); cualquier otro cae en «libre».
-   El micro es de mentira: al tocarlo el texto va saliendo. No se usa el dictado del navegador.
-   Caso de partida: quien incrusta el botón deja antes VETA.est.pon('r7.caso', {de, quien, titulo, texto}); si no, se saca de la pantalla de antes.
-   Estado: r7e.curso (lo que se está enseñando) · r7e.aprendido (lo ya enseñado; lo lee VETA.r7e.aprendidos()) · a.ultimoDictado (como antes). */
+   Guiones de un solo paso: acta, tarea, nota, pregunta (agente) y aviso, operacion, queja, mejorar (dirección). Cualquier otro cae en «libre».
+   El micro es de mentira: al tocarlo el texto va saliendo, con su cronómetro; se puede pausar y seguir. No se usa el dictado del navegador.
+   Mientras se dicta, lo dicho se guarda en a.dictado (el «dictado a medias» que enseña Inicio si se sale sin terminar); al terminar o borrar, se quita.
+   Caso de partida: el micro de la barra deja VETA.est('r7.caso') = {de, quien, titulo, texto} con lo que dice `casoDictado` de la pantalla abierta.
+   Estado: r7e.curso (lo que se está enseñando) · r7e.aprendido (lo ya enseñado; lo lee VETA.r7e.aprendidos()) · a.ultimoDictado · a.dictado. */
 (function () {
   'use strict';
-  const UI = VETA.UI, esc = VETA.esc, ic = VETA.ic, r7 = VETA.r7, M = VETA.modelo;
+  const esc = VETA.esc, ic = VETA.ic, r7 = VETA.r7, M = VETA.modelo;
   const E = () => VETA.datos.r7e;
   const dir = () => VETA.yo().papel === 'direccion';
   const papel = () => (dir() ? 'direccion' : 'agente');
@@ -28,8 +28,8 @@
 
   // ---- de dónde se viene: si es un caso (un mensaje, un acta, una visita…), el paso 1 lo enseña arriba ----
   function caso(p) {
-    const pila = VETA.pila(), i = pila.findIndex(x => x.ruta === 'dictar/' + p.guion), ant = i > 0 ? pila[i - 1] : null;
-    // 1.º el caso que deja guardado quien incrusta el «Enséñale a Veta» (clave r7.caso: {de, quien, titulo, texto, tipo?, icono?}).
+    const pila = VETA.pila(), i = pila.findIndex(x => /^dictar\//.test(x.ruta)), ant = i > 0 ? pila[i - 1] : null;
+    // 1.º el caso que deja guardado el micro de la barra (clave r7.caso: {de, quien, titulo, texto, tipo?}).
     // Vale solo viniendo de la pantalla que lo dejó: entrando desde Inicio, en frío o desde otra pantalla, se borra.
     const g = VETA.est.lee('r7.caso', null);
     if (g) {
@@ -37,14 +37,14 @@
       if (!ant || desde === 'inicio' || (g._desde && g._desde !== desde)) VETA.est.quita('r7.caso');
       else {
         if (!g._desde) VETA.est.pon('r7.caso', Object.assign({}, g, {_desde: desde}));
-        return {tipo: g.tipo || 'mensaje', cara: g.quien, icono: g.icono, nombre: g.titulo || '', pasa: g.texto || ''};
+        return {tipo: g.tipo || 'mensaje', cara: g.quien, nombre: g.titulo || '', pasa: g.texto || ''};
       }
     }
     if (!ant) return null;
     const [que, id] = ant.ruta.split('/');
     if (!id || !E().deCaso[que] && que !== 'cliente' && que !== 'regla') return null;
     if (que === 'mensaje') { const c = M.cosa(id); return c && c.titulo ? {tipo: que, cara: c.cliente, nombre: c.titulo, pasa: (c.cita || {}).texto || ant.titulo} : null; }
-    if (que === 'regla') { const r = M.regla(id); return r ? {tipo: que, icono: 'aprende', nombre: r.texto, pasa: 'Un trabajo que ya hago'} : null; }
+    if (que === 'regla') { const r = M.regla(id); return r ? {tipo: que, cara: 'veta', nombre: r.texto, pasa: 'Un trabajo que ya hago'} : null; }
     const cl = M.cliente(id); return cl ? {tipo: que, cara: id, nombre: cl.nombre, pasa: ant.titulo} : null;
   }
   // la lección que sale si se toca el micro sin elegir ejemplo
@@ -66,7 +66,7 @@
     return Object.assign({id: c.leccion}, E().lecciones[c.leccion] || E().lecciones[P().ejemplos[0]]);
   }
   const HASTA = () => (dir() ? E().hastaOficina : E().hasta);
-  const corta = t => { const w = palabras(t); return w.length > 16 ? w.slice(0, 14).join(' ') + '…' : t; };
+  const primera = t => (String(t || '').match(/^[^.?!]+[.?!]/) || [String(t || '')])[0];   // el ejemplo: la primera frase de lo que se dictaría
   const opciones = (l, campo) => (campo === 'hasta' ? HASTA().map(h => h.texto) : (l.opc || {})[campo] || []);
   const valor = (l, c, campo) => {
     const n = (c.sel || {})[campo] || 0;
@@ -99,84 +99,114 @@
     if (VETA.pintaBarra) VETA.pintaBarra();
   }
 
-  // ---- piezas propias ----
-  const puntos = n => `<span class="e-pasos" role="img" aria-label="Paso ${n} de 4">${[1, 2, 3, 4].map(k => `<i${k === n ? ' class="on"' : k < n ? ' class="ya"' : ''}></i>`).join('')}</span>`;
-  const cabeza = x => (x.cara ? VETA.av(x.cara, 40, {nombre: x.nombre}) : `<span class="r7-fila-ic">${ic(x.icono || 'punto', 20)}</span>`);
+  // ---- lo que se puede dictar, por papel: las cinco filas de «O elige qué es» ----
+  const ELIGE = {
+    agente: [['acta', 'Una visita'], ['tarea', 'Una tarea'], ['nota', 'Algo de un cliente'], ['pregunta', 'Una pregunta'], ['orden', 'Algo que haces siempre']],
+    direccion: [['aviso', 'Un aviso'], ['operacion', 'Una pregunta sobre una operación'], ['queja', 'Una queja'], ['mejorar', 'Qué mejorar'], ['orden', 'Cómo trabaja la oficina']]
+  };
+  const puntos = n => ({tipo: 'puntos', paso: n});
+  // la pantalla desde la que se empezó: la de antes de la primera de Dictar (se puede venir de «¿Qué me cuentas?»); si los pasos ya no
+  // están en el camino (se llegó a «Hecho»), la de antes de «Hecho»
+  const antesDe = () => { const l = VETA.pila(), k = l.findIndex(x => /^dictar\//.test(x.ruta)); return (k >= 0 ? k : l.length - 1) - 1; };
 
   // ============ paso 1 · contarlo ============
-  let v = null;   // {g, fase: 'quieto' | 'oye' | 'dicho' | 'escribe', texto, leccion, t}
-  const vivo = p => { if (!v || v.g !== p.guion || Date.now() - v.t > 90000) v = {g: p.guion, fase: 'quieto', texto: '', leccion: null, t: Date.now()}; return v; };
+  let v = null;       // {g, fase: 'quieto' | 'oye' | 'dicho' | 'escribe', texto, leccion, n (palabras dichas), pausa, t}
+  let reloj = null;
+  const mmss = s => Math.floor(s / 60) + ':' + String(Math.floor(s % 60)).padStart(2, '0');
+  const ritmo = s => Math.max(120, Math.min(350, 4500 / Math.max(1, palabras(s.texto).length)));   // ms por palabra
+  const seg = s => Math.floor((s.n || 0) * ritmo(s) / 1000);
+  // el dictado a medias: se guarda al empezar y a cada palabra; se quita al terminar o al borrarlo
+  const guardaMedias = s => VETA.est.pon('a.dictado', {guion: s.g, seg: seg(s), n: s.n || 0, texto: s.texto, leccion: s.leccion || null, escrito: s.fase === 'escribe'});
+  const sinMedias = () => VETA.est.pon('a.dictado', null);
+  const vivo = p => {
+    if (!v || v.g !== p.guion || Date.now() - v.t > 90000) {
+      const m = VETA.est.lee('a.dictado', null), mio = m && m.guion === p.guion && m.texto ? m : null;
+      v = mio ? {g: p.guion, fase: mio.escrito ? 'escribe' : 'oye', pausa: true, texto: mio.texto, leccion: mio.leccion, n: mio.n || 0, t: Date.now()}
+        : {g: p.guion, fase: 'quieto', texto: '', leccion: null, n: 0, pausa: false, t: Date.now()};
+    }
+    return v;
+  };
   const halo = si => { if (VETA.vivo && VETA.vivo.halo) VETA.vivo.halo(si); };
+  const ensena = p => !dictado(p);   // enseñar algo a Veta: cuatro pasos
 
   VETA.pantalla('A3', {
-    titulo: p => (dictado(p) || {}).titulo || 'Enséñale a Veta',
-    frase: p => (dictado(p) || {}).frase || P().frase,
-    fraseCuerpo: true,   // la instrucción del paso se queda a la vista, en el cuerpo (sin «?»)
-    cabDerecha: p => (dictado(p) ? '' : puntos(1)),
+    titulo: p => (dictado(p) || {}).titulo || (p.guion === 'libre' ? '¿Qué me cuentas?' : 'Enséñale a Veta'),
+    sub: p => { const d = dictado(p); return d ? d.frase : p.guion === 'libre' ? '' : P().frase; },
+    cabDerecha: p => (ensena(p) && !(p.guion === 'libre' && vivo(p).fase === 'quieto') ? puntos(1) : null),
+    // sin señal, lo dictado no se pierde: se dice solo entonces
+    nota: () => (navigator.onLine === false ? 'Sin señal: se guarda en tu móvil.' : ''),
     pinta: p => {
-      const s = vivo(p), d = dictado(p), c = caso(p);
-      const arriba = c ? `<div class="e-caso" data-i="0"><span class="e-caso-t">Sobre esto</span>${r7.fila({cara: c.cara, icono: c.icono, nombre: c.nombre, pasa: c.pasa})}</div>`
-        : d && ((VETA.datos.diaA || {}).contexto || {})[p.guion] ? `<p class="e-ctx" data-i="0">${esc(VETA.datos.diaA.contexto[p.guion])}</p>` : '';
+      const s = vivo(p), d = dictado(p), c = d ? null : caso(p);
+      const arriba = c ? r7.lista([{cara: c.cara, nombre: c.nombre, pasa: c.pasa}], {rotulo: 'Sobre esto', i: 0}) : '';
       if (s.fase === 'escribe') {
-        return arriba + `<div class="e-campo" data-i="1"><label for="e-texto">Escríbelo como se lo dirías a un compañero</label>` +
-          `<textarea id="e-texto" rows="5" placeholder="${esc(d ? 'Por ejemplo: ' + corta(d.dices) : P().escribe)}">${esc(s.texto)}</textarea></div>`;
+        return arriba + `<div class="campo" data-i="1"><label class="campo-e" for="e-texto">Escríbelo como se lo dirías a un compañero</label>` +
+          `<div class="campo-caja"><textarea id="e-texto" class="campo-i" rows="5" placeholder="${esc(d ? 'Por ejemplo: ' + primera(d.dices) : P().escribe)}">${esc(s.texto)}</textarea></div></div>`;
       }
       if (s.fase === 'oye' || s.fase === 'dicho') {
-        return arriba + `<div class="e-voz e-voz-${s.fase}" data-i="1"><span class="e-mic" aria-hidden="true">${ic('mic', 32)}</span>` +
-          `<span class="e-mic-t" role="status">${s.fase === 'oye' ? 'Te escucho…' : 'Esto has dicho'}</span></div>` +
-          `<p class="e-dicho" data-i="2">«<span class="e-dicho-t">${s.fase === 'dicho' ? esc(s.texto) : ''}</span>»</p>`;
+        const w = palabras(s.texto), dicho = s.fase === 'dicho';
+        return arriba + r7.micro(Object.assign({i: 1, clase: dicho || s.pausa ? '' : 'e-oye', texto: dicho ? 'Esto has dicho' : (s.pausa ? 'En pausa · ' : 'Te escucho · ') + mmss(seg(s))}, dicho ? {} : {accion: 'pausar'})) +
+          r7.tarjeta({i: 2, html: `<p role="status">«<span class="e-dicho-t">${esc((dicho ? w : w.slice(0, s.n)).join(' '))}</span>»</p>`});
       }
-      const ejs = d ? [{t: corta(d.dices)}] : ejemplos(p).map(id => ({t: E().lecciones[id].dices, id}));
-      return arriba + `<div class="e-voz" data-i="1"><button type="button" class="e-mic" data-accion="habla" aria-label="${esc(d ? d.toca : 'Toca y cuéntamelo')}">${ic('mic', 40)}</button>` +
-        `<span class="e-mic-t">${esc(d ? d.toca : 'Toca y cuéntamelo')}</span></div>` +
-        `<div class="e-ejs" data-i="2"><span class="e-ejs-t">${ejs.length > 1 ? 'O toca un ejemplo' : 'Por ejemplo'}</span>` +
-        ejs.map(x => `<button type="button" class="e-ej" data-accion="habla"${x.id ? ` data-leccion="${esc(x.id)}"` : ''}>«${esc(x.t)}»</button>`).join('') + '</div>' +
-        `<button type="button" class="e-link" data-accion="escribe" data-i="3">o escríbelo</button>`;
+      const micro = r7.micro({i: 1, accion: 'habla', texto: d ? d.toca : ''});
+      const escribe = r7.enlace({i: 3, texto: 'o escríbelo', accion: 'escribe', clase: 'e-escribe'});
+      if (d) return micro + r7.tarjeta({i: 2, de: 'Por ejemplo', texto: '«' + primera(d.dices) + '»'}) + escribe;
+      if (p.guion === 'libre') return arriba + micro + r7.lista(ELIGE[papel()].map(([g, t]) => ({nombre: t, ir: 'dictar/' + g})), {rotulo: 'O elige qué es', i: 2}) + escribe;
+      return arriba + micro + r7.lista(ejemplos(p).map(id => ({nombre: E().lecciones[id].corto, pasa: '«' + E().lecciones[id].dices + '»', accion: 'habla', datos: {leccion: id}})), {rotulo: 'O toca un ejemplo', i: 2}) + escribe;
     },
     botonFijo: p => {
-      const s = vivo(p);
-      if (s.fase === 'dicho') return r7.botones({texto: 'Ya está', accion: 'listo'}, [{texto: 'Decirlo otra vez', accion: 'otra'}]);
-      if (s.fase === 'escribe') return r7.botones({texto: 'Ya está', accion: 'listo'}, [{texto: 'Mejor lo digo', accion: 'otra'}]);
+      const s = vivo(p), ya = {texto: 'Ya está', accion: 'listo'};
+      if (s.fase === 'oye') return r7.botones(ya, {texto: s.pausa ? 'Seguir' : 'Pausar', accion: 'pausar'});
+      if (s.fase === 'dicho') return r7.botones(ya, {texto: 'Otra vez', accion: 'otra'});
+      if (s.fase === 'escribe') return r7.botones(ya, {texto: 'Mejor lo digo', accion: 'otra'});
       return '';
     },
     alMontar: (el, p) => {
       const s = vivo(p);
+      clearInterval(reloj);
       if (s.fase === 'escribe') {
         const t = el.querySelector('#e-texto');
-        if (t) { t.addEventListener('input', () => { s.texto = t.value; s.t = Date.now(); }); try { t.focus({preventScroll: true}); } catch (x) {} }
+        if (t) { t.addEventListener('input', () => { s.texto = t.value; s.t = Date.now(); if (t.value.trim()) guardaMedias(s); else sinMedias(); }); try { t.focus({preventScroll: true}); } catch (x) {} }
         return;
       }
       if (s.fase !== 'oye') return;
-      // el micro de mentira: las palabras van saliendo como si se hablara (2,6 s como mucho)
-      const sal = el.querySelector('.e-dicho-t'), w = palabras(s.texto);
-      const fin = () => { halo(false); if (v !== s || s.fase !== 'oye') return; s.fase = 'dicho'; s.t = Date.now(); if (el.isConnected) VETA.repinta(); };
-      if (!sal || VETA.reducido()) { fin(); return; }
+      // el micro de mentira: las palabras van saliendo como si se hablara, con su cronómetro; «Pausar» lo para y «Seguir» lo reanuda
+      const sal = el.querySelector('.e-dicho-t'), mt = el.querySelector('.r7-micro-t'), w = palabras(s.texto);
+      const fin = () => { halo(false); if (v !== s || s.fase !== 'oye') return; s.n = w.length; s.fase = 'dicho'; s.pausa = false; s.t = Date.now(); guardaMedias(s); if (el.isConnected) VETA.repinta(); };
+      if (s.pausa) { halo(false); return; }
+      if (!sal || VETA.reducido()) { fin(); return; }   // con «Reducir movimiento» no hay fase de escucha
       halo(true);
-      let n = 0; const paso = Math.max(30, Math.min(110, 2600 / w.length));
-      const t = setInterval(() => {
-        if (!el.isConnected || v !== s || s.fase !== 'oye') { clearInterval(t); halo(false); return; }
-        n += 1; sal.textContent = w.slice(0, n).join(' ');
-        if (n >= w.length) { clearInterval(t); setTimeout(fin, 450); }
-      }, paso);
+      reloj = setInterval(() => {
+        // si se sale de la pantalla a medias, se queda en pausa: al volver («Seguir») está como se dejó
+        if (!el.isConnected) s.pausa = true;
+        if (!el.isConnected || v !== s || s.fase !== 'oye' || s.pausa) { clearInterval(reloj); halo(false); return; }
+        s.n += 1; s.t = Date.now(); sal.textContent = w.slice(0, s.n).join(' ');
+        if (mt) mt.textContent = 'Te escucho · ' + mmss(seg(s));
+        guardaMedias(s);
+        if (s.n >= w.length) { clearInterval(reloj); setTimeout(fin, 450); }
+      }, ritmo(s));
     },
     acciones: {
       habla(ev, el, p) {
         const s = vivo(p), d = dictado(p), id = el.dataset.leccion || (d ? null : defecto(p));
-        s.leccion = id; s.texto = d ? d.dices : E().lecciones[id].dices; s.fase = 'oye'; s.t = Date.now();
+        s.leccion = id; s.texto = d ? d.dices : E().lecciones[id].dices; s.fase = 'oye'; s.n = 0; s.pausa = false; s.t = Date.now();
+        guardaMedias(s);
         VETA.repinta();
       },
-      escribe(ev, el, p) { const s = vivo(p); s.fase = 'escribe'; s.texto = ''; s.leccion = null; s.t = Date.now(); VETA.repinta(); },
-      otra(ev, el, p) { const s = vivo(p); s.fase = 'quieto'; s.texto = ''; s.leccion = null; VETA.repinta(); },
+      pausar(ev, el, p) { const s = vivo(p); if (s.fase !== 'oye') return; s.pausa = !s.pausa; s.t = Date.now(); VETA.repinta(); },
+      escribe(ev, el, p) { const s = vivo(p); s.fase = 'escribe'; s.texto = ''; s.leccion = null; s.n = 0; s.t = Date.now(); VETA.repinta(); },
+      otra(ev, el, p) { const s = vivo(p); s.fase = 'quieto'; s.texto = ''; s.leccion = null; s.n = 0; s.pausa = false; sinMedias(); VETA.repinta(); },
       listo(ev, el, p) {
         const s = vivo(p), d = dictado(p), texto = String(s.texto || '').trim();
         if (!texto) { const t = document.getElementById('e-texto'); if (t) t.focus(); VETA.aviso(d ? 'Escribe primero lo que querías decir.' : 'Escribe primero qué quieres que aprenda.'); return; }
-        const seg = Math.max(2, Math.round(palabras(texto).length / 2.4));
-        VETA.est.pon('a.ultimoDictado', {guion: d ? d.guion : 'orden', seg, texto, hora: VETA.ahora()});
-        VETA.est.pon('a.dictado', null);
+        const dur = Math.max(2, Math.round(palabras(texto).length / 2.4));
+        clearInterval(reloj); halo(false);
+        VETA.est.pon('a.ultimoDictado', {guion: d ? d.guion : 'orden', seg: dur, texto, hora: VETA.ahora()});
+        sinMedias();
         v = null;
-        if (d) {   // un solo paso: se abre lo que sale
+        if (d) {   // un solo paso: se abre lo que sale, sobre la pantalla desde la que se empezó (Dictar sale del camino)
           VETA.est.quita('r7.caso');
-          VETA.ir(d.va || 'entendido-dictado/tarea', {reemplaza: true});
+          const va = d.va || 'entendido-dictado/tarea';
+          VETA.ir(va, /\//.test(va) || va === 'avisos' ? {sobre: antesDe()} : {});
           if (d.guion === 'queja') setTimeout(() => VETA.hoja('h39', {de: 'joan-serra'}), VETA.reducido() ? 50 : 450);
           return;
         }
@@ -193,35 +223,31 @@
   };
 
   // ============ paso 2 · «Esto he entendido» ============
-  const FILAS = [['que', 'Qué haré', 'doc'], ['cuando', 'Cuándo', 'reloj'], ['quien', 'Con quién', 'clientes'], ['hasta', 'Hasta dónde llego', 'check']];
+  const FILAS = [['que', 'Qué haré'], ['cuando', 'Cuándo'], ['quien', 'Con quién'], ['hasta', 'Hasta dónde llego']];
   paso('A3b', 'entendido', 'Esto he entendido', 'A3', {
-    frase: 'Mira si es esto. Puedes cambiar cada cosa.',
-    fraseCuerpo: true,
+    sub: 'Mira si es esto. Puedes cambiar cada cosa.',
     cabDerecha: () => puntos(2),
     pinta: p => {
       const c = curso(p), l = leccion(c);
-      return `<p class="e-dijiste" data-i="0">«${esc(l.dices)}»</p>` +
-        `<div class="e-filas" data-i="1">${FILAS.map(([campo, nombre, icono]) => {
-          const cambia = opciones(l, campo).length > 1 ? {hoja: 'e-cambia', datos: {campo, guion: p.guion}} : {accion: 'no'};
-          return `<button type="button" class="e-fila"${UI.attrs(cambia)}><span class="r7-fila-ic r7-oro">${ic(icono, 20)}</span>` +
-            `<span class="e-fila-c"><span class="e-fila-e">${esc(nombre)}</span><span class="e-fila-v">${esc(valor(l, c, campo))}</span></span><span class="e-fila-x">Cambiar</span></button>`;
-        }).join('')}</div>`;
+      // cuatro filas de dos líneas; la que se puede cambiar lleva «›» y abre sus opciones
+      return r7.tarjeta({i: 0, de: 'Lo que dijiste', texto: '«' + l.dices + '»'}) +
+        r7.lista(FILAS.map(([campo, nombre]) => Object.assign({nombre, pasa: valor(l, c, campo)}, opciones(l, campo).length > 1 ? {hoja: 'e-cambia', datos: {campo, guion: p.guion}} : {})), {i: 1});
     },
-    botonFijo: () => r7.botones({texto: 'Sí, es eso', accion: 'si'}, [{texto: 'No es eso', accion: 'no'}]),
+    botonFijo: () => r7.botones({texto: 'Sí, es eso', accion: 'si'}, {texto: 'No es eso', accion: 'no'}),
     acciones: {
       si(ev, el, p) { ponCurso(curso(p)); VETA.ir('dictar/' + p.guion + '/prueba'); },
       no(ev, el, p) { v = null; VETA.ir('dictar/' + p.guion); }   // el paso 1 ya está en el camino: se vuelve a él para decirlo de otra forma
     }
   });
 
-  // «Cambiar» una de las cuatro cosas
+  // cambiar una de las cuatro cosas
   VETA.hojaDef('e-cambia', {
     titulo: d => (FILAS.find(f => f[0] === d.campo) || FILAS[0])[1],
     pinta: d => {
       const c = curso({guion: d.guion}), l = leccion(c), n = (c.sel || {})[d.campo] || 0, hasta = d.campo === 'hasta';
       return `<div class="ops" role="radiogroup">${opciones(l, d.campo).map((t, k) => `<button type="button" class="op op-elige" role="radio" aria-checked="${k === n}" data-accion="elige" data-n="${k}">` +
         `<span class="op-c"><span class="op-t">${esc(t)}</span>${hasta ? `<span class="op-s">${esc(HASTA()[k].sub)}</span>` : ''}</span><span class="op-marca">${ic('check', 20)}</span></button>`).join('')}</div>` +
-        (hasta ? `<p class="e-cerrado">${esc(E().hastaCerrado)}</p>` : '');
+        (hasta ? `<p class="hoja-x">${esc(E().hastaCerrado)}</p>` : '');
     },
     acciones: {
       elige(ev, el, d) {
@@ -233,42 +259,37 @@
 
   // ============ paso 3 · «Pruébalo» ============
   paso('A3c', 'prueba', 'Pruébalo', 'A3b', {
-    fraseCuerpo: true,
-    frase: p => (leccion(curso(p)).casos.length ? `Esto pasó en ${P().chats}. Mira qué habría hecho yo.` : `Todavía no ha pasado en ${P().chats}.`),
+    sub: p => { const l = leccion(curso(p)); return l.casos.length ? `Ha pasado ${VETA.num ? VETA.num(l.veces) : l.veces} veces en ${P().chats}.` : `Todavía no ha pasado en ${P().chats}.`; },
     cabDerecha: () => puntos(3),
     pinta: p => {
       const c = curso(p), l = leccion(c), k = l.casos[(c.caso || 0) % (l.casos.length || 1)];
-      if (!k) return `<div class="r7-ficha r7-oro" data-i="0"><span class="r7-ficha-de">Lo que haré</span><p>${esc(E().tuya.sinCaso)}</p></div>`;
-      return `<div class="r7-ficha e-paso" data-i="0"><span class="e-quien">${cabeza(k)}<span class="e-quien-c"><b>${esc(k.nombre)}</b><span>${esc(k.dia)}</span></span></span><p>${esc(k.paso)}</p></div>` +
-        `<div class="r7-ficha r7-oro" data-i="1"><span class="r7-ficha-de">${soloAviso(c) ? 'De esto te habría avisado' : dir() ? 'Esto habría hecho yo' : 'Esto te habría dejado escrito'}</span><p>${esc(soloAviso(c) ? k.toca : k.hice)}</p></div>` +
-        `<p class="e-veces" data-i="2">Ha pasado ${VETA.num ? VETA.num(l.veces) : l.veces} veces en ${esc(P().chats)}.</p>`;
+      if (!k) return r7.tarjeta({i: 0, veta: true, de: 'Lo que haré', texto: E().tuya.sinCaso});
+      return r7.tarjeta({i: 0, de: k.nombre + ' · ' + k.dia, texto: k.paso}) +
+        r7.tarjeta({i: 1, veta: true, de: soloAviso(c) ? 'De esto te habría avisado' : dir() ? 'Esto habría hecho yo' : 'Esto te habría dejado escrito', texto: soloAviso(c) ? k.toca : k.hice}) +
+        (l.casos.length > 1 ? r7.enlace({i: 2, texto: 'Ver otro caso', accion: 'otro'}) : '');
     },
-    botonFijo: p => r7.botones({texto: 'Sí, hazlo así', accion: 'si'}, leccion(curso(p)).casos.length > 1 ? [{texto: 'Ver otro caso', accion: 'otro'}] : []),
+    botonFijo: () => r7.botones({texto: 'Sí, hazlo así', accion: 'si'}),
     acciones: {
       otro(ev, el, p) { const c = curso(p); c.caso = (c.caso || 0) + 1; ponCurso(c); VETA.repinta(); },
-      // FN · al llegar a «Hecho» los pasos salen del camino: atrás lleva a la pantalla desde la que se empezó, no a «Pruébalo»
-      si(ev, el, p) { const c = curso(p); ponCurso(c); aprende(c); VETA.ir('dictar/' + p.guion + '/hecho', {sobre: antesDe(p)}); }
+      // al llegar a «Hecho» los pasos salen del camino: atrás lleva a la pantalla desde la que se empezó, no a «Pruébalo»
+      si(ev, el, p) { const c = curso(p); ponCurso(c); aprende(c); VETA.ir('dictar/' + p.guion + '/hecho', {sobre: antesDe()}); }
     }
   });
 
   // ============ paso 4 · «Hecho. Ya lo sé hacer.» ============
-  // la pantalla desde la que se empezó: la de antes del paso 1; si los pasos ya no están en el camino (se llegó a «Hecho»), la de antes de «Hecho»
-  const antesDe = p => { const l = VETA.pila(), k = l.findIndex(x => x.ruta === 'dictar/' + p.guion); return (k >= 0 ? k : l.length - 1) - 1; };
-  const desdeCaso = p => { const k = antesDe(p); return k > 0 ? k : -1; };                   // > 0: no es Inicio
-  paso('A3d', 'hecho', 'Hecho. Ya lo sé hacer.', 'R0', {   // FN · abierto en frío cuelga de Inicio, no de «Pruébalo»
-    fraseCuerpo: true,
-    frase: p => (dir() ? 'Empiezo hoy. Nada sale sin una persona.' : soloAviso(curso(p)) ? 'Empiezo hoy. Te aviso y lo haces tú.' : 'Empiezo hoy. Nada sale sin ti.'),
+  const desdeCaso = () => { const k = antesDe(); return k > 0 ? k : -1; };                   // > 0: no es Inicio
+  paso('A3d', 'hecho', 'Hecho. Ya lo sé hacer.', 'R0', {   // abierto en frío cuelga de Inicio, no de «Pruébalo»
+    sub: p => (dir() ? 'Empiezo hoy. Nada sale sin una persona.' : soloAviso(curso(p)) ? 'Empiezo hoy. Te aviso y lo haces tú.' : 'Empiezo hoy. Nada sale sin ti.'),
     cabDerecha: () => puntos(4),
     pinta: p => {
       const c = curso(p), l = leccion(c);
-      return `<div class="e-hecho" data-i="0"><span class="e-hecho-ic">${ic('check', 40)}</span></div>` +
-        `<div class="r7-ficha r7-oro" data-i="1"><span class="r7-ficha-de">Desde hoy</span><p>${esc(dice(l, c))}</p></div>`;
+      return r7.tarjeta({i: 0, veta: true, de: 'Desde hoy', texto: dice(l, c)}) +
+        r7.enlace(desdeCaso() > 0 ? {i: 1, texto: 'Seguir donde estaba', accion: 'sigue'} : {i: 1, texto: 'Enseñarle otra cosa', accion: 'otra'});
     },
-    botonFijo: p => r7.botones({texto: 'Verlo en Veta', ir: P().veta},
-      [desdeCaso(p) > 0 ? {texto: 'Seguir donde estaba', accion: 'sigue'} : {texto: 'Enseñarle otra cosa', accion: 'otra'}]),
+    botonFijo: () => r7.botones({texto: 'Verlo en Veta', ir: P().veta}),
     acciones: {
-      sigue(ev, el, p) { const k = desdeCaso(p); VETA.est.quita('r7e.curso'); if (k > 0) VETA.atrasA(k); },
-      otra(ev, el, p) { v = null; VETA.est.quita('r7e.curso'); VETA.ir('dictar/' + p.guion, {reemplaza: true}); }   // FN · «Hecho» no se queda detrás del paso 1
+      sigue() { const k = desdeCaso(); VETA.est.quita('r7e.curso'); if (k > 0) VETA.atrasA(k); },
+      otra() { v = null; VETA.est.quita('r7e.curso'); VETA.ir('dictar/orden', {reemplaza: true}); }   // «Hecho» no se queda detrás del paso 1
     }
   });
 })();

@@ -69,7 +69,7 @@
       quienEs: 'Contacto nuevo · alquiler en Les Corts', etiqueta: 'no-se-puede',
       cita: {texto: 'Buenas, ¿el alquiler de Les Corts admite mascotas?', origen: 'Sergi · 9 nov, 21:48'},
       bloqueo: 'No se puede enviar: Anna Costa ya le contestó el viernes 20 a las 12:15.',
-      boton: {texto: 'Quitarla de Hoy', accion: 'quitar'}, secundarios: [{texto: 'Ver de dónde sale', hoja: 'h01'}],
+      boton: {texto: 'Quitarla de la lista', accion: 'quitar'}, secundarios: [{texto: 'Ver de dónde sale', hoja: 'h01'}],
       fila: 'Sergi Mas', filaSub: 'Y 1 más, sin prisa',
       lineas: {quitada: 'Quitada · Sergi ya tenía respuesta'}}
   ];
@@ -88,16 +88,16 @@
   // A7 · En espera, al empezar (6), por fecha
   D.espera = D.espera || {};
   D.espera.laura = [
-    {id: 'e-elena', quien: 'laura', tipo: 'espera', fechaISO: '2026-11-25', fecha: 'Mié 25', cliente: 'elena', titulo: 'Elena Vives', texto: 'Prometió la nómina para el banco',
+    {id: 'e-elena', quien: 'laura', tipo: 'espera', fechaISO: '2026-11-25', fecha: 'Mié 25', cliente: 'elena', titulo: 'Elena Vives', texto: 'Prometió la nómina',
       depende: 'Ahora depende de Elena.', chat: 'elena-nomina', cita: {texto: 'El miércoles te paso la nómina', origen: 'Elena · lun 16, 19:02'},
       borrador: 'Hola, Elena, soy Laura. ¿Has podido encontrar la nómina? El banco la necesita para seguir.',
       boton: {texto: 'Preparar recordatorio a Elena'}, secundarios: [{texto: 'Se cumplió', accion: 'se-cumplio'}, otra],
-      lineas: {hecha: 'Lo tendrás en Hoy el miércoles a las 9:00'}},
+      lineas: {hecha: 'Lo tendrás en Inicio el miércoles a las 9:00'}},
     {id: 'e-pere', quien: 'laura', tipo: 'espera', fechaISO: '2026-11-27', fecha: 'Vie 27', cliente: 'pere', titulo: 'Pere Soler', texto: 'Plazo del certificado energético',
       resumen: 'Si el viernes no consta, dirección verá que hay 1 cosa parada, sin tu nombre ni el del cliente.', boton: {texto: 'Pedírselo a Pere', hoja: 'h14'}},
     {id: 'e-jordi', quien: 'laura', tipo: 'espera', fechaISO: '2026-11-30', fecha: 'Lun 30', cliente: 'jordi', titulo: 'Jordi Ferrer', texto: 'Nota simple pedida al Registro'},
     {id: 'e-laia', quien: 'laura', tipo: 'espera', fechaISO: '2026-12-01', fecha: 'Mar 1 dic', cliente: 'laia', titulo: 'Laia Casas', texto: 'Firma en notaría, 12:00'},
-    {id: 'e-pere-encargo', quien: 'laura', tipo: 'espera', fechaISO: '2026-12-02', fecha: 'Mié 2 dic', cliente: 'pere', titulo: 'Pere Soler', texto: 'Vence el encargo de venta'},
+    {id: 'e-pere-encargo', quien: 'laura', tipo: 'espera', fechaISO: '2026-12-02', fecha: 'Mié 2 dic', cliente: 'pere', titulo: 'Pere Soler', texto: 'Vence el encargo'},
     {id: 'e-nuria', quien: 'laura', tipo: 'espera', fechaISO: '2026-12-03', fecha: 'Jue 3 dic', cliente: 'nuria', titulo: 'Núria Camps', texto: 'Quedó en llamarte al volver'}
   ];
 

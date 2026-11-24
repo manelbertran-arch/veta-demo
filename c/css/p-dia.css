@@ -1,215 +1,40 @@
-/* Veta demo · css · p-dia.css · paquete A (El día)
-   Estilos propios de las pantallas y hojas del paquete A. Solo variables (temas.css, base.css): ningún color a mano.
-   Prefijo .a-. El movimiento propio se apaga con «Reducir movimiento» (html[data-mov=reducido]). */
+/* Veta demo · ronda 8 · css/p-dia.css · carril A · las hojas del día (js/hojas/dia.js) y la caja de «Cambiar el mensaje» (mensaje.js).
+   Solo variables de base.css y temas.css. Letra de 15, 17 o 20 px; pesos 500 y 700. */
 
-/* ---- A1 · Hoy ---- */
-.a-leido{display:flex;align-items:center;justify-content:space-between;gap:var(--e2);width:100%;min-height:var(--toque);margin-top:calc(-1*var(--e2));text-align:left;font:600 var(--f-apoyo)/1.3 var(--body);color:var(--t2)}
-.a-leido>span:first-child::first-letter{text-transform:uppercase}
-.a-leido-c{color:var(--t3);display:grid;place-items:center}
-.a-sitio{display:flex;flex-direction:column;gap:var(--e2)}
-.a-abierta>.tarjeta{box-shadow:var(--somb),0 0 0 1px var(--borde)}
-.a-pies{margin-top:var(--e1)}
-.a-medias{gap:var(--e1)}
-.a-medias .hecho-a{color:var(--t1)}
-.a-medias .hecho-a svg{color:var(--urg-t);flex:none}
-.a-medias .btn-texto{flex:none}
+/* ---- «Cambiar el mensaje»: la caja crece con el texto; lo nuevo de Veta, subrayado en oro debajo de las letras ---- */
+.a-msg .campo-caja{position:relative}
+.a-msg .campo-i{position:relative;min-height:120px;resize:none;overflow:hidden;font-size:var(--f-cuerpo);line-height:var(--l-lee)}
+.a-msg-oro{position:absolute;color:transparent;white-space:pre-wrap;overflow-wrap:break-word;pointer-events:none;box-sizing:border-box}
 
-/* fin del día */
-.a-fin{display:flex;flex-direction:column;align-items:center;gap:var(--e2);text-align:center;padding:var(--e5) var(--e4) var(--e3)}
-.a-fin-ic{width:64px;height:64px;border-radius:50%;display:grid;place-items:center;background:var(--tinte);color:var(--acento)}
-.a-fin-t{font:600 var(--f-titulo)/1.1 var(--display);letter-spacing:-.02em}
-.a-fin-x{font:500 var(--f-apoyo)/1.4 var(--body);color:var(--t2);font-variant-numeric:tabular-nums}
-.a-ens-cab{display:flex;align-items:center;gap:var(--e3)}
-.a-ens-t{font:700 var(--f-cuerpo)/1.25 var(--body)}
-.a-ens-x{font:500 var(--f-cuerpo)/1.45 var(--body)}
-.a-dia{display:flex;flex-direction:column;background:var(--s1);border:1px solid var(--borde);border-radius:var(--r-2);padding:var(--e1) var(--e4)}
-.a-dia-l{display:flex;gap:var(--e3);align-items:baseline;min-height:40px;padding:var(--e2) 0}
-.a-dia-l+.a-dia-l{border-top:1px solid var(--borde)}
-.a-dia-h{flex:none;width:44px;font:600 var(--f-apoyo)/1.3 var(--body);color:var(--t3);font-variant-numeric:tabular-nums}
-.a-dia-t{font:500 var(--f-apoyo)/1.35 var(--body);color:var(--t1);min-width:0}
-
-/* ---- A2 · Editar mensaje ---- */
-.a-para{font:600 var(--f-apoyo)/1.3 var(--body);color:var(--t2)}
-.a-msg .campo-i{min-height:120px;resize:none;overflow:hidden;font-size:var(--f-cuerpo);line-height:1.45}
-.a-cambiado{background:var(--tinte)}
-.a-cambiado .btn-texto{flex:none}
-.a-vacio{color:var(--t2)}
-.a-ajustes{display:flex;flex-wrap:wrap;gap:var(--e2)}
-.a-ajustes .btn{width:auto;flex:1 1 auto;padding:0 var(--e3);border-radius:var(--r-pill)}
-.a-ajustes .btn.on{box-shadow:inset 0 0 0 1.5px var(--veta);color:var(--acento)}
-
-/* ---- A3 · Dictar ---- */
-.pant-A3 .pant-cuerpo{gap:var(--e4)}
-.a-rec{display:flex;align-items:center;justify-content:center;gap:var(--e2);padding-top:var(--e3)}
-.a-punto{width:12px;height:12px;border-radius:50%;background:var(--urg-t);flex:none}
-.a-rec-t{font:600 var(--f-hoja)/1.2 var(--display);font-variant-numeric:tabular-nums;letter-spacing:-.01em}
-.a-rec.pausada .a-punto{background:var(--t3)}
-.a-voz{display:flex;justify-content:center;align-items:center;min-height:120px}
-.a-voz .onda{transform:scale(1.9);transform-origin:center}
-.a-voz .a-escribe{width:100%}
-.a-voz .a-escribe .campo-i{min-height:120px;resize:none;font-size:var(--f-cuerpo)}
-.a-ctx{text-align:center;font:600 var(--f-apoyo)/1.3 var(--body);color:var(--t2)}
-.a-ej{gap:var(--e2)}
-.a-ej-r{font:700 var(--f-apoyo)/1.2 var(--body);color:var(--acento)}
-.a-ej-t{font:500 var(--f-cuerpo)/1.5 var(--body)}
-.a-ej-n{font-size:var(--f-apoyo)}
-.a-senal{display:flex;gap:var(--e2);align-items:flex-start;font:500 var(--f-apoyo)/1.4 var(--body);color:var(--t2)}
-.a-senal svg{flex:none;margin-top:1px}
-.a-que{align-self:center}
-.a-pasando{text-align:center;font:600 var(--f-hoja)/1.2 var(--display);padding:var(--e5) 0 var(--e2)}
-html:not([data-mov=reducido]) .a-rec:not(.pausada) .a-punto{animation:a-late 1.2s var(--c-estandar) infinite}
-@keyframes a-late{0%,100%{box-shadow:0 0 0 0 color-mix(in srgb,var(--urg-t) 45%,transparent)}50%{box-shadow:0 0 0 7px color-mix(in srgb,var(--urg-t) 0%,transparent)}}
-html:not([data-mov=reducido]) .a-cambia{animation:a-cambia var(--t-medio) var(--c-entra) both}
-@keyframes a-cambia{from{opacity:0;transform:translateY(8px)}}
-
-/* ---- A4 · Acta y A4b ---- */
-.a-ent{display:flex;align-items:flex-start;justify-content:space-between;gap:var(--e2)}
-.a-ent-t{display:flex;flex-direction:column;gap:2px;min-width:0;padding-top:var(--e2)}
-.a-ent-t b{font:700 var(--f-cuerpo)/1.3 var(--body)}
-.a-ent-t span{font:500 var(--f-apoyo)/1.35 var(--body);color:var(--t2)}
-.a-ent .btn-texto{flex:none}
-.a-acta{gap:var(--e3)}
-.a-acta-b{display:flex;flex-direction:column;gap:2px}
-.a-acta-b+.a-acta-b{padding-top:var(--e3);border-top:1px solid var(--borde)}
-.a-acta-t{font:700 var(--f-apoyo)/1.25 var(--body);color:var(--t2)}
-.a-acta-x{font:500 var(--f-cuerpo)/1.45 var(--body)}
-.a-corrige .campo-i{resize:none;font-size:var(--f-cuerpo)}
-.a-tarea{display:flex;gap:var(--e3);padding:var(--e3) var(--e4);border-radius:var(--r-btn);background:var(--tinte)}
-.a-tarea-ic{flex:none;width:40px;height:40px;border-radius:50%;display:grid;place-items:center;background:var(--s1);color:var(--acento)}
-.a-tarea-c{display:flex;flex-direction:column;gap:2px;min-width:0}
-.a-tarea-r{font:700 var(--f-apoyo)/1.25 var(--body);color:var(--acento)}
-.a-tarea-t{font:600 var(--f-cuerpo)/1.4 var(--body)}
-.a-tarea-p{font:500 var(--f-apoyo)/1.3 var(--body);color:var(--t2)}
-.a-cosa{gap:var(--e2)}
-.a-cosa-t{font:600 var(--f-hoja)/1.3 var(--display);letter-spacing:-.01em}
-.a-cosa-nota{font:500 var(--f-cuerpo)/1.45 var(--body);letter-spacing:0}
-.a-cosa-d{display:flex;align-items:center;gap:var(--e2);font:600 var(--f-cuerpo)/1.3 var(--body);color:var(--t2)}
-.a-pie{font:500 var(--f-apoyo)/1.4 var(--body);color:var(--t2)}
-
-/* ---- A7 · En espera ---- */
-.a-cuantas{font:600 var(--f-apoyo)/1.3 var(--body);color:var(--t2)}
-.a-fecha{font-variant-numeric:tabular-nums}
-.a-vencida{color:var(--urg-t)}
-
-/* ---- A12 · Informe al propietario ---- */
-.a-inf-cab{display:flex;flex-direction:column;gap:0}
-.a-inf-cab .enlace{align-self:flex-start}
-.a-voz-av{display:flex;align-items:center;gap:var(--e3);width:100%;min-height:var(--toque);padding:var(--e2) var(--e4);border-radius:var(--r-btn);background:var(--inf-b);color:var(--inf-t);text-align:left;font:500 var(--f-apoyo)/1.35 var(--body)}
-.a-voz-av svg{flex:none}
-.a-inf{padding:0;overflow:hidden;gap:var(--e2)}
-.a-inf>*:not(.a-inf-foto){margin:0 var(--e4)}
-.a-inf-r{order:-1;padding-top:var(--e3);font:700 var(--f-apoyo)/1.2 var(--body);color:var(--acento)}
-.a-inf-foto{margin:0;line-height:0}
-.a-inf-foto .foto-ancha{width:100%;border-radius:0}
-.a-inf-t{font:600 var(--f-hoja)/1.2 var(--display);letter-spacing:-.01em;padding-top:var(--e2)}
-.a-inf-x{font:500 var(--f-cuerpo)/1.45 var(--body)}
-.a-inf-firma{padding-bottom:var(--e4);font:500 var(--f-apoyo)/1.3 var(--body);color:var(--t3)}
-.a-msg-llano{padding:var(--e3) var(--e4);border-radius:var(--r-btn);background:var(--s2);font:500 var(--f-cuerpo)/1.45 var(--body)}
-.a-inf-n{font-size:var(--f-apoyo)}
-.a-preg{display:flex;flex-direction:column;gap:var(--e2);width:100%}
-
-/* ---- Hojas ---- */
+/* ---- hojas: Lo que enviaste, Lo que he leído, Lo que dijiste ---- */
 .a-h-sec{display:flex;flex-direction:column;gap:var(--e1)}
-.a-h-txt{font:500 var(--f-cuerpo)/1.45 var(--body)}
-.a-h-gris{display:flex;gap:var(--e2);align-items:flex-start;font:500 var(--f-apoyo)/1.4 var(--body);color:var(--t2)}
+.a-h-txt{font:500 var(--f-cuerpo)/var(--l-lee) var(--body)}
+.a-h-gris{display:flex;gap:var(--e2);align-items:flex-start;font:500 var(--f-apoyo)/var(--l-fila) var(--body);color:var(--t2)}
 .a-h-gris svg{flex:none;margin-top:1px}
 .a-h-marca{font-variant-numeric:tabular-nums}
-.a-canales{display:flex;flex-direction:column;border:1px solid var(--borde);border-radius:var(--r-2);padding:0 var(--e4)}
-.a-canales li{display:flex;align-items:center;gap:var(--e3);min-height:48px}
+.a-h-aun{color:var(--t2)}
+.a-canales{display:flex;flex-direction:column;margin:0;padding:0 var(--e4);list-style:none;border:1px solid var(--borde);border-radius:var(--r-2)}
+.a-canales li{display:flex;align-items:center;gap:var(--e3);min-height:var(--toque)}
 .a-canales li+li{border-top:1px solid var(--borde)}
-.a-verde{width:10px;height:10px;border-radius:50%;background:var(--opo-t);flex:none}
-.a-can-n{flex:1;min-width:0;font:600 var(--f-apoyo)/1.3 var(--body)}
-.a-can-h{flex:none;font:500 var(--f-apoyo)/1.3 var(--body);color:var(--t3)}
-.a-h-lista{display:flex;flex-direction:column;gap:var(--e1)}
-.a-h-lista li{position:relative;padding-left:var(--e4);font:500 var(--f-cuerpo)/1.45 var(--body)}
-.a-h-lista li::before{content:"";position:absolute;left:2px;top:.62em;width:6px;height:6px;border-radius:50%;background:var(--acento)}
+.a-verde{width:8px;height:8px;border-radius:50%;background:var(--opo-t);flex:none}
+.a-can-n{flex:1;min-width:0;font:700 var(--f-apoyo)/var(--l-fila) var(--body)}
+.a-can-h{flex:none;font:500 var(--f-apoyo)/var(--l-fila) var(--body);color:var(--t3)}
+.a-h-lista{display:flex;flex-direction:column;gap:var(--e1);margin:0;padding:0;list-style:none}
+.a-h-lista li{font:500 var(--f-cuerpo)/var(--l-lee) var(--body)}
+.a-h-dijo{margin:0;padding-left:var(--e4);border-left:2px solid var(--veta);font:500 var(--f-cuerpo)/var(--l-lee) var(--body)}
+
+/* ---- hojas: Lo que has hecho hoy y Ya lo he cerrado yo (una línea por cosa, con su «Deshacer») ---- */
 .a-h-hechas{display:flex;flex-direction:column;border:1px solid var(--borde);border-radius:var(--r-2)}
-.a-hl{display:flex;align-items:center;gap:var(--e1);padding:0 var(--e1) 0 var(--e4);min-height:56px}
+.a-hl{display:flex;align-items:center;gap:var(--e1);padding:0 var(--e1) 0 var(--e4);min-height:var(--fila-1)}
 .a-hl+.a-hl{border-top:1px solid var(--borde)}
-.a-hl-a{flex:1;min-width:0;min-height:var(--toque);display:flex;align-items:center;gap:var(--e3);text-align:left;color:var(--t1)}
+.a-hl-a{flex:1;min-width:0;min-height:var(--toque);display:flex;align-items:center;gap:var(--e3);padding:var(--e2) 0;text-align:left;color:var(--t1)}
 .a-hl .btn-texto{flex:none}
+.a-dia-h{flex:none;width:44px;font:500 var(--f-apoyo)/var(--l-fila) var(--body);color:var(--t3);font-variant-numeric:tabular-nums}
+.a-dia-t{min-width:0;font:500 var(--f-apoyo)/var(--l-fila) var(--body);color:var(--t1)}
+.a-dia-t b{font-weight:700}
+
+/* ---- hoja: Día cerrado (tres recuentos, a letra de título de hoja) ---- */
 .a-h-cifras{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--e2)}
 .a-h-cifras div{display:flex;flex-direction:column;gap:var(--e1);padding:var(--e3);border-radius:var(--r-2);background:var(--s2)}
-.a-h-cifras b{font:600 var(--f-cifra)/1 var(--display);font-variant-numeric:tabular-nums}
-.a-h-cifras span{font:500 var(--f-apoyo)/1.25 var(--body);color:var(--t2)}
-.a-h-dijo{font:500 var(--f-cuerpo)/1.5 var(--body);padding-left:var(--e4);border-left:2px solid var(--veta)}
-
-/* movimiento propio: el final del día y el «Hecho hoy» (se apaga con «Reducir movimiento») */
-html:not([data-mov=reducido]) .a-fin-ic{animation:a-sello var(--t-largo) var(--c-muelle) 120ms both}
-@keyframes a-sello{from{transform:scale(.4);opacity:0}}
-
-.a-inf-t{letter-spacing:0}
-/* la tarjeta abierta de Hoy, un poco más prieta para que su botón quepa a la vista */
-.a-abierta .tc{gap:var(--e2)}
-.a-abierta .tc .btn-principal{margin-top:var(--e1)}
-.a-abierta .tc-encaja .foto-mini{width:48px;height:48px}
-.a-abierta .nota-caja{padding:var(--e2) var(--e3)}
-.a-abierta .tc-encaja{padding:var(--e2) var(--e3)}
-
-/* ---- ronda 6 · Hoy: lo que Veta aprende y hace sola (prefijo .a-r6-) ---- */
-.a-r6-hoy{display:flex;align-items:center;justify-content:space-between;gap:var(--e2);width:100%;min-height:var(--toque);margin-top:calc(-1*var(--e2));text-align:left;color:var(--t1)}
-.a-r6-hoy-t{font:700 var(--f-cuerpo)/1.25 var(--body);letter-spacing:-.005em}
-.a-r6-hoy-a{color:var(--t2);font-weight:600;white-space:nowrap}
-.a-r6-ch{color:var(--t3);display:grid;place-items:center;flex:none}
-.a-r6-desde{display:block;width:100%;min-height:var(--toque);margin-top:calc(-1*var(--e3));padding:0 0 var(--e1);text-align:left;font:500 var(--f-apoyo)/1.35 var(--body);color:var(--t2)}
-.a-r6-desde b{color:var(--t1);font-weight:700}
-.a-r6-mas{display:flex;align-items:center;gap:var(--e3);width:100%;min-height:var(--toque);padding:var(--e1) var(--e4);text-align:left;color:var(--t1);background:var(--s1);border:1px solid var(--borde);border-radius:var(--r-3)}
-.a-r6-mas-av{display:flex;flex:none}
-.a-r6-mas-av>*{margin-left:-10px;box-shadow:0 0 0 2px var(--s1);border-radius:50%}
-.a-r6-mas-av>*:first-child{margin-left:0}
-.a-r6-mas-t{flex:1;min-width:0;font:600 var(--f-apoyo)/1.3 var(--body)}
-.a-r6-mas .chev-gira{color:var(--t3);display:grid;place-items:center;flex:none;transform:rotate(90deg)}
-.a-r6-mas[aria-expanded=true] .chev-gira{transform:rotate(-90deg)}
-.a-r6-lista{background:var(--s1);border:1px solid var(--borde);border-radius:var(--r-3);box-shadow:var(--somb);overflow:hidden}
-.a-r6-fila{position:relative;display:flex;align-items:center;gap:var(--e3);width:100%;min-height:64px;padding:var(--e3) var(--e4);text-align:left;color:var(--t1)}
-.a-r6-fila+.a-r6-fila{border-top:1px solid var(--borde)}
-.a-r6-f-i{flex:none;width:40px;display:grid;place-items:center;color:var(--t2)}
-.a-r6-de-veta .a-r6-f-i{color:var(--oro)}
-.a-r6-f-c{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
-.a-r6-f-t{font:600 var(--f-cuerpo)/1.3 var(--body)}
-.a-r6-f-s{font:500 var(--f-apoyo)/1.35 var(--body);color:var(--t2)}
-.a-r6-f-e{font:600 var(--f-apoyo)/1.3 var(--body);color:var(--acento);margin-top:2px}
-.a-r6-f-ch{color:var(--t3);display:grid;place-items:center;flex:none}
-.a-r6-fila .btn{width:auto;flex:none;min-width:var(--toque);min-height:var(--toque);padding:0 var(--e1)}
-.a-r6-en{align-self:flex-start}
-.a-r6-apr{border-color:var(--oro);box-shadow:0 0 0 3px var(--oro-suave),var(--somb)}
-.a-r6-apr-t{font:700 var(--f-hoja)/1.15 var(--display);letter-spacing:-.01em}
-.a-r6-apr-x{font:500 var(--f-apoyo)/1.35 var(--body);color:var(--t2);margin-top:calc(-1*var(--e2))}
-.a-r6-dif{display:flex;flex-direction:column;gap:var(--e2)}
-.a-r6-dif p{font:500 var(--f-cuerpo)/1.45 var(--body)}
-.a-r6-dif-r{display:block;font:600 var(--f-apoyo)/1.3 var(--body);color:var(--t2)}
-.a-r6-quita{color:var(--t3);text-decoration:line-through;text-decoration-thickness:1.5px}
-.a-r6-ok-t{display:flex;gap:var(--e2);align-items:flex-start;font:500 var(--f-cuerpo)/1.4 var(--body)}
-.a-r6-ok-t svg{flex:none;color:var(--oro);margin-top:1px}
-.a-r6-apl{font:600 var(--f-apoyo)/1.35 var(--body);color:var(--t2)}
-.a-r6-ok .btn{align-self:flex-start;width:auto;min-width:var(--toque);padding:0}
-.borrador .v-oro,.a-r6-dif .v-oro{padding:0 1px}
-.a-ej-p{font:500 var(--f-apoyo)/1.4 var(--body);color:var(--t2)}
-/* arriba, apretado: la tarjeta entera y el arranque de «Esto lo hago yo» caben sin desplazar a 390×844 */
-.a-r6-hoy{margin-top:calc(-1*var(--e3));align-items:flex-start;padding-top:12px}
-.a-r6-desde{margin-top:-28px}
-.a-r6-mas{margin-top:-4px}
-.a-r6-mas+.bloque .bloque-t,.a-abierta+.bloque .bloque-t{margin-top:0}
-.a-cambiado{flex-wrap:wrap}
-.a-cambiado .hecho-a{flex:1 0 100%}
-
-/* P4 · en pantallas bajas (iPhone SE, 667) la línea «Desde ayer…» se esconde: si no, el botón de la tarjeta queda bajo el micro */
-@media (max-width:899px) and (max-height:700px){.a-r6-desde{display:none}}
-
-/* ---- pulido ronda 6 · Hoy al abrir: la cuenta a tamaño de título, la tira dorada de lo cerrado y la tarjeta sin aire de más ---- */
-.a-r6-hoy{margin-top:calc(-1*var(--e2));padding-top:0;align-items:center;min-height:56px}
-.a-r6-hoy-t{font:700 1.5rem/1.14 var(--display);letter-spacing:-.015em}
-.a-r6-hoy-a{display:block;color:var(--t2);font-weight:700;white-space:nowrap}
-.a-r6-tira{display:flex;align-items:center;gap:var(--e2);width:100%;min-height:var(--toque);margin-top:calc(-1*var(--e2));padding:var(--e1) var(--e3);text-align:left;color:var(--t1);background:var(--oro-suave);box-shadow:inset 0 0 0 1px var(--oro-trazo);border-radius:var(--r-2)}
-.a-r6-tira>svg{flex:none;color:var(--oro)}
-.a-r6-tira-t{flex:1;min-width:0;font:600 var(--f-apoyo)/1.25 var(--body)}
-.a-r6-tira-t b{font-weight:700}
-.a-r6-tuyas{margin-top:-4px}
-/* pulido 2: las frases se leen enteras; si no caben en una línea, pasan a dos (nunca «…») */
-.a-r6-fila .a-r6-f-t,.a-r6-fila .a-r6-f-s{overflow-wrap:break-word}
-.a-r6-mira{align-self:flex-start;min-height:var(--toque);text-align:left;font:600 var(--f-cuerpo)/1.3 var(--body)}
-.a-msg .campo-caja{position:relative}
-.a-msg .campo-i{position:relative}
-.a-msg-oro{position:absolute;color:transparent;white-space:pre-wrap;overflow-wrap:break-word;pointer-events:none;box-sizing:border-box}
-.a-h-aun{color:var(--t2)}
-.a-r6-tira-t>span{display:block}
+.a-h-cifras b{font:700 var(--f-hoja)/1 var(--display);font-variant-numeric:tabular-nums}
+.a-h-cifras span{font:500 var(--f-apoyo)/var(--l-fila) var(--body);color:var(--t2)}
