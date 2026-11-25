@@ -71,7 +71,7 @@
         if (o.llevoYo) {
           const c = cosaDe(d.de), yo = VETA.yo().id;
           if (VETA.dir && VETA.dir.asigna && c && c.cliente) VETA.dir.asigna(c.cliente, yo);
-          else M.marca(d.de, yo === 'laura' ? 'hecha' : 'quitada', {a: yo, linea: (c ? c.titulo : '') + ' · you handle it'});
+          else M.marca(d.de, yo === 'laura' ? 'hecha' : 'quitada', {a: yo, linea: (c ? c.titulo : '') + ' · you have it'});
           VETA.repinta({hecho: d.de}); return;
         }
         if (o.accion) { const b = document.querySelector(`[data-accion="${o.accion}"][data-de="${d.de}"]`); if (b) b.click(); return; }
@@ -94,15 +94,17 @@
     acciones: {otra(ev, el, d) { VETA.hoja('h17', Object.assign({}, d, {n: el.dataset.n})); }}
   });
 
-  // ---- H26 · Aspecto ----
+  // ---- H26 · Cómo se ve (el título, igual que la fila de Cuenta que la abre) ----
+  // D1c (segunda vuelta de la ronda 8; lo edita el carril C con permiso del núcleo): tres bloques y ningún botón, porque todo cambia
+  // al tocar. Las doce paletas siguen (las decide el dueño): cuatro por fila, la muestra arriba y el nombre debajo en una línea
+  // (css/r7-c.css, .r7c-paletas); la elegida, con aro. El interruptor va en su lista, como en el resto de la app.
   VETA.hojaDef('h26', {
-    titulo: 'Appearance',
-    pinta: () => `<p class="hoja-x">Choose how you want to see Veta. It changes instantly.</p>` +
+    titulo: 'How it looks',
+    pinta: () => `<p class="hoja-x">Changes as you tap.</p>` +
       UI.selector({etiqueta: 'Mode', opciones: Object.keys(VETA.tema.MODOS).map(k => ({id: k, texto: VETA.tema.MODOS[k]})), valor: VETA.tema.modo(), accion: 'modo'}) +
-      `<div class="paletas" role="group" aria-label="Palettes">${VETA.tema.COLORES.map(c => `<button type="button" class="paleta" data-accion="color" data-color="${c}" aria-pressed="${c === VETA.tema.color()}">` +
-        `<span class="muestra" data-color="${c}" data-modo="${document.documentElement.dataset.modo}"><i></i><i></i><i></i></span><span>${esc(VETA.tema.NOMBRES[c])}</span></button>`).join('')}</div>` +
-      UI.interruptor({texto: 'Reduce motion', sub: 'No sliding or rolling numbers', on: VETA.tema.reducido(), accion: 'mov'}) +
-      UI.boton({texto: 'Done', datos: {cierra: '1'}}),
+      `<div class="r7c-paletas" role="group" aria-label="Colours">${VETA.tema.COLORES.map(c => `<button type="button" class="r7c-paleta" data-accion="color" data-color="${c}" aria-pressed="${c === VETA.tema.color()}">` +
+        `<span class="muestra" data-color="${c}" data-modo="${document.documentElement.dataset.modo}"><i></i><i></i><i></i></span><span class="r7c-paleta-n">${esc(VETA.tema.NOMBRES[c])}</span></button>`).join('')}</div>` +
+      VETA.r7.lista([UI.interruptor({texto: 'Reduce motion', on: VETA.tema.reducido(), accion: 'mov'})]),
     acciones: {
       modo(ev, el) { VETA.tema.pon({modo: el.dataset.valor}); VETA.hoja('h26', {}); },
       color(ev, el) { VETA.tema.pon({color: el.dataset.color}); VETA.hoja('h26', {}); },
@@ -115,13 +117,16 @@
     titulo: d => ((VETA.datos.textos || {})[d.texto] || {}).titulo || 'Legal text',
     // FN · la cifra de chats leídos es la de quien mira (dirección no lee la de Laura): sale de M.chatsLeidos(), como en Cuenta
     bloques: d => ((VETA.datos.textos || {})[d.texto] || {bloques: [{texto: 'This text doesn\'t exist yet.'}]}).bloques
-      .map(b => (b.texto ? Object.assign({}, b, {texto: b.texto.replace(/\b212 chats\b/g, VETA.num(VETA.c && VETA.c.leidos ? VETA.c.leidos() : M.chatsLeidos()) + ' chats')}) : b))
+      .map(b => (b.texto ? Object.assign({}, b, {texto: b.texto.replace(/\b212\b/g, VETA.num(VETA.c && VETA.c.leidos ? VETA.c.leidos() : M.chatsLeidos()))}) : b))
   });
 
   // ---- H41 · Texto de un parte ----  data-hoja="h41" data-parte="1930 | socios"
+  // “oficina” es el parte de dirección: el de la oficina entera, sin nombres ni clientes de nadie (el parte del día de una agente, “1930”, es suyo: dirección no lo abre)
+  const parteDe = d => d.parte === '1930' && VETA.yo().papel === 'direccion' ? 'oficina' : d.parte;
   VETA.hojaTexto('h41', {
-    titulo: d => ((VETA.datos.partes || {})[d.parte] || {}).titulo || 'Wrap-up',
-    bloques: d => ((VETA.datos.partes || {})[d.parte] || {bloques: [{texto: 'This wrap-up doesn\'t exist yet.'}]}).bloques
+    titulo: d => parteDe(d) === 'oficina' ? 'The office wrap-up' : ((VETA.datos.partes || {})[d.parte] || {}).titulo || 'Wrap-up',
+    bloques: d => parteDe(d) === 'oficina' ? (VETA.datos.partesPiloto || []).slice(0, 1).map(p => ({titulo: p.dia, texto: p.texto}))
+      : ((VETA.datos.partes || {})[d.parte] || {bloques: [{texto: 'This wrap-up doesn\'t exist yet.'}]}).bloques
   });
 
   // ---- acciones de la tarjeta de la cola (data-de = id de la cosa) ----

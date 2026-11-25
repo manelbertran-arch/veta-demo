@@ -93,9 +93,9 @@
       borrador: 'Hola, Elena, soy Laura. ¿Has podido encontrar la nómina? El banco la necesita para seguir.',
       boton: {texto: 'Preparar recordatorio a Elena'}, secundarios: [{texto: 'Se cumplió', accion: 'se-cumplio'}, otra],
       lineas: {hecha: 'Lo tendrás en Inicio el miércoles a las 9:00'}},
-    {id: 'e-pere', quien: 'laura', tipo: 'espera', fechaISO: '2026-11-27', fecha: 'Vie 27', cliente: 'pere', titulo: 'Pere Soler', texto: 'Plazo del certificado energético',
+    {id: 'e-pere', quien: 'laura', tipo: 'espera', fechaISO: '2026-11-27', fecha: 'Vie 27', cliente: 'pere', titulo: 'Pere Soler', texto: 'Plazo del certificado',
       resumen: 'Si el viernes no consta, dirección verá que hay 1 cosa parada, sin tu nombre ni el del cliente.', boton: {texto: 'Pedírselo a Pere', hoja: 'h14'}},
-    {id: 'e-jordi', quien: 'laura', tipo: 'espera', fechaISO: '2026-11-30', fecha: 'Lun 30', cliente: 'jordi', titulo: 'Jordi Ferrer', texto: 'Nota simple pedida al Registro'},
+    {id: 'e-jordi', quien: 'laura', tipo: 'espera', fechaISO: '2026-11-30', fecha: 'Lun 30', cliente: 'jordi', titulo: 'Jordi Ferrer', texto: 'Nota simple al Registro'},
     {id: 'e-laia', quien: 'laura', tipo: 'espera', fechaISO: '2026-12-01', fecha: 'Mar 1 dic', cliente: 'laia', titulo: 'Laia Casas', texto: 'Firma en notaría, 12:00'},
     {id: 'e-pere-encargo', quien: 'laura', tipo: 'espera', fechaISO: '2026-12-02', fecha: 'Mié 2 dic', cliente: 'pere', titulo: 'Pere Soler', texto: 'Vence el encargo'},
     {id: 'e-nuria', quien: 'laura', tipo: 'espera', fechaISO: '2026-12-03', fecha: 'Jue 3 dic', cliente: 'nuria', titulo: 'Núria Camps', texto: 'Quedó en llamarte al volver'}

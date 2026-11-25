@@ -6,7 +6,7 @@
      «Ver de dónde sale» es un enlace bajo el papel mientras no se ha enviado (a un toque); después, en «Más».
    · El final (uno solo): «✓ Acta enviada a Elena · 9:41 · Deshacer» arriba (deshace el envío) y el siguiente paso en el pie. Ni subtítulo
      ni aviso que lo repitan. Al enviarla o guardarla se cierra su cosa del día (c-elena) y con eso queda apuntada la llamada (modelo.js):
-     lo dice una fila bajo el papel, «Apuntado en tu calendario», que abre «Lo que vigilo por ti». */
+     lo dice una fila bajo el papel, «Tarea apuntada» (con la frase del calendario), que abre «Lo que vigilo por ti». */
 (function () {
   'use strict';
   const UI = VETA.UI, r7 = VETA.r7, esc = VETA.esc, A2 = () => VETA.a2;
@@ -59,7 +59,7 @@
       return hecho + r7.doc({i: 1, foto: v.piso, datos: [v.dia + ' · ' + v.calle.replace(/^c\/ /, ''), `${v.nombre} con ${VETA.yo().nombre}`], titular: campo(v, 'impresion'),
         secciones: [{rotulo: 'Lo que le gustó', lineas: A2().lineas(campo(v, 'gusto'))}, {rotulo: 'Lo que no', lineas: A2().lineas(campo(v, 'no'))}, {rotulo: 'Qué toca ahora', texto: campo(v, 'ahora')}]}) +
         // la tarea que nace del acta: apuntada y vigilada (la fila abre «Lo que vigilo por ti»)
-        (d.estado && !viejo && v.cosa ? r7.lista([{nombre: 'Apuntado en tu calendario', pasa: v.acta.apunta, ir: 'espera'}], {i: 2}) : '') +
+        (d.estado && !viejo && v.cosa ? r7.lista([{nombre: 'Tarea apuntada', pasa: v.acta.apunta, ir: 'espera'}], {i: 2}) + r7.nota('Te la pongo en el calendario si me lo pides.') : '') +
         (!d.estado ? r7.enlace({i: 2, texto: 'Ver de dónde sale', hoja: 'h07', datos: {visita: v.id}}) : '');
     },
     botonFijo: p => {

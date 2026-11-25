@@ -3,7 +3,7 @@
    ninguna lleva iconos a la izquierda.
    De siempre: h18 Un caso · h19 Los casos iguales · h20 Cambiar algo (de un trabajo; con la forma de «Más») · h21 Qué he entendido · h22 Subir un paso ·
    h23 Una práctica · h24 Tus tiempos · h25 Una semana anterior · h28 Sin señal · h30 ¿Qué chat borras? · h31 Poner Veta en la pantalla
-   de inicio · h32 Un hallazgo del mapa · h33 Calendario · c-mano (lo que aún haces a mano) · c-avisos · c-anadir (añadir un chat).
+   de inicio · h32 Un hallazgo del mapa  · c-mano (lo que aún haces a mano) · c-avisos · c-anadir (añadir un chat).
    Ronda 8 (lo que antes se desplegaba en la fila, ahora en una hoja): c-lee (un texto corto, según `que`) · c-veces (los casos de un
    trabajo) · c-excepto (no con un cliente) · c-nohago (lo que ya no hago) · c-cerre (lo que cerré sola) · c-aprendido (una cosa
    aprendida) · c-chat (un chat que no leo) · c-confirma (desconectar WhatsApp, volver a empezar).
@@ -196,8 +196,8 @@
   const borrables = () => { const ya = C.lee('borrados', []).map(b => b.nombre); return M.lectura().fuera.concat(M.clientes(VETA.yo().id).slice(0, 6).map(c => c.nombre)).filter(n => !ya.includes(n)); };
   VETA.hojaAcciones('h30', {
     titulo: d => (d.de ? 'Qué se ha borrado' : '¿Qué chat borras?'),
-    texto: d => (d.de ? '' : 'Desaparece en 72 h y te digo qué se ha borrado.'),
-    bloques: d => (d.de ? [{titulo: d.de, texto: `1 conversación · pedido hoy · borrado completo antes del ${VETA.fecha.corta('2026-11-26', {frase: true})}`}, {texto: 'Lo que ya estaba en la ficha de un cliente se queda en la ficha.'}] : null),
+    texto: d => (d.de ? '' : 'Puedes pedirme que borre un chat cuando quieras. Te digo qué he borrado.'),
+    bloques: d => (d.de ? [{titulo: d.de, texto: '1 conversación · pedido hoy · te digo aquí cuando esté borrada'}, {texto: 'Lo que ya estaba en la ficha de un cliente se queda en la ficha.'}] : null),
     opciones: d => (d.de ? [] : borrables().map(n => ({texto: n, peligro: true, cierra: false,
       hace: () => { C.pon('borrados', C.lee('borrados', []).concat([{nombre: n, hora: VETA.ahora()}])); VETA.hoja('h30', {de: n}); repintaSiVe('cuenta/chats'); }})))
   });
@@ -238,17 +238,6 @@
     titulo: d => (C.hallazgo(d.hallazgo) || {}).titulo || 'Un hallazgo',
     bloques: d => { const f = C.hallazgo(d.hallazgo); return f ? [{texto: f.texto}].concat((f.citas || []).map(c => ({html: cita(c.texto, c.origen)}))) : []; },
     boton: d => (C.hallazgo(d.hallazgo) || {}).boton || null
-  });
-
-  // ---- h33 · Calendario ----
-  VETA.hojaElegir('h33', {
-    titulo: 'Calendario', texto: 'Leo tus citas; no las cambio.',
-    opciones: () => D().calendarios.map(c => ({id: c, texto: c})),
-    valor: () => C.calendario(),
-    alElegir: op => {
-      const antes = C.calendario(); C.pon('calendario', op.id); VETA.repinta();
-      VETA.aviso('Calendario conectado: ' + op.id, {deshacer: () => { C.pon('calendario', antes); VETA.repinta(); }});
-    }
   });
 
   // ---- c-mano · Lo que aún haces a mano (A14) ----

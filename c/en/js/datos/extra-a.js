@@ -40,35 +40,17 @@
         voz: 'Pere left you a message on Saturday'}
     },
 
-    // A4 · acta de la visita (textos del plan)
-    acta: {
-      elena: {cosa: 'c-elena', cliente: 'elena', nombre: 'Elena', entendido: 'Understood: notes from the viewing with Elena', donde: 'Today, 9:00 · Gràcia flat, c/ Verdi 42',
-        bloques: [
-          {id: 'gusto', titulo: 'What she liked', texto: 'The light in the living room, the terrace and the renovated kitchen.'},
-          {id: 'preocupa', titulo: 'What worries her', texto: 'Street noise at night. That there\'s no lift: it\'s a third floor.'},
-          {id: 'siguiente', titulo: 'Next step', texto: 'Second viewing on Saturday afternoon, with her partner, to hear the street.'}],
-        tarea: 'Call Elena on Thursday 26 to confirm Saturday\'s viewing', tareaPie: 'I\'ll put it in your calendar.',
-        lineaTarea: 'Noted: call Elena on Thursday 26', propietario: 'pere'}
-    },
-
     // A4b · tarea o nota (textos del plan)
     entendido: {
       tarea: {tipo: 'tarea', entendido: 'Understood: a task', que: 'Call Jordi Ferrer', cliente: 'jordi',
         dias: [{id: 'jue', texto: 'Thursday 26, 10:00', fecha: 'Thu 26', fechaISO: '2026-11-26'},
           {id: 'vie', texto: 'Friday 27, 10:00', fecha: 'Fri 27', fechaISO: '2026-11-27'},
           {id: 'lun', texto: 'Monday 30, 10:00', fecha: 'Mon 30', fechaISO: '2026-11-30'}],
-        pie: 'I\'ll keep an eye on it and put it in your calendar.', boton: 'Save the task', linea: 'Saved · Call Jordi'},
+        pie: 'I\'ll keep watch on it. I\'ll put it in the calendar if you ask me.', boton: 'Save the task', linea: 'Saved · Call Jordi'},
       nota: {tipo: 'nota', entendido: 'Understood: a note for Pere Soler\'s profile', texto: 'Pere prefers me to call him in the afternoon, after 16:00.', cliente: 'pere',
         pie: 'It stays in his History.', boton: 'Save the note', linea: 'Saved · Note on Pere\'s profile'}
     },
 
-    // A3 · contexto de cada guion y H08 · “¿Qué puedo decir?”
-    contexto: {acta: 'After the viewing with Elena Vives', nota: 'A note for Pere Soler\'s profile'},
-    queDecir: [
-      {guion: 'acta', texto: 'How a viewing went'}, {guion: 'tarea', texto: 'A task'},
-      {guion: 'orden', texto: 'An instruction for Veta'},
-      {guion: 'aviso', texto: 'An alert', papel: 'direccion'}, {guion: 'operacion', texto: 'A question about a deal', papel: 'direccion'},
-      {guion: 'queja', texto: 'A client complaint', papel: 'direccion'}, {guion: 'mejorar', texto: 'What to improve', papel: 'direccion'}],
     // duración por defecto de “Lo que dijiste” si se entra sin dictar (segundos)
     duracion: {acta: 72, tarea: 4, nota: 5, orden: 6, pregunta: 2},
 
@@ -82,9 +64,6 @@
     yaNo: {cosa: 'c-sergi', texto: 'Sergi Mas: Anna replied to him on Friday'},
 
     // A1 vacía · “¿Me enseñas esto?”
-    ensenas: {regla: 'r-valoraciones', titulo: 'Will you show me this?', texto: 'I saw that when someone asks for a valuation, you send the flat report the next day. Shall I prepare it?', ir: 'regla/r-valoraciones'},
-
-    // A7 · pie
-    esperaPie: 'Your family and friends never show up here. Veta only follows your work.'
+    ensenas: {regla: 'r-valoraciones', titulo: 'Will you show me this?', texto: 'I saw that when someone asks for a valuation, you send the flat report the next day. Shall I prepare it?', ir: 'regla/r-valoraciones'}
   };
 })();

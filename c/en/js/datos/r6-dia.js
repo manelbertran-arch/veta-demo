@@ -34,9 +34,7 @@
     // el siguiente borrador del mismo tipo, ya cambiado
     aplica: {cosa: 'c-nuria', corto: 'Núria',
       texto: 'Hi Núria, it\'s Laura. A flat has come in in Sant Antoni with a balcony: 2 bedrooms, €289,000. Does Thursday at 18:00 or Friday at 10:00 suit you better to see it?',
-      frase: 'Thursday at 18:00 or Friday at 10:00', aviso: 'I did what you just showed me.'},
-    // Dictar · lo que se lee bajo el ejemplo de la orden
-    ordenPie: 'With this, I will write the reminder for you. You read it and send it.'
+      frase: 'Thursday at 18:00 or Friday at 10:00', aviso: 'I did what you just showed me.'}
   });
 
   // “Hoy te tocan N”: la cuenta vive en VETA.r6.tocan (js/nucleo/vivo.js), una sola fuente.

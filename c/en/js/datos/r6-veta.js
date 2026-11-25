@@ -15,7 +15,7 @@
     {n: 2, nombre: 'I write it for you', texto: 'I get the message ready. You send it.'},
     {n: 3, nombre: 'I note it down', texto: 'I note, mark and save. I send nothing.'},
     {n: 4, nombre: 'I do it and tell you', texto: 'I do it and tell you. If something has to be sent, I ask you first.'},
-    {n: 5, nombre: 'I send it', texto: 'Not yet. Nothing is sent without you.', cerrado: true}
+    {n: 5, nombre: 'I send it', texto: 'Not yet. Nothing goes out without you.', cerrado: true}
   ];
 
   // ---- dónde está cada cosa que hago (paso 1-4) y la pregunta para subir, con sus casos ----
@@ -33,6 +33,7 @@
   // ---- el trabajo nuevo que se puede subir de verdad: confirmar las visitas el día antes ----
   // pulido: al decir que sí pasa a 'prueba' y ahí se queda (una prueba que empieza hoy no tiene historial: no pregunta otra vez)
   // su sitio vive en VETA.r6.reglaVisitas(): 'propuesta' (paso 1) → 'prueba' (paso 2) → 'sola' (paso 3)
+  const F = iso => VETA.fecha.corta(iso);
   V.visitas = {
     id: 'r-visitas', nombre: 'Confirm viewings the day before', corto: 'Confirm viewings the day before',
     paso: {propuesta: 1, prueba: 2, sola: 3},
@@ -45,23 +46,23 @@
     manana: {
       propuesta: 'On Friday I will remind you about Saturday\'s viewings. You will write to them.',
       prueba: 'On Friday I write the messages for Marta and Elena, who come on Saturday.',
-      sola: 'On Friday I will check if Marta and Elena have said they are coming on Saturday. If they have, I note it. If not, I write the message for you in Today.'
+      sola: 'On Friday I\'ll check whether Marta and Elena have said they\'re coming on Saturday. If they have, I\'ll note it down. If not, I\'ll leave the message written for you in Home.'
     },
     // los 9 casos en que confirmaste tú (inventados para la demo, con clientes que ya existen)
     casos: [
-      {cuando: 'Fri 20 Nov', nombre: 'Elena Vives', av: 'elena', dijo: 'Yes, tomorrow at 11:00 we\'ll meet at the door'},
-      {cuando: '13 Nov', nombre: 'Marta Puig', av: 'marta', dijo: 'Perfect, I\'ll be there'},
-      {cuando: '7 Nov', nombre: 'Jordi Ferrer', av: 'jordi', dijo: 'Yes, 18:00 suits me'},
-      {cuando: '31 Oct', nombre: 'Sergi Font', av: 'sergi', dijo: 'Confirmed, thank you'},
-      {cuando: '24 Oct', nombre: 'Anna Bosch', av: 'anna-bosch', dijo: 'Yes, we are both coming'},
-      {cuando: '17 Oct', nombre: 'Toni Ribas', av: 'toni', dijo: 'Can we do 12:00 instead of 11:00?', distinto: 'You changed the time'},
-      {cuando: '10 Oct', nombre: 'Casals family', av: 'casals', dijo: 'Yes, we\'ll be there'},
-      {cuando: '3 Oct', nombre: 'Núria Camps', av: 'nuria', dijo: 'Yes, perfect'},
-      {cuando: '26 Sep', nombre: 'Rosa Vidal', av: 'rosa', dijo: 'I\'ll be there'}
+      {cuando: F('2026-11-20'), nombre: 'Elena Vives', av: 'elena', dijo: 'Yes, tomorrow at 11:00 we\'ll meet at the door'},
+      {cuando: F('2026-11-13'), nombre: 'Marta Puig', av: 'marta', dijo: 'Perfect, I\'ll be there'},
+      {cuando: F('2026-11-07'), nombre: 'Jordi Ferrer', av: 'jordi', dijo: 'Yes, 18:00 suits me'},
+      {cuando: F('2026-10-31'), nombre: 'Sergi Font', av: 'sergi', dijo: 'Confirmed, thank you'},
+      {cuando: F('2026-10-24'), nombre: 'Anna Bosch', av: 'anna-bosch', dijo: 'Yes, we are both coming'},
+      {cuando: F('2026-10-17'), nombre: 'Toni Ribas', av: 'toni', dijo: 'Can we do 12:00 instead of 11:00?', distinto: 'You changed the time'},
+      {cuando: F('2026-10-10'), nombre: 'Casals family', av: 'casals', dijo: 'Yes, we\'ll be there'},
+      {cuando: F('2026-10-03'), nombre: 'Núria Camps', av: 'nuria', dijo: 'Yes, perfect'},
+      {cuando: F('2026-09-26'), nombre: 'Rosa Vidal', av: 'rosa', dijo: 'I\'ll be there'}
     ],
     hechas: 9, corregidas: 1,
     // lo que digo al empezar la prueba, en el sitio de la pregunta (sin historial: empieza hoy)
-    hecho: 'Done. On Friday I write the messages for Marta and Elena for you. When I have done it a few times, I ask if I should do one more step.',
+    hecho: 'On Friday I\'ll leave Marta\'s and Elena\'s messages written for you. Once I\'ve done it a few times, I\'ll ask whether I should take one more step.',
     // lo que pregunta cada paso para subir al siguiente
     sube: {
       propuesta: {pregunta: 'You have done this 9 times. Shall I write it for you the day before?', boton: 'Yes, write it for me'}
@@ -81,14 +82,14 @@
     antes: {rotulo: 'When we started', valor: 46, unidad: 'things of yours per week',
       filas: ['You wrote every reply', 'You remembered every promise yourself', 'You checked who had replied', 'You wrote viewing notes at night']},
     ahora: {rotulo: 'Last week', valor: 21, unidad: 'things of yours per week',
-      filas: ['You read and send what I write for you', 'You tell me about the viewing when you leave', 'You do the new things, which I cannot do yet']}
+      filas: ['You read and send what I write for you', 'You tell me about the viewing afterwards', 'You do the new things I can\'t do yet']}
   };
 
   // “Lo que dirección ve de ti” (A14 y A15) ya no tiene datos propios: lee la ficha de la persona de dirección (VETA.dir.personaOps)
 
   // ---- textos legales que contradecían la decisión 1 ----
   if (D.textos && D.textos.resumen) D.textos.resumen.bloques = [{lista: ['It only reads the channels the office has connected.', 'Every message that goes out is approved by a person.',
-    'Management sees your deals, what you have pending and how long you take to reply. They do not see what you write in your chats or your notes.', 'You can leave out any chat whenever you want.']}];
+    'Management sees your deals and what Veta does for you, with no per-person figures. They don\'t see what you write in your chats or your notes.', 'You can leave out any chat whenever you want.']}];
   if (D.textos && D.textos.ver) D.textos.ver.bloques = [{texto: 'Each person sees their own: their clients, their day and their jobs.'},
-    {texto: 'Management sees each deal and each person: what they have, what is pending and how long they take to reply. They do not see what is written in the chats or anyone\'s notes.'}];
+    {texto: 'Management sees every deal and every person: their deals and what Veta does for them, with no per-person figures. They don\'t see what is written in the chats or anyone\'s notes.'}];
 })();

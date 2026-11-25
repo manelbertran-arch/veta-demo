@@ -18,7 +18,7 @@
       const R = VETA.r7, o = VETA.datos.c.orden;
       if (noEntendida(p)) return escribe ? campo() : R.enlace({texto: 'Escribirlo yo', accion: 'escribir', i: 1});
       const r = M.regla(ID), ya = hecha(p);
-      return (ya ? R.hecho({texto: `Lo estoy probando ${C.fechaPrueba}`, hora: r.hora, deshacer: 'deshacer', vt: 'c-entendido'}) : '') +
+      return (ya ? R.hecho({texto: 'Lo estoy probando', hora: r.hora, deshacer: 'deshacer', vt: 'c-entendido'}) : '') +
         R.tarjeta({de: 'Lo que dijiste · hoy', texto: `«${o.dijiste}»`, i: 0}) +
         R.tarjeta({veta: true, de: ya ? 'Lo estoy probando' : 'Esto haré', texto: C.info(ID).frase, vt: 'c-entendido', i: 1}) +
         R.lista([

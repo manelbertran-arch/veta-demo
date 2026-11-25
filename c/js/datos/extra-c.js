@@ -118,8 +118,6 @@
   C.falta = [['Responder a contactos nuevos', 23], ['Preparar informes del piso', 14], ['Pedir certificados energéticos', 6]];
   // G14 · lo que sabe tu oficina
   C.sabe = [['Quien pide fotos del balcón, visita', 31, 38], ['Sin noticias en 10 días, el propietario se queja', 5, 7], ['En Gràcia, casi todos quieren ver en sábado', 64, 92]];
-  // H33 · calendarios
-  C.calendarios = ['Calendly', 'Cal.com', 'Google Calendar'];
   // E2 · cuentas de ejemplo
   C.cuentas = {laura: 'laura@ejemplo.es', montse: 'montse@ejemplo.es'};
 })();

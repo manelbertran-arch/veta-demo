@@ -31,6 +31,7 @@
     ['A6d', 'cliente/:id/documentos', 'Papeles y fechas', 'clientes', 'B', 'documentos.js', 'A6', 'cliente/pere/documentos', {grupo: G.B}],
     ['A16', 'cliente/:id/historia', 'Lo que ha pasado', 'clientes', 'B', 'historia.js', 'A6', 'cliente/pere/historia', {grupo: G.B}],
     ['A8', 'veta', 'Veta', 'veta', 'C', 'veta.js', null, null, {grupo: G.C}],
+    ['A8b', 'veta/mia', 'Lo que Veta hace por ti', 'veta', 'C', 'veta.js', 'R0', null, {grupo: G.C}],
     ['A9b', 'reglas/semana-pasada', 'La semana pasada', 'veta', 'C', 'reglas.js', 'A8', null, {grupo: G.C}],
     ['A10', 'regla/:id', 'Un trabajo', 'veta', 'C', 'regla.js', 'A8', 'regla/r-valoraciones', {grupo: G.C}],
     ['A10b', 'regla/:id/nivel', '¿Quién lo hace?', 'veta', 'C', 'regla.js', 'A10', 'regla/r-valoraciones/nivel', {grupo: G.C}],
@@ -85,7 +86,7 @@
   const R7 = {
     A1: {titulo: 'Te toca a ti', padre: 'R0'},
     A5: {padre: 'R0'},
-    A8: {padre: 'R0'},
+    A8: {padre: 'R0'}, A8b: {padre: 'R0', destino: null},   // dirección también trabaja como agente: «Lo que Veta hace por ti» (fila fija de su Inicio) es A8 sin «Cómo voy»
     G1: {padre: 'R0'},
     G17: {padre: 'R0', destino: 'operaciones'},
     A3: {titulo: '¿Qué me cuentas?', padre: 'R0'}, A4b: {padre: 'A3'},
@@ -111,8 +112,9 @@
   const esDir = () => VETA.yo().papel === 'direccion';
   const porA1 = () => (esDir() ? 'hoy' : null), porAprendido = () => (esDir() ? null : 'aprendido');
   const R8 = {
+    A1: {destino: null, area: 'hoy'},   // «Te toca a ti» no es raíz: la ruta 'hoy' redirige a Inicio (agente) o es un detalle de Inicio (dirección), y ahí lleva «volver»
     A23: {padre: 'R0', padreRuta: porA1}, A7: {padre: 'R0', destino: 'hoy', padreRuta: porA1},
-    A10: {padre: 'A8'}, A13: {padre: 'A8'}, A9b: {padre: 'A8'}, A20: {padre: 'A8'}, A14: {padre: 'A8', padreRuta: porA1}, A11: {padre: 'A13'},
+    A10: {padre: 'A8', padreRuta: () => (esDir() ? 'veta/mia' : null)}, A13: {padre: 'A8'}, A9b: {padre: 'A8'}, A20: {padre: 'A8'}, A14: {padre: 'A8', padreRuta: porA1}, A11: {padre: 'A13'},
     G2: {padre: 'R0'}, G2b: {padre: 'R0'}, G5: {padre: 'R0'},
     G11: {padre: 'G21'}, G13: {padre: 'G11'}, G14: {padre: 'G11', padreRuta: porAprendido}, G10: {padre: 'G15', padreRuta: porAprendido}, G12: {padre: 'G15'},
     A12: {completa: true}, G3b: {completa: true}, G8: {completa: true}
@@ -209,6 +211,9 @@
     if (ruta === 'decidir' || (ruta === 'hoy' && !dir)) return INICIO;
     if (ruta === 'reglas') ruta = 'veta';
     if (ruta === 'veta' && dir) return 'oficina';
+    if (ruta === 'veta/mia' && !dir) return 'veta';
+    // las reglas de una agente (sus casos, con los nombres y las frases de sus clientes) no las abre dirección: por la ruta escrita a mano va a «Lo que Veta hace por ti»
+    if (dir && /^(regla|entendido)\//.test(ruta)) return 'veta/mia';
     return ruta;
   }
   VETA.redirige = ruta => redirige(ruta, true);

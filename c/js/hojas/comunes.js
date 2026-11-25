@@ -117,13 +117,16 @@
     titulo: d => ((VETA.datos.textos || {})[d.texto] || {}).titulo || 'Texto legal',
     // FN · la cifra de chats leídos es la de quien mira (dirección no lee la de Laura): sale de M.chatsLeidos(), como en Cuenta
     bloques: d => ((VETA.datos.textos || {})[d.texto] || {bloques: [{texto: 'Este texto no existe todavía.'}]}).bloques
-      .map(b => (b.texto ? Object.assign({}, b, {texto: b.texto.replace(/\b212 chats\b/g, VETA.num(VETA.c && VETA.c.leidos ? VETA.c.leidos() : M.chatsLeidos()) + ' chats')}) : b))
+      .map(b => (b.texto ? Object.assign({}, b, {texto: b.texto.replace(/\b212\b/g, VETA.num(VETA.c && VETA.c.leidos ? VETA.c.leidos() : M.chatsLeidos()))}) : b))
   });
 
   // ---- H41 · Texto de un parte ----  data-hoja="h41" data-parte="1930 | socios"
+  // «oficina» es el parte de dirección: el de la oficina entera, sin nombres ni clientes de nadie (el parte del día de una agente, «1930», es suyo: dirección no lo abre)
+  const parteDe = d => d.parte === '1930' && VETA.yo().papel === 'direccion' ? 'oficina' : d.parte;
   VETA.hojaTexto('h41', {
-    titulo: d => ((VETA.datos.partes || {})[d.parte] || {}).titulo || 'Parte',
-    bloques: d => ((VETA.datos.partes || {})[d.parte] || {bloques: [{texto: 'Este parte no existe todavía.'}]}).bloques
+    titulo: d => parteDe(d) === 'oficina' ? 'El parte de la oficina' : ((VETA.datos.partes || {})[d.parte] || {}).titulo || 'Parte',
+    bloques: d => parteDe(d) === 'oficina' ? (VETA.datos.partesPiloto || []).slice(0, 1).map(p => ({titulo: p.dia, texto: p.texto}))
+      : ((VETA.datos.partes || {})[d.parte] || {bloques: [{texto: 'Este parte no existe todavía.'}]}).bloques
   });
 
   // ---- acciones de la tarjeta de la cola (data-de = id de la cosa) ----

@@ -21,6 +21,15 @@
     return docs.filter(d => d.estado === 'falta').concat(docs.filter(d => d.estado !== 'falta')).map(fila);
   }
 
+  // lo último que hiciste aquí, como único final: arriba, la fila ✓ con lo hecho, su hora y «Deshacer» (B.ultDoc lo pone «Pedírselo» o este cambio)
+  function ultimo(c) {
+    const u = B.ultDoc; if (!u || u.id !== c.id) return '';
+    const d = B.docs(c.id).find(x => x.k === u.k); if (!d) return '';
+    if (u.tipo === 'pedido') return d.pedido ? r7.hecho({texto: `Pedido a ${B.corto(c)}`, hora: d.pedido.hora, deshacer: {accion: 'pedido-deshaz', datos: {k: d.k}}}) : '';
+    const m = B.mapa('docs')[c.id + '|' + u.k];
+    return m ? r7.hecho({texto: m.estado === 'recibido' ? 'Marcado como recibido' : 'Vuelve a faltar', hora: m.hora, deshacer: {accion: 'doc-deshaz', datos: {k: u.k}}}) : '';
+  }
+
   VETA.pantalla('A6d', {
     titulo: 'Papeles y fechas',
     sub: p => { const c = M.cliente(p.id); return c && !VETA.ajeno(c.id) && c.operacion && c.operacion.texto || ''; },
@@ -30,7 +39,7 @@
       if (VETA.ajeno(c.id)) return r7.vacio(`Sus papeles los lleva ${(M.persona(c.lleva) || {}).corto || 'otra persona'}.`);
       const pp = papeles(c), ff = B.fechas(c.id).map(f => ({nombre: f.cuando, pasa: f.texto}));
       if (!pp.length && !ff.length) return r7.vacio(`Si hace falta un papel, te lo pongo en ${sitio()}.`);
-      return (pp.length ? r7.lista(pp, {rotulo: 'Papeles'}) : '') + (ff.length ? r7.lista(ff, {rotulo: 'Fechas'}) : '');
+      return ultimo(c) + (pp.length ? r7.lista(pp, {rotulo: 'Papeles'}) : '') + (ff.length ? r7.lista(ff, {rotulo: 'Fechas'}) : '');
     },
     botonFijo: p => {
       const c = M.cliente(p.id); if (!c || VETA.ajeno(c.id)) return '';   // dirección no escribe al cliente de otra persona
@@ -40,15 +49,16 @@
       return f ? r7.botones({texto: `Ya tengo ${B.sinFalta(f)}`, accion: 'doc-recibido', datos: {k: f.k}}) : '';
     },
     acciones: {
-      'doc-recibido'(ev, el, p) { cambia(p.id, el.dataset.k, 'recibido'); }
+      'doc-recibido'(ev, el, p) { cambia(p.id, el.dataset.k, 'recibido'); },
+      'doc-deshaz'(ev, el, p) { const key = p.id + '|' + el.dataset.k, m = B.mapa('docs')[key]; B.ponEn('docs', key, (m && m.prev) || null); B.ultDoc = null; VETA.repinta(); },
+      'pedido-deshaz'(ev, el, p) { noPedido(p.id, el.dataset.k); B.ultDoc = null; }
     }
   });
   function cambia(id, k, estado) {
-    const key = id + '|' + k, ant = B.mapa('docs')[key] || null, d = B.docs(id).find(x => x.k === k) || {};
+    const key = id + '|' + k, ant = B.mapa('docs')[key] || null;
     B.ponEn('docs', key, {estado, hora: VETA.ahora(), prev: ant});
+    B.ultDoc = {id, k, tipo: 'cambio'};
     VETA.repinta();
-    VETA.aviso(estado === 'recibido' ? `Apuntado: ya tienes ${B.sinFalta(d)}.` : `Vuelve a faltar ${B.sinFalta(d)}.`,
-      {deshacer: () => { B.ponEn('docs', key, ant); VETA.repinta(); }});
   }
   // «No se lo envié»: deshace una petición hecha desde aquí o desde su tarjeta
   function noPedido(id, k) {
@@ -57,6 +67,7 @@
     VETA.repinta();
   }
   B.noPedido = noPedido;
+  window.addEventListener('hashchange', () => { B.ultDoc = null; });
 
   // ---- la hoja de un papel (nace de su fila): arriba, cómo está; debajo, lo que se puede hacer con él ----
   const docDe = d => B.docs(d.de).find(x => x.k === d.k) || {};

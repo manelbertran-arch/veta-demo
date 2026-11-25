@@ -30,11 +30,10 @@
         (repaso ? '' : `<div data-i="3">${R.enlace({texto: 'Subir un archivo exportado', accion: 'sube'})}</div>`);
     }
     if (n === 2) {
-      const leido = repaso || C.lee('leido', false), cal = C.calendario();
+      const leido = repaso || C.lee('leido', false);
       return `<ul class="c-busca" data-i="1"${leido ? ' hidden' : ''}>${BUSCA.map((t, k) => `<li class="c-busca-l${leido ? ' hecho-l' : ''}" data-k="${k}"><span class="c-busca-m" aria-hidden="true">` +
           `<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path pathLength="1" d="M5 12.5l4.5 4.5L19 7.5"/></svg></span><span>${esc(t)}</span></li>`).join('')}</ul>` +
-        `<div class="c-leido" id="c-leido"${leido ? '' : ' hidden'} data-i="2">${hallado()}${R.hecho({texto: `He leído ${VETA.num(C.leidos())} chats de 6 meses. ${C.fuera()} quedan fuera`})}` +
-          R.lista([{nombre: 'Calendario', pasa: cal ? cal + ' · conectado' : 'sin conectar', hoja: 'h33'}]) + `</div>`;
+        `<div class="c-leido" id="c-leido"${leido ? '' : ' hidden'} data-i="2">${hallado()}${R.hecho({texto: `He leído ${VETA.num(C.leidos())} chats de 6 meses. ${C.fuera()} quedan fuera`})}` + `</div>`;
     }
     if (n === 3) return C.mapaHtml(1);
     const av = C.lee('avisos', false);

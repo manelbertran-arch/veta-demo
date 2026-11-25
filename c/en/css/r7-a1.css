@@ -1,30 +1,11 @@
-/* Veta demo · ronda 7 · css/r7-a1.css · A1 «Te toca a ti»: la lista (#/hoy), la tarjeta de una persona (#/toca/:id) y «Lo que vigilo por ti» (#/espera).
-   Solo lo que no traen las piezas de css/r7.css: botón pequeño dentro de una fila abierta, el mensaje de Veta, la nota del candado. */
-
-/* botones pequeños dentro de lo que se abre en el sitio («Deshacer», «Seguir», «Ya le he contestado») */
-.a1-minis{display:flex;flex-wrap:wrap;gap:var(--e2)}
-.a1-mini{min-height:44px;padding:0 var(--e3);border-radius:999px;box-shadow:inset 0 0 0 1.5px var(--borde);color:var(--t1);background:transparent;font:700 var(--f-apoyo)/1.2 var(--body);-webkit-tap-highlight-color:transparent}
-.a1-mini:active{opacity:.7}
-.a1-cer{display:flex;align-items:center;gap:var(--e3);justify-content:space-between}
-.a1-cer p{margin:0;flex:1;min-width:0}
-.a1-cer b{color:var(--t1)}
-
-/* la tarjeta de una persona */
+/* Veta demo · ronda 8 · css/r7-a1.css · carril A · una cosa de hoy (#/toca/:id). Todo lo demás son piezas de css/r7.css. */
 .a1-toca{display:flex;flex-direction:column;gap:var(--e3)}
-.a1-toca .r7-ficha p{margin:0}
-.a1-msg{color:var(--t1);white-space:pre-line}
-.a1-aviso{color:var(--t1);font-weight:600}
-.a1-piso{display:flex;align-items:center;gap:var(--e3);color:var(--t1)}
-.a1-piso .foto-mini{flex:none;width:48px;height:48px;border-radius:var(--e2)}
-.a1-nota{display:flex;align-items:center;gap:var(--e2);margin:0;color:var(--t2);font:500 var(--f-apoyo)/1.35 var(--body)}
-.a1-nota svg{flex:none}
-.a1-otra{align-self:flex-start;min-height:44px}
-.a1-hecho-t{display:flex;align-items:center;gap:var(--e2);font-weight:700}
-.a1-hecho-t svg{flex:none;color:var(--veta)}
-.a1-apl{color:var(--t2);font-size:var(--f-apoyo)}
-.a1-dif .a-r6-quita,.a1-toca s{color:var(--t3);text-decoration:line-through;text-decoration-thickness:1.5px}
+.a1-msg{white-space:pre-line}
+.a1-aviso{font-weight:700}
+/* lo que cambiaste de mi mensaje: lo quitado, tachado (lo nuevo va en oro: .v-oro, de vivo.css) */
+.a1-toca s,.a-r6-quita{color:var(--t3);text-decoration:line-through;text-decoration-thickness:1.5px}
 
-/* Lo que vigilo por ti: la fecha va delante del nombre */
-.a1-fecha{color:var(--t2);font-weight:600}
-/* el ajuste elegido en «Cambiar el mensaje» */
-.a1-mini.on{background:var(--accion);color:var(--accion-t);box-shadow:none}
+/* «lo primero» de Inicio se abre también tocando la tarjeta entera */
+.r7-primero[data-ir]{cursor:pointer;-webkit-tap-highlight-color:transparent}
+/* lo que acabas de resolver se pinta una vez más en su sitio y se va (VETA.mov.seVa, desde hoy.js): mientras tanto no se toca */
+.a1-ida{pointer-events:none}

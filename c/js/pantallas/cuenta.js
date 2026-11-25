@@ -3,7 +3,7 @@
    - A15b · Chats que no leo · #/cuenta/chats
    - A15c · Seguridad · #/cuenta/seguridad
    Lo que antes se desplegaba en el sitio ahora abre una hoja (js/hojas/veta.js): c-confirma (desconectar, volver a empezar),
-   c-lee («Lo que dirección ve de ti»), c-chat (un chat de la lista), c-anadir, c-avisos, h26, h28, h29, h30, h31, h33. */
+   c-lee («Lo que dirección ve de ti»), c-chat (un chat de la lista), c-anadir, c-avisos, h26, h28, h29, h30, h31. */
 (function () {
   'use strict';
   const UI = VETA.UI, M = VETA.modelo, C = VETA.c;
@@ -22,7 +22,6 @@
         R.lista([{nombre: 'Cómo funciona Veta', ir: 'que-hace'}], {i: 1}) +
         R.lista([
           {nombre: 'Chats que no leo', dato: C.fuera(), ir: 'cuenta/chats'},
-          {nombre: 'Calendario', dato: C.calendario() || 'Sin conectar', hoja: 'h33'},
           dir ? null : {nombre: 'Lo que encontré en tus chats', ir: 'mapa'},
           dir ? null : {nombre: 'Ver el primer día', ir: 'primer-dia/0'},
           dir && existe('conexiones') ? {nombre: 'Conexiones y ajustes', ir: 'conexiones'} : null,
@@ -86,7 +85,7 @@
       const dentro = C.dentro(), borr = C.lee('borrados', []);
       const filas = personales().map((n, k) => ({nombre: n, dato: dentro.includes(n) ? 'Lo leo' : null, hoja: 'c-chat', datos: {n: k}}))
         .concat(fueraClientes().map(id => ({nombre: (M.quien(id) || {}).nombre || id, dato: 'Cliente', hoja: 'c-chat', datos: {cliente: id}})));
-      return borr.map(x => R7().hecho({texto: `${x.nombre} · borrado antes del ${VETA.fecha.corta('2026-11-26', {frase: true})}`, hora: x.hora, hoja: 'h30', de: x.nombre})).join('') +
+      return borr.map(x => R7().hecho({texto: `${x.nombre} · borrado pedido`, hora: x.hora, hoja: 'h30', de: x.nombre})).join('') +
         R7().lista(filas, {i: 0}) + R7().enlace({texto: 'Borrar un chat', hoja: 'h30', i: 1});
     },
     botonFijo: () => R7().botones({texto: 'Añadir un chat', hoja: 'c-anadir'})

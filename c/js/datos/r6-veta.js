@@ -89,7 +89,7 @@
 
   // ---- textos legales que contradecían la decisión 1 ----
   if (D.textos && D.textos.resumen) D.textos.resumen.bloques = [{lista: ['Lee solo los canales conectados por la oficina.', 'Cada mensaje que sale lo aprueba una persona.',
-    'Dirección ve tus operaciones, lo que tienes pendiente y cuánto tardas en contestar. No ve lo que escribes en tus chats ni tus notas.', 'Puedes dejar fuera cualquier chat cuando quieras.']}];
+    'Dirección ve tus operaciones y lo que Veta hace por ti, sin cifras por persona. No ve lo que escribes en tus chats ni tus notas.', 'Puedes dejar fuera cualquier chat cuando quieras.']}];
   if (D.textos && D.textos.ver) D.textos.ver.bloques = [{texto: 'Cada persona ve lo suyo: sus clientes, su día y sus trabajos.'},
-    {texto: 'Dirección ve cada operación y a cada persona: lo que lleva, lo que tiene pendiente y cuánto tarda en contestar. No ve lo que se escribe en los chats ni las notas de nadie.'}];
+    {texto: 'Dirección ve cada operación y a cada persona: sus operaciones y lo que Veta hace por ella, sin cifras por persona. No ve lo que se escribe en los chats ni las notas de nadie.'}];
 })();

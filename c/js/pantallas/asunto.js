@@ -16,7 +16,7 @@
 
   // lo que haría Veta y por qué, en palabras de todos los días
   const PORQUE = {
-    carmen: 'Lleva Gràcia. Tenéis un piso que le encaja: Verdi 42, 395.000 €.',
+    carmen: 'Lleva Gràcia. Tenéis un piso que le encaja: Verdi 42.',
     'pau-rios': 'El Eixample le queda cerca. No tenéis ningún local ahí: lo dejo apuntado.',
     lucia: 'Lleva Sant Gervasi. Quiere vender: es un piso nuevo para la oficina.'
   };
@@ -32,6 +32,8 @@
     if (a.tipo === 'queja') { const c = M.cosa('d-joan'); return c && X.resuelta(c) ? {linea: (c.extra && c.extra.linea) || 'Pedido a Marc: llamar a Joan Serra hoy', corto: (c.extra && c.extra.corto) || 'Pedido a Marc: llamarle hoy', hora: c.hora} : null; }
     return X.asignado(id) || X.aparcado(id);
   }
+  // lo que quiere, dicho por Veta: solo cuando el chat ya es de una agente (dirección no lo lee, 25-nov-2026): queda el hecho, sin hueco.
+  const QUIERE = {carmen: 'Busca un piso de 3 habitaciones en Gràcia.', 'pau-rios': 'Pregunta por un local para alquilar en el Eixample.', lucia: 'Quiere vender el piso de sus padres en Sant Gervasi.'};
   const dia = o => o.replace('WhatsApp de la oficina · ', '').replace('WhatsApp · ', '');
   const elDia = t => /^(hoy|ayer)/.test(t) ? t : 'el ' + t;      // «escribió ayer, 19:10» · «escribió el sáb 21, 13:20»
   // tras decidir (aquí o en su hoja «Más»): la pantalla se repinta en el sitio con su «hecho», y el punto de la barra se pone al día
@@ -55,7 +57,9 @@
       // el cliente de otra persona (la queja de Joan, de Marc): dirección no lee su chat; lo sabe por su aviso
       h += a.tipo === 'queja' && VETA.ajeno(a.contacto)
         ? r7.tarjeta({de: 'Lo sé por tu aviso del ' + dia(a.pide.origen), texto: 'Diez días sin noticias de su casa. Dice que se irá a otra agencia.', i: 0})
-        : r7.tarjeta({de: corto + ' escribió ' + elDia(dia(a.pide.origen)), texto: '«' + a.pide.texto + '»', i: 0});
+        // el chat del WhatsApp de la OFICINA lo ve dirección con su cita; en cuanto el contacto pasa a una agente, el chat es suyo (VETA.ajeno) y queda el hecho, dicho por Veta
+        : VETA.ajeno(p.id) ? r7.tarjeta({de: corto + ' escribió ' + elDia(dia(a.pide.origen)), texto: QUIERE[p.id] || 'Ha escrito al WhatsApp de la oficina.', i: 0})
+        : VETA.UI.cita({texto: a.pide.texto, origen: corto + ' · ' + a.pide.origen, chat: p.id});
       if (!r) h += r7.tarjeta(Object.assign({veta: true, i: 1}, propone(p.id)));
       h += r7.lista([{nombre: 'Lo que ha pasado', dato: a.paso.length, hoja: 'd-pasos', datos: {asunto: p.id}}], {i: 2});
       return h;

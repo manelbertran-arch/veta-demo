@@ -1,58 +1,48 @@
-/* Veta demo · pantallas · espera.js · paquete A (El día)
-   A7 · Lo que vigilo por ti · #/espera (ronda 7: se llega desde la caja Veta). Una sola lista por fecha; cada fila se abre ahí mismo
-   con lo que puedes hacer: preparar el recordatorio, “Se cumplió” o ver su ficha. */
+/* Veta demo · ronda 8 · pantallas · espera.js · carril A (El día)
+   A7 · Lo que vigilo por ti · #/espera (Inicio › “Veta ha hecho hoy” › “Lo que vigilo por ti”). Una sola lista por fecha: cada fila, con su cara,
+   abre una hoja de acciones (r8-vigilo, en js/hojas/dia.js): recordárselo, “Se cumplió”, ver su ficha y de dónde sale.
+   “Se cumplió”: la fila se va de la lista (VETA.mov.seVa) y lo dice el aviso, con su “Deshacer”. Las fechas, por VETA.fecha. */
 (function () {
   'use strict';
-  const UI = VETA.UI, M = VETA.modelo, esc = VETA.esc;
+  const UI = VETA.UI, M = VETA.modelo, r7 = VETA.r7;
   const hoyISO = () => (VETA.datos.fecha || {}).hoyISO || '2026-11-23';
-
-  // ronda 7 · una fila por cosa (fecha y persona; qué esperas). Se abre ahí mismo con lo que puedes hacer: el botón de la cosa,
-  // “Se cumplió” y su ficha. Lo vencido lleva la pastilla roja.
-  const mini = (texto, o) => `<button type="button" class="a1-mini"${UI.attrs(o)}>${esc(texto)}</button>`;
-  function fila(c) {
-    const venc = c.fechaISO < hoyISO(), b = c.boton || null, ops = [];
-    if (b) ops.push(mini(b.texto, Object.assign({de: c.id}, b.ir || b.hoja || b.accion ? b : {accion: 'principal'})));
-    ops.push(mini(c.local ? 'Already done' : 'It was kept', {accion: c.local ? 'local-hecha' : 'se-cumplio', de: c.id}));
-    if (c.cliente && !(b && b.ir === 'cliente/' + c.cliente)) ops.push(mini('See their profile', {ir: 'cliente/' + c.cliente}));
-    return {cara: c.cliente || null, icono: 'reloj', nombre: c.fecha + ' · ' + c.titulo, pasa: c.texto, pastilla: venc ? 'The date has passed' : null, tono: 'rojo',
-      abre: `<p class="a1-minis">${ops.join('')}</p>`};
-  }
+  // a la derecha, la fecha en gris; lo vencido lleva en su sitio la pastilla roja (la excepción) y la fecha pasa a la segunda línea
+  const fecha = c => VETA.fecha.corta(c.fechaISO);
+  const fila = c => { const venc = c.fechaISO < hoyISO(); return {cara: c.cliente || null, nombre: c.titulo, pasa: venc ? fecha(c) + ' · ' + c.texto : c.texto, pastilla: venc ? 'Past due' : null, dato: fecha(c), hoja: 'r8-vigilo', de: c.id}; };
+  const filaDe = id => { const col = VETA.$('.col.activa'); return col ? Array.prototype.find.call(col.querySelectorAll('.r7-fila[data-de]'), x => x.dataset.de === id) || null : null; };
   const cuenta = () => VETA.A.esperaPend(VETA.A.q()).length;
+
+  // lo que se puede hacer con una cosa vigilada (lo llama la hoja r8-vigilo)
+  VETA.A.vigilo = {
+    cosa: id => VETA.A.espera(VETA.A.q()).find(x => x.id === id) || null,
+    principal(id) { if (!M.cosa(id)) return; M.marca(id, 'hecha'); VETA.repinta({hecho: id}); },
+    cumplio(id) {
+      const c = VETA.A.vigilo.cosa(id); if (!c) return;
+      // la fila se va de la lista y lo dice el aviso, que es la única confirmación (lo hecho ya no está en pantalla)
+      if (c.local) {
+        const pon = v => VETA.est.pon('a.locales', VETA.A.locales().map(x => x.id === id ? Object.assign({}, x, {cumplida: v}) : x));
+        VETA.mov.seVa(filaDe(id), () => { pon(true); VETA.repinta(); });
+        VETA.aviso('Done · ' + c.titulo, {deshacer: () => { pon(false); VETA.repinta(); }});
+        return;
+      }
+      VETA.mov.seVa(filaDe(id), () => { M.marca(id, 'hecha', {linea: 'It was kept · ' + c.titulo, fuera: true}); VETA.repinta(); if (VETA.pintaBarra) VETA.pintaBarra(); });
+      VETA.aviso('It was kept · ' + c.titulo, {deshacer: () => { M.deshaz(id); VETA.repinta(); if (VETA.pintaBarra) VETA.pintaBarra(); }});
+    }
+  };
 
   VETA.pantalla('A7', {
     titulo: 'What I\'m watching for you',
-    frase: () => { const n = cuenta(); return n ? `I am watching ${n === 1 ? '1 thing' : n + ' things'} that were promised to you or have a date. I will tell you in time.` : 'I am not watching anything now. What people promise you, I note down myself.'; },
-    guia: ['Here\'s what depends on others or has a date, in order.', 'You prepare the reminder when it\'s time, or mark it as kept.', 'That way nothing you\'re promised gets forgotten.'],
+    sub: () => (cuenta() ? 'Promises and dates. I\'ll warn you in time.' : ''),
     pinta: () => {
       const q = VETA.A.q(), pend = VETA.A.esperaPend(q);
       let h = '';
       // lo que acabas de hacer aquí, con su “Deshacer” (y el recordatorio que te dejé escrito para Elena)
       const u = M.ultima(q);
-      if (u && u.tipo === 'espera' && u.orden === VETA.A.seq()) {
-        const txt = (u.extra || {}).linea || (u.lineas || {})[u.estado] || ('Done · ' + u.titulo);
-        h += `<div class="r7-ficha${u.id === 'e-elena' && u.borrador ? ' r7-oro' : ''} a1-hecho" data-i="0">` +
-          (u.id === 'e-elena' && u.borrador ? `<span class="r7-ficha-de">I write the reminder for you</span><p>${esc(u.borrador)}</p><p class="a1-nota">It does not go out until you send it.</p>` : `<p class="a1-hecho-t">${esc(txt)}</p>`) +
-          `<p class="a1-minis">${mini('Undo', {accion: 'deshacer', de: u.id})}</p></div>`;
+      if (u && u.tipo === 'espera' && u.orden === VETA.A.seq() && !(u.extra || {}).fuera) {
+        h += r7.hecho({texto: (u.extra || {}).linea || (u.lineas || {})[u.estado] || ('Done · ' + u.titulo), deshacer: {accion: 'deshacer', de: u.id}});
+        if (u.id === 'e-elena' && u.borrador) h += r7.tarjeta({i: 0, veta: true, de: 'I write the reminder for you', texto: u.borrador});
       }
-      if (!pend.length) return h;
-      return h + VETA.r7.lista(pend.map(fila), {i: 1});
-    },
-    acciones: {
-      principal(ev, el) {
-        const id = el.dataset.de, c = M.cosa(id); if (!c) return;
-        M.marca(id, 'hecha'); VETA.repinta({hecho: id});
-      },
-      'se-cumplio'(ev, el) {
-        const id = el.dataset.de, c = VETA.A.espera(VETA.A.q()).find(x => x.id === id); if (!c) return;
-        M.marca(id, 'hecha', {linea: 'It was kept · ' + c.titulo}); VETA.repinta({hecho: id});
-        if (!M.cosa(id)) VETA.aviso('It was kept · ' + c.titulo, {deshacer: () => { M.deshaz(id); VETA.repinta(); }});
-      },
-      'local-hecha'(ev, el) {
-        const id = el.dataset.de, t = VETA.A.local(id); if (!t) return;
-        const l = VETA.A.locales().map(x => x.id === id ? Object.assign({}, x, {cumplida: true}) : x);
-        VETA.est.pon('a.locales', l); VETA.repinta({hecho: id});
-        VETA.aviso('Done · ' + t.titulo, {deshacer: () => { VETA.est.pon('a.locales', VETA.A.locales().map(x => x.id === id ? Object.assign({}, x, {cumplida: false}) : x)); VETA.repinta(); }});
-      }
+      return h + (pend.length ? r7.lista(pend.map(fila), {i: 1}) : r7.vacio('I\'m not watching anything now.'));
     }
   });
 })();

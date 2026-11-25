@@ -1,104 +1,19 @@
-/* Veta demo · css · p-veta.css · paquete C (Veta, cuenta y entrada)
-   Estilos propios de las pantallas y hojas del paquete C. Solo variables (temas.css, base.css): ningún color a mano.
+/* Veta demo · css · p-veta.css · carriles C (Veta y cuenta) y E (entrada y primer día: reglas .c-entrar*, .c-pd* y las suyas)
+   Lo propio de las pantallas de C está en css/r7-c.css; aquí quedan el interruptor, dos hojas de C y la entrada. Solo variables (temas.css, base.css): ningún color a mano.
    Movimiento propio solo bajo html:not([data-mov=reducido]); duraciones y curvas del sistema. */
 
-/* ---- piezas comunes ---- */
-.c-frase{font:600 var(--f-hoja)/1.3 var(--display);letter-spacing:-.01em;color:var(--t1);text-wrap:pretty}
-.c-frase-g{font-size:1.375rem}
-.c-apoyo{font:500 var(--f-apoyo)/1.45 var(--body);color:var(--t2)}
-.c-apagada{opacity:.55}
-.c-prop-cab{display:flex;align-items:center;gap:var(--e2)}
-.c-sel{margin-bottom:var(--e1)}
-.c-vista{display:flex;flex-direction:column;gap:var(--e3)}
-.c-cita-quieta{margin:0;padding:var(--e3) var(--e4);border-left:3px solid var(--veta);background:var(--tinte);border-radius:0 var(--r-2) var(--r-2) 0}
-.c-cita-quieta .cita-t{-webkit-line-clamp:unset;display:block}
-.c-hoja-lista{box-shadow:none}
+/* ---- el interruptor (pieza 17) en las listas de siempre ---- */
 .lista>.interr{padding:var(--e2) var(--e2) var(--e2) var(--e4)}
-.lista>.interr+.interr,.lista>.interr+.fila,.lista>.fila+.interr,.lista>.c-confirma+.fila,.lista>.fila+.c-confirma{border-top:1px solid var(--borde)}
-.interr-t{font:600 var(--f-cuerpo)/1.3 var(--body)}
+.lista>.interr+.interr,.lista>.interr+.fila,.lista>.fila+.interr{border-top:1px solid var(--borde)}
+.interr-t{font:500 var(--f-cuerpo)/1.3 var(--body)}
+.interr:has(.interr-s) .interr-t{font-weight:700}
 .interr-s{font:500 var(--f-apoyo)/1.35 var(--body);color:var(--t2)}
 .interr-c{flex:1;display:flex;flex-direction:column;gap:2px;min-width:0}
 
-/* la propuesta: un hilo dorado a la izquierda que se dibuja al entrar */
-.c-propuesta{position:relative;overflow:hidden}
-.c-propuesta::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--veta-g,var(--veta));transform-origin:50% 0}
-html:not([data-mov=reducido]) .c-propuesta::before{animation:c-hilo var(--t-largo) var(--c-entra) 120ms both}
+/* animaciones que usan las reglas de la entrada y del primer día (carril E) */
 @keyframes c-hilo{from{transform:scaleY(0)}}
-.fila.c-resalta{background:var(--tinte)}
-.fila.c-resalta::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--veta)}
-.c-reglas .fila-t{font-weight:600}
-.c-regla-etq{display:flex}
-.c-cuentas .fila-d{font:600 var(--f-cuerpo)/1 var(--display);color:var(--t1)}
 
-/* A10 · las dos partes que se tocan: 11 como yo · 3 distinto */
-.c-partes{display:flex;gap:4px;border-radius:var(--r-2);overflow:hidden}
-.c-parte-a{flex:var(--a) 1 0}
-.c-parte-b{flex:var(--b) 1 0}
-.c-parte{min-height:64px;display:flex;flex-direction:column;align-items:flex-start;justify-content:center;gap:2px;padding:var(--e2) var(--e3);text-align:left;font:600 var(--f-apoyo)/1.2 var(--body)}
-.c-parte b{font:600 1.75rem/1 var(--display);font-variant-numeric:tabular-nums}
-.c-parte-a{background:var(--accion);color:var(--accion-t)}
-.c-parte-b{background:var(--s2);color:var(--t1);position:relative;min-width:104px}
-.c-parte-b .chev-gira{position:absolute;right:var(--e2);top:var(--e2);display:flex}
-.c-parte span{white-space:nowrap}
-html:not([data-mov=reducido]) .c-partes{animation:c-abre var(--t-largo) var(--c-muelle) 160ms both}
-@keyframes c-abre{from{clip-path:inset(0 100% 0 0 round var(--r-2))}to{clip-path:inset(0 0 0 0 round var(--r-2))}}
-.c-distinto{margin-top:var(--e2)}
-.c-espero{font:500 var(--f-cuerpo)/1.45 var(--body);color:var(--t1);padding:var(--e3) var(--e4);background:var(--s1);border:1px solid var(--borde);border-radius:var(--r-2)}
-.fila.c-hoy .fila-ic{background:var(--opo-b);color:var(--opo-t)}
-
-/* A10b · niveles en vertical */
-.c-niveles{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;position:relative}
-.c-nivel{position:relative;display:flex;gap:var(--e3);padding:var(--e2) 0 var(--e4)}
-.c-nivel:not(:last-child)::before{content:"";position:absolute;left:19px;top:44px;bottom:0;width:2px;background:var(--borde)}
-.c-nivel.pasado::before{background:var(--veta)!important}
-.c-nivel-n{flex:none;width:40px;height:40px;border-radius:50%;display:grid;place-items:center;background:var(--s2);color:var(--t2);font:700 var(--f-apoyo)/1 var(--body)}
-.c-nivel.pasado .c-nivel-n{background:var(--tinte);color:var(--acento)}
-.c-nivel.on .c-nivel-n{background:var(--accion);color:var(--accion-t);box-shadow:0 0 0 4px var(--tinte)}
-.c-nivel-c{display:flex;flex-direction:column;align-items:flex-start;gap:4px;padding-top:8px}
-.c-nivel-c b{font:600 var(--f-cuerpo)/1.25 var(--body)}
-.c-nivel-c>span{font:500 var(--f-apoyo)/1.35 var(--body);color:var(--t2)}
-.c-nivel.cerrado .c-nivel-c b,.c-nivel.cerrado .c-nivel-c>span{color:var(--t3)}
-html:not([data-mov=reducido]) .c-nivel.on .c-nivel-n{animation:c-late var(--t-largo) var(--c-muelle) 300ms both}
 @keyframes c-late{from{transform:scale(.6)}}
-
-/* A11 · lo he entendido */
-.c-entiende{display:flex;align-items:center;justify-content:space-between;gap:var(--e2);flex-wrap:wrap}
-.c-entiende-t{font:600 var(--f-hoja)/1.2 var(--display);letter-spacing:-.01em}
-
-/* A13 · lo aprendido, con «Olvidar» */
-.c-aprendidos{display:flex;flex-direction:column;gap:var(--e2)}
-.c-aprendi{display:flex;align-items:center;gap:var(--e2);padding:var(--e3) var(--e2) var(--e3) var(--e4);background:var(--s1);border:1px solid var(--borde);border-radius:var(--r-2)}
-.c-aprendi-c{flex:1;min-width:0}
-.c-aprendi-t{font:600 var(--f-cuerpo)/1.35 var(--body)}
-.c-aprendi-o{font:500 var(--f-apoyo)/1.35 var(--body);color:var(--t3);margin-top:2px}
-.c-dice{list-style:none;margin:0 0 var(--e2);padding:0;display:flex;flex-direction:column;gap:var(--e2)}
-.c-dice li{font:500 var(--f-cuerpo)/1.45 var(--body);color:var(--t2);padding-left:var(--e4);position:relative}
-.c-dice li::before{content:"";position:absolute;left:0;top:.6em;width:6px;height:6px;border-radius:50%;background:var(--veta)}
-
-/* A13b · ejemplos */
-.c-chips{display:flex;flex-wrap:wrap;gap:var(--e2)}
-.c-chip{min-height:var(--toque);padding:var(--e2) var(--e4);border-radius:var(--r-pill);background:var(--s1);box-shadow:inset 0 0 0 1.5px var(--borde);font:600 var(--f-apoyo)/1.25 var(--body);color:var(--t1);text-align:left}
-
-/* A14 · cifra y horas */
-.c-cifra{display:flex;flex-direction:column;gap:var(--e2);padding:var(--e4);background:var(--s1);border:1px solid var(--borde);border-radius:var(--r-3);box-shadow:var(--somb)}
-.c-cifra .cifra-n{font-size:3.5rem}
-.c-horas{display:flex;flex-wrap:wrap;align-items:center;gap:var(--e2);font:500 var(--f-apoyo)/1.3 var(--body);color:var(--t2);padding-top:var(--e2);border-top:1px solid var(--borde)}
-.c-horas b{font:600 var(--f-hoja)/1 var(--display);color:var(--t1);font-variant-numeric:tabular-nums}
-
-/* A15 · la cabecera de la cuenta y las confirmaciones en el sitio */
-.c-yo,.c-caso-cab{display:flex;align-items:center;gap:var(--e4)}
-.c-yo-n{font:600 var(--f-hoja)/1.2 var(--display)}
-.c-yo-p{font:500 var(--f-apoyo)/1.35 var(--body);color:var(--t2);margin-top:2px}
-.c-yo-acc{font:500 var(--f-apoyo)/1.35 var(--body);color:var(--t1);margin-top:var(--e2)}
-.c-yo-acc b{font-weight:600}
-.c-confirma{display:flex;flex-direction:column;gap:var(--e3);padding:var(--e4);background:var(--tinte);border-radius:var(--r-2)}
-.lista>.c-confirma{border-radius:0}
-.c-confirma p{font:600 var(--f-cuerpo)/1.35 var(--body)}
-.c-peligro{color:var(--urg-t)!important}
-.c-salidas{display:flex;flex-direction:column;align-items:center;gap:var(--e1)}
-.c-salidas>.c-confirma,.c-salidas>.hecho{width:100%}
-.c-clave{display:flex;flex-direction:column;gap:var(--e3);padding:0 var(--e4) var(--e4)}
-.c-chats{display:flex;flex-direction:column}
 
 /* E2 · entrar, sobre negro como la portada */
 .pant-E2{max-width:none;padding:0;min-height:100%;display:flex}
@@ -107,7 +22,7 @@ html:not([data-mov=reducido]) .c-nivel.on .c-nivel-n{animation:c-late var(--t-la
 .c-entrar{gap:0}
 .c-entrar-c{margin-top:auto;display:flex;flex-direction:column;gap:var(--e4);padding-top:var(--e6)}
 .c-entrar-h{font:600 var(--f-titulo)/1.1 var(--display);letter-spacing:-.02em;color:var(--port-t)}
-.c-entrar .campo-e,.c-entrar-e{font:600 var(--f-apoyo)/1.2 var(--body);color:var(--port-t2)}
+.c-entrar .campo-e{font:600 var(--f-apoyo)/1.2 var(--body);color:var(--port-t2)}
 .c-entrar .campo-caja{background:color-mix(in srgb,var(--port-t) 8%,transparent);box-shadow:inset 0 0 0 1.5px color-mix(in srgb,var(--port-t) 22%,transparent)}
 .c-entrar .campo-caja:focus-within{box-shadow:inset 0 0 0 2px var(--port-3)}
 .c-entrar .campo-i{color:var(--port-t)}
@@ -116,35 +31,22 @@ html:not([data-mov=reducido]) .c-nivel.on .c-nivel-n{animation:c-late var(--t-la
 .c-entrar-cuentas{display:flex;flex-direction:column;gap:var(--e2)}
 .c-cuenta{display:flex;align-items:center;gap:var(--e3);min-height:64px;padding:var(--e2) var(--e3);border-radius:var(--r-2);color:var(--port-t);font:600 var(--f-cuerpo)/1.2 var(--body);text-align:left;box-shadow:inset 0 0 0 1.5px color-mix(in srgb,var(--port-t) 16%,transparent);transition:box-shadow var(--t-corto) var(--c-estandar),background var(--t-corto) var(--c-estandar)}
 .c-cuenta-t{flex:1}
-.c-cuenta-m{display:flex;color:var(--port-3);opacity:0;transform:scale(.6);transition:opacity var(--t-corto) var(--c-estandar),transform var(--t-medio) var(--c-muelle)}
 .c-cuenta[aria-pressed=true]{background:color-mix(in srgb,var(--port-3) 14%,transparent);box-shadow:inset 0 0 0 2px var(--port-3)}
-.c-cuenta[aria-pressed=true] .c-cuenta-m{opacity:1;transform:none}
 .c-entrar .port-acc{margin-top:var(--e2)}
 /* E2 · paso del papel: dos opciones grandes; y en el formulario, con qué papel entras */
 .c-papel{min-height:88px;padding:var(--e3) var(--e4)}
-.c-papel-ic{flex:none;display:flex;color:var(--port-3)}
 .c-papel .c-cuenta-t{display:flex;flex-direction:column;gap:var(--e1)}
-.c-papel-t{font:600 var(--f-hoja)/1.2 var(--display)}
-.c-papel-s{font:500 var(--f-apoyo)/1.4 var(--body);color:var(--port-t2)}
 .c-papel-chev{flex:none;display:flex;color:var(--port-t2)}
-.c-papel-nota{font:500 var(--f-apoyo)/1.4 var(--body);color:var(--port-t2)}
 /* paso 2 de la entrada: el lema y el papel en una sola pantalla (mismo fondo que la portada) */
 .c-lema .c-entrar-c{gap:var(--e3)}
-.c-lema .port-h,.c-lema .port-que{margin-top:0}
-.c-papel-h{margin-top:var(--e4);font:600 var(--f-hoja)/1.2 var(--display);letter-spacing:-.01em;color:var(--port-t)}
+.c-lema .port-h{margin-top:0}
 .c-primer{display:flex;justify-content:center}
 .c-primer .btn-texto{color:var(--port-3)}
-@media (max-height:700px){.c-lema .port-que{display:none}.c-lema .c-papel-h{margin-top:var(--e2)}}
 .c-entrar-papel{display:flex;align-items:center;gap:var(--e2);font:600 var(--f-apoyo)/1.35 var(--body);color:var(--port-3)}
 .c-entrar-papel svg{flex:none}
 
 /* A18 · primer día */
 .c-pd{display:flex;flex-direction:column;gap:var(--e5)}
-.c-pd-top{display:flex;align-items:center;gap:var(--e2);min-height:var(--toque)}
-.c-pd-atras{flex:none;width:48px;height:48px;margin-left:calc(-1 * var(--e3));display:grid;place-items:center;border-radius:50%;color:var(--t1)}
-.c-pd-pasos{flex:1;min-width:0}
-.c-pd-pasos .pasos-t{font:600 var(--f-apoyo)/1.2 var(--body);color:var(--t2)}
-.c-pd-pasos .pasos-l i{transition:width var(--t-largo) var(--c-muelle)}
 .c-pd-h{font:600 var(--f-titulo)/1.1 var(--display);letter-spacing:-.02em;text-wrap:balance}
 .c-pd-c{display:flex;flex-direction:column;gap:var(--e4)}
 .c-cargando{opacity:.8}
@@ -157,9 +59,6 @@ html:not([data-mov=reducido]) .c-hilo::before{animation:c-hilo var(--t-largo) va
 .c-nudo-p::after{content:"";position:absolute;inset:6px;border-radius:50%;background:var(--veta)}
 html:not([data-mov=reducido]) .c-nudo-p{animation:c-nudo var(--t-medio) var(--c-muelle) both;animation-delay:calc(160ms + var(--k) * 150ms)}
 @keyframes c-nudo{from{transform:scale(0)}}
-.c-hilo-corto{gap:var(--e4)}
-.c-hilo-corto .c-nudo{align-items:flex-start}
-.c-nudo-s{font:500 var(--f-apoyo)/1.4 var(--body);color:var(--t2)}
 /* leyendo tus chats: tres líneas que se marcan */
 .c-busca{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:var(--e3)}
 .c-busca-l{display:flex;align-items:center;gap:var(--e3);font:600 var(--f-cuerpo)/1.35 var(--body);color:var(--t3);transition:color var(--t-corto) var(--c-estandar)}
@@ -174,152 +73,19 @@ html:not([data-mov=reducido]) .c-busca-l:not(.hecho-l) .c-busca-m{animation:c-gi
 html:not([data-mov=reducido]) .c-busca-l.hecho-l .c-busca-m svg path{transition:stroke-dashoffset var(--t-medio) var(--c-estandar) 80ms}
 html:not([data-mov=reducido]) .c-busca-l.hecho-l .c-busca-m{animation:c-late var(--t-medio) var(--c-muelle) both}
 .c-leido{display:flex;flex-direction:column;gap:var(--e3)}
-.c-tres{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:var(--e3)}
-.c-tres li{display:flex;align-items:center;gap:var(--e3);font:600 var(--f-cuerpo)/1.35 var(--body)}
-.c-tres li .ic,.c-tres li svg{flex:none;color:var(--acento)}
-.c-pista{display:flex;align-items:center;gap:var(--e2);font:600 var(--f-apoyo)/1.4 var(--body);color:var(--acento);padding:var(--e3) var(--e4);background:var(--tinte);border-radius:var(--r-2)}
-.c-pista svg{flex:none}
 
-/* barras (G11, hoja de la lista de cada día) y G14 */
-.c-barras{display:flex;flex-direction:column;gap:var(--e3);padding:var(--e4);background:var(--s1);border:1px solid var(--borde);border-radius:var(--r-3)}
-.c-barra{display:grid;grid-template-columns:96px 1fr 32px;align-items:center;gap:var(--e3)}
-.c-barra-n{font:600 var(--f-apoyo)/1.2 var(--body);color:var(--t2)}
-.c-barra-v{font:600 var(--f-cuerpo)/1 var(--display);text-align:right;font-variant-numeric:tabular-nums}
-.c-barra-t{display:block;height:12px;border-radius:6px;background:var(--s2);overflow:hidden}
-.c-barra-t i{display:block;height:100%;width:calc(var(--v) * 100%);min-width:4px;border-radius:6px;background:var(--accion);transform-origin:0 50%}
-html:not([data-mov=reducido]) .c-barra-t i{animation:c-crece var(--t-largo) var(--c-muelle) both;animation-delay:calc(200ms + var(--k) * 60ms)}
-@keyframes c-crece{from{transform:scaleX(0)}}
-.c-sabe{display:flex;flex-direction:column;gap:var(--e2);padding:var(--e4);background:var(--s1);border:1px solid var(--borde);border-radius:var(--r-2)}
-.c-sabe-t{font:600 var(--f-cuerpo)/1.35 var(--body)}
-.c-sabe-l{display:grid;grid-template-columns:1fr auto auto;align-items:center;gap:var(--e2);font:600 var(--f-apoyo)/1 var(--body)}
-.c-sabe-l .c-barra-t i{background:var(--veta)}
-/* G13 · qué pasó */
-.c-tiempo{list-style:none;margin:0;padding:0 0 0 var(--e4);display:flex;flex-direction:column;gap:var(--e4);border-left:2px solid var(--borde)}
-.c-tiempo li{position:relative;display:flex;flex-direction:column;gap:2px}
-.c-tiempo li::before{content:"";position:absolute;left:calc(-1 * var(--e4) - 6px);top:6px;width:10px;height:10px;border-radius:50%;background:var(--veta)}
-.c-tiempo-f{font:600 var(--f-apoyo)/1.3 var(--body);color:var(--t3)}
-.c-tiempo-t{font:500 var(--f-cuerpo)/1.4 var(--body)}
-.c-tiempo-cita{font-weight:600}
-
-/* hojas: partes de la orden, tiempos, recibo, pasos */
-.c-partes-h{display:flex;flex-direction:column;border:1px solid var(--borde);border-radius:var(--r-3);overflow:hidden}
-.c-parte-h{display:flex;align-items:center;gap:var(--e2);padding:var(--e3) var(--e2) var(--e3) var(--e4);background:var(--s1)}
-.c-parte-h+.c-parte-h{border-top:1px solid var(--borde)}
-.c-parte-h-c{flex:1;min-width:0}
-.c-parte-h-t{font:600 var(--f-apoyo)/1.3 var(--body);color:var(--t3)}
-.c-parte-h-x{font:600 var(--f-cuerpo)/1.35 var(--body)}
+/* ---- hojas del carril C: tus tiempos (h24) y los pasos de «Poner Veta en la pantalla de inicio» (h31) ---- */
 .c-tiempos{display:flex;flex-direction:column;border:1px solid var(--borde);border-radius:var(--r-3);overflow:hidden}
 .c-tmp{display:flex;align-items:center;justify-content:space-between;gap:var(--e2);padding:var(--e2) var(--e2) var(--e2) var(--e4);background:var(--s1)}
 .c-tmp+.c-tmp{border-top:1px solid var(--borde)}
-.c-tmp-n{font:600 var(--f-cuerpo)/1.3 var(--body)}
+.c-tmp-n{font:500 var(--f-cuerpo)/1.3 var(--body)}
 .c-paso{display:flex;align-items:center;gap:var(--e1)}
-.c-paso-v{min-width:64px;text-align:center;font:600 var(--f-cuerpo)/1 var(--display);font-variant-numeric:tabular-nums}
-.c-recibo{display:flex;flex-direction:column;gap:var(--e2);padding:var(--e4);background:var(--tinte);border-radius:var(--r-2);font:500 var(--f-cuerpo)/1.4 var(--body)}
-.c-recibo-t{display:flex;align-items:center;gap:var(--e2);color:var(--acento)}
-.c-recibo-t b{color:var(--t1);font:600 var(--f-hoja)/1.2 var(--display)}
+.c-paso-v{min-width:64px;text-align:center;font:700 var(--f-cuerpo)/1 var(--display);font-variant-numeric:tabular-nums}
 /* H31: pasos para leer, no para tocar (sin marco de tarjeta) */
 .c-pasos-h{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:var(--e4)}
 .c-pasos-h li{display:flex;align-items:flex-start;gap:var(--e3);font:500 var(--f-cuerpo)/1.45 var(--body)}
-.c-paso-n{flex:none;min-width:1.4em;font:600 var(--f-cuerpo)/1.45 var(--display);color:var(--acento)}
+.c-paso-n{flex:none;min-width:1.4em;font:700 var(--f-cuerpo)/1.45 var(--display);color:var(--acento)}
 .c-paso-ic{display:inline-flex;vertical-align:-4px;color:var(--acento)}
 /* en las hojas, una lista que solo informa no lleva marco de tarjeta: así no parece tocable */
 #hoja .lista:not(:has(button,a,[role=switch],[data-ir],[data-hoja],[data-accion])),#hoja .a-canales{background:none;border:0;border-radius:0;box-shadow:none;padding-left:0;padding-right:0}
 #hoja .lista:not(:has(button,a,[role=switch],[data-ir],[data-hoja],[data-accion]))>.fila{padding-left:0;padding-right:0}
-
-/* A15b · cada chat fuera, con su «Quitar de la lista» a la derecha */
-.c-chat-f{display:flex;align-items:center;gap:var(--e2);padding-right:var(--e2)}
-.c-chat-f>.fila{flex:1;min-width:0}
-.c-chat-f>.btn{flex:none}
-
-/* ================= ronda 6 · P2 · Veta: aprender ================= */
-/* A8 · «Lo que ya preparo yo» arriba */
-.c-ya{display:flex;flex-direction:column;gap:var(--e3);padding:var(--e4);background:var(--s1);border:1px solid var(--borde);border-radius:var(--r-2)}
-.c-ya-h{font:600 var(--f-titulo)/1.1 var(--display);letter-spacing:-.02em;margin:0}
-.c-ya-s{font:500 var(--f-apoyo)/1.4 var(--body);color:var(--t2);margin:0}
-.c-ya-n{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:var(--e2)}
-.c-ya-n li{display:flex;flex-direction:column;gap:2px;min-width:0}
-.c-ya-n b{font:600 var(--f-cifra)/1 var(--display);font-variant-numeric:tabular-nums;color:var(--t1)}
-.c-ya-n span{font:500 var(--f-apoyo)/1.3 var(--body);color:var(--t2)}
-.c-ya-aa{display:flex;align-items:center;gap:var(--e2);min-height:48px;padding:var(--e2) 0 0;border-top:1px solid var(--borde);color:var(--t1);text-decoration:none;font:500 var(--f-cuerpo)/1.4 var(--body)}
-.c-ya-aa span{flex:1}
-.c-ya-aa b{font-weight:700;color:var(--t1)}
-.c-ya-aa svg{flex:none;color:var(--t3)}
-/* entrada a «Qué hace Veta» */
-.c-qh-entra{display:flex;align-items:center;gap:var(--e3);min-height:64px;padding:var(--e3) var(--e4);background:var(--t1);color:var(--fondo);border-radius:var(--r-2);text-decoration:none}
-.c-qh-ic{flex:none;display:inline-flex;align-items:center;justify-content:center;width:44px;height:44px;border-radius:50%;background:var(--oro,var(--veta));color:var(--t1)}
-.c-qh-tx{flex:1;display:flex;flex-direction:column;gap:2px;min-width:0}
-.c-qh-tx b{font:600 var(--f-hoja)/1.2 var(--display)}
-.c-qh-tx span{font:500 var(--f-apoyo)/1.35 var(--body);opacity:.85}
-.c-prop-f .v-anillo{flex:none;margin-right:var(--e2)}
-.c-hoy-t{color:var(--acento)}
-
-/* A19 · Qué hace Veta */
-.c-qh-intro{font-size:var(--f-hoja);line-height:1.35}
-.c-qh-nav{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:var(--e2)}
-.c-qh-sal{display:flex;flex-direction:column;align-items:flex-start;gap:2px;min-height:72px;padding:var(--e2) var(--e3);background:var(--s1);border:1px solid var(--borde);border-radius:var(--r-2);color:var(--t1);text-align:left;font:500 var(--f-apoyo)/1.25 var(--body);cursor:pointer}
-.c-qh-sal b{font:600 1.75rem/1 var(--display)}
-.c-qh-sal-yo b{color:var(--acento)}
-.c-qh-sal-no{opacity:.8}
-.c-qh{scroll-margin-top:72px}
-.c-qh-h{display:flex;align-items:center;gap:var(--e2)}
-.c-qh-h svg{flex:none;color:var(--acento)}
-.c-qh-no .c-qh-h svg{color:var(--t3)}
-.c-qh-l{list-style:none;margin:0;padding:0;background:var(--s1);border:1px solid var(--borde);border-radius:var(--r-2);overflow:hidden}
-.c-qh-f{display:flex;align-items:flex-start;gap:var(--e2);padding:var(--e3) var(--e2) var(--e3) var(--e4)}
-.c-qh-f+.c-qh-f{border-top:1px solid var(--borde)}
-.c-qh-fc{flex:1;min-width:0;display:flex;flex-direction:column;gap:4px}
-.c-qh-t{margin:0;font:600 var(--f-cuerpo)/1.3 var(--body);color:var(--t1)}
-.c-qh-t .etq{margin-left:4px;vertical-align:2px}
-.c-qh-e{margin:0;font:500 var(--f-apoyo)/1.45 var(--body);color:var(--t2);text-wrap:pretty}
-.c-qh-no .c-qh-t{color:var(--t2)}
-.c-qh-ver{flex:none;display:inline-flex;align-items:center;gap:2px;min-width:72px;min-height:48px;padding:0 var(--e2);background:none;border:0;color:var(--acento);font:600 var(--f-apoyo)/1 var(--body);cursor:pointer}
-.c-qh-pie{font:500 var(--f-apoyo)/1.45 var(--body);color:var(--t2)}
-.c-qh-pie a{color:var(--acento);font-weight:600;display:inline-block;min-height:48px;line-height:48px}
-
-/* A10 · ¿Quién lo hace? */
-.c-quien-ej{display:flex;align-items:center;gap:6px;margin:0 0 var(--e2);font:600 var(--f-apoyo)/1.2 var(--body);color:var(--t2)}
-.c-quien-yo{color:var(--acento)}
-.c-quien-yo svg{transform:rotate(180deg)}
-.c-quien-tu{margin:var(--e2) 0 0}
-.c-ya-n b .v-cuenta{font:inherit}
-.c-vivo-f{border-left:3px solid var(--oro,var(--veta))}
-
-/* A13 · lo aprendido, con quién, cuándo y cuántas veces */
-.c-aprendidos{display:flex;flex-direction:column;gap:var(--e3)}
-.c-ap-fila{display:flex;flex-direction:column;gap:var(--e2);padding:var(--e4);background:var(--s1);border:1px solid var(--borde);border-radius:var(--r-2);transition:opacity .2s}
-.c-ap-hoy{border-color:var(--oro,var(--veta));box-shadow:0 0 0 1px var(--oro,var(--veta)) inset}
-.c-ap-off .c-ap-t,.c-ap-off .c-ap-n,.c-ap-off .c-ap-cambio{opacity:.5}
-.c-ap-cuando{margin:0}
-.c-ap-t{margin:0;font:600 var(--f-hoja)/1.3 var(--display);color:var(--t1);text-wrap:pretty}
-.c-ap-cambio{margin:0;display:flex;flex-direction:column;gap:2px;font:500 var(--f-apoyo)/1.4 var(--body)}
-.c-ap-cambio s{color:var(--t3)}
-.c-ap-cambio span{color:var(--t1);font-weight:600}
-.c-ap-q{margin:0;font:500 var(--f-apoyo)/1.4 var(--body);color:var(--t2)}
-.c-ap-n{margin:0;display:flex;align-items:center;gap:var(--e2);font:500 var(--f-apoyo)/1.4 var(--body);color:var(--t1)}
-.c-ap-paso{margin:0;font:500 var(--f-apoyo)/1.4 var(--body);color:var(--t2)}
-.c-ap-acc{display:flex;align-items:center;justify-content:space-between;gap:var(--e2);border-top:1px solid var(--borde);padding-top:var(--e2)}
-.c-ap-acc .interr{flex:1}
-
-/* A20 · antes y ahora */
-.c-aa-horas{display:flex;flex-direction:column;gap:4px;margin:0 0 var(--e3)}
-.c-aa-horas b{font:600 var(--f-cifra)/1 var(--display);font-variant-numeric:tabular-nums}
-.c-aa-horas span{font:500 var(--f-apoyo)/1.4 var(--body);color:var(--t2)}
-
-/* A14 · A15 · lo que dirección ve de ti */
-.c-dv .nota{margin-top:var(--e3)}
-
-/* A18 · primer día: lo que he encontrado */
-.c-pd-hall{display:flex;flex-direction:column;gap:var(--e2);padding:var(--e4);margin-bottom:var(--e3)}
-.c-pd-hq{display:flex;align-items:center;gap:var(--e3)}
-.c-pd-hq>span{display:flex;flex-direction:column;gap:2px;font:500 var(--f-apoyo)/1.3 var(--body);color:var(--t2)}
-.c-pd-hq b{font:600 var(--f-cuerpo)/1.2 var(--body);color:var(--t1)}
-.c-pd-hf{margin:0;font:500 var(--f-cuerpo)/1.45 var(--body);color:var(--t1)}
-.c-pd-h2{margin-top:var(--e5)}
-
-/* ---- pulido ronda 6 (B) ---- */
-/* un trabajo: su nombre en grande y, debajo, qué es */
-.c-regla-que{font:500 var(--f-cuerpo)/1.45 var(--body);color:var(--t1);margin-top:calc(var(--e2) * -1);text-wrap:pretty}
-/* «Te lo propongo»: el anillo con el número dentro (9, 14), del tamaño de los iconos de las otras filas */
-.c-prop-f .v-anillo{--v-d:44px;--v-g:4}
-/* Qué hace Veta: tres filas por grupo y «Ver los 6» */
-.c-qh-mas{display:flex;align-items:center;justify-content:center;gap:4px;width:100%;min-height:48px;margin-top:var(--e1);background:none;border:0;color:var(--acento);font:600 var(--f-cuerpo)/1 var(--body);cursor:pointer}

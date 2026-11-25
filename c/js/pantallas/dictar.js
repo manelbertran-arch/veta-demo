@@ -127,6 +127,9 @@
     }
     return v;
   };
+  // ¿hay algo que guardar? dictando, la primera palabra ya dicha; escribiendo, texto que no sea solo espacios
+  const hayTexto = s => (s.fase === 'oye' ? (s.n || 0) > 0 : s.fase === 'dicho' ? palabras(s.texto).length > 0 : s.fase === 'escribe' ? !!String(s.texto || '').trim() : false);
+  const ponListo = ok => { const b = document.querySelector('[data-accion="listo"]'); if (b) b.disabled = !ok; };
   const halo = si => { if (VETA.vivo && VETA.vivo.halo) VETA.vivo.halo(si); };
   const ensena = p => !dictado(p);   // enseñar algo a Veta: cuatro pasos
 
@@ -146,18 +149,26 @@
       if (s.fase === 'oye' || s.fase === 'dicho') {
         const w = palabras(s.texto), dicho = s.fase === 'dicho';
         // ya lo ha oído todo: el micro dice «Otra vez» y tocarlo es dictarlo otra vez (D19); lo dicho queda en su tarjeta
+        // desde el primer instante se ve que escucha (punto rojo que late, «Te escucho» y el cronómetro) y cómo parar: la frase de debajo lo dice
+        const dice = dicho ? '' : s.pausa ? 'En pausa: no estoy escuchando. Toca «Seguir» para continuar.' : 'Para parar, toca «Pausar»; para escribir, «o escríbelo».';
         return arriba + r7.micro({i: 1, clase: dicho || s.pausa ? '' : 'e-oye', texto: dicho ? 'Otra vez' : (s.pausa ? 'En pausa · ' : 'Te escucho · ') + mmss(seg(s)), accion: dicho ? 'repite' : 'pausar'}) +
-          r7.tarjeta({i: 2, html: `<p role="status">«<span class="e-dicho-t">${esc((dicho ? w : w.slice(0, s.n)).join(' '))}</span>»</p>`});
+          (dice ? r7.nota(dice) : '') +
+          r7.tarjeta({i: 2, html: `<p role="status">«<span class="e-dicho-t">${esc((dicho ? w : w.slice(0, s.n)).join(' '))}</span>»</p>`}) +
+          r7.enlace({i: 3, texto: 'o escríbelo', accion: 'escribe', clase: 'e-escribe'});
       }
       const micro = r7.micro({i: 1, accion: 'habla', texto: d ? d.toca : ''});
       // sin señal y sin pie (aún no hay botón): la nota va aquí, bajo «o escríbelo»
       const escribe = r7.enlace({i: 3, texto: 'o escríbelo', accion: 'escribe', clase: 'e-escribe'}) + (navigator.onLine === false ? r7.nota(SIN_RED) : '');
       if (d) return micro + r7.tarjeta({i: 2, de: 'Por ejemplo', texto: '«' + primera(d.dices) + '»'}) + escribe;
-      if (p.guion === 'libre') return arriba + micro + r7.lista(ELIGE[papel()].map(([g, t]) => ({nombre: t, ir: 'dictar/' + g})), {rotulo: 'O elige qué es', i: 2}) + escribe;
+      // las cuatro primeras filas empiezan a escuchar al tocarlas (el rótulo lo dice); enseñarle algo a Veta no escucha todavía: va aparte, como enlace
+      if (p.guion === 'libre') { const el = ELIGE[papel()], orden = el.find(x => x[0] === 'orden');
+        return arriba + micro + r7.lista(el.filter(x => x[0] !== 'orden').map(([g, t]) => ({nombre: t, accion: 'cuenta', datos: {g}})), {rotulo: 'O elige qué es · te escucho al tocar', i: 2}) +
+          r7.enlace({i: 3, texto: orden[1], ir: 'dictar/orden', clase: 'e-escribe'}) + escribe; }
       return arriba + micro + r7.lista(ejemplos(p).map(id => ({nombre: E().lecciones[id].corto, pasa: '«' + E().lecciones[id].dices + '»', accion: 'habla', datos: {leccion: id}})), {rotulo: 'O toca un ejemplo', i: 2}) + escribe;
     },
+    // «Ya está» no crea nada si no hay nada: apagado mientras no haya una palabra dicha o escrita (se enciende solo con la primera)
     botonFijo: p => {
-      const s = vivo(p), ya = {texto: 'Ya está', accion: 'listo'};
+      const s = vivo(p), ya = {texto: 'Ya está', accion: 'listo', deshabilitado: !hayTexto(s)};
       if (s.fase === 'oye') return r7.botones(ya, {texto: s.pausa ? 'Seguir' : 'Pausar', accion: 'pausar'});
       if (s.fase === 'dicho') return r7.botones(ya);   // «Otra vez» es el micro
       if (s.fase === 'escribe') return r7.botones(ya, {texto: 'Mejor lo digo', accion: 'otra'});
@@ -168,7 +179,7 @@
       clearInterval(reloj);
       if (s.fase === 'escribe') {
         const t = el.querySelector('#e-texto');
-        if (t) { t.addEventListener('input', () => { s.texto = t.value; s.t = Date.now(); if (t.value.trim()) guardaMedias(s); else sinMedias(); }); try { t.focus({preventScroll: true}); } catch (x) {} }
+        if (t) { t.addEventListener('input', () => { s.texto = t.value; s.t = Date.now(); if (t.value.trim()) guardaMedias(s); else sinMedias(); ponListo(hayTexto(s)); }); try { t.focus({preventScroll: true}); } catch (x) {} }
         return;
       }
       if (s.fase !== 'oye') return;
@@ -182,7 +193,7 @@
         // si se sale de la pantalla a medias, se queda en pausa: al volver («Seguir») está como se dejó
         if (!el.isConnected) s.pausa = true;
         if (!el.isConnected || v !== s || s.fase !== 'oye' || s.pausa) { clearInterval(reloj); halo(false); return; }
-        s.n += 1; s.t = Date.now(); sal.textContent = w.slice(0, s.n).join(' ');
+        s.n += 1; s.t = Date.now(); sal.textContent = w.slice(0, s.n).join(' '); ponListo(true);
         if (mt) mt.textContent = 'Te escucho · ' + mmss(seg(s));
         guardaMedias(s);
         if (s.n >= w.length) { clearInterval(reloj); setTimeout(fin, 450); }
@@ -194,6 +205,12 @@
         s.leccion = id; s.texto = d ? d.dices : E().lecciones[id].dices; s.fase = 'oye'; s.n = 0; s.pausa = false; s.t = Date.now();
         guardaMedias(s);
         VETA.repinta();
+      },
+      // elegir qué es ya es empezar: la fila abre su pantalla con el micro escuchando (se ahorra el toque de «Toca y dímelo»; «Ya está» sigue siendo de la persona)
+      cuenta(ev, el) {
+        const g = el.dataset.g, d = dictado({guion: g});
+        if (d) { v = {g, fase: 'oye', texto: d.dices, leccion: null, n: 0, pausa: false, t: Date.now()}; guardaMedias(v); }
+        VETA.ir('dictar/' + g);
       },
       pausar(ev, el, p) { const s = vivo(p); if (s.fase !== 'oye') return; s.pausa = !s.pausa; s.t = Date.now(); VETA.repinta(); },
       escribe(ev, el, p) { const s = vivo(p); s.fase = 'escribe'; s.texto = ''; s.leccion = null; s.n = 0; s.t = Date.now(); VETA.repinta(); },
@@ -207,6 +224,10 @@
       },
       listo(ev, el, p) {
         const s = vivo(p), d = dictado(p), texto = String(s.texto || '').trim();
+        if (!hayTexto(s)) {   // sin una palabra dicha o escrita no se crea nada (el botón ya va apagado; esto cubre el teclado y los toques a destiempo)
+          if (s.fase === 'escribe') { const t = document.getElementById('e-texto'); if (t) t.focus(); }
+          return;
+        }
         if (!texto) { const t = document.getElementById('e-texto'); if (t) t.focus(); VETA.aviso(d ? 'Escribe primero lo que querías decir.' : 'Escribe primero qué quieres que aprenda.'); return; }
         const dur = Math.max(2, Math.round(palabras(texto).length / 2.4));
         clearInterval(reloj); halo(false);

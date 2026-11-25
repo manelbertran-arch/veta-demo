@@ -1,9 +1,8 @@
 /* Veta demo · ronda 8 · pantallas · persona.js · carril D
-   G19 · Una persona del equipo · #/persona/:id — subtítulo (cuántas lleva y dónde; ella ve esto mismo) y dos listas:
+   G19 · Una persona del equipo · #/persona/:id — subtítulo (dónde trabaja; ella ve esto mismo) y dos listas:
    1) sus operaciones: cara del cliente, qué es y, tras el punto, lo que pasa. Pastilla roja solo si alguien espera respuesta;
-   2) «Además»: lo que tiene hoy, cuánto tarda en contestar y lo que Veta hace por ella (las dos últimas abren una hoja de texto:
-      d-tarda y d-hace). Con Montse, también «Te toca a ti» y «Tus clientes».
-   Sin podio ni comparar con nadie: cada cifra es suya y ninguna se pone al lado de la de otra persona.
+   2) «De Laura» (su nombre; con Montse, «Lo tuyo»): lo que Veta hace por ella (abre la hoja de texto d-hace). Con Montse, también «Te toca a ti» y «Tus clientes».
+   Sin cifras por persona ni comparar con nadie (25-nov-2026): ni recuentos ni «cuánto tarda en contestar»; la hoja d-tarda se fue.
    Si está de baja: el botón negro «Pasar sus clientes» (reparto). Datos: VETA.dir.personaOps. */
 (function () {
   'use strict';
@@ -25,19 +24,17 @@
       const x = X.personaOps(p.id), yo = p.id === VETA.yo().id, n = x.ops.length;
       if (x.baja) return `${x.baja}. Sus clientes esperan.`;
       if (!n) return yo ? 'Ahora no llevas ninguna operación.' : 'Ahora no lleva ninguna operación.';
-      if (yo) return `Llevas ${x.cuantas} en ${X.zona(p.id)}.`;
-      return EL[p.id] ? `Lleva ${x.cuantas} en ${X.zona(p.id)}. Él ve esto mismo.` : `Lleva ${x.cuantas} en ${X.zona(p.id)}. Ella ve esto mismo.`;
+      if (yo) return `Trabajas en ${X.zona(p.id)}.`;
+      return EL[p.id] ? `Trabaja en ${X.zona(p.id)}. Él ve esto mismo.` : `Trabaja en ${X.zona(p.id)}. Ella ve esto mismo.`;
     },
     pinta: p => {
       if (!VETA.datos.personas[p.id]) return VETA.UI.vacio({titulo: 'No encuentro a esta persona.', texto: 'Vuelve al equipo y elige otra.'});
-      const x = X.personaOps(p.id), yo = p.id === VETA.yo().id, ella = yo ? 'ti' : x.p.corto;
+      const x = X.personaOps(p.id), yo = p.id === VETA.yo().id;
       const resto = [];
       // Montse también vende: su día y sus clientes, con su nombre
-      if (yo) resto.push({nombre: 'Te toca a ti', dato: x.pendientes || null, ir: 'hoy'}, {nombre: 'Tus clientes', dato: r7.cuentas().clientes || null, ir: 'clientes'});
-      else resto.push({nombre: 'Lo que tiene hoy', pasa: x.baja ? `${x.pendientes} conversaciones esperan a alguien` : x.pendientes ? X.tocanTexto(x, yo) : 'Hoy no tiene nada pendiente.'});
-      if (x.tarda) resto.push({nombre: 'Cuánto tarda en contestar', hoja: 'd-tarda', datos: {persona: p.id}});
-      resto.push({nombre: 'Lo que Veta hace por ' + ella, hoja: 'd-hace', datos: {persona: p.id}});
-      return (x.ops.length ? r7.lista(x.ops.map(filaOp), {i: 0}) : '') + r7.lista(resto, {rotulo: 'Además', i: 1});
+      if (yo) resto.push({nombre: 'Te toca a ti', ir: 'hoy'}, {nombre: 'Tus clientes', ir: 'clientes'});   // sin recuentos: ni los de ella van en esta ficha (25-nov-2026)
+      resto.push({nombre: yo ? 'Lo que Veta hace por ti' : 'Lo que Veta hace por ' + x.p.corto, hoja: 'd-hace', datos: {persona: p.id}});
+      return (x.ops.length ? r7.lista(x.ops.map(filaOp), {i: 0}) : '') + r7.lista(resto, {rotulo: yo ? 'Lo tuyo' : 'De ' + x.p.corto, i: 1});
     },
     botonFijo: p => {
       const x = VETA.datos.personas[p.id] ? X.personaOps(p.id) : null;

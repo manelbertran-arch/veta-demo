@@ -20,6 +20,14 @@
     return e.f === 'descartada' ? 'Descartado' : 'Para luego';
   };
 
+  // Los trabajos de la oficina con su estado, en una sola lista: la leen «Trabajos de la oficina» (G21), «Lo que Veta hace por ti» de dirección (A8b, el atajo
+  // del Inicio y la hoja d-hace de Montse). Una sola fuente: dirección no usa las reglas de una agente, usa las de la oficina.
+  VETA.d1.trabajos = () => {
+    const R = VETA.datos.reglasOficina || {};
+    return Object.keys(R).map(id => ({id, r: R[id], e: VETA.d1.faseRegla(id)})).filter(x => x.e)
+      .map(x => ({id: x.id, nombre: x.r.corto || x.r.titulo, estado: x.e.f, pasa: comoVa(x.r, x.e, x.id), ir: 'regla-oficina/' + x.id}));
+  };
+
   VETA.pantalla('G21', {
     titulo: 'Veta',
     pinta: () => {

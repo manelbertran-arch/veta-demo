@@ -1,11 +1,11 @@
 /* Veta demo · núcleo · movimiento.css
-   Los 16 efectos de la sección 5.4. Cuatro duraciones (100, 200, 300, 400), cuatro curvas (estándar, entra, sale, muelle).
+   Los 16 efectos de la sección 5.4. Tres duraciones (100, 200, 300; la larga también vale 300 desde la ronda 8), cuatro curvas (estándar, entra, sale, muelle).
    Solo se mueven solos grabar (onda) y cargar (silueta). Con «Reducir movimiento» (html[data-mov=reducido]) se apaga todo:
    sin animaciones, sin desplazamientos; quedan fundidos de 100 ms en hoja, velo y aviso. */
 
 /* 1 · el botón responde al dedo */
-.btn,.tab,.mic,.op,.paleta,.cita,.hecho-a,.cab-atras,.cab-yo,.lat-d,.lat-mic,.lat-yo,.interr,.selector button,.fila,.foto,.guia-i,.miga-b,.enlace{transition:transform var(--t-corto) var(--c-muelle),opacity var(--t-corto) var(--c-muelle),background-color var(--t-corto) var(--c-estandar)}
-.btn:active,.tab:active,.mic:active,.op:active,.paleta:active,.cita:active,.hecho-a:active,.cab-atras:active,.cab-yo:active,.lat-d:active,.lat-mic:active,.lat-yo:active,.interr:active,.selector button:active,.foto:active,.guia-i:active,.miga-b:active,.enlace:active{transform:scale(.97);opacity:.9;transition-duration:var(--t-toque);transition-timing-function:var(--c-estandar)}
+.btn,.tab,.mic,.op,.paleta,.cita,.hecho-a,.cab-atras,.cab-b,.tab-mic,.r7-filtro,.r7-enlace,.lat-d,.lat-mic,.lat-yo,.interr,.selector button,.fila,.foto,.miga-b,.enlace{transition:transform var(--t-corto) var(--c-muelle),opacity var(--t-corto) var(--c-muelle),background-color var(--t-corto) var(--c-estandar)}
+.btn:active,.tab:active,.mic:active,.op:active,.paleta:active,.cita:active,.hecho-a:active,.cab-atras:active,.cab-b:active,.tab-mic:active,.r7-filtro:active,.r7-enlace:active,.lat-d:active,.lat-mic:active,.lat-yo:active,.interr:active,.selector button:active,.foto:active:active,.miga-b:active,.enlace:active{transform:scale(.98);opacity:.9;transition-duration:var(--t-toque);transition-timing-function:var(--c-estandar)}
 .fila:active{transform:scale(.985);opacity:.9;transition-duration:var(--t-toque);transition-timing-function:var(--c-estandar)}
 @media (hover:hover){.fila:hover,.op:hover{background-color:color-mix(in srgb,var(--tinte) 55%,transparent)}}
 
@@ -56,29 +56,31 @@ html[data-dir=cambia]::view-transition-new(pantalla){animation:none}
 ::view-transition-old(foco-tarjeta),::view-transition-new(foco-tarjeta){width:100%;height:100%;object-fit:none;object-position:0 0}
 ::view-transition-old(foco-tarjeta){animation:vt-sale var(--t-toque) var(--c-sale) both}
 ::view-transition-new(foco-tarjeta){animation:vt-funde var(--t-corto) var(--c-estandar) 60ms both}
-/* 7 · hecho en el sitio: se dibuja el visto */
-.hecho .visto path{animation:dibuja var(--t-corto) var(--c-estandar) 100ms both}
+/* 7 · hecho en el sitio: la fila entra y su visto se dibuja. Una vez por acción: solo cuando la fila es nueva (.nuevo, lo pone el núcleo
+   al repintar la misma pantalla); al volver a entrar ya está quieta */
+.hecho.nuevo{animation:hecho-entra var(--t-corto) var(--c-entra) both}
+.hecho.nuevo .visto path{animation:dibuja var(--t-medio) var(--c-estandar) 120ms both}
+@keyframes hecho-entra{from{opacity:0;transform:translateY(-4px)}}
 @keyframes dibuja{from{stroke-dashoffset:1}}
+/* 5b · escalonado (ronda 8): al entrar en una raíz, sus seis primeras filas suben 6 px una tras otra, a 30 ms. Ni en hojas ni al repintar */
+.esc .r7-esc{animation:fila-entra 180ms var(--c-entra) both;animation-delay:calc(var(--f,0) * 30ms)}
+@keyframes fila-entra{from{opacity:0;transform:translateY(6px)}}
 
-/* 8 · aviso negro: sube 8 px y aparece */
-.aviso{transition:opacity var(--t-corto) var(--c-sale),translate var(--t-corto) var(--c-sale)}
-.aviso.on{transition:opacity var(--t-corto) var(--c-muelle),translate var(--t-corto) var(--c-muelle)}
+/* 8 · aviso: sale de detrás del borde del pie (se descubre de abajo arriba, 200 ms) y se recoge más deprisa (150 ms) */
+.aviso{transition:opacity 150ms var(--c-sale),clip-path 150ms var(--c-sale)}
+.aviso.on{transition:opacity 100ms linear,clip-path var(--t-corto) var(--c-estandar)}
 
 /* 10 · sombra bajo la cabecera y sobre el botón fijo, ligada al desplazamiento */
 @supports (animation-timeline:scroll()){
   html:not([data-mov=reducido]) .cab-banda{animation:sombra-banda linear both;animation-timeline:--desp;animation-range:0 8px}
-  html:not([data-mov=reducido]) .cab-detalle,html:not([data-mov=reducido]) .cab-panel{animation:linea-cab linear both;animation-timeline:--desp;animation-range:0 8px}
-  html:not([data-mov=reducido]) .fijo{animation:sombra-fijo linear both;animation-timeline:--desp}
+  html:not([data-mov=reducido]) .cab-det,html:not([data-mov=reducido]) .cab-panel{animation:linea-cab linear both;animation-timeline:--desp;animation-range:0 8px}
 }
 @keyframes sombra-banda{to{box-shadow:var(--sombra-banda)}}
 @keyframes linea-cab{to{box-shadow:0 1px 0 var(--borde)}}
-@keyframes sombra-fijo{0%,96%{box-shadow:var(--sombra-fijo)}100%{box-shadow:none}}
 @supports not (animation-timeline:scroll()){
-  .col.desplazado .cab-banda{box-shadow:var(--sombra-banda)}
-  .col.desplazado .cab-detalle,.col.desplazado .cab-panel{box-shadow:0 1px 0 var(--borde)}
+  .col.desplazado .cab-det,.col.desplazado .cab-panel{box-shadow:0 1px 0 var(--borde)}
 }
-html[data-mov=reducido] .col.desplazado .cab-banda{box-shadow:var(--sombra-banda)}
-html[data-mov=reducido] .col.desplazado .cab-detalle,html[data-mov=reducido] .col.desplazado .cab-panel{box-shadow:0 1px 0 var(--borde)}
+html[data-mov=reducido] .col.desplazado .cab-det,html[data-mov=reducido] .col.desplazado .cab-panel{box-shadow:0 1px 0 var(--borde)}
 
 /* 11 · en el informe, la foto se encoge un poco al bajar */
 @supports (animation-timeline:view()){
@@ -89,17 +91,7 @@ html[data-mov=reducido] .col.desplazado .cab-detalle,html[data-mov=reducido] .co
 /* 12 · silueta de carga (bucle permitido: cargar) */
 .sil-b::after{animation:brillo 1.2s linear infinite}
 @keyframes brillo{to{translate:100% 0}}
-
-/* 13 · onda de dictar (bucle permitido: grabar) */
-.onda i{animation:onda 1.2s ease-in-out infinite alternate}
-.onda i:nth-child(even){animation-duration:1.6s}
-.onda i:nth-child(2){animation-delay:-120ms}.onda i:nth-child(3){animation-delay:-360ms}.onda i:nth-child(4){animation-delay:-600ms}.onda i:nth-child(5){animation-delay:-240ms}.onda i:nth-child(6){animation-delay:-480ms}
-.onda.pausada i{animation-play-state:paused}
 @keyframes onda{from{transform:scaleY(.25)}to{transform:scaleY(1)}}
-
-/* 14 · portada: la veta se descubre una vez, de derecha a izquierda */
-.port-veta.descubre{animation:descubre 1.2s var(--c-entra) both}
-@keyframes descubre{from{clip-path:inset(0 0 0 100%)}to{clip-path:inset(0)}}
 
 /* 17 · marca e idioma (E1; la luz también en E2): son los tiempos de la portada de la web, no los de la app.
    La luz deriva (42 y 55 s), el logotipo y su halo respiran (4,4 s), el carrusel da una vuelta cada 10 s y el que da la cara
@@ -114,22 +106,10 @@ html[data-mov=reducido] .col.desplazado .cab-detalle,html[data-mov=reducido] .co
 @keyframes m-respira{0%,to{transform:scale(1);opacity:.94}50%{transform:scale(1.055);opacity:1}}
 .m-halo{animation:m-halo 4.4s ease-in-out infinite}
 @keyframes m-halo{0%,to{opacity:.65;transform:translate(-50%,-50%) scale(1)}50%{opacity:1;transform:translate(-50%,-50%) scale(1.18)}}
-/* los dos idiomas circulan, media vuelta de desfase: el riel lleva la x (ida y vuelta, 5 s cada tramo) y el botón la y y la
-   profundidad, un cuarto de vuelta por detrás; así trazan una elipse. El de delante (abajo) se enciende como en la web */
-.m-via{animation:m-orb-x 5s cubic-bezier(.37,0,.63,1) infinite alternate;animation-delay:calc(var(--i) * -5s)}
-.m-idioma{animation:m-orb-y 5s cubic-bezier(.37,0,.63,1) infinite alternate;animation-delay:calc(var(--i) * -5s - 2.5s)}
-@keyframes m-orb-x{from{transform:translateX(5.75rem)}to{transform:translateX(-5.75rem)}}
-@keyframes m-orb-y{from{transform:translate(-50%,-50%) translateY(-2rem) scale(.96);opacity:.66;color:#C3BFB8;text-shadow:none;border-color:rgba(245,236,220,.14)}
-  to{transform:translate(-50%,-50%) translateY(2rem) scale(1.06);opacity:1;color:#F5ECDC;text-shadow:0 0 26px rgba(232,190,120,.55);border-color:rgba(232,190,120,.5)}}
-.m-orbita.quieto .m-via,.m-orbita.quieto .m-idioma{animation-play-state:paused}
-@media (hover:hover) and (pointer:fine){.m-orbita:hover .m-via,.m-orbita:hover .m-idioma{animation-play-state:paused}}
-
 /* 15 · interruptor y selector: el pomo se desliza; el flechín de un plegable gira */
 .interr-v::before{transition:background-color var(--t-corto) var(--c-estandar)}
 .interr-v::after{transition:translate var(--t-corto) var(--c-muelle),background-color var(--t-corto) var(--c-estandar)}
 .selector::before{transition:translate var(--t-corto) var(--c-muelle)}
-.chev-gira{transition:transform var(--t-corto) var(--c-muelle)}
-[aria-expanded=true] .chev-gira{transform:rotate(180deg)}
 
 /* 16 · cambio de tema, de paleta o de perfil: los colores funden */
 html.cambia-tema *,html.cambia-tema *::before,html.cambia-tema *::after{transition:background-color var(--t-corto) var(--c-estandar),color var(--t-corto) var(--c-estandar),border-color var(--t-corto) var(--c-estandar),fill var(--t-corto) var(--c-estandar),stroke var(--t-corto) var(--c-estandar),box-shadow var(--t-corto) var(--c-estandar)!important}
@@ -138,9 +118,9 @@ html.cambia-tema *,html.cambia-tema *::before,html.cambia-tema *::after{transiti
 html[data-mov=reducido] *,html[data-mov=reducido] *::before,html[data-mov=reducido] *::after{animation:none!important;transition-property:opacity!important;transition-duration:var(--t-toque)!important;transition-delay:0s!important;scroll-behavior:auto!important}
 html[data-mov=reducido] .hoja{transform:none!important;opacity:0}
 html[data-mov=reducido] .hoja.on{opacity:1}
-html[data-mov=reducido] .aviso{translate:none}
+html[data-mov=reducido] .aviso{clip-path:none}
 html[data-mov=reducido] :active{transform:none!important}
 html[data-mov=reducido] ::view-transition-group(*),html[data-mov=reducido] ::view-transition-old(*),html[data-mov=reducido] ::view-transition-new(*){animation:none!important}
 
-/* ronda 7 · la cabecera única gana su línea al desplazar */
-.col.desplazado .cab-r7{box-shadow:0 1px 0 var(--borde)}
+/* la cabecera de raíz gana su línea al desplazar */
+.col.desplazado .cab-raiz{box-shadow:0 1px 0 var(--borde)}

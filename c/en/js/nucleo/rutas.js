@@ -1,7 +1,9 @@
 /* Veta demo · núcleo · rutas.js
    El mapa entero (sección 2), el registro de pantallas, la navegación y el armazón (barra, barra lateral, columnas).
-   - Toda ruta del mapa queda registrada al cargar con una pantalla “pendiente” que dice su código; el paquete que la
-     construye la sustituye con VETA.pantalla('<código>', {...}) y hereda del mapa lo que no diga (ruta, destino, completa…).
+   - Cada pantalla se registra con VETA.pantalla('<código>', {...}) y hereda del mapa lo que no diga (ruta, destino, completa…).
+     Toda fila del mapa tiene su pantalla (las provisionales de la ronda 1 se fueron en el cierre de la ronda 8).
+   - Ronda 8 (PLAN_R8.md): cuatro sitios y el micro en la barra, cabecera de raíz (56) y de detalle (60, con el nombre de donde
+     vienes sobre el título), sin “?”, redirecciones de las rutas que se funden, pie con nota. Referencia: analisis/PARTE_N.md.
    - Pila propia con el nombre real de la anterior, almohadilla (#/hoy) y botón atrás del navegador, dirección de la
      transición, memoria del desplazamiento, destino marcado, pantallas completas sin barra, dos columnas en ordenador.
    Ver CONTRATO.md. */
@@ -12,30 +14,29 @@
   // ---- el mapa: [código, ruta, título, destino, paquete, archivo, padre, ejemplo, opciones] ----
   const G = {E: 'Entry', A: 'The day', B: 'Clients', C: 'Veta and account', D: 'Management', O: 'From the office'};
   const FILAS = [
-    ['E1', 'portada', 'Home', null, 'N', 'portada.js', null, null, {completa: true, sinCabecera: true, grupo: G.E}],
+    ['E1', 'portada', 'Welcome', null, 'N', 'portada.js', null, null, {completa: true, sinCabecera: true, grupo: G.E}],
     ['E2', 'entrar', 'Sign in', null, 'C', 'entrar.js', 'A15', null, {completa: true, grupo: G.E}],
     ['A18', 'primer-dia/:paso', 'First day', null, 'C', 'primer-dia.js', 'E1', 'primer-dia/0', {completa: true, grupo: G.E}],
     ['A18m', 'mapa', 'My work map', 'veta', 'C', 'mapa.js', 'A15', null, {grupo: G.E}],
     ['A1', 'hoy', 'Today', 'hoy', 'A', 'hoy.js', null, null, {grupo: G.A}],
-    ['A2', 'mensaje/:id', 'Edit message', 'hoy', 'A', 'mensaje.js', 'A1', 'mensaje/c-marta', {grupo: G.A}],
+    ['A2', 'mensaje/:id', 'Change the message', 'hoy', 'A', 'mensaje.js', 'A1', 'mensaje/c-marta', {grupo: G.A}],
     ['A3', 'dictar/:guion', 'Dictate', null, 'A', 'dictar.js', 'A1', 'dictar/libre', {completa: true, grupo: G.A}],
     ['A4', 'acta/:id', 'Viewing notes', 'hoy', 'A', 'acta.js', 'A1', 'acta/elena', {completa: true, grupo: G.A}],
-    ['A4b', 'entendido-dictado/:id', 'What I\'ve understood', 'hoy', 'A', 'dictado.js', 'A1', 'entendido-dictado/tarea', {completa: true, grupo: G.A}],
+    ['A4b', 'entendido-dictado/:id', 'What I understood', 'hoy', 'A', 'dictado.js', 'A1', 'entendido-dictado/tarea', {completa: true, grupo: G.A}],
     ['A7', 'espera', 'What I\'m watching for you', 'hoy', 'A', 'espera.js', 'A1', null, {grupo: G.A}],
-    ['A12', 'informe/:id', 'Owner report', 'hoy', 'A', 'informe.js', 'A1', 'informe/pere', {grupo: G.A}],
+    ['A12', 'informe/:id', 'Report for the owner', 'hoy', 'A', 'informe.js', 'A1', 'informe/pere', {grupo: G.A}],
     ['A5', 'clientes', 'Clients', 'clientes', 'B', 'clientes.js', null, null, {grupo: G.B}],
-    ['A5b', 'clientes/al-dia', 'The ones who don\'t need you today', 'clientes', 'B', 'clientes.js', 'A5', null, {grupo: G.B}],
     ['A5p', 'pregunta/:id', 'Ask Veta', 'clientes', 'B', 'pregunta.js', 'A5', 'pregunta/jordi', {grupo: G.B}],
     ['A6', 'cliente/:id', 'Client profile', 'clientes', 'B', 'ficha.js', 'A5', 'cliente/pere', {grupo: G.B, tituloCliente: true}],
     ['A6d', 'cliente/:id/documentos', 'Documents and dates', 'clientes', 'B', 'documentos.js', 'A6', 'cliente/pere/documentos', {grupo: G.B}],
-    ['A16', 'cliente/:id/historia', 'History', 'clientes', 'B', 'historia.js', 'A6', 'cliente/pere/historia', {grupo: G.B}],
+    ['A16', 'cliente/:id/historia', 'What has happened', 'clientes', 'B', 'historia.js', 'A6', 'cliente/pere/historia', {grupo: G.B}],
     ['A8', 'veta', 'Veta', 'veta', 'C', 'veta.js', null, null, {grupo: G.C}],
-    ['A9', 'reglas', 'What I do for you', 'veta', 'C', 'reglas.js', 'A8', null, {grupo: G.C}],
-    ['A9b', 'reglas/semana-pasada', 'Last week', 'veta', 'C', 'reglas.js', 'A9', null, {grupo: G.C}],
-    ['A10', 'regla/:id', 'A job', 'veta', 'C', 'regla.js', 'A9', 'regla/r-valoraciones', {grupo: G.C}],
-    ['A10b', 'regla/:id/nivel', 'How far it goes', 'veta', 'C', 'regla.js', 'A10', 'regla/r-valoraciones/nivel', {grupo: G.C}],
-    ['A11', 'entendido/:id', 'This is how I understood it', 'veta', 'C', 'entendido.js', 'A9', 'entendido/recordatorios', {grupo: G.C}],
-    ['A13', 'aprendido', 'What I\'ve learned', 'veta', 'C', 'aprendido.js', 'A8', null, {grupo: G.C}],
+    ['A8b', 'veta/mia', 'What Veta does for you', 'veta', 'C', 'veta.js', 'R0', null, {grupo: G.C}],
+    ['A9b', 'reglas/semana-pasada', 'Last week', 'veta', 'C', 'reglas.js', 'A8', null, {grupo: G.C}],
+    ['A10', 'regla/:id', 'A job', 'veta', 'C', 'regla.js', 'A8', 'regla/r-valoraciones', {grupo: G.C}],
+    ['A10b', 'regla/:id/nivel', 'Who does it?', 'veta', 'C', 'regla.js', 'A10', 'regla/r-valoraciones/nivel', {grupo: G.C}],
+    ['A11', 'entendido/:id', 'What I understood', 'veta', 'C', 'entendido.js', 'A13', 'entendido/recordatorios', {grupo: G.C}],
+    ['A13', 'aprendido', 'What I\'ve learned from you', 'veta', 'C', 'aprendido.js', 'A8', null, {grupo: G.C}],
     ['A13b', 'mejora', 'Propose an improvement', 'veta', 'C', 'aprendido.js', 'A13', null, {grupo: G.C}],
     ['A14', 'semana', 'Your week', 'veta', 'C', 'semana.js', 'A8', null, {grupo: G.C}],
     ['A15', 'cuenta', 'Account and privacy', 'veta', 'C', 'cuenta.js', 'A8', null, {grupo: G.C}],
@@ -44,23 +45,23 @@
     ['G1', 'equipo', 'Team', 'equipo', 'D', 'equipo.js', null, null, {grupo: G.D}],
     ['G2', 'asunto/:id', 'What happened', 'equipo', 'D', 'asunto.js', 'G1', 'asunto/carmen', {grupo: G.D}],
     ['G2b', 'regla-oficina/:id', 'A job for the office', 'equipo', 'D', 'regla-oficina.js', 'G1', 'regla-oficina/dossier', {grupo: G.D}],
-    ['G3', 'semana-equipo', 'Week', 'equipo', 'D', 'semana-equipo.js', 'G1', null, {grupo: G.D}],
+    ['G3', 'semana-equipo', 'Last week', 'equipo', 'D', 'semana-equipo.js', 'G1', null, {grupo: G.D}],
     ['G3b', 'semana-equipo/resumen', 'Send the summary', 'equipo', 'D', 'semana-equipo.js', 'G3', null, {grupo: G.D}],
-    ['G3c', 'reunion', 'For Monday\'s meeting', 'equipo', 'D', 'semana-equipo.js', 'G3', null, {grupo: G.D}],
+    ['G3c', 'reunion', 'Monday meeting', 'equipo', 'D', 'semana-equipo.js', 'G3', null, {grupo: G.D}],
     ['G3d', 'oficinas', 'By office', 'equipo', 'D', 'semana-equipo.js', 'G3', null, {grupo: G.D}],
-    ['G3e', 'tiempo-equipo', 'The time the team saves', 'equipo', 'D', 'semana-equipo.js', 'G3', null, {grupo: G.D}],
+    ['G3e', 'tiempo-equipo', 'Time saved', 'equipo', 'D', 'semana-equipo.js', 'G3', null, {grupo: G.D}],
     ['G5', 'reparto', 'Allocation', 'equipo', 'D', 'reparto.js', 'G1', null, {grupo: G.D}],
     ['G5b', 'reparto/confirmar', 'Handing over their clients', 'equipo', 'D', 'reparto.js', 'G5', null, {grupo: G.D}],
-    ['G6', 'avisos', 'Alerts', 'equipo', 'D', 'avisos.js', 'G1', null, {grupo: G.D}],
+    ['G6', 'avisos', 'Your alerts', 'equipo', 'D', 'avisos.js', 'G1', null, {grupo: G.D}],
     ['G7', 'conexiones', 'Connections and settings', 'equipo', 'D', 'conexiones.js', 'G1', null, {grupo: G.D}],
-    ['G7b', 'confianza', 'What you and others see', 'equipo', 'D', 'conexiones.js', 'G7', null, {grupo: G.D}],
+    ['G7b', 'confianza', 'What each one sees', 'equipo', 'D', 'conexiones.js', 'G7', null, {grupo: G.D}],
     ['G7c', 'piloto', 'Daily pilot wrap-up', 'equipo', 'D', 'conexiones.js', 'G7', null, {grupo: G.D}],
     ['G8', 'informe-completo', 'Full report', 'equipo', 'D', 'informe-completo.js', 'G3', null, {grupo: G.D}],
     ['G9', 'entra', 'What\'s coming in', 'equipo', 'D', 'entra.js', 'G1', null, {grupo: G.D}],
-    ['A19', 'que-hace', 'What Veta does for you', 'veta', 'C', 'que-hace.js', 'A8', null, {grupo: G.C}],
+    ['A19', 'que-hace', 'How Veta works', 'veta', 'C', 'que-hace.js', 'A8', null, {grupo: G.C}],
     ['A20', 'antes-ahora', 'Before and now', 'veta', 'C', 'antes-ahora.js', 'A8', null, {grupo: G.C}],
-    ['G15', 'oficina-que-hace', 'What Veta does for your office', 'equipo', 'D', 'oficina-que-hace.js', 'G1', null, {grupo: G.D}],
-    ['G16', 'oficina-antes-ahora', 'Office before and now', 'equipo', 'D', 'oficina-antes-ahora.js', 'G1', null, {grupo: G.D}],
+    ['G15', 'oficina-que-hace', 'What I already do', 'equipo', 'D', 'oficina-que-hace.js', 'G1', null, {grupo: G.D}],
+    ['G16', 'oficina-antes-ahora', 'Before and now', 'equipo', 'D', 'oficina-antes-ahora.js', 'G1', null, {grupo: G.D}],
     ['G17', 'operaciones', 'Deals', 'equipo', 'D', 'operaciones.js', 'G1', null, {grupo: G.D}],
     ['G18', 'operacion/:id', 'A deal', 'equipo', 'D', 'operacion.js', 'G17', 'operacion/marta', {grupo: G.D}],
     ['G19', 'persona/:id', 'A person on the team', 'equipo', 'D', 'persona.js', 'G1', 'persona/laura', {grupo: G.D}],
@@ -75,57 +76,59 @@
     ['A22', 'visita/:id', 'A viewing', 'visitas', 'A', 'visita.js', 'A21', 'visita/elena', {grupo: G.A}],
     ['A24', 'salida/:id', 'How did it go?', 'visitas', 'A', 'visita.js', 'A22', 'salida/elena', {completa: true, grupo: G.A}],
     ['A23', 'toca/:id', 'Your turn', 'hoy', 'A', 'hoy.js', 'A1', 'toca/c-marta', {grupo: G.A}],
-    ['G20', 'decidir', 'Decide', 'decidir', 'D', 'decidir.js', 'R0', null, {grupo: G.D}],
     ['G21', 'oficina', 'Veta', 'oficina', 'D', 'oficina.js', 'R0', null, {grupo: G.D}]
   ];
   const MAPA = {};
   FILAS.forEach(([cod, ruta, titulo, destino, paq, archivo, padre, ejemplo, o]) => {
     MAPA[cod] = Object.assign({cod, ruta, titulo, destino, paq, archivo, padre, ejemplo: ejemplo || ruta}, o || {});
   });
-  // ronda 7 · el reparto nuevo va encima de la tabla: nombre, caja (destino), padre y LA FRASE de cada raíz (ESTRATEGIA_R7.md, 4 y 7)
+  // ronda 7 · el reparto va encima de la tabla: nombre, caja (destino) y padre. (Las frases del “?” y el número del título se fueron en la ronda 8.)
   const R7 = {
-    A1: {titulo: 'Your turn', padre: 'R0', cuenta: () => VETA.r7.cuentas().hoy, frase: 'Today you have 6 things. A month ago it was 9: I already do the rest.'},
-    A21: {cuenta: () => VETA.r7.cuentas().visitas, frase: 'I confirm it first. When you leave, you tell me how it went and I leave the notes and the report ready.'},
-    A5: {padre: 'R0', cuenta: () => VETA.r7.cuentas().clientes, frase: 'Tap a face to see what is happening and what to do now.'},
-    A8: {padre: 'R0', frase: 'I already do this. This I suggest to you. And you can teach me something new.'},
-    G20: {cuenta: () => VETA.r7.cuentas().decidir, frase: '6 things are waiting for your decision. Tap one.'},
-    G1: {padre: 'R0', frase: 'Tap a person to see what they handle and how it is going.'},
-    G17: {padre: 'R0', destino: 'operaciones', cuenta: () => VETA.r7.cuentas().operaciones, frase: '22 deals. First, the 5 to look at today.'},
-    G21: {frase: 'This is what Veta does for your office. You can send the summary to the team.'},
-    A3: {titulo: 'Teach Veta', padre: 'R0'}, A4b: {padre: 'A3'},
+    A1: {titulo: 'Your turn', padre: 'R0'},
+    A5: {padre: 'R0'},
+    A8: {padre: 'R0'}, A8b: {padre: 'R0', destino: null},   // dirección también trabaja como agente: “Lo que Veta hace por ti” (fila fija de su Inicio) es A8 sin “Cómo voy”
+    G1: {padre: 'R0'},
+    G17: {padre: 'R0', destino: 'operaciones'},
+    A3: {titulo: 'What\'s on your mind?', padre: 'R0'}, A4b: {padre: 'A3'},
     // FC (defectos 5 y 10): Cuenta no es ninguna caja, la barra no marca nada; “Veta en un minuto” vive en Cuenta; lo aprendido cuelga de “Ya lo hago yo” y “Tu semana” de “Antes y ahora”
-    A15: {titulo: 'Account', padre: 'R0', destino: null}, A15b: {destino: null}, A15c: {destino: null}, A18m: {destino: null}, A19: {padre: 'A15', destino: null}, A13: {padre: 'A9'}, A14: {padre: 'A20'},
+    A15: {titulo: 'Account', padre: 'R0', destino: null}, A15b: {destino: null}, A15c: {destino: null}, A18m: {destino: null}, A19: {padre: 'A15', destino: null}, A14: {padre: 'A20'},
     A4: {titulo: 'Viewing notes', destino: 'visitas', padre: 'A22'}, A12: {titulo: 'Report for the owner', destino: 'visitas', padre: 'A22'},
     A2: {padre: 'A23'},   // FA · “Cambiar el mensaje” cuelga de la tarjeta de su persona (toca/:id), no de la lista
-    A7: {padre: 'A9', destino: 'veta'},   // FN · “Lo que vigilo por ti” se abre desde Veta › “Ya lo hago yo”: en frío cuelga de ahí, no de Te toca
-    G2: {destino: 'decidir', padre: 'G20'}, G18: {destino: 'operaciones'},
+    G2: {destino: 'decidir'}, G18: {destino: 'operaciones'},
     G3: {destino: 'oficina', padre: 'G21'}, G3b: {destino: 'oficina'}, G3c: {destino: 'oficina'}, G3d: {destino: 'oficina'}, G3e: {destino: 'oficina'}, G8: {destino: 'oficina'},
     G15: {destino: 'oficina', padre: 'G21'}, G16: {destino: 'oficina', padre: 'G21'}, G2b: {destino: 'oficina', padre: 'G21'},
     // FD: Conexiones y Tus avisos cuelgan de Cuenta (A15), con su misma caja marcada; Lo que entra, de Operaciones
     G7: {padre: 'A15', destino: null}, G7b: {destino: null}, G7c: {destino: null}, G6: {padre: 'A15', destino: null},
-    G5: {destino: 'decidir', padre: 'G20'}, G5b: {destino: 'decidir'}, G9: {destino: 'operaciones', padre: 'G17'},
+    G5: {destino: 'decidir'}, G5b: {destino: 'decidir'}, G9: {destino: 'operaciones', padre: 'G17'},
     // FD: lo aprendido, lo que aún no hago y cómo trabajamos van dentro de “Lo que ya hago por la oficina” (G15)
     G10: {destino: 'oficina', padre: 'G15'}, G11: {destino: 'oficina', padre: 'G15'}, G12: {destino: 'oficina', padre: 'G15'}, G14: {destino: 'oficina', padre: 'G15'}, G13: {destino: 'oficina'}
   };
   Object.keys(R7).forEach(c => Object.assign(MAPA[c], R7[c]));
+  // ronda 8 · el mapa nuevo (PLAN_R8.md, 2.3): padres para entrar en frío y para el “volver”, y los documentos a pantalla completa.
+  // Las tres pantallas que se fundieron (A5b clientes/al-dia, A9 reglas, G20 decidir) ya no están en el mapa: sus rutas las lleva redirige().
+  // “decidir” sigue siendo el `destino` de lo que solo abre dirección desde su Inicio (asunto, reparto): lo lee vedada().
+  // Con la cuenta de dirección, “Te toca a ti” (A1) es un detalle que cuelga de Inicio, y de él cuelgan su tarjeta, lo que vigila y su semana.
+  // La agente abre “Cómo trabajamos” (G10) y “Lo que sabe tu oficina” (G14) desde “Lo he aprendido de ti”.
+  const esDir = () => VETA.yo().papel === 'direccion';
+  const porA1 = () => (esDir() ? 'hoy' : null), porAprendido = () => (esDir() ? null : 'aprendido');
+  const R8 = {
+    A1: {destino: null, area: 'hoy'},   // “Te toca a ti” no es raíz: la ruta 'hoy' redirige a Inicio (agente) o es un detalle de Inicio (dirección), y ahí lleva “volver”
+    A23: {padre: 'R0', padreRuta: porA1}, A7: {padre: 'R0', destino: 'hoy', padreRuta: porA1},
+    A10: {padre: 'A8', padreRuta: () => (esDir() ? 'veta/mia' : null)}, A13: {padre: 'A8'}, A9b: {padre: 'A8'}, A20: {padre: 'A8'}, A14: {padre: 'A8', padreRuta: porA1}, A11: {padre: 'A13'},
+    G2: {padre: 'R0'}, G2b: {padre: 'R0'}, G5: {padre: 'R0'},
+    G11: {padre: 'G21'}, G13: {padre: 'G11'}, G14: {padre: 'G11', padreRuta: porAprendido}, G10: {padre: 'G15', padreRuta: porAprendido}, G12: {padre: 'G15'},
+    A12: {completa: true}, G3b: {completa: true}, G8: {completa: true}
+  };
+  Object.keys(R8).forEach(c => Object.assign(MAPA[c], R8[c]));
   VETA.MAPA = MAPA;
 
-  // ---- las 42 hojas: código → título y quién la hace ----
-  const H = [
-    ['H01', 'Where it comes from', 'N', 'comunes.js'], ['H02', 'Something else…', 'N', 'comunes.js'], ['H03', 'Log', 'A', 'dia.js'], ['H04', 'What I\'ve read', 'A', 'dia.js'],
-    ['H05', 'Done today', 'A', 'dia.js'], ['H06', 'Day closed', 'A', 'dia.js'], ['H07', 'What you said', 'A', 'dia.js'], ['H08', 'What can I say?', 'A', 'dia.js'],
-    ['H09', 'That\'s not it', 'A', 'dia.js'], ['H10', 'Message from Pere', 'B', 'clientes.js'], ['H11', 'Other actions', 'B', 'clientes.js'], ['H12', 'Share summary', 'B', 'clientes.js'],
-    ['H13', 'Off the radar', 'B', 'clientes.js'], ['H14', 'Request ready', 'B', 'clientes.js'], ['H15', 'What happened with…?', 'B', 'clientes.js'], ['H16', 'History detail', 'B', 'clientes.js'],
-    ['H17', 'Enlarged photo', 'N', 'comunes.js'], ['H18', 'A case', 'C', 'veta.js'], ['H19', 'The 11 cases like me', 'C', 'veta.js'], ['H20', 'Something else…', 'C', 'veta.js'],
-    ['H21', 'What I understood', 'C', 'veta.js'], ['H22', 'Raise one level', 'C', 'veta.js'], ['H23', 'An office practice', 'C', 'veta.js'], ['H24', 'Your time on this task', 'C', 'veta.js'],
-    ['H25', 'A previous week', 'C', 'veta.js'], ['H26', 'Appearance', 'N', 'comunes.js'], ['H28', 'No signal', 'C', 'veta.js'],
-    ['H29', 'Legal text', 'N', 'comunes.js'], ['H30', 'Which chat are you deleting?', 'C', 'veta.js'], ['H31', 'Add Veta to your home screen', 'C', 'veta.js'], ['H32', 'A finding from the map', 'C', 'veta.js'],
-    ['H33', 'Calendar', 'C', 'veta.js'], ['H34', 'Today\'s 3 topics', 'D', 'direccion.js'], ['H35', 'Who do you assign it to?', 'D', 'direccion.js'], ['H36', 'How it would have gone', 'D', 'direccion.js'],
-    ['H37', 'An alert set', 'D', 'direccion.js'], ['H38', 'Cost per hour', 'D', 'direccion.js'], ['H39', 'Log a complaint', 'B', 'clientes.js'], ['H40', 'Clients with two chats', 'D', 'direccion.js'],
-    ['H41', 'Text of a wrap-up', 'N', 'comunes.js'], ['H42', 'How do you want to send it?', 'A', 'dia.js']
-  ];
-  VETA.HOJAS = {};
-  H.forEach(([cod, titulo, paq, archivo]) => { VETA.HOJAS[cod.toLowerCase()] = {cod, id: cod.toLowerCase(), titulo, paq, archivo}; });
+  // ---- las hojas: lo que hay definido de verdad (VETA.hojaDef y las tres plantillas), id → código y título ----
+  // La tabla fija de 42 de la ronda 1 se fue: nombraba hojas borradas (H08, H13, H37) y títulos viejos. El título de una hoja que
+  // depende de sus datos sale vacío aquí (lo pone la hoja al abrirse). Las del muestrario (mu-…: página de trabajo, fuera del mapa) no cuentan.
+  Object.defineProperty(VETA, 'HOJAS', {configurable: true, get: () => {
+    const o = {}; Object.keys(VETA.hojaDefs || {}).filter(id => id.indexOf('mu-') !== 0).forEach(id => { const tt = VETA.hojaDefs[id].titulo; o[id] = {cod: id.toUpperCase(), id, titulo: typeof tt === 'string' ? tt : ''}; });
+    return o;
+  }});
 
   // ---- registro ----
   const pantallas = {};
@@ -137,24 +140,6 @@
     d._partes = d.ruta.split('/');
     pantallas[id] = d;
   };
-
-  // la pantalla provisional de cada ruta del mapa
-  const hijos = cod => Object.values(MAPA).filter(m => m.padre === cod);
-  Object.values(MAPA).forEach(m => {
-    if (m.cod === 'E1') return;
-    VETA.pantalla(m.cod, {
-      pendiente: true,
-      titulo: m.tituloCliente ? (p => ((VETA.modelo.cliente(p.id) || {}).nombre || m.titulo)) : m.titulo,
-      guia: [`This will hold “${m.titulo}”.`, `Built by package ${m.paq}.`, `File: js/pantallas/${m.archivo}.`],
-      pinta: () => {
-        const h = hijos(m.cod);
-        return `<div class="pendiente tarjeta" data-i="0">${UI.etiqueta('a-prueba', m.cod + ' · provisional')}<h2 class="bloque-t">${esc(m.titulo)}</h2>` +
-          `<p class="bloque-sub">Provisional screen. Built by package ${esc(m.paq)} in js/pantallas/${esc(m.archivo)}.</p></div>` +
-          (h.length ? UI.bloque({titulo: 'From here you can reach', i: 1, html: UI.lista(h.map(x => ({titulo: x.titulo, sub: x.cod + ' · #/' + x.ejemplo, ir: x.ejemplo})))}) : '') +
-          (m.cod === 'A1' ? UI.bloque({titulo: 'From the core', i: 2, html: UI.lista([{titulo: 'Component showcase', sub: '#/muestrario', ir: 'muestrario', icono: 'paleta'}, {titulo: 'Home', sub: 'E1 · #/portada', ir: 'portada', icono: 'casa'}])}) : '');
-      }
-    });
-  });
 
   // ---- buscar la pantalla de una ruta ----
   function resuelve(ruta) {
@@ -197,21 +182,41 @@
     const d = VETA.duenoDe ? VETA.duenoDe({de: e.p.id}) : null;
     return d ? VETA.ajeno(d) : true;
   };
+  // ronda 8 · la agente sí abre “Cómo trabajamos” (G10) y “Lo que sabe tu oficina” (G14), aunque sean de la oficina
+  const ABRE_LA_AGENTE = ['G10', 'G14'];
   const vedada = ruta => {
-    const e = resuelve(ruta); if (!e || !e.def.destino) return false;
-    return VETA.yo().papel === 'direccion' ? deOtra(e) : SOLO_DIRECCION.includes(e.def.destino);
+    const e = resuelve(redirige(ruta, true)); if (!e || !e.def.destino) return false;
+    return VETA.yo().papel === 'direccion' ? deOtra(e) : (SOLO_DIRECCION.includes(e.def.destino) && !ABRE_LA_AGENTE.includes(e.def.cod));
   };
-  VETA.vedada = vedada;
-  // los cinco sitios de la barra (y del menú de ordenador): Inicio y las cuatro cajas del papel. Inicio lee de aquí nombres e iconos.
-  const CAJAS = {agente: ['hoy', 'visitas', 'clientes', 'veta'], direccion: ['decidir', 'equipo', 'operaciones', 'oficina']};
+  VETA.vedada = vedada;   // “Cómo funciona Veta” (A19) filtra con esto las filas que cada papel no puede abrir
+  // ronda 8 · los cuatro sitios de la barra (y del menú de ordenador): Inicio y las tres raíces del papel; en el centro, el micro (Dictar).
+  // “hoy” y “decidir” ya no son sitios (son el Inicio); sus nombres se quedan en SITIOS por si alguien los lee.
+  const CAJAS = {agente: ['visitas', 'clientes', 'veta'], direccion: ['equipo', 'operaciones', 'oficina']};
   const SITIOS = {inicio: {texto: 'Home', icono: 'casa'}, hoy: {texto: 'Your turn', largo: 'Your turn', icono: 'hoy'}, visitas: {texto: 'Viewings', icono: 'cal'},
     clientes: {texto: 'Clients', icono: 'clientes'}, veta: {texto: 'Veta', icono: 'aprende'}, decidir: {texto: 'Decide', icono: 'check'},
     equipo: {texto: 'Team', icono: 'equipo'}, operaciones: {texto: 'Deals', icono: 'caja'}, oficina: {texto: 'Veta', icono: 'aprende'}};
   const cajas = () => CAJAS[VETA.yo().papel] || CAJAS.agente;
   const sitios = () => [INICIO].concat(cajas());
   VETA.SITIOS = SITIOS; VETA.cajas = cajas;
-  const AREA = {hoy: 'hoy', visitas: 'hoy', clientes: 'clientes', veta: 'aprende', equipo: 'direccion', decidir: 'direccion', operaciones: 'direccion', oficina: 'aprende'};
-  const esRaiz = e => !!(e && e.def.destino && e.def.ruta === e.def.destino);
+  const AREA = {inicio: 'hoy', hoy: 'hoy', visitas: 'hoy', clientes: 'clientes', veta: 'aprende', equipo: 'direccion', decidir: 'direccion', operaciones: 'direccion', oficina: 'aprende'};
+  // raíz = una pestaña de la barra de quien mira. “Clientes” es raíz para la agente y un detalle de Inicio para dirección; “Te toca a ti” ya no lo es
+  const esRaiz = e => !!(e && e.def.destino && e.def.ruta === e.def.destino && cajas().includes(e.def.destino));
+  // ---- ronda 8 · redirecciones (PLAN_R8.md, 2.2): las rutas que se funden con otra llevan a la que queda ----
+  // hoy → inicio (agente) · decidir → inicio · reglas → veta · clientes/al-dia → clientes con el filtro “Todos” · veta → oficina (dirección)
+  // {mira: true} solo calcula el destino; sin él, clientes/al-dia deja dicho el filtro en VETA.est('r8.filtroClientes') = 'todos'.
+  function redirige(ruta, mira) {
+    ruta = String(ruta || '');
+    const dir = VETA.yo().papel === 'direccion';
+    if (ruta === 'clientes/al-dia') { if (!mira) VETA.est.pon('r8.filtroClientes', 'todos'); return 'clientes'; }
+    if (ruta === 'decidir' || (ruta === 'hoy' && !dir)) return INICIO;
+    if (ruta === 'reglas') ruta = 'veta';
+    if (ruta === 'veta' && dir) return 'oficina';
+    if (ruta === 'veta/mia' && !dir) return 'veta';
+    // las reglas de una agente (sus casos, con los nombres y las frases de sus clientes) no las abre dirección: por la ruta escrita a mano va a “Lo que Veta hace por ti”
+    if (dir && /^(regla|entendido)\//.test(ruta)) return 'veta/mia';
+    return ruta;
+  }
+  VETA.redirige = ruta => redirige(ruta, true);
   const PRE = ['E1', 'E2', 'A18'];   // antes de entrar: portada, entrar y primer día (sin barra, con la cabecera de siempre)
   const esPre = e => !!e && PRE.indexOf(e.def.cod) >= 0;
 
@@ -260,64 +265,80 @@
     return out;
   }
 
-  // ---- cabeceras ----
-  // Manel, 22-nov: la frase ya no va bajo el título. Va en una hoja pequeña que abre el “?” de arriba a la derecha
-  // (siempre en el mismo sitio, solo si la pantalla tiene frase). Si la frase es la instrucción del paso
-  // (`fraseCuerpo: true` o `p => …`), va arriba del cuerpo (.pant-frase) y no hay “?”.
-  // El número de la frase, si lo había, pasa al título, pequeño y en gris: campo `cuenta` (número o `p => número`).
+  // ---- cabeceras (ronda 8 · PLAN_R8.md, 4.1 pieza 1 y apartado 5) ----
+  // Tres formas: RAÍZ (56 px, título de 28, sin “volver”) · DETALLE (60 px: flecha de 44 y, a su derecha, el nombre de donde vienes
+  // sobre el título de 20) · PASO (como detalle, con los puntos de paso a la derecha). No hay “?”: el campo `frase` ya no se pinta.
+  // Lo que la cabecera y el marco leen de cada pantalla (todo opcional; texto o `p => texto`):
+  //   sub         subtítulo: primera línea del contenido (15 px, gris, 12 palabras como mucho)
+  //   nota        nota sobre el botón del pie (10 palabras como mucho). Texto, o {texto, candado: true} si promete que nada sale solo
+  //   mas         “Más” arriba a la derecha: id de hoja ('h02'), o {hoja, datos} · {accion} · {ir}
+  //   cabDerecha  p => {tipo: 'cara' | 'telefono' | 'mas' | 'saltar' | 'puntos' | 'imprimir', …}. Una cosa o ninguna: si hay cabDerecha, `mas` no se pinta
   const val = (x, p) => (typeof x === 'function' ? x(p) : x);
-  const fraseDe = e => { try { return val(e.def.frase, e.p) || ''; } catch (er) { return ''; } };
-  const enCuerpo = e => { try { return !!val(e.def.fraseCuerpo, e.p); } catch (er) { return false; } };
-  const numeroCab = e => {
-    if (e.def.cuenta == null) return '';
-    let n; try { n = val(e.def.cuenta, e.p); } catch (er) { return ''; }
-    return n == null || n === '' ? '' : `<span class="cab-n">${esc(String(n))}</span>`;
+  const seguro = (f, d) => { try { const v = f(); return v == null ? d : v; } catch (er) { setTimeout(() => { throw er; }); return d; } };
+  const DER = {
+    cara: o => `<button type="button" class="cab-b cab-cara"${UI.attrs(Object.assign({ir: 'cuenta'}, o))} aria-label="${esc(o.texto || 'Your account, ' + VETA.yo().nombre)}">${VETA.av(o.quien || VETA.yo().id, 40)}</button>`,
+    telefono: o => `<button type="button" class="cab-b"${UI.attrs(o)} aria-label="${esc(o.texto || 'Call or write')}">${VETA.ic('telefono', 24)}</button>`,
+    mas: o => `<button type="button" class="cab-b cab-b-t"${UI.attrs(o)}>${esc(o.texto || 'More')}</button>`,
+    saltar: o => `<button type="button" class="cab-b cab-b-t"${UI.attrs(o)}>${esc(o.texto || 'Skip')}</button>`,
+    imprimir: o => `<button type="button" class="cab-b cab-b-t"${UI.attrs(Object.assign({accion: 'imprimir'}, o))}>${esc(o.texto || 'Print')}</button>`,
+    puntos: o => { const t = o.total || 4, n = Math.max(1, Math.min(t, o.paso || 1)); return `<span class="cab-puntos" role="img" aria-label="${esc(o.texto || `Step ${n} of ${t}`)}">${Array.from({length: t}, (_, k) => `<i${k < n ? ' class="on"' : ''}></i>`).join('')}</span>`; }
   };
-  const conNumero = (h1, e) => { const n = numeroCab(e); return n ? `<div class="cab-tit">${h1}${n}</div>` : h1; };
-  const ayuda = e => {
-    const f = enCuerpo(e) ? '' : fraseDe(e);
-    return f ? `<button type="button" class="cab-ayuda" data-hoja="ayuda" data-frase="${esc(f)}" aria-label="What you can do here"><span class="cab-ayuda-c" aria-hidden="true">?</span></button>` : '';
+  // VETA.cabDer({tipo: 'mas', hoja: 'h02'}) → el HTML de lo de arriba a la derecha (lo usa la cabecera; una pantalla no lo llama)
+  const cabDer = o => {
+    if (!o) return '';
+    if (typeof o === 'string') return o;   // HTML ya hecho (lo de antes de la ronda 8): se pinta tal cual hasta que su carril lo pase a {tipo}
+    if (!DER[o.tipo]) { console.warn('cabDerecha: type that does not exist', o.tipo); return ''; }
+    return DER[o.tipo](o);
+  };
+  VETA.cabDer = cabDer;
+  function derecha(e) {
+    let d = e.def.cabDerecha ? seguro(() => e.def.cabDerecha(e.p), '') : '';
+    if (!d) { const m = seguro(() => val(e.def.mas, e.p), null); if (m) d = Object.assign({tipo: 'mas'}, typeof m === 'string' ? {hoja: m} : m); }
+    // en una raíz, si no hay otra cosa, tu cara: es la misma puerta de Cuenta que en Inicio, en el mismo sitio de las cuatro pestañas
+    if (!d && esRaiz(e)) d = {tipo: 'cara'};
+    const h = cabDer(d);
+    return h ? `<span class="cab-der">${h}</span>` : '';
+  }
+  // el nombre de la pantalla de la que vienes: el título de la anterior de la pila; en frío, el del padre del mapa
+  const origen = e => {
+    const i = pila.findIndex(x => x.ruta === e.ruta);
+    if (i > 0 && pila[i - 1].titulo) return pila[i - 1].titulo;
+    const r = resuelve(padreDe(e)); return r ? titulo(r) : 'Home';
   };
   function cabecera(e, modo) {
     if (e.def.sinCabecera) return '';
     const t = esc(titulo(e));
-    if (modo === 'lista') return `<header class="cab cab-lista">${conNumero(`<h1 class="cab-t">${t}</h1>`, e)}${ayuda(e)}</header>`;
+    if (modo === 'lista') return `<header class="cab cab-lista"><h1 class="cab-t">${t}</h1></header>`;
     if (modo === 'panel') {
       const migas = pila.map((x, k) => ({x, k})).filter(o => o.k < pila.length - 1);
       // panel que se abre solo (primera fila de la lista): la pila no lo tiene, pero la miga dice de qué lista sale
       const top = pila[pila.length - 1], auto = top && top.ruta !== e.ruta;
       const raizMiga = auto ? `<span class="miga-b miga-quieta">${esc(top.titulo || '')}</span><span class="miga-s" aria-hidden="true">›</span>` : '';
-      return `<header class="cab cab-panel"><nav class="miga" aria-label="Where you are">${raizMiga}${migas.map(o => `<button type="button" class="miga-b" data-atras-a="${o.k}">${esc(o.x.titulo || '')}</button><span class="miga-s" aria-hidden="true">›</span>`).join('')}<h1 class="cab-t">${t}</h1>${numeroCab(e)}</nav>${e.def.cabDerecha || ayuda(e) ? `<span class="cab-der">${e.def.cabDerecha ? e.def.cabDerecha(e.p) : ''}${ayuda(e)}</span>` : ''}</header>`;
+      return `<header class="cab cab-panel"><nav class="miga" aria-label="Where you are">${raizMiga}${migas.map(o => `<button type="button" class="miga-b" data-atras-a="${o.k}">${esc(o.x.titulo || '')}</button><span class="miga-s" aria-hidden="true">›</span>`).join('')}<h1 class="cab-t">${t}</h1></nav>${derecha(e)}</header>`;
     }
-    // ronda 7 · cabecera única: “‹ de dónde vienes” (V1), título y, a la derecha, el “?” con la frase de la pantalla (campo `frase`)
-    const i = pila.findIndex(x => x.ruta === e.ruta);
-    const ant = i > 0 && pila[i - 1].titulo ? pila[i - 1].titulo : (() => { const r = resuelve(padreDe(e)); return r ? titulo(r) : 'Home'; })();
-    const der = e.def.cabDerecha ? e.def.cabDerecha(e.p) : '', tt = e.def.cabTitulo ? e.def.cabTitulo(e.p) : t;
-    if (esPre(e)) return `<header class="cab cab-detalle"><button type="button" class="cab-atras" data-atras aria-label="Back to ${esc(ant)}">${VETA.ic('atras', 20)}</button><h1 class="cab-t">${tt}</h1><span class="cab-der">${der}</span></header>`;
-    return `<header class="cab cab-r7"><div class="cab-fila"><button type="button" class="cab-atras" data-atras aria-label="Back to ${esc(ant)}">${VETA.ic('atras', 20)}<span>${esc(ant)}</span></button><span class="cab-der">${der}${ayuda(e)}</span></div>` +
-      conNumero(`<h1 class="cab-t">${tt}</h1>`, e) + '</header>';
+    const tt = e.def.cabTitulo ? e.def.cabTitulo(e.p) : t;
+    if (esRaiz(e)) return `<header class="cab cab-raiz"><h1 class="cab-t">${tt}</h1>${derecha(e)}</header>`;
+    const ant = esc(origen(e));
+    return `<header class="cab cab-det"><button type="button" class="cab-atras" data-atras aria-label="Back to ${ant}">${VETA.ic('atras', 24)}</button>` +
+      `<div class="cab-c"><span class="cab-de">${ant}</span><h1 class="cab-t">${tt}</h1></div>${derecha(e)}</header>`;
   }
-  // la instrucción del paso, arriba del cuerpo y con su letra (solo las pantallas con `fraseCuerpo`)
-  const fraseCuerpo = e => { const f = enCuerpo(e) ? fraseDe(e) : ''; return f ? `<p class="pant-frase" data-i="0">${esc(f)}</p>` : ''; };
-  VETA.fraseDe = e => fraseDe(e || actual || {def: {}});
-  // la hoja del “?”: “Qué puedes hacer aquí” y la frase de la pantalla que lo abrió
-  VETA.hojaDef('ayuda', {
-    titulo: 'What you can do here',
-    pinta: d => `<p class="hoja-ayuda">${esc(d.frase || VETA.fraseDe() || 'Tap whatever you want to see.')}</p>`
-  });
-
-  // el título de una cabecera de detalle nunca parte en dos líneas: si no cabe, la letra baja de 20 a 16 px como mucho
-  function ajustaTitulo(col) {
-    const t = col.querySelector('.cab-detalle .cab-t'); if (!t || !t.isConnected) return;
-    t.style.fontSize = '';
-    const un = parseFloat(getComputedStyle(t).lineHeight) || 22; let fs = parseFloat(getComputedStyle(t).fontSize) || 20;
-    while (t.getBoundingClientRect().height > un * 1.5 && fs > 16) { fs -= 1; t.style.fontSize = fs + 'px'; }
-  }
-  if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => VETA.$$('#marco .col').forEach(ajustaTitulo));
+  // la línea de apoyo (pieza 15): el subtítulo, primera línea del contenido, y la nota, sobre el botón del pie.
+  const subDe = e => {
+    const s = seguro(() => val(e.def.sub, e.p), '');
+    return s ? `<p class="r7-sub" data-i="0">${esc(s)}</p>` : '';
+  };
+  const notaDe = e => {
+    const n = seguro(() => val(e.def.nota, e.p), '');
+    if (!n) return '';
+    const o = typeof n === 'string' ? {texto: n} : n;
+    return o.texto ? VETA.r7.nota(o.texto, o) : '';   // con un nombre de VETA.PROMESA ('envio', 'nada', 'chats') pinta la frase canónica y su candado
+  };
 
   // ---- montar una pantalla en una columna ----
   function monta(col, e, modo, o) {
     o = o || {};
+    // si es la misma pantalla que se repinta, qué “hechos” había: el que aparezca ahora es nuevo y su ✓ se dibuja
+    const antes = col.dataset.ruta === e.ruta && col.dataset.pant === e.def.cod ? VETA.r7.clavesHecho(col) : null;
     col.className = 'col col-' + modo + (o.activa ? ' activa' : '');
     col.dataset.area = e.def.area || AREA[e.def.destino] || (e.def.completa ? 'voz' : 'yo');
     col.dataset.ruta = e.ruta; col.dataset.pant = e.def.cod;
@@ -326,21 +347,24 @@
     try { cuerpo = VETA.tieneParam('error') && e.def.cod !== 'E1' ? UI.error() : e.def.pinta(e.p); }
     catch (err) { setTimeout(() => { throw err; }); cuerpo = UI.error({texto: 'This screen failed to render.'}); }
     const fijo = e.def.botonFijo ? e.def.botonFijo(e.p) : '';
+    // el pie (80 px; 108 con nota): la nota va dentro, sobre el botón. Sin botón no hay pie ni nota
     col.innerHTML = cabecera(e, modo) + (navigator.onLine === false ? UI.sinRed() : '') +
-      `<div class="desplaza" tabindex="-1"><section class="pant pant-${esc(e.def.cod)}${e.def.pendiente ? ' pant-pendiente' : ''}" data-pant="${esc(e.def.cod)}" aria-label="${esc(titulo(e))}"><div class="pant-cuerpo">${modo === 'lista' ? '' : fraseCuerpo(e)}${cuerpo}</div></section></div>` +
-      (fijo ? `<div class="fijo">${fijo}</div>` : '');
-    ajustaTitulo(col);
+      `<div class="desplaza" tabindex="-1"><section class="pant pant-${esc(e.def.cod)}" data-pant="${esc(e.def.cod)}" aria-label="${esc(titulo(e))}"><div class="pant-cuerpo">${modo === 'lista' ? '' : subDe(e)}${cuerpo}</div></section></div>` +
+      (fijo ? `<div class="fijo">${notaDe(e)}${fijo}</div>` : '');
     const d = col.querySelector('.desplaza');
     if (o.scroll) d.scrollTop = o.scroll;
     VETA.mov.vigilaDesplazamiento(d, col);
     if (e.def.alMontar) { try { e.def.alMontar(col.querySelector('.pant'), e.p); } catch (err) { setTimeout(() => { throw err; }); } }
+    // las piezas vivas: filtros, el ✓ del hecho nuevo y el centrado de las pantallas de una tarjeta (`centra: true | false` en la pantalla lo fuerza)
+    VETA.r7.alMontar(col, {antes, pie: !!fijo, centra: modo === 'lista' ? false : e.def.centra});
     return col;
   }
 
   // ---- pintar lo que toca según la pila ----
   // en ordenador la lista de la izquierda se vuelve a montar si el modelo cambió desde la última vez (p. ej. tras decidir en el panel)
   let listaVieja = false;
-  const raizDe = e => pila.map(x => resuelve(x.ruta)).find(esRaiz) || (e.def.destino ? resuelve(e.def.destino) : null);
+  // ronda 8 · la lista de la izquierda es la raíz por la que se entró (la del camino). Lo que se abre desde Inicio va a una columna, como en móvil
+  const raizDe = () => pila.map(x => resuelve(x.ruta)).find(esRaiz) || null;
   function pinta(dir, foco, soloRepinta) {
     const top = pila[pila.length - 1];
     let e = resuelve(top.ruta);
@@ -357,7 +381,7 @@
         donde = monta(a, e, e.def.completa ? 'completa' : 'movil', {activa: true, scroll: soloRepinta || dir === 'atras' ? scrollDe(e.ruta) : 0});
         b.innerHTML = ''; b.className = 'col'; delete b.dataset.ruta;
       } else if (e.def.completa || e.def.ancha || !raizDe(e)) {
-        app.dataset.vista = e.def.completa ? 'completa' : 'ancha';
+        app.dataset.vista = e.def.completa && esPre(e) ? 'completa' : 'ancha';   // D20 · un documento no se queda sin el menú lateral
         donde = monta(a, e, e.def.completa ? 'completa' : 'detalle', {activa: true, scroll: soloRepinta || dir === 'atras' ? scrollDe(e.ruta) : 0});
         b.innerHTML = ''; b.className = 'col'; delete b.dataset.ruta;
       } else {
@@ -374,27 +398,31 @@
         if (esRaiz(e)) {
           // panel vacío: se abre sola la primera fila de la lista
           // (si la lista marca qué va al panel con data-panel, manda eso: Hoy pone el cliente de su tarjeta abierta)
-          const pf = a.querySelector('.pant [data-panel]'), f = a.querySelector('.pant .fila[data-ir]');
+          const pf = a.querySelector('.pant [data-panel]'), f = a.querySelector('.pant :is(.r7-fila,.fila)[data-ir]');   // las filas de la ronda 8 son .r7-fila
           panel = pf && resuelve(pf.dataset.panel) ? resuelve(pf.dataset.panel) : f ? resuelve(f.dataset.ir) : null;
         }
         if (panel) donde = monta(b, panel, 'panel', {activa: true, scroll: soloRepinta || dir === 'atras' ? scrollDe(panel.ruta) : 0});
-        else { b.className = 'col col-panel activa'; b.innerHTML = UI.vacio({titulo: 'Choose something from the list', icono: 'hoy'}); delete b.dataset.ruta; donde = b; }
+        else { b.className = 'col col-panel activa'; b.innerHTML = VETA.r7.vacio('Choose something from the list'); delete b.dataset.ruta; donde = b; }
         VETA.$$('.marcada', a).forEach(x => x.classList.remove('marcada'));
         const r = panel ? panel.ruta : '';
         const m = VETA.$$('[data-ir]', a).find(x => x.dataset.ir === r) || VETA.$$('[data-ir]', a).find(x => r.indexOf(x.dataset.ir + '/') === 0);
         if (m) m.classList.add('marcada');
       }
       pintaBarra(); pintaLateral();
+      if (VETA.avisoRecoloca) VETA.avisoRecoloca();
       document.title = (e.def.cod === 'E1' ? 'Veta' : titulo(e) + ' · Veta');
       // la cascada arranca ya dentro del cambio, para que se vea durante la transición (solo al ir adelante o cambiar de pestaña)
-      if (!soloRepinta && (dir === 'adelante' || dir === 'pestana')) VETA.mov.cascada(donde && donde.querySelector ? donde.querySelector('.pant') : null);
+      // en una raíz (y en Inicio) no suben los bloques: entran escalonadas sus seis primeras filas. En el resto, la cascada de siempre
+      if (!soloRepinta && (dir === 'adelante' || dir === 'pestana')) {
+        const pant = donde && donde.querySelector ? donde.querySelector('.pant') : null;
+        if (esRaiz(e) || e.ruta === INICIO) VETA.mov.escalona(pant); else VETA.mov.cascada(pant);
+      }
       return donde;
     };
     const fin = donde => {
       if (!soloRepinta) {
         const d = donde && donde.querySelector && donde.querySelector('.desplaza');
         if (d && dir) try { d.focus({preventScroll: true}); } catch (x) {}
-        if (VETA.guia) VETA.guia.entra(e.def);
       }
       guardaPila();
     };
@@ -435,7 +463,7 @@
   }
   VETA.ir = (ruta, o) => {
     o = o || {};
-    ruta = String(ruta).replace(/^#?\/?/, '');
+    ruta = redirige(String(ruta).replace(/^#?\/?/, ''));
     let e = resuelve(ruta);
     if (!e) { VETA.aviso('That screen doesn\'t exist yet.'); return; }
     sueltaTodo();
@@ -501,8 +529,8 @@
     sueltaTodo(); guardaScroll();
     const anima = d => (gesto() ? null : d);
     const e0 = resuelve(ruta);
-    if (!st || !st.veta || !e0 || vedada(ruta)) {   // dirección escrita a mano o enlace: camino nuevo por el mapa (V5)
-      const r = e0 && !vedada(ruta) ? ruta : (VETA.est.lee('dentro', false) ? INICIO : 'portada');
+    if (!st || !st.veta || !e0 || vedada(ruta) || redirige(ruta, true) !== ruta) {   // dirección escrita a mano o enlace: camino nuevo por el mapa (V5)
+      const r = e0 && !vedada(ruta) ? redirige(ruta) : (VETA.est.lee('dentro', false) ? INICIO : 'portada');
       pila = []; camino(r).forEach((x, i) => { pila.push(x); pon(x.ruta, i, i === 0); });
       pinta('adelante'); return;
     }
@@ -516,23 +544,29 @@
     pon(ruta, pila.length - 1, true); pinta(anima('adelante'));
   }
 
-  // ---- barra de abajo (móvil) y menú de la izquierda (ordenador): Inicio y las cuatro cajas del papel ----
+  // ---- barra de abajo (móvil) y menú de la izquierda (ordenador): Inicio, las tres raíces del papel y, en el centro, el micro ----
+  // Pestaña marcada: la raíz por la que se entró (la del camino). Si no hay ninguna —Cuenta y lo que cuelga de ella, lo que se abre
+  // desde Inicio— se marca Inicio. En Dictar y sus pasos, el micro.
   function destinoMarcado() {
     if (!actual) return null;
     if (actual.ruta === INICIO) return INICIO;
-    if (/^dicta/.test(actual.def.archivo || '')) return 'ensenale';
-    const c = pila.map(x => resuelve(x.ruta)).find(esRaiz);   // la caja por la que se entró
-    return c ? c.def.destino : actual.def.destino;
+    if (/^dicta/.test(actual.def.archivo || '')) return 'dictar';
+    const c = pila.map(x => resuelve(x.ruta)).find(esRaiz);
+    return c ? c.def.destino : INICIO;
   }
-  // el número de “Te toca” y de “Decidir”: de VETA.r7.cuentas() (R9) si ya existe; si no, el contador de siempre
-  function numero(d) {
-    if (d !== 'hoy' && d !== 'decidir') return 0;
+  // lo que queda pendiente: “Te toca a ti” (agente) o lo que espera decisión (dirección). El número se dice una vez, en la frase de Inicio;
+  // la barra solo pone un punto de 8 px en Inicio cuando hay algo y no estás allí.
+  function pendiente() {
+    const d = VETA.yo().papel === 'direccion' ? 'decidir' : 'hoy';
     let c = null; try { c = VETA.r7 && VETA.r7.cuentas && VETA.r7.cuentas(); } catch (e) {}
     if (c && typeof c[d] === 'number') return c[d];
     return d === 'hoy' ? VETA.modelo.contador(VETA.yo().id) : 0;
   }
-  function contadorHtml(n) { return n > 0 ? `<span class="contador" aria-label="${n} to do"><span class="contador-n">${n}</span></span>` : ''; }
-  const firmaDe = marcado => sitios().join() + '|' + marcado + '|' + numero('hoy') + '|' + numero('decidir') + '|' + VETA.yo().id;
+  VETA.pendiente = pendiente;
+  const puntoHtml = (n, marcado) => (n > 0 && marcado !== INICIO ? `<span class="tab-punto" role="img" aria-label="${n} to do"></span>` : '');
+  const firmaDe = marcado => sitios().join() + '|' + marcado + '|' + (pendiente() > 0) + '|' + VETA.yo().id;
+  // el micro: data-ir="dictar/libre" y data-mic (antes de ir se guarda de qué pantalla sale: ver el clic, más abajo)
+  const microHtml = marcado => `<button type="button" class="tab-mic${marcado === 'dictar' ? ' on' : ''}" data-ir="dictar/libre" data-mic aria-label="Dictate"${marcado === 'dictar' ? ' aria-current="page"' : ''}><span class="tab-mic-c">${VETA.ic('mic', 24)}</span></button>`;
   function pintaBarra() {
     const el = document.getElementById('barra'); if (!el) return;
     const marcado = destinoMarcado(), firma = firmaDe(marcado);
@@ -540,8 +574,10 @@
     // FN · en mitad de una transición no se tocan las pestañas (llevan nombre de transición y Chromium se cae): se repinta al acabar
     if (VETA.mov.ocupada()) { VETA.mov.alAcabar('barra', pintaBarra); return; }
     el.dataset.firma = firma;
-    el.innerHTML = `<div class="tabs">${sitios().map(d => `<button type="button" class="tab${d === marcado ? ' on' : ''}" data-tab="${d}"${d === marcado ? ' aria-current="page"' : ''} style="view-transition-name:tab-${d}">` +
-      `<span class="tab-ic">${VETA.ic(SITIOS[d].icono, 24)}${contadorHtml(numero(d))}</span><span class="tab-p">${SITIOS[d].texto}</span></button>`).join('')}</div>`;
+    const tab = d => `<button type="button" class="tab${d === marcado ? ' on' : ''}" data-tab="${d}"${d === marcado ? ' aria-current="page"' : ''} style="view-transition-name:tab-${d}">` +
+      `<span class="tab-ic">${VETA.ic(SITIOS[d].icono, 24)}${d === INICIO ? puntoHtml(pendiente(), marcado) : ''}</span><span class="tab-p">${SITIOS[d].texto}</span></button>`;
+    const l = sitios();
+    el.innerHTML = `<div class="tabs" data-papel="${VETA.yo().papel === 'direccion' ? 'direccion' : 'agente'}">${l.slice(0, 2).map(tab).join('')}${microHtml(marcado)}${l.slice(2).map(tab).join('')}</div>`;
   }
   function pintaLateral() {
     const el = document.getElementById('lateral'); if (!el) return;
@@ -549,8 +585,8 @@
     if (el.dataset.firma === firma) return;
     el.dataset.firma = firma;
     el.innerHTML = `<div class="lat-marca"><img src="assets/veta-symbol-gold.png" alt="" width="30" height="24"><b>VETA</b></div>` +
-      `<div class="lat-dest">${sitios().map(d => `<button type="button" class="lat-d${d === marcado ? ' on' : ''}" data-tab="${d}"${d === marcado ? ' aria-current="page"' : ''}>${VETA.ic(SITIOS[d].icono, 22)}<span>${SITIOS[d].largo || SITIOS[d].texto}</span>${numero(d) ? `<span class="lat-n">${numero(d)}</span>` : ''}</button>`).join('')}</div>` +
-      `<button type="button" class="lat-mic${marcado === 'ensenale' ? ' on' : ''}" data-ir="dictar/libre"><span class="mic-c">${VETA.ic('mic', 22)}</span><span>Teach Veta</span></button>` +
+      `<div class="lat-dest">${sitios().map(d => `<button type="button" class="lat-d${d === marcado ? ' on' : ''}" data-tab="${d}"${d === marcado ? ' aria-current="page"' : ''}>${VETA.ic(SITIOS[d].icono, 22)}<span>${SITIOS[d].largo || SITIOS[d].texto}</span>${d === INICIO ? puntoHtml(pendiente(), marcado) : ''}</button>`).join('')}</div>` +
+      `<button type="button" class="lat-mic${marcado === 'dictar' ? ' on' : ''}" data-ir="dictar/libre" data-mic><span class="mic-c">${VETA.ic('mic', 22)}</span><span>Dictate</span></button>` +
       `<button type="button" class="lat-yo" data-ir="cuenta">${VETA.av(yo.id, 40)}<span class="lat-yo-c"><span class="lat-yo-n">${esc(yo.nombre)}</span><span class="lat-yo-p">${esc(yo.papelTexto)}</span></span></button>`;
   }
   VETA.pintaBarra = () => { ['barra', 'lateral'].forEach(id => { const el = document.getElementById(id); if (el) delete el.dataset.firma; }); pintaBarra(); pintaLateral(); };
@@ -579,11 +615,21 @@
     VETA.aviso('This isn\'t built yet in the demo.');
   }
 
+  // ronda 8 · el micro de la barra: antes de ir a Dictar, si la pantalla abierta define `casoDictado(p)` se guarda lo que devuelva
+  // ({de, quien, titulo, texto}) en VETA.est('r7.caso'), que es de donde Dictar saca “sobre qué” (lo que antes hacía cada
+  // “Enséñale a Veta” incrustado). Si no lo define, no se deja ningún caso viejo.
+  function guardaCaso() {
+    const e = (VETA.$('.col.activa') || {})._entrada || actual;
+    let c = null;
+    if (e && typeof e.def.casoDictado === 'function') { try { c = e.def.casoDictado(e.p); } catch (er) { setTimeout(() => { throw er; }); } }
+    if (c) VETA.est.pon('r7.caso', c); else VETA.est.quita('r7.caso');
+  }
+  VETA.dictar = guion => { guardaCaso(); VETA.ir('dictar/' + (guion || 'libre')); };
+
   document.addEventListener('click', ev => {
     const el = ev.target.closest && ev.target.closest('[data-tab],[data-ir],[data-atras],[data-atras-a],[data-hoja],[data-accion]');
     if (!el || el.closest('[inert]') || el.disabled) return;
     if (el.tagName === 'A') ev.preventDefault();
-    if (el.dataset.g && VETA.guia) VETA.guia.toca(el.dataset.g);
     // interruptor y selector de dos: el núcleo mueve el pomo; la acción recibe el valor nuevo
     if (el.getAttribute('role') === 'switch') el.setAttribute('aria-checked', el.getAttribute('aria-checked') === 'true' ? 'false' : 'true');
     if (el.getAttribute('role') === 'radio' && el.parentNode.classList.contains('selector')) {
@@ -600,6 +646,7 @@
     if (el.hasAttribute('data-atras-a')) { VETA.atrasA(el.dataset.atrasA); return; }
     if (el.hasAttribute('data-atras')) { if (el.closest('#hoja')) VETA.cierraHoja({foco: false}); VETA.atras(); return; }
     if (el.hasAttribute('data-ir')) {
+      if (el.hasAttribute('data-mic')) guardaCaso();
       if (el.closest('#hoja')) VETA.cierraHoja({foco: false});
       const desdeLista = VETA.ordenador() && !!el.closest('#col-a.col-lista');
       VETA.ir(el.dataset.ir, {foco: el.closest('.tc') || el, desdeLista});
@@ -622,10 +669,12 @@
     let ruta = nuevo ? 'portada' : rutaHash();
     // sin sesión (nadie ha entrado aún, o cerró sesión) se empieza siempre por la marca y el idioma (E1)
     if (!ruta || !resuelve(ruta)) ruta = VETA.est.lee('dentro', false) ? INICIO : 'portada';
+    ruta = redirige(ruta);
     if (vedada(ruta)) ruta = INICIO;
     // recarga: el camino guardado sigue valiendo si acaba aquí y el historial lo acompaña; si no (entrada en frío), se reconstruye por el mapa (V5)
     const top = pila.length ? pila[pila.length - 1] : null, st = history.state;
-    const sano = top && top.ruta === ruta && !nuevo && st && st.veta && st.n === pila.length - 1 && (pila[0].ruta === INICIO || esPre(resuelve(pila[0].ruta)));
+    const sano = top && top.ruta === ruta && !nuevo && st && st.veta && st.n === pila.length - 1 && (pila[0].ruta === INICIO || esPre(resuelve(pila[0].ruta))) &&
+      pila.every(x => redirige(x.ruta, true) === x.ruta);   // un camino guardado antes de la ronda 8 puede pasar por una ruta que ya no existe
     if (sano) { serie = st.s; cuenta = Math.max(cuenta, st.s); }
     else { pila = []; camino(ruta).forEach((x, i) => { pila.push(x); pon(x.ruta, i, i === 0); }); }
     pinta(null);

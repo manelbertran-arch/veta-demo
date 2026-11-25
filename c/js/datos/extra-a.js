@@ -46,7 +46,7 @@
         dias: [{id: 'jue', texto: 'Jueves 26, 10:00', fecha: 'Jue 26', fechaISO: '2026-11-26'},
           {id: 'vie', texto: 'Viernes 27, 10:00', fecha: 'Vie 27', fechaISO: '2026-11-27'},
           {id: 'lun', texto: 'Lunes 30, 10:00', fecha: 'Lun 30', fechaISO: '2026-11-30'}],
-        pie: 'La vigilo yo y la pongo en tu calendario.', boton: 'Guardar la tarea', linea: 'Guardada · Llamar a Jordi'},
+        pie: 'La vigilo yo. Te la pongo en el calendario si me lo pides.', boton: 'Guardar la tarea', linea: 'Guardada · Llamar a Jordi'},
       nota: {tipo: 'nota', entendido: 'He entendido: una nota para la ficha de Pere Soler', texto: 'Pere prefiere que le llame por la tarde, después de las 16:00.', cliente: 'pere',
         pie: 'Queda en su Historia.', boton: 'Guardar la nota', linea: 'Guardada · Nota en la ficha de Pere'}
     },

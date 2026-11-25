@@ -121,7 +121,9 @@
       // el de cada lunes: mientras te toca, va en el botón negro; enviado, queda aquí para volver a leerlo
       c.id === 'pere' && !hayInforme(c) ? {nombre: 'Informe de la semana', ir: 'informe/pere'} : null,
       enc ? {nombre: enc[0], dato: enc[1] || null, hoja: 'b-encajan', de: c.id} : null,
-      piso ? {foto: c.piso, nombre: (X().piso || {})[c.piso] || piso.nombre, hoja: 'h17', datos: {piso: c.piso, n: 0}} : null
+      piso ? {foto: c.piso, nombre: (X().piso || {})[c.piso] || piso.nombre, hoja: 'h17', datos: {piso: c.piso, n: 0}} : null,
+      // dirección anota la queja desde la ficha (sin pasar por «Más»): la cita de la queja queda a cuatro toques de Inicio
+      VETA.yo().papel === 'direccion' ? {nombre: 'Anotar una queja', hoja: 'h39', de: c.id} : null
     ]);
   }
 

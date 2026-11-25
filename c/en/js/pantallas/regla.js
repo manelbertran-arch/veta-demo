@@ -1,17 +1,15 @@
-/* Veta demo · pantallas · regla.js · paquete C (Veta, cuenta y entrada)
-   - A10 · Una regla · #/regla/<id>   (una pantalla, cuatro estados: propuesta · a prueba · activa · descartada)
-   - A10b · Hasta dónde llega · #/regla/<id>/nivel
-   Sus hojas (H18 un caso, H19 los casos como yo, H20 otra cosa…, H22 subir un nivel) están en js/hojas/veta.js. */
+/* Veta demo · pantallas · regla.js · carril C (Veta y cuenta)
+   - A10 · Un trabajo · #/regla/<id>   (una pantalla, cuatro estados: propuesta · a prueba · activa · descartada)
+   - A10b · ¿Quién lo hace? · #/regla/<id>/nivel
+   Arriba, una tarjeta: la pregunta de Veta (con el par “No, sigue igual” / “Sí” en el pie) o lo que hace ahora. Debajo, una lista
+   de filas que abren otra cosa. Sus hojas (h18 un caso, h19 los casos iguales, h20 cambiar algo, h22 subir un paso, c-veces, c-lee,
+   c-excepto) están en js/hojas/veta.js. Las dos pantallas comparten la pregunta, su respuesta y el final (segunda vuelta de la ronda 8):
+   la fila de hecho con “Deshacer” arriba y, en el pie, el siguiente trabajo que propongo o “Ir a Inicio”. */
 (function () {
   'use strict';
-  const UI = VETA.UI, esc = VETA.esc, M = VETA.modelo, C = VETA.c;
-  const D = () => VETA.datos.c;
+  const M = VETA.modelo, C = VETA.c;
+  const D = () => VETA.datos.c, R7 = () => VETA.r7;
   const linea = id => { const l = C.lee('linea', null); const r = M.regla(id); return l && r && l.id === id && l.estado === r.estado ? l : null; };
-  // quién la ve: la prueba es solo tuya; si la propones a la oficina (Otra cosa…), Montse la ve con tu nombre
-  const aQuien = id => {
-    const ofi = C.lee('aOficina', {})[id];
-    return `<div data-i="3">${UI.nota({texto: ofi ? `You suggested it to the office at ${ofi}: Montse sees it with your name.` : 'This trial is only yours: Montse does not see it. If you suggest it to the office, from “Something else…”, Montse will see it with your name.', icono: ofi ? 'equipo' : 'candado', clase: 'nota-gris'})}</div>`;
-  };
   C.excepciones = id => C.lee('excepciones', {})[id] || [];
   C.ponExcepcion = (id, cliente) => { const e = C.lee('excepciones', {}); e[id] = (e[id] || []).filter(x => x !== cliente).concat(cliente ? [cliente] : []); C.pon('excepciones', e); };
   C.quitaExcepcion = (id, cliente) => { const e = C.lee('excepciones', {}); e[id] = (e[id] || []).filter(x => x !== cliente); C.pon('excepciones', e); };
@@ -22,8 +20,8 @@
     VETA.repinta({hecho: 'c-regla'});
   };
 
-  // ---- ronda 6 · “¿Quién lo hace?”: de “Lo haces tú” a “Lo hago yo”, con la pregunta para subir un paso ----
-  const NV = () => D().niveles;
+  // ---- “¿Quién lo hace?”: de “Lo haces tú” a “Lo hago yo”, con la pregunta para subir un paso ----
+  const NV = () => VETA.vivo.niveles();
   const subeDe = id => {
     if (id === 'r-visitas') { const v = C.visitas(), s = C.r6().visitas.sube[v.estado]; return s ? Object.assign({accion: 'subir', de: id}, s) : null; }   // solo pregunta mientras es una propuesta
     const x = C.r6().pasos[id]; return x && x.sube && C.paso(id) === x.paso && (M.regla(id) || {}).estado === 'activa' ? Object.assign({accion: 'subir', de: id}, x.sube) : null;
@@ -33,17 +31,13 @@
   const notaDe = id => {
     if (id === 'r-visitas') return C.visitas().estado === 'prueba' ? C.r6().visitas.hecho : '';
     const l = C.lee('nivelLinea', null), n = C.paso(id); if (!l || l.id !== id) return '';
-    return `Done. From today, ${n >= 4 ? 'I do it and tell you' : n === 3 ? 'I note it down' : 'I write it for you'}.` + (n < 4 ? MAS : '');
+    return `From today, ${n >= 4 ? 'I do it and tell you' : n === 3 ? 'I note it down' : 'I write it for you'}.` + (n < 4 ? MAS : '');
   };
-  C.quien = (id, i, desde) => `<section class="bloque c-quien"${i != null ? ` data-i="${i}"` : ''}><h2 class="bloque-t">Who does it?</h2>` +
-    VETA.vivo.escalera({nivel: C.paso(id), desde: (C.lee('nivelLinea', null) || {}).id === id ? 'today' : desde, sube: subeDe(id), nota: notaDe(id)}) + `</section>`;
-  // el nombre del trabajo (el mismo que en la lista, en Hoy y en la pestaña Veta) y debajo, qué es
-  const cabeza = (id, frase, apagada) => `<h2 class="c-frase c-frase-g${apagada ? ' c-apagada' : ''}" data-i="1">${esc(C.nombre(id))}</h2><p class="c-regla-que${apagada ? ' c-apagada' : ''}" data-i="1">${esc(frase)}</p>`;
   // la línea en el sitio al subir un paso, con “Deshacer”
   const lineaPaso = id => {
     const l = id === 'r-visitas' ? C.lee('visLinea', null) : C.lee('nivelLinea', null);
     if (!l || (id !== 'r-visitas' && l.id !== id) || (id === 'r-visitas' && l.estado !== VETA.r6.reglaVisitas())) return '';
-    return UI.lineaHecho({texto: l.texto, hora: l.hora, boton: {texto: 'Undo', accion: 'baja'}, vt: 'c-paso', i: 0});
+    return R7().hecho({texto: l.texto, hora: l.hora, deshacer: 'baja', vt: 'c-paso'});
   };
   C.subir = id => {
     if (id === 'r-visitas') {
@@ -63,140 +57,127 @@
     VETA.aviso('OK. I go back to doing it as before: I do not do it without asking you.');
   };
 
-  // ---- ronda 7 · los cinco pasos en filas de una línea; solo el de ahora, abierto, con lo que pregunto (el botón, abajo) ----
-  const R7 = () => VETA.r7;
-  // lo que digo bajo el paso de ahora: la nota de lo que acabas de decidir, o la pregunta para dar un paso más
-  const pide = (id, r) => {
-    const nota = notaDe(id); if (nota) return {t: nota};
-    const s = subeDe(id);
-    if (s) return {t: (s.hechas != null ? `I have done it ${s.hechas} times and you corrected me ${s.corregidas || 0}. ` : '') + s.pregunta, oro: true};
-    if (r && (r.estado === 'propuesta' || r.estado === 'nueva')) return {t: `You have done it ${(r.casos && r.casos.comoYo) ? r.casos.comoYo.length + (r.casos.distinto || []).length : 14} times yourself. Shall I try it for two weeks?`, oro: true};
-    if (r && r.estado === 'a-prueba') return {t: `I'm trying it ${C.fechaPrueba}. I send nothing.`};
-    return null;
-  };
-  C.pasos = (id, r, o) => {
-    const n = C.paso(id), p = o && o.sinPide ? null : pide(id, r);
-    return `<div class="r7-lista r7c-escalera" data-i="1" data-vt="c-paso">` + VETA.vivo.niveles().map(x => {
-      const est = x.cerrado ? 'cerrado' : x.n === n ? 'aqui' : x.n < n ? 'hecho' : 'falta';
-      const ic = x.cerrado ? VETA.ic('candado', 18) : x.n < n ? VETA.ic('check', 18) : String(x.n);
-      let c = `<span class="r7-fila-1"><span class="r7-fila-n">${esc(x.nombre)}</span>${est === 'aqui' ? R7().pastilla('Now', 'gris') : ''}</span>`;
-      if (est === 'aqui') c += `<span class="r7c-ahora">${esc(x.texto)}</span>` + (p ? `<span class="r7c-pide${p.oro ? ' r7c-oro' : ''}">${esc(p.t)}</span>` : '');
-      return `<div class="r7-fila r7-fila-quieta r7c-paso r7c-${est}"><span class="r7-fila-ic" aria-hidden="true">${ic}</span><span class="r7-fila-c">${c}</span></div>`;
-    }).join('') + '</div>';
-  };
-  // una línea por caso, dentro de una fila que se abre
-  const caso = (nombre, sub, o) => `<${o ? 'button type="button"' : 'div'} class="r7c-caso"${o ? UI.attrs(o) : ''}><span><b>${esc(nombre)}</b> · ${esc(sub)}</span>${o ? VETA.ic('chev', 16) : ''}</${o ? 'button' : 'div'}>`;
-  const casosVis = () => C.r6().visitas.casos.map(c => caso(c.nombre, c.distinto ? c.distinto : c.cuando)).join('');
-
-  // lo que va detrás de una fila, debajo de los pasos: los casos, lo que pasará, las excepciones y quién lo ve
-  function detras(id, r) {
-    const f = [];
-    if (id === 'r-visitas') {
-      const v = C.visitas(), d = C.r6().visitas;
-      f.push({icono: 'usuario', nombre: `The ${d.hechas} times you did it yourself`, abre: casosVis()});
-      if (v.estado !== 'prueba') f.push({icono: 'cal', nombre: 'What will happen', abre: `<p>${esc(v.manana)}</p>`});
-      f.push({icono: 'candado', nombre: 'Nothing goes out without you'});
-      return f;
-    }
-    if (r.estado === 'propuesta' && r.casos && r.casos.distinto) {
-      const n = r.casos.comoYo.length, ex = C.excepciones(id);
-      // FC (defecto 6): las veces igual y las distintas, en una sola fila (así nada queda debajo de los botones)
-      f.push({icono: 'usuario', nombre: `The ${n + r.casos.distinto.length} times you did it yourself`, pasa: `${n} the same and ${r.casos.distinto.length} different`, abre:
-        caso(`${n} times you did it the same way`, 'see them', {hoja: 'h19', datos: {regla: id}}) +
-        r.casos.distinto.map(c => caso(c.nombre, ((D().distinto[c.cliente] || {}).motivo || c.cuando) + (ex.includes(c.cliente) ? ' · not with him' : ''), {hoja: 'h18', datos: {regla: id, caso: c.cliente}})).join('')});
-      f.push({icono: 'cal', nombre: 'What will happen', abre: '<p>When someone asks for a valuation, I get the flat report ready for you the next day. You check it and send it.</p>'});
-    } else if (r.estado === 'a-prueba') {
-      if (id === 'r-cancelaciones') {
-        const l = D().aPrueba;
-        f.push({icono: 'probeta', nombre: 'What I would have suggested', pasa: `${l.length} times in ${r.dia || 5} days`, numero: l.length,
-          abre: l.map(c => caso(c.nombre, c.cuando, {hoja: 'h18', datos: {regla: id, caso: c.id}})).join('')});
-      } else if (r.casos && !r.casos.comoYo) f.push({icono: 'cal', nombre: 'Where it would have come up', pasa: `${r.casos.length} cases from your chats`, hoja: 'h19', datos: {regla: id}});
-      const ofi = C.lee('aOficina', {})[id];
-      f.push({icono: ofi ? 'equipo' : 'candado', nombre: 'Who sees it', pasa: ofi ? 'Montse, with your name' : 'Only you', abre: `<p>${ofi ? `You suggested it to the office at ${esc(ofi)}: Montse sees it with your name.` : 'This trial is only yours: Montse does not see it. If you suggest it to the office, from “Change something”, Montse will see it with your name.'}</p>`});
-    } else if (r.estado === 'activa') {
-      const hoy = (r.casosHoy || []).map(x => 'Today · ' + x), ult = hoy.concat(r.ultimo || []).slice(0, 4);
-      f.push(ult.length ? {icono: 'check', nombre: 'The last thing I did', pasa: ult[0], numero: ult.length, abre: ult.map(t => `<p>${esc(t)}</p>`).join('')}
-        : {icono: 'hoy', nombre: 'The last thing I did', pasa: 'Nothing yet: I will leave it in Your turn'});
-    } else if (r.estado === 'descartada') f.push({icono: 'info', nombre: 'I will not suggest it again', pasa: 'If you change your mind, tap “Undo”'});
-    const ex = C.excepciones(id).map(c => (M.quien(c) || {}).nombre || c);
-    if (ex.length) f.push({icono: 'usuario', nombre: 'Not with these clients', pasa: ex.join(', '), numero: ex.length});
-    return f;
-  }
-
-  // ---- ronda 7 · arreglos (FC, defecto 6): arriba solo “Ahora: …” y, si la hay, una pregunta con “Sí” / “No, sigue igual”.
-  // Los cinco pasos, detrás de la fila “Ver todos los pasos”; “Cambiar algo”, otra fila. Nada queda debajo de los botones.
+  // ---- A10 · la pregunta de ahora (si hay que decidir algo): {de, antes: 'Lo he hecho 14 veces…', q: '¿Lo apunto yo…?', accion} ----
   const igual = id => !!(C.lee('igual', {}) || {})[id];
-  // la pregunta de ahora (si hay que decidir algo): {antes: 'Lo he hecho 14 veces…', q: '¿Lo apunto yo…?', accion}
   const pregunta = (id, r) => {
     if (igual(id) || notaDe(id)) return null;
     const s = subeDe(id);
-    if (s) return {antes: s.hechas != null ? `I have done it ${s.hechas} times and you corrected me ${s.corregidas || 0}.` : '', q: s.pregunta, accion: 'subir'};
-    if (r && (r.estado === 'propuesta' || r.estado === 'nueva')) return {antes: `You have done it ${(r.casos && r.casos.comoYo) ? r.casos.comoYo.length + (r.casos.distinto || []).length : 14} times.`, q: 'Shall I try it for two weeks?', accion: 'prueba'};
+    if (s) return {de: id === 'r-visitas' ? 'My suggestion' : 'One more step', antes: s.hechas != null ? `I have done it ${s.hechas} times and you corrected me ${s.corregidas || 0}.` : '', q: s.pregunta, accion: 'subir'};
+    if (r && (r.estado === 'propuesta' || r.estado === 'nueva')) return {de: 'My suggestion', antes: `You have done it ${C.veces(r)} times.`, q: 'Shall I try it for two weeks?', accion: 'prueba'};
     return null;
   };
-  // dónde está, en una línea
+  // sin pregunta: lo que hago ahora en este trabajo, en una frase
   const ahora = (id, r) => {
-    if (r && r.estado === 'descartada') return 'I no longer do it';
-    if (r && r.estado === 'a-prueba') return `I'm trying it ${C.fechaPrueba}`;
-    if (id === 'r-visitas' && C.visitas().estado === 'prueba') return 'I\'m trying it from today';
-    if (r && (r.estado === 'propuesta' || r.estado === 'nueva')) return 'you do it';
-    if (id === 'r-visitas' && C.visitas().estado === 'propuesta') return 'you do it';
-    const n = VETA.vivo.niveles()[C.paso(id) - 1] || {}; return (n.nombre || '').toLowerCase();
+    const nota = notaDe(id); if (nota) return nota;
+    if (r && r.estado === 'descartada') return 'I\'ve stopped doing it. I won\'t suggest it again.';
+    if (r && r.estado === 'a-prueba') return `I'm trying it ${C.fechaPrueba}. I send nothing.`;
+    if (id === 'r-visitas') return C.visitas().estado === 'propuesta' ? 'You do it.' : C.visitas().frase;
+    if (r && (r.estado === 'propuesta' || r.estado === 'nueva')) return 'You do it.';
+    return C.info(id).frase || (NV()[C.paso(id) - 1] || {}).texto || '';
   };
-  const ficha = (id, r) => {
-    const q = pregunta(id, r), nota = notaDe(id);
-    return `<div class="r7-ficha r7c-donde${q ? ' r7-oro' : ''}" data-i="1" data-vt="c-paso"><p class="r7c-donde-l">Now: <b>${esc(ahora(id, r))}</b></p>` +
-      (q ? `${q.antes ? `<p class="r7c-donde-a">${esc(q.antes)}</p>` : ''}<p class="r7c-donde-q">${esc(q.q)}</p>` : nota ? `<p class="r7c-donde-a">${esc(nota)}</p>` : '') + '</div>';
+  const tarjeta = (id, r) => {
+    const q = pregunta(id, r);
+    return R7().tarjeta(q ? {veta: true, de: q.de, texto: (q.antes ? q.antes + ' ' : '') + q.q, vt: 'c-paso', i: 1} : {de: 'Now', texto: ahora(id, r), vt: 'c-paso', i: 1});
   };
-  VETA.pantalla('A10', {
-    titulo: p => C.corto(p.id),
-    frase: 'See how I do it now and tell me if I should go one step further.',
-    pinta: p => {
-      const r = p.id === 'r-visitas' ? null : M.regla(p.id);
-      if (p.id !== 'r-visitas' && !r) return R7().lista([{icono: 'info', nombre: 'This job is no longer here', pasa: 'See the ones I do', ir: 'reglas'}]);
-      const l = r ? linea(p.id) : null, desc = r && r.estado === 'descartada', ig = C.lee('igual', {})[p.id];
-      const top = lineaPaso(p.id) || (l || desc ? UI.lineaHecho({texto: l ? l.texto : 'I no longer do it · I will not suggest it again', hora: l ? r.hora : '', boton: {texto: 'Undo', accion: 'deshacer'}, vt: 'c-regla', i: 0})
-        : ig ? UI.lineaHecho({texto: 'OK, keep it the same', hora: ig, boton: {texto: 'Undo', accion: 'pregunta'}, vt: 'c-regla', i: 0}) : '');
-      const n = C.paso(p.id);
-      const filas = (desc ? [] : [{icono: 'escalera', nombre: 'See all the steps', pasa: `You are on step ${n} of 5`, abre: C.pasos(p.id, r, {sinPide: true})}])
-        .concat(detras(p.id, r))
-        .concat(r && !desc ? [{icono: 'editar', nombre: 'Change something', pasa: 'An exception, another way, or stop it', hoja: 'h20', de: p.id}] : []);
-      return top + (desc ? '' : ficha(p.id, r)) + R7().lista(filas, {i: 2, clase: 'r7c-tras'});
-    },
-    botonFijo: p => {
-      const r = p.id === 'r-visitas' ? null : M.regla(p.id);
-      if (p.id !== 'r-visitas' && !r) return '';
-      const q = pregunta(p.id, r);
-      return q ? R7().botones({texto: 'Yes', accion: q.accion}, [{texto: 'No, keep it the same', accion: 'igual'}]) : '';
-    },
-    acciones: {
-      prueba(ev, el, p) { C.cambiaRegla(p.id, 'a-prueba', `I'm trying it · ${C.fechaPrueba}`); },
-      activar(ev, el, p) { C.cambiaRegla(p.id, 'activa', 'I already do it · I will leave it in Your turn'); },
-      deshacer(ev, el, p) { M.deshaz(p.id); C.pon('linea', null); VETA.repinta({hecho: 'c-regla'}); },
-      subir(ev, el, p) { C.subir(p.id); VETA.pintaBarra(); },
-      baja(ev, el, p) { C.bajar(p.id); VETA.pintaBarra(); },
-      igual(ev, el, p) { const g = C.lee('igual', {}) || {}; g[p.id] = VETA.ahora(); C.pon('igual', g); VETA.repinta({hecho: 'c-regla'}); },
-      pregunta(ev, el, p) { const g = C.lee('igual', {}) || {}; delete g[p.id]; C.pon('igual', g); VETA.repinta({hecho: 'c-regla'}); }
+  // lo que va debajo: cada fila abre otra cosa (una pantalla o una hoja). La cola solo lleva números: el estado va en la segunda línea
+  const abre = (que, id) => ({hoja: 'c-lee', datos: {que, regla: id}});
+  function filas(id, r) {
+    if (r && r.estado === 'descartada') return [];
+    const n = C.paso(id), f = [{nombre: 'Who does it?', pasa: `${(NV()[n - 1] || {}).nombre} · step ${n} of 5`, ir: `regla/${id}/nivel`}];
+    if (id === 'r-visitas') {
+      f.push(Object.assign({nombre: `The ${C.r6().visitas.hechas} times you did it yourself`}, abre('veces', id)));
+      if (C.visitas().estado !== 'prueba') f.push(Object.assign({nombre: 'What will happen'}, abre('pasara', id)));
+      return f;
     }
+    const k = r.casos || {};
+    if (r.estado === 'propuesta' && k.distinto) {
+      // las veces que lo hiciste tú, en dos filas: cada una abre lo suyo desde aquí (nada a más de tres toques de Inicio)
+      f.push({nombre: `${(k.comoYo || []).length} times you did it the same way`, hoja: 'h19', datos: {regla: id}});
+      f.push({nombre: `${k.distinto.length} times you did it differently`, hoja: 'c-veces', datos: {regla: id}});
+      f.push(Object.assign({nombre: 'What will happen'}, abre('pasara', id)));
+    } else if (r.estado === 'a-prueba') {
+      if (id !== 'r-cancelaciones' && r.casos && !r.casos.comoYo) f.push({nombre: 'Where it applies', dato: r.casos.length, hoja: 'h19', datos: {regla: id}});
+      f.push(Object.assign({nombre: 'Who sees it', pasa: C.lee('aOficina', {})[id] ? 'Montse, with your name' : 'Only you'}, abre('quien-ve', id)));
+    } else if (r.estado === 'activa') {
+      const u = C.ultimo(r).length;
+      f.push(u ? Object.assign({nombre: 'The last thing I did', dato: u}, abre('ultimo', id)) : {nombre: 'The last thing I did', pasa: 'Nothing yet: I\'ll leave it in Home'});
+    }
+    // “No con un cliente” se abre desde aquí cuando el trabajo ya lo hago yo (en una propuesta sigue en “Cambiar algo”)
+    if (r.estado === 'a-prueba' || r.estado === 'activa') {
+      const ex = C.excepciones(id).map(c => (M.quien(c) || {}).nombre || c);
+      f.push({nombre: 'Not with one client', pasa: ex.length === 1 ? `With ${ex[0]}, no` : ex.length ? `With ${ex.length} clients, no` : null, hoja: 'c-excepto', de: id});
+    }
+    f.push({nombre: 'Change something', hoja: 'h20', de: id});
+    return f;
+  }
+  // el trabajo a prueba enseña en la pantalla lo que habría hecho: cada caso abre el suyo (h18)
+  const casosPrueba = (id, r) => (id === 'r-cancelaciones' && r && r.estado === 'a-prueba'
+    ? R7().lista(D().aPrueba.map(c => ({cara: c.id, nombre: c.nombre, pasa: c.propone, dato: c.cuando, hoja: 'h18', datos: {regla: id, caso: c.id}})), {rotulo: 'What I would have suggested', i: 2}) : '');
+  // lo último que hice en un trabajo (lo de hoy, primero)
+  C.ultimo = r => (r.casosHoy || []).map(x => 'Today · ' + x).concat(r.ultimo || []).slice(0, 4);
+
+  const reglaDe = p => (p.id === 'r-visitas' ? null : M.regla(p.id));
+  const existe = p => p.id === 'r-visitas' || !!M.regla(p.id);
+  // ---- lo que comparten A10 y A10b: la fila de hecho, el pie y las acciones ----
+  const arriba = p => {
+    const r = reglaDe(p), l = r ? linea(p.id) : null, desc = r && r.estado === 'descartada', ig = (C.lee('igual', {}) || {})[p.id];
+    return lineaPaso(p.id) || (l || desc ? R7().hecho({texto: l ? l.texto : 'I no longer do it · I will not suggest it again', hora: l ? r.hora : '', deshacer: 'deshacer', vt: 'c-regla'})
+      : ig ? R7().hecho({texto: 'OK, keep it as is', hora: ig, deshacer: 'pregunta', vt: 'c-regla'}) : '');
+  };
+  const reciente = p => !!(lineaPaso(p.id) || (reglaDe(p) && linea(p.id)) || igual(p.id));
+  // el pie: si hay pregunta, el sí o el no; recién contestada, el siguiente trabajo que te propongo o “Ir a Inicio”
+  const pie = (p, nivel) => {
+    if (!existe(p)) return '';
+    const q = pregunta(p.id, reglaDe(p));
+    if (q) return R7().botones({texto: nivel ? 'Yes, go ahead' : 'Yes', accion: q.accion}, {texto: nivel ? 'Not yet' : 'No, keep it as is', accion: 'igual'});
+    if (!reciente(p)) return '';
+    const otra = C.propuestas().filter(x => x.id !== p.id && !igual(x.id))[0];
+    return otra ? R7().sigue({texto: 'Next: ' + C.titulo(otra.id), ir: 'regla/' + otra.id}) : R7().sigue();
+  };
+  const acciones = {
+    prueba(ev, el, p) { C.cambiaRegla(p.id, 'a-prueba', 'I\'m trying it'); },
+    deshacer(ev, el, p) { M.deshaz(p.id); C.pon('linea', null); VETA.repinta({hecho: 'c-regla'}); },
+    subir(ev, el, p) { C.subir(p.id); VETA.pintaBarra(); },
+    baja(ev, el, p) { C.bajar(p.id); VETA.pintaBarra(); },
+    igual(ev, el, p) { const g = C.lee('igual', {}) || {}; g[p.id] = VETA.ahora(); C.pon('igual', g); VETA.repinta({hecho: 'c-regla'}); },
+    pregunta(ev, el, p) { const g = C.lee('igual', {}) || {}; delete g[p.id]; C.pon('igual', g); VETA.repinta({hecho: 'c-regla'}); }
+  };
+  // el caso que se lleva a Dictar (“Decirlo de otra forma”, o el micro de la barra con este trabajo delante)
+  const caso = p => (existe(p) ? {de: 'regla-' + p.id, titulo: C.titulo(p.id), texto: p.id === 'r-visitas' ? C.visitas().frase : (C.info(p.id).frase || C.nombre(p.id))} : null);
+
+  VETA.pantalla('A10', {
+    titulo: p => C.titulo(p.id),
+    nota: p => (existe(p) && pregunta(p.id, reglaDe(p)) ? 'nada' : ''),
+    casoDictado: caso,
+    pinta: p => {
+      const r = reglaDe(p);
+      if (!existe(p)) return R7().lista([{nombre: 'This job is no longer here', pasa: 'See the ones I do', ir: 'veta'}]);
+      const f = filas(p.id, r), casos = casosPrueba(p.id, r);
+      return arriba(p) + tarjeta(p.id, r) + casos + (f.length ? R7().lista(f, casos ? {rotulo: 'How I do it', i: 3} : {i: 2}) : '');
+    },
+    botonFijo: pie,
+    acciones
   });
 
-  // ---- A10b · ¿Quién lo hace? (los mismos pasos, sin lo de debajo) ----
+  // ---- A10b · ¿Quién lo hace?: los cinco pasos, como una escalera que se lee y no se toca (D3) ----
+  // El paso no se elige a dedo: Veta pregunta antes de dar uno más. Cuando pregunta, la pregunta va en su tarjeta y el sí o el no
+  // en el pie, igual que en A10. Solo el paso de ahora dice qué significa; el último sigue cerrado y lo dice.
   C.nivel = id => C.paso(id);
   C.ponNivel = (id, n) => { const x = C.lee('nivel', {}); x[id] = n; C.pon('nivel', x); };
   VETA.pantalla('A10b', {
     titulo: 'Who does it?',
-    frase: p => `${C.corto(p.id)}: from “you do it” to “I do it”.`,
-    pinta: p => lineaPaso(p.id) + C.pasos(p.id, p.id === 'r-visitas' ? null : M.regla(p.id)),
-    botonFijo: p => {
-      const l = C.lee('nivelLinea', null); if (l && l.id === p.id) return '';
-      const s = subeDe(p.id); if (s) return R7().botones({texto: s.boton, accion: 'subir'});
-      if (p.id === 'r-visitas' || C.nivel(p.id) >= 3 || VETA.yo().papel !== 'direccion') return '';
-      return R7().botones({texto: 'Let it go up one step for the whole team', hoja: 'h22', de: p.id});
+    sub: 'I change the step when I ask you and you say yes.',
+    casoDictado: caso,
+    pinta: p => {
+      const n = C.paso(p.id), q = existe(p) ? pregunta(p.id, reglaDe(p)) : null;
+      return arriba(p) + (q ? R7().tarjeta({veta: true, de: q.de, texto: (q.antes ? q.antes + ' ' : '') + q.q, vt: 'c-paso', i: 1}) : '') +
+        R7().lista(NV().map(x => ({nombre: x.nombre, pasa: x.n === n || x.cerrado ? x.texto : null, dato: x.n === n ? 'Now' : null, clase: x.n === n ? 'r7c-aqui' : 'r7c-otro'})), {clase: 'r7c-pasos', i: 2});
     },
-    acciones: {
-      subir(ev, el, p) { C.subir(p.id); VETA.pintaBarra(); },
-      baja(ev, el, p) { C.bajar(p.id); VETA.pintaBarra(); },
-      deshacer(ev, el, p) { C.bajar(p.id); VETA.pintaBarra(); }
-    }
+    botonFijo: p => {
+      const b = pie(p, true); if (b) return b;
+      if (!existe(p) || p.id === 'r-visitas' || C.nivel(p.id) >= 3 || VETA.yo().papel !== 'direccion') return '';
+      return R7().botones({texto: 'One step up for everyone', hoja: 'h22', de: p.id});
+    },
+    acciones
   });
 })();

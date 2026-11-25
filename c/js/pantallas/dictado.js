@@ -14,7 +14,7 @@
 
   VETA.pantalla('A4b', {
     titulo: 'Lo que he entendido',
-    // la promesa va sobre el botón: «La vigilo yo y la pongo en tu calendario.» / «Queda en su Historia.»
+    // la promesa va sobre el botón: «La vigilo yo. Te la pongo en el calendario si me lo pides.» / «Queda en su Historia.»
     nota: p => (VETA.A.local(idLocal(def(p))) ? '' : def(p).pie),
     pinta: p => {
       const e = def(p), g = VETA.A.local(idLocal(e)), tarea = e.tipo === 'tarea';

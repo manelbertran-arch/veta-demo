@@ -1,70 +1,58 @@
-/* Veta demo · pantallas · operacion.js · ronda 7 · D2 (antes: ronda 6, paquete D)
-   G18 · Una operación · #/operacion/:id — lo que ve dirección de una operación. Ficha (R2, R4):
-   1) “Qué toca ahora” (y, si hace falta, la pastilla roja); 2) una lista: quién la lleva (→ su persona), cómo va (los cinco pasos
-   en una línea), “Lo que ha pasado · 4” (se abre aquí mismo) y qué ves tú y qué no; 3) abajo, tres botones como mucho.
-   Sin el texto de los chats ni las notas de quien la lleva. Hojas: h35 (para: 'op'), d-preguntar, d-anotar (js/hojas/direccion.js, de D1). */
+/* Veta demo · ronda 8 · pantallas · operacion.js · carril D
+   G18 · Una operación · #/operacion/:id — lo que ve dirección de una operación:
+   subtítulo (“Compra en Gràcia · la lleva Laura”), la tarjeta “Qué toca ahora” y una lista de plegables con “+” (cómo va,
+   papeles, lo último, qué ves tú). Un botón: “Preguntar a Laura”. Lo demás, en “Más” (hoja d-op-mas): cambiar quién la lleva,
+   anotar algo, ver a la persona y, si lo hay, el caso para aprender.
+   Sin el texto de los chats ni las notas de quien la lleva. Hojas: h35 (para: 'op'), d-preguntar, d-anotar, d-op-mas (js/hojas/direccion.js). */
 (function () {
   'use strict';
   const esc = VETA.esc, X = VETA.dir, r7 = VETA.r7;
-  // FD (defecto 7): rojas solo “Sin contestar” y “Nadie la lleva”; “Queja”, gris
   const ROJO = {'sin-contestar': 'No reply yet', nadie: 'No one has it'};
   // lo que queda del aviso cuando la pastilla ya dice lo principal: “Sin contestar” + “desde ayer, 18:42”
-  const queda = a => a.texto.replace(/^Sin contestar /, '').replace(/^Queja /, '').replace(/^No l[ao] lleva nadie · /, '');
+  const queda = a => a.texto.replace(/^Not answered /, '').replace(/^No one has (?:her|him|it) · /, '');
   const sinDueno = o => !o.lleva || (o.deTeresa && o.lleva === 'teresa');
+  const lista = (l, clase) => `<ul class="${clase}">${l.join('')}</ul>`;
 
   VETA.pantalla('G18', {
     titulo: p => { const o = X.op(p.id); return o ? o.nombre : 'A deal'; },
-    frase: p => {
+    sub: p => {
       const o = X.op(p.id); if (!o) return '';
-      const yo = VETA.yo().id;
-      if (sinDueno(o)) return `${o.texto}. See what happened and choose who has it.`;
-      if (o.lleva === yo) return `${o.texto}. You have it. See how it is going and note down what is needed.`;
-      return `${o.texto}. See how it is going and, if needed, ask ${o.persona.corto}.`;
+      const per = o.persona;
+      if (!per) return `${o.texto} · no one has it`;
+      if (o.lleva === VETA.yo().id) return `${o.texto} · you have it`;
+      return per.baja && o.lleva === 'teresa' ? `${o.texto} · ${per.corto} has it, on leave` : `${o.texto} · ${per.corto} has it`;
     },
+    mas: p => { const o = X.op(p.id); return o ? {hoja: 'd-op-mas', datos: {op: o.id}} : null; },
     pinta: p => {
       const o = X.op(p.id);
-      if (!o) return VETA.r7.lista([{icono: 'pregunta', nombre: 'I cannot find this deal', pasa: 'Look in the list of all of them', ir: 'operaciones'}]);
+      if (!o) return VETA.UI.vacio({titulo: 'I can\'t find this deal.', boton: {texto: 'See all', ir: 'operaciones'}});
       const yo = VETA.yo().id, per = o.persona, corto = per ? (o.lleva === yo ? 'you' : per.corto) : null;
       const rojo = o.aviso && ROJO[o.aviso.tipo];
-      // 1 · qué toca ahora (y lo que pasa, si alguien espera)
-      let h = `<div class="r7-ficha d2-ficha" data-i="0"><span class="r7-ficha-de">What is next</span>` +
-        `<p class="d2-toca">${esc(o.toca || 'Nothing for now')}</p>` +
-        (o.aviso ? `<p class="d2-toca-q">${rojo ? r7.pastilla(rojo, 'rojo') : o.aviso.tipo === 'queja' ? r7.pastilla('Complaint') : ''}<span>${esc(rojo || o.aviso.tipo === 'queja' ? queda(o.aviso) : o.aviso.texto)}</span></p>` : '') + `</div>`;
-      // 2 · quién la lleva · cómo va · lo que ha pasado · qué ves tú
+      // 1 · qué toca ahora (y, si alguien espera, la pastilla roja)
+      let h = r7.tarjeta({de: 'What is next', i: 0, html: `<p>${esc(o.toca || 'Nothing for now')}</p>` +
+        (rojo ? `<p class="d2-toca-q">${r7.pastilla(rojo)}<span>${esc(queda(o.aviso))}</span></p>` : o.aviso && o.aviso.tipo !== 'papel' ? `<p>${esc(o.aviso.texto)}</p>` : '')});
+      // 2 · plegables: cómo va (los cinco pasos), papeles, lo último y qué ves tú
       const filas = [];
-      if (per) {
-        // la cara del equipo con su tono (VETA.d1.fila, de D1): la misma en Equipo y aquí
-        const fp = {cara: o.lleva, nombre: per.nombre + (o.lleva === yo ? ' (you)' : ''), pasa: 'Handled by' + (per.baja && o.lleva === 'teresa' ? ' · off sick' : ' · ' + X.zona(o.lleva)), ir: 'persona/' + o.lleva};
-        filas.push(VETA.d1 && VETA.d1.fila ? VETA.d1.fila(fp) : fp);
-      } else {
-        filas.push({icono: 'usuario', nombre: 'No one has it', pasa: 'Nobody has replied yet'});
-      }
-      // cómo va: el paso de ahora y el siguiente; los cinco, al abrir la fila
       const pasos = (VETA.datos.pasos || {})[o.tipo] || [], fase = o.estado === 'cerrado' ? 5 : o.fase;
-      const fin = /Cerrada|Se cayó/.test(o.comoCorto);
-      filas.push({icono: 'tarea', nombre: 'How it is going · ' + (fin ? o.comoCorto : pasos[fase - 1] || ''),
-        pasa: fin ? 'No more steps' : `Step ${fase} of 5` + (pasos[fase] ? ' · then, ' + pasos[fase] : ''),
-        abre: `<ol class="d2-pasos">${pasos.map((x, k) => `<li${k + 1 === fase && !fin ? ' class="d2-aqui"' : k + 1 < fase ? ' class="d2-hecho-p"' : ''}>${esc(x)}</li>`).join('')}</ol>`});
+      const fin = /Closed|Fell through/.test(o.comoCorto);
+      filas.push({nombre: 'How it\'s going', pasa: fin ? o.comoCorto : `${pasos[fase - 1] || ''} · step ${fase} of 5`,
+        abre: lista(pasos.map((x, k) => `<li${k + 1 === fase && !fin ? ' class="d2-aqui"' : ''}>${esc(x)}</li>`), 'd2-pasos')});
+      if (o.aviso && o.aviso.tipo === 'papel') { const t = o.aviso.texto.replace(/^A document is missing: /, ''); filas.push({nombre: 'Documents', pasa: '1 missing', abre: `<p>${esc(t.charAt(0).toUpperCase() + t.slice(1))}.</p>`}); }
       const hit = (o.hitos || []).slice().reverse();
-      if (hit.length) filas.push({icono: 'reloj', nombre: 'What has happened', numero: hit.length, pasa: hit[0].cuando + ' · ' + hit[0].texto,
-        abre: `<ul class="d2-hitos">${hit.map(x => `<li><b>${esc(x.cuando)}</b> · ${esc(x.texto)}</li>`).join('')}</ul>`});
-      if (o.caso) filas.push({icono: 'aprende', oro: true, nombre: 'What can be learned', pasa: 'A case to teach Veta', ir: o.caso});
+      // lo último: la fecha a la cola (es un dato) y, en la segunda línea, qué pasó
+      if (hit.length) filas.push({nombre: 'Latest', pasa: hit[0].texto, dato: hit[0].cuando.replace(/, \d{1,2}:\d\d$/, ''),
+        abre: lista(hit.map(x => `<li><b>${esc(x.cuando)}</b> · ${esc(x.texto)}</li>`), 'd2-hitos')});
       const nombre = o.nombre.split(' ')[0];
-      filas.push({icono: 'candado', nombre: 'What you see, what you don\'t', pasa: corto && corto !== 'ti' ? `You don't see their chats or notes` : 'Your notes are saved here',
+      filas.push({nombre: 'What you see, what you don\'t', pasa: corto && corto !== 'ti' ? VETA.PROMESA.chats : 'Your notes are saved here',
         abre: `<p>${corto && corto !== 'ti' ? `You do not see what ${esc(corto)} and ${esc(nombre)} write to each other, or ${esc(corto)}'s notes. ${esc(corto)} sees in their app the same as you see of this deal.` : 'Your notes and questions are saved here, with their time.'}</p>`});
-      h += r7.lista(filas, {i: 1});
-      return h;
+      return h + r7.lista(filas, {i: 1});
     },
-    // R4: tres como mucho; el negro, lo principal
+    // un botón: lo principal según quién la lleva. Lo demás, en “Más”
     botonFijo: p => {
       const o = X.op(p.id); if (!o) return '';
-      const yo = VETA.yo().id, per = o.persona;
-      const elegir = {texto: 'Choose who handles it', hoja: 'h35', datos: {para: 'op', op: o.id}};
-      const anotar = {texto: 'Add a note', hoja: 'd-anotar', datos: {op: o.id}};
-      if (sinDueno(o)) return r7.botones(elegir, [anotar]);
-      if (o.lleva === yo) return r7.botones(anotar, [{texto: 'Give it to someone else', hoja: 'h35', datos: {para: 'op', op: o.id}}]);
-      return r7.botones({texto: 'Ask ' + per.corto, hoja: 'd-preguntar', datos: {op: o.id}},
-        [{texto: 'Change who', hoja: 'h35', datos: {para: 'op', op: o.id}}, anotar]);
+      if (sinDueno(o)) return r7.botones({texto: 'Choose who handles it', hoja: 'h35', datos: {para: 'op', op: o.id}});
+      if (o.lleva === VETA.yo().id) return r7.botones({texto: 'Add a note', hoja: 'd-anotar', datos: {op: o.id}});
+      return r7.botones({texto: 'Ask ' + o.persona.corto, hoja: 'd-preguntar', datos: {op: o.id}});
     }
   });
 })();

@@ -1,47 +1,27 @@
-/* Veta demo · ronda 7 · css/r7-c.css · C · Veta, sus trabajos, cuenta y entrada. Solo variables de temas.css (R5).
-   Piezas propias (no están en VETA.r7):
-   - .r7c-props / .r7c-prop: lo que se abre en el sitio bajo «Te lo propongo»: un trabajo por línea, que se toca.
-   - .r7c-ensena: el botón negro «Enséñale a Veta», con el micro en oro.
-   - .r7c-paso: los cinco pasos de «¿Quién lo hace?» en filas de una línea (regla/:id); el de ahora, abierto. */
+/* Veta demo · ronda 8 · css/r7-c.css · carril C (Veta y cuenta). Solo variables de temas.css y base.css.
+   Las pantallas de C se pintan con las piezas del núcleo (css/r7.css); aquí solo queda lo que no es una pieza:
+   - .r7c-caso: una línea que se toca dentro de un plegable abierto (lo encontrado en «Mi mapa de trabajo»; cada una abre su hoja).
+   - .r7c-campos: los tres campos de «Seguridad», uno debajo de otro. */
 
-/* ---- Veta · «Te lo propongo» abierto ---- */
-.r7c-props{display:flex;flex-direction:column;margin-top:calc(-1 * var(--e2))}
-.r7c-prop{display:flex;align-items:center;gap:var(--e2);width:100%;min-height:56px;padding:var(--e2) 0;text-align:left;color:var(--t1);background:none;-webkit-tap-highlight-color:transparent}
-.r7c-prop+.r7c-prop{border-top:1px solid var(--borde)}
-.r7c-prop>span{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
-.r7c-prop b{font:700 var(--f-apoyo)/1.25 var(--body)}
-.r7c-prop span span{color:var(--veta);font:600 var(--f-apoyo)/1.25 var(--body)}
-.r7c-prop svg{flex:none;color:var(--t3)}
-.r7c-prop:active{opacity:.7}
+.r7c-caso{display:flex;align-items:center;gap:var(--e2);width:100%;min-height:48px;padding:var(--e1) 0;text-align:left;color:var(--t1);background:none;-webkit-tap-highlight-color:transparent}
+.r7c-caso+.r7c-caso{margin-top:0;border-top:1px solid var(--borde)}
+.r7c-caso span{flex:1;min-width:0;color:var(--t2);font:500 var(--f-apoyo)/var(--l-fila) var(--body)}
+.r7c-caso b{color:var(--t1);font-weight:700}
+.r7c-caso svg{flex:none;color:var(--t3);opacity:.6}
+.r7c-caso:active{opacity:.6}
 
-/* ---- el botón negro «Enséñale a Veta» ---- */
-.r7c-ensena svg{color:var(--top-acento)}
+.r7c-campos{display:flex;flex-direction:column;gap:var(--e3)}
 
-/* ---- regla/:id · los cinco pasos ---- */
-.r7c-paso .r7-fila-ic{font:700 var(--f-cuerpo)/1 var(--body)}
-.r7c-paso.r7c-hecho .r7-fila-ic{background:var(--veta-g);color:var(--port-b)}
-.r7c-paso.r7c-falta .r7-fila-n{color:var(--t2);font-weight:600}
-.r7c-paso.r7c-cerrado .r7-fila-n{color:var(--t3);font-weight:600}
-.r7c-paso.r7c-aqui{height:auto;min-height:72px;align-items:flex-start;padding-top:16px;padding-bottom:var(--e4)}
-.r7c-paso.r7c-aqui .r7-fila-ic{background:var(--accion);color:var(--accion-t)}
-.r7c-paso.r7c-aqui .r7-fila-n{white-space:normal}
-.r7c-paso .r7c-ahora{color:var(--t2);font:500 var(--f-apoyo)/1.35 var(--body)}
-.r7c-paso .r7c-pide{margin-top:var(--e2);color:var(--t1);font:600 var(--f-cuerpo)/1.35 var(--body)}
-.r7c-paso .r7c-pide.r7c-oro{color:var(--veta)}
-/* las filas de debajo (casos, lo que pasará…) se separan un poco de la escalera */
-.r7c-tras{margin-top:var(--e4)}
-.r7c-caso{display:flex;align-items:center;gap:var(--e2);width:100%;min-height:48px;text-align:left;color:var(--t1);background:none}
-.r7c-caso+.r7c-caso{border-top:1px solid var(--borde)}
-.r7c-caso b{font:700 var(--f-apoyo)/1.25 var(--body)}
-.r7c-caso span{flex:1;min-width:0;color:var(--t2);font:500 var(--f-apoyo)/1.3 var(--body)}
-.r7c-caso svg{flex:none;color:var(--t3)}
+/* «¿Quién lo hace?» (A10b): cinco pasos que se leen y no se tocan. El de ahora, en negro y con lo que significa; los demás, en gris */
+.r7c-pasos .r7c-otro .r7-fila-n{color:var(--t2);font-weight:500}
+.r7c-pasos .r7c-aqui .r7-dato{color:var(--t1);font-weight:700}
 
-/* ---- arreglos (FC, defecto 6) · regla/:id: «Ahora: …» y la pregunta; los pasos, dentro de «Ver todos los pasos» ---- */
-.r7c-donde p{margin:0}
-.r7c-donde-l{font:500 var(--f-cuerpo)/1.35 var(--body);color:var(--t2)}
-.r7c-donde-l b{color:var(--t1);font-weight:700}
-.r7c-donde-a{color:var(--t2);font:500 var(--f-apoyo)/1.35 var(--body)}
-.r7c-donde-q{color:var(--veta);font:700 var(--f-cuerpo)/1.35 var(--body)}
-.r7-abierto .r7c-escalera{box-shadow:none;background:none;margin:0 calc(-1 * var(--e2))}
-.r7-abierto .r7c-paso{height:56px;min-height:56px}
-.r7-abierto .r7c-paso.r7c-aqui{height:auto;min-height:56px;padding-top:var(--e2);padding-bottom:var(--e2)}
+/* «Cómo se ve» (h26): las doce paletas, cuatro por fila. La muestra arriba y el nombre debajo, en una línea; la elegida, con aro.
+   Sin caja ni borde alrededor de cada una: lo único que se ve es el color y su nombre. */
+.r7c-paletas{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:var(--e4) var(--e2)}
+.r7c-paleta{display:flex;flex-direction:column;align-items:stretch;gap:var(--e1);min-height:var(--toque);padding:0;background:none;color:var(--t2);font:500 var(--f-apoyo)/1.2 var(--body);text-align:center;-webkit-tap-highlight-color:transparent}
+.r7c-paleta .muestra{width:auto;height:40px;border-radius:var(--r-1,10px)}
+.r7c-paleta-n{white-space:nowrap}
+.r7c-paleta[aria-pressed=true]{color:var(--t1);font-weight:700}
+.r7c-paleta[aria-pressed=true] .muestra{outline:2px solid var(--t1);outline-offset:2px}
+.r7c-paleta:active{opacity:.6}

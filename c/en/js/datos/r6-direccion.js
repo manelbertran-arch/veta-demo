@@ -6,6 +6,7 @@
    Las operaciones de Laura son las de su app: su estado, lo que toca y lo último que pasó se leen del modelo cuando existen. */
 (function () {
   'use strict';
+  const f = iso => VETA.fecha.corta(iso), ff = iso => VETA.fecha.corta(iso, {frase: true});   // las fechas salen de VETA.fecha, no se escriben a mano
   const R = VETA.datos.r6 = VETA.datos.r6 || {};
 
   // ---- cada operación de la oficina (id = id del cliente). lleva: persona o null (nadie) ----
@@ -17,99 +18,99 @@
     // Laura (las mismas de su app)
     {id: 'marta', lleva: 'laura', tipo: 'compra', fase: 1, texto: 'Purchase in Gràcia', estado: 'en-marcha', cosa: 'c-marta',
       aviso: {tipo: 'sin-contestar', texto: 'Not answered since yesterday, 18:42'}, contesto: 'Sent the time of the viewing',
-      hitos: [{paso: 'Wrote', texto: 'Wants to see the Gràcia flat', cuando: 'Yesterday, 18:42'}, {paso: 'I prepared', texto: 'A message for Laura with a time for the viewing', cuando: 'Yesterday, 18:43'}]},
+      hitos: [{paso: 'Wrote', texto: 'Wants to see the Gràcia flat', cuando: f('2026-11-22T18:42')}, {paso: 'I prepared', texto: 'A message for Laura with the time', cuando: f('2026-11-22T18:43')}]},
     {id: 'elena', lleva: 'laura', tipo: 'compra', fase: 2, texto: 'Purchase in Gràcia', estado: 'en-marcha', cosa: 'c-elena',
-      ultimo: {cuando: 'Mon 16', texto: 'Said the payslip would come on Wednesday'},
-      aviso: {tipo: 'papel', texto: 'A document is missing: the payslip, for Wednesday 25'},
-      hitos: [{paso: 'Wrote', texto: 'Wants two bedrooms with light', cuando: '28 Oct'}, {paso: 'I noted', texto: 'A promise: the payslip, for the bank', cuando: 'Mon 16'}, {paso: 'Today', texto: 'Viewing at 9:00 at Verdi 42', cuando: 'Today'}]},
+      ultimo: {cuando: f('2026-11-16'), texto: 'Said the payslip would come on Wednesday'},
+      aviso: {tipo: 'papel', texto: 'Missing document: the payslip, for Wed 25'},
+      hitos: [{paso: 'Wrote', texto: 'Wants two bedrooms with light', cuando: f('2026-10-28')}, {paso: 'I noted', texto: 'A promise: the payslip, for the bank', cuando: f('2026-11-16')}, {paso: 'Today', texto: 'Viewing at 9:00 at Verdi 42', cuando: 'Today'}]},
     {id: 'pere', lleva: 'laura', tipo: 'venta', fase: 3, texto: 'Sale of Verdi 42', estado: 'en-marcha', cosa: 'c-pere',
-      ultimo: {cuando: 'Sat 21, 21:10', texto: 'Left a message'},
-      aviso: {tipo: 'papel', texto: 'A document is missing: the energy certificate, for Friday 27'},
-      hitos: [{paso: 'Done', texto: 'Weekly report sent', cuando: 'Mon 16'}, {paso: 'Wrote', texto: 'Left a message', cuando: 'Sat 21, 21:10'}, {paso: 'I prepared', texto: 'The week\'s report, for Laura to check', cuando: 'Today, 7:00'}]},
+      ultimo: {cuando: f('2026-11-21T21:10'), texto: 'Left a message'},
+      aviso: {tipo: 'papel', texto: 'Missing document: the energy certificate, for Fri 27'},
+      hitos: [{paso: 'Done', texto: 'Weekly report sent', cuando: f('2026-11-16')}, {paso: 'Wrote', texto: 'Left a message', cuando: f('2026-11-21T21:10')}, {paso: 'I prepared', texto: 'Weekly report for Laura', cuando: f('2026-11-23T07:00')}]},
     {id: 'jordi', lleva: 'laura', tipo: 'compra', fase: 2, texto: 'Purchase in Sants', estado: 'en-marcha', cosa: 'c-jordi',
-      ultimo: {cuando: 'Fri 20, 12:20', texto: 'Laura promised the report on the flat before Thursday'},
+      ultimo: {cuando: f('2026-11-20T12:20'), texto: 'Promised the flat report'},
       aviso: {tipo: 'papel', texto: 'A document is missing: the flat report, for Thursday'},
-      hitos: [{paso: 'Wrote', texto: 'Asks for the report on the Olzinelles flat', cuando: 'Fri 20, 12:05'}, {paso: 'I noted', texto: 'Laura promised the report on the flat before Thursday', cuando: 'Fri 20, 12:20'}]},
+      hitos: [{paso: 'Wrote', texto: 'Asks for the report on the Olzinelles flat', cuando: f('2026-11-20T12:05')}, {paso: 'I noted', texto: 'Promised the flat report', cuando: f('2026-11-20T12:20')}]},
     {id: 'laia', lleva: 'laura', tipo: 'compra', fase: 5, texto: 'Purchase in Poblenou', estado: 'en-marcha',
-      hitos: [{paso: 'Done', texto: 'Signed the deposit', cuando: 'Mon 9'}, {paso: 'Next', texto: 'Signing at the notary', cuando: 'Tue 1 Dec, 12:00'}]},
-    {id: 'albert', lleva: 'laura', tipo: 'compra', fase: 1, texto: 'Looking for a commercial unit', estado: 'parado',
-      ultimo: {cuando: '3 Oct', texto: 'Asked to be told if a unit came up'},
+      hitos: [{paso: 'Done', texto: 'Signed the deposit', cuando: f('2026-11-09')}, {paso: 'Next', texto: 'Signing at the notary', cuando: f('2026-12-01T12:00')}]},
+    {id: 'albert', lleva: 'laura', tipo: 'compra', fase: 1, texto: 'Looking for commercial premises', estado: 'parado',
+      ultimo: {cuando: f('2026-10-03'), texto: 'Asked to be told if premises came up'},
       aviso: {tipo: 'espera', texto: '7 weeks without talking · asked to be told'},
-      hitos: [{paso: 'Wrote', texto: 'Asked to be told if a unit came up in the centre', cuando: '3 Oct'}, {paso: 'I saw', texto: 'A unit came up in the Eixample that fits what they want', cuando: '12 Nov'}]},
+      hitos: [{paso: 'Wrote', texto: 'Asked to be told if premises came up in the centre', cuando: f('2026-10-03')}, {paso: 'I saw', texto: 'Premises came in that suit him', cuando: f('2026-11-12')}]},
     {id: 'carme-font', lleva: 'laura', tipo: 'venta', fase: 5, texto: 'Sale in Horta', estado: 'cerrado', toca: 'Nothing. We can ask them to recommend us',
       hitos: [{paso: 'Done', texto: 'Signed the sale in Horta', cuando: 'June'}]},
     // Montse (tú)
-    {id: 'ruben', lleva: 'montse', tipo: 'venta', fase: 3, texto: 'Sale of the Sant Gervasi penthouse', estado: 'en-marcha',
-      ultimo: {cuando: 'Fri 20', texto: 'Sílvia offered €520,000; he asks for €545,000'}, toca: 'Call him on Friday 27 with the offer',
-      hitos: [{paso: 'Viewing', texto: 'Sílvia Prat viewed the penthouse', cuando: 'Wed 18'}, {paso: 'Offer', texto: 'Sílvia offered €520,000', cuando: 'Fri 20'}]},
+    {id: 'ruben', lleva: 'montse', tipo: 'venta', fase: 3, texto: 'Penthouse in Sant Gervasi', estado: 'en-marcha',
+      ultimo: {cuando: f('2026-11-20'), texto: 'Sílvia made an offer; the owner is asking for more'}, toca: 'Call them on Fri 27 with the offer',
+      hitos: [{paso: 'Viewing', texto: 'Sílvia Prat viewed the penthouse', cuando: f('2026-11-18')}, {paso: 'Offer', texto: 'Sílvia made an offer on the penthouse', cuando: f('2026-11-20')}]},
     {id: 'guillem', lleva: 'montse', tipo: 'compra', fase: 2, texto: 'Buying in Sant Gervasi', estado: 'en-marcha',
-      ultimo: {cuando: 'Fri 20', texto: 'Arranged to see a flat'}, toca: 'Viewing on Wednesday 25',
-      hitos: [{paso: 'Wrote', texto: 'Wants to see flats in Sant Gervasi', cuando: 'Mon 16'}, {paso: 'I noted', texto: 'Viewing on Wednesday 25', cuando: 'Fri 20'}]},
+      ultimo: {cuando: f('2026-11-20'), texto: 'Arranged to see a flat'}, toca: 'Viewing on Wed 25',
+      hitos: [{paso: 'Wrote', texto: 'Wants to see flats in Sant Gervasi', cuando: f('2026-11-16')}, {paso: 'I noted', texto: 'Viewing on Wed 25', cuando: f('2026-11-20')}]},
     // Anna
-    {id: 'isabel-rius', nombre: 'Isabel Rius', lleva: 'anna', tipo: 'venta', fase: 2, texto: 'Sale of the flat in Sant Antoni', estado: 'en-marcha',
+    {id: 'isabel-rius', nombre: 'Isabel Rius', lleva: 'anna', tipo: 'venta', fase: 2, texto: 'Sale in Sant Antoni', estado: 'en-marcha',
       ultimo: {cuando: 'Yesterday', texto: 'The flat came into the office'}, toca: 'Take the photos and publish the advert',
-      hitos: [{paso: 'Done', texto: 'Anna signed the sale mandate', cuando: 'Yesterday'}, {paso: 'I saw', texto: 'Núria Camps, a client of Laura\'s, is looking for exactly this', cuando: 'Today'}]},
+      hitos: [{paso: 'Done', texto: 'Anna signed the sale mandate', cuando: 'Yesterday'}, {paso: 'I saw', texto: 'Núria Camps wants exactly this', cuando: 'Today'}]},
     {id: 'sergi', lleva: 'anna', tipo: 'compra', fase: 1, texto: 'Renting in Les Corts', estado: 'en-marcha',
       ultimo: {cuando: 'Yesterday', texto: 'Anna replied'}, toca: 'Show him two flats this week',
-      hitos: [{paso: 'Wrote', texto: 'Asks about a rental in Les Corts', cuando: 'Sat 21'}, {paso: 'Done', texto: 'Anna replied', cuando: 'Yesterday'}]},
+      hitos: [{paso: 'Wrote', texto: 'Asks about a rental in Les Corts', cuando: f('2026-11-21')}, {paso: 'Done', texto: 'Anna replied', cuando: 'Yesterday'}]},
     // Marc
-    {id: 'joan-serra', lleva: 'marc', tipo: 'venta', fase: 3, texto: 'Sale of the Sant Cugat house', estado: 'parado',
-      ultimo: {cuando: 'Sat 21, 20:05', texto: 'Complained: says nobody tells him anything'}, toca: 'Call Joan',
+    {id: 'joan-serra', lleva: 'marc', tipo: 'venta', fase: 3, texto: 'Sale in Sant Cugat', estado: 'parado',
+      ultimo: {cuando: f('2026-11-21T20:05'), texto: 'Complained: no one tells him anything'}, toca: 'Call Joan',
       aviso: {tipo: 'queja', texto: 'Owner complaint · 10 days with nothing happening'},
-      hitos: [{paso: 'Viewing', texto: 'Last viewing at the house', cuando: 'Thu 12'}, {paso: 'I saw', texto: 'Ten days without speaking to Joan', cuando: 'Sun 22'}, {paso: 'Wrote', texto: 'Complained: says nobody tells him anything', cuando: 'Sat 21, 20:05'}]},
+      hitos: [{paso: 'Viewing', texto: 'Last viewing at the house', cuando: f('2026-11-12')}, {paso: 'I saw', texto: 'Ten days without speaking to Joan', cuando: 'Yesterday'}, {paso: 'Wrote', texto: 'Complained: no one tells him anything', cuando: f('2026-11-21T20:05')}]},
     {id: 'pilar-grau', nombre: 'Pilar Grau', lleva: 'marc', tipo: 'compra', fase: 4, texto: 'Buying in Sarrià', estado: 'en-marcha',
-      ultimo: {cuando: 'Fri 20', texto: 'Their offer was accepted'}, toca: 'Sign the deposit on Thursday 26',
-      hitos: [{paso: 'Offer', texto: 'Offered €410,000', cuando: 'Tue 17'}, {paso: 'Done', texto: 'The owner accepted', cuando: 'Fri 20'}]},
+      ultimo: {cuando: f('2026-11-20'), texto: 'Their offer was accepted'}, toca: 'Sign the deposit on Thu 26',
+      hitos: [{paso: 'Offer', texto: 'Made an offer', cuando: f('2026-11-17')}, {paso: 'Done', texto: 'The owner accepted', cuando: f('2026-11-20')}]},
     {id: 'claudia', lleva: 'marc', tipo: 'compra', fase: 2, texto: 'Purchase in Sants', estado: 'caida', toca: 'Nothing. We can learn from this', caso: 'oficina/caso/claudia',
-      ultimo: {cuando: '12 Nov', texto: 'Said they had already found another flat'},
-      hitos: [{paso: 'Wrote', texto: 'Asks to see the flat on Olzinelles street', cuando: '3 Nov'}, {paso: 'Done', texto: 'She\'s offered a viewing', cuando: '4 Nov'}, {paso: 'I saw', texto: 'Waits for a call that never comes', cuando: '4 to 11 Nov'}, {paso: 'Wrote', texto: 'Has already found another flat', cuando: '12 Nov'}]},
+      ultimo: {cuando: f('2026-11-12'), texto: 'Said they had already found another flat'},
+      hitos: [{paso: 'Wrote', texto: 'Asks to see the flat on Olzinelles street', cuando: f('2026-11-03')}, {paso: 'Done', texto: 'She\'s offered a viewing', cuando: f('2026-11-04')}, {paso: 'I saw', texto: 'Waits for a call that never comes', cuando: '4 to 11 Nov'}, {paso: 'Wrote', texto: 'Has already found another flat', cuando: f('2026-11-12')}]},
     // David
     {id: 'jaume-sala', nombre: 'Jaume Sala', lleva: 'david', tipo: 'compra', fase: 3, texto: 'Buying in Sant Gervasi', estado: 'en-marcha',
-      ultimo: {cuando: 'Sat 21', texto: 'Made an offer on a flat'}, toca: 'Find out what the owner says on Tuesday 24',
-      hitos: [{paso: 'Viewing', texto: 'Second viewing of the flat', cuando: 'Thu 19'}, {paso: 'Offer', texto: 'Made an offer', cuando: 'Sat 21'}]},
+      ultimo: {cuando: f('2026-11-21'), texto: 'Made an offer on a flat'}, toca: 'Find out what the owner says tomorrow',
+      hitos: [{paso: 'Viewing', texto: 'Second viewing of the flat', cuando: f('2026-11-19')}, {paso: 'Offer', texto: 'Made an offer', cuando: f('2026-11-21')}]},
     {id: 'marina-pons', nombre: 'Marina Pons', lleva: 'david', tipo: 'venta', fase: 2, texto: 'Selling in Sarrià', estado: 'en-marcha',
-      ultimo: {cuando: 'Thu 19', texto: 'Signed the sale mandate'}, toca: 'Publish the advert',
+      ultimo: {cuando: f('2026-11-19'), texto: 'Signed the sale mandate'}, toca: 'Publish the advert',
       aviso: {tipo: 'papel', texto: 'A document is missing: the land registry extract'},
-      hitos: [{paso: 'Done', texto: 'Signed the sale mandate', cuando: 'Thu 19'}, {paso: 'I saw', texto: 'The land registry extract is missing for the advert', cuando: 'Fri 20'}]},
+      hitos: [{paso: 'Done', texto: 'Signed the sale mandate', cuando: f('2026-11-19')}, {paso: 'I saw', texto: 'The land registry extract is missing for the advert', cuando: f('2026-11-20')}]},
     // Teresa (de baja desde el lunes 16): si se pasan sus clientes, las lleva quien los recibe
     {id: 'ramon', lleva: 'teresa', tipo: 'compra', fase: 2, texto: 'Purchase in Gràcia', estado: 'en-marcha',
-      ultimo: {cuando: 'Yesterday, 17:30', texto: 'Asked if Thursday\'s viewing is still on'}, toca: 'Reply today',
+      ultimo: {cuando: f('2026-11-22T17:30'), texto: 'Asked if Thursday\'s viewing is still on'}, toca: 'Reply today',
       aviso: {tipo: 'sin-contestar', texto: 'Not answered since yesterday, 17:30'},
-      hitos: [{paso: 'Viewing', texto: 'Agreed with Teresa on Thursday', cuando: 'Fri 13'}, {paso: 'Wrote', texto: 'Asks if the viewing is still on', cuando: 'Yesterday, 17:30'}]},
+      hitos: [{paso: 'Viewing', texto: 'Agreed with Teresa on Thursday', cuando: f('2026-11-13')}, {paso: 'Wrote', texto: 'Asks if the viewing is still on', cuando: f('2026-11-22T17:30')}]},
     {id: 'dani-prats', lleva: 'teresa', tipo: 'compra', fase: 2, texto: 'Purchase in Gràcia', estado: 'parado',
-      ultimo: {cuando: 'Sat 14', texto: 'Viewed a flat on Torrent street'}, toca: 'Ask whether they are still looking',
+      ultimo: {cuando: f('2026-11-14'), texto: 'Viewed a flat on Torrent street'}, toca: 'Ask whether they are still looking',
       aviso: {tipo: 'parada', texto: '9 days with nothing happening'},
-      hitos: [{paso: 'Viewing', texto: 'Viewed a flat on Torrent street', cuando: 'Sat 14'}, {paso: 'I saw', texto: 'Since then, nobody has written to them', cuando: 'Today'}]},
+      hitos: [{paso: 'Viewing', texto: 'Viewed a flat on Torrent street', cuando: f('2026-11-14')}, {paso: 'I saw', texto: 'Since then, nobody has written to them', cuando: 'Today'}]},
     {id: 'rosa-vila', lleva: 'teresa', tipo: 'venta', fase: 3, texto: 'Sale in Gràcia', estado: 'parado',
-      ultimo: {cuando: 'Wed 11', texto: 'Last viewing of their flat'}, toca: 'Tell them how the viewings are going',
+      ultimo: {cuando: f('2026-11-11'), texto: 'Last viewing of their flat'}, toca: 'Tell them how the viewings are going',
       aviso: {tipo: 'parada', texto: '12 days with nothing happening'},
-      hitos: [{paso: 'Viewing', texto: 'Last viewing of their flat', cuando: 'Wed 11'}, {paso: 'I saw', texto: 'They have heard nothing since then', cuando: 'Today'}]},
+      hitos: [{paso: 'Viewing', texto: 'Last viewing of their flat', cuando: f('2026-11-11')}, {paso: 'I saw', texto: 'They have heard nothing since then', cuando: 'Today'}]},
     // sin nadie: los contactos nuevos sin dueño (los mismos de “Lo que entra”)
     {id: 'carmen', lleva: null, tipo: 'compra', fase: 1, texto: 'Looking for a flat in Gràcia', estado: 'en-marcha', contacto: true,
-      ultimo: {cuando: 'Yesterday, 19:10', texto: 'Wrote to the office WhatsApp'}, aviso: {tipo: 'nadie', texto: 'Nobody is handling her · wrote yesterday'},
-      hitos: [{paso: 'Wrote', texto: 'Wants 3 bedrooms in Gràcia', cuando: 'Yesterday, 19:10'}, {paso: 'I saw', texto: 'Verdi 42 suits her. Laura looks after Gràcia', cuando: 'Yesterday, 19:11'}]},
-    {id: 'pau-rios', lleva: null, tipo: 'compra', fase: 1, texto: 'Looking for a unit in the Eixample', estado: 'en-marcha', contacto: true,
-      ultimo: {cuando: 'Sat 21, 13:20', texto: 'Wrote to the office WhatsApp'}, aviso: {tipo: 'nadie', texto: 'Nobody is handling it · wrote on Saturday'},
-      hitos: [{paso: 'Wrote', texto: 'Looking for a unit to rent in the Eixample', cuando: 'Sat 21, 13:20'}]},
-    {id: 'lucia', lleva: null, tipo: 'venta', fase: 1, texto: 'Wants to sell in Sant Gervasi', estado: 'en-marcha', contacto: true,
-      ultimo: {cuando: 'Today, 7:40', texto: 'Wrote to the office WhatsApp'}, aviso: {tipo: 'nadie', texto: 'Nobody is handling her · wrote today'},
-      hitos: [{paso: 'Wrote', texto: 'Wants to sell her parents\' flat', cuando: 'Today, 7:40'}]}
+      ultimo: {cuando: f('2026-11-22T19:10'), texto: 'Wrote to the office WhatsApp'}, aviso: {tipo: 'nadie', texto: 'No one has her · wrote yesterday'},
+      hitos: [{paso: 'Wrote', texto: 'Wants 3 bedrooms in Gràcia', cuando: f('2026-11-22T19:10')}, {paso: 'I saw', texto: 'Verdi 42 suits them and is in their area', cuando: f('2026-11-22T19:11')}]},
+    {id: 'pau-rios', lleva: null, tipo: 'compra', fase: 1, texto: 'Unit in the Eixample', estado: 'en-marcha', contacto: true,
+      ultimo: {cuando: f('2026-11-21T13:20'), texto: 'Wrote to the office WhatsApp'}, aviso: {tipo: 'nadie', texto: 'No one has him · wrote Sat 21'},
+      hitos: [{paso: 'Wrote', texto: 'Looking for premises to let', cuando: f('2026-11-21T13:20')}]},
+    {id: 'lucia', lleva: null, tipo: 'venta', fase: 1, texto: 'Selling in Sant Gervasi', estado: 'en-marcha', contacto: true,
+      ultimo: {cuando: f('2026-11-23T07:40'), texto: 'Wrote to the office WhatsApp'}, aviso: {tipo: 'nadie', texto: 'No one has her · wrote today'},
+      hitos: [{paso: 'Wrote', texto: 'Wants to sell her parents\' flat', cuando: f('2026-11-23T07:40')}]}
   ];
 
-  // ---- cada persona: lo que Veta le hizo esta semana (suma 156, la cifra de Semana), lo que tarda en contestar y lo que aprendió ----
+  // ---- cada persona: lo que Veta le hizo esta semana (suma 156, la cifra de Semana), y lo que aprendió (sin tiempos de respuesta por persona) ----
   const personas = {
     // Laura: 31 mensajes, 4 promesas y 3 actas, las mismas cifras de su pestaña Veta (“Lo que ya preparo yo”); 38 en total
-    laura: {tarda: '1 h 50 min', hace: {mensajes: 31, actas: 3, avisos: 4}, aprendido: [['r-actas', 'I ask her to tell me about each viewing when she leaves'], ['r-promesas', 'I note what people promise her and alert her if it does not arrive'],
+    laura: {hace: {mensajes: 31, actas: 3, avisos: 4}, aprendido: [['r-actas', 'I ask her to tell me about each viewing when she leaves'], ['r-promesas', 'I note what people promise her and alert her if it does not arrive'],
       ['r-informes', 'I prepare each owner\'s report on Mondays'], ['r-cancelaciones', 'I suggest another date when a viewing is cancelled'], ['r-valoraciones', 'I prepare the flat report before a valuation']]},
-    anna: {tarda: '2 h 20 min', pendientes: 5, hace: {mensajes: 27, actas: 2, avisos: 5}, aprendido: [[null, 'In Sant Antoni, I send the floor plan before each viewing']]},
-    marc: {tarda: '3 h 30 min', pendientes: 7, hace: {mensajes: 25, actas: 2, avisos: 4}, aprendido: [[null, 'With owners, I suggest calling rather than writing']]},
-    david: {tarda: '2 h 40 min', pendientes: 4, hace: {mensajes: 24, actas: 1, avisos: 4}, aprendido: [[null, 'I confirm viewings the day before']]},
-    montse: {tarda: '2 h 55 min', hace: {mensajes: 20, actas: 1, avisos: 3}, aprendido: [[null, 'I put together the offers for the same flat']]},
-    teresa: {tarda: null, pendientes: 34, hace: {mensajes: 0, actas: 0, avisos: 0}, aprendido: []}
+    anna: {pendientes: 5, hace: {mensajes: 27, actas: 2, avisos: 5}, aprendido: [[null, 'In Sant Antoni, I send the floor plan before each viewing']]},
+    marc: {pendientes: 7, hace: {mensajes: 25, actas: 2, avisos: 4}, aprendido: [[null, 'With owners, I suggest calling rather than writing']]},
+    david: {pendientes: 4, hace: {mensajes: 24, actas: 1, avisos: 4}, aprendido: [[null, 'I confirm viewings the day before']]},
+    montse: {hace: {mensajes: 20, actas: 1, avisos: 3}, aprendido: [[null, 'I put together the offers for the same flat']]},
+    teresa: {pendientes: 34, hace: {mensajes: 0, actas: 0, avisos: 0}, aprendido: []}
   };
 
   // ---- trabajo que Veta ya hace por la oficina: cuatro semanas (la última y la anterior son las de Semana) ----
-  const semanas = {etiquetas: ['26 Oct', '2 Nov', '9 Nov', '16 Nov'], listos: [118, 127, 141, 156], corregidos: [21, 19, 16, 14]};
+  const semanas = {etiquetas: [f('2026-10-26'), f('2026-11-02'), f('2026-11-09'), f('2026-11-16')], listos: [118, 127, 141, 156], corregidos: [21, 19, 16, 14]};
 
   // ---- lo que el equipo le pide a Veta: lo que hace a mano (los 43 de G12) y quién ----
   const pide = [
@@ -152,7 +153,7 @@
 
   const resuelta = o => {
     if (o.cosa) { const c = M().cosa(o.cosa); return !!c && X.RES.includes(c.estado) && c.estado !== 'para-manana'; }
-    if (o.contacto) return !!llevaOp(o.id);
+    if (o.contacto) return !!llevaOp(o.id) || (X.aparcado(o.id) || {}).que === 'descartado';   // descartado: ya no hay que mirarlo
     return false;
   };
 
@@ -179,13 +180,14 @@
     if (contestada) { toca = 'Wait for a reply from ' + pila; tocaCorto = 'Wait for ' + pila; }
     toca = toca.replace(/\byou call her\b/, (quien === 'Someone' ? 'someone calls her' : quien + ' calls her'));
     if (id === 'joan-serra' && M().lee('marc-llama-joan', false)) toca = 'Marc calls him today';
-    if (o.contacto && !lleva) toca = 'Choose who handles her';
+    const fuera = o.contacto && !lleva ? X.aparcado(id) : null;   // “Para luego” o “Descartarlo” (ronda 8)
+    if (o.contacto && !lleva) toca = fuera ? (fuera.que === 'luego' ? 'Choose who takes it. You left it for later' : 'Nothing: you dismissed it') : 'Choose who handles her';
     if (o.contacto && lleva) toca = p.corto + ' replies';
     // las de Teresa, mientras está de baja, tienen dueña: son una sola decisión (“Pasar sus clientes”) y van aparte
     const deBaja = o.lleva === 'teresa' && lleva === 'teresa';
     let aviso = hecha || !o.aviso ? null : {tipo: o.aviso.tipo, texto: o.aviso.texto};
-    if (!lleva && !o.contacto) aviso = {tipo: 'nadie', texto: 'Nobody is handling her'};
-    if (aviso) { aviso.tono = ROJO.includes(aviso.tipo) ? 'rojo' : 'neutro'; if (deBaja) aviso.texto += ' · Teresa is off sick'; }
+    if (!lleva && !o.contacto) aviso = {tipo: 'nadie', texto: 'No one has her'};
+    if (aviso) { aviso.tono = ROJO.includes(aviso.tipo) ? 'rojo' : 'neutro'; if (deBaja) aviso.texto += ' · whoever handles it is on leave'; }
     const mirar = !!aviso && !deBaja && MIRAR.includes(aviso.tipo);
     // nota gris en lugar del aviso rojo: “Laura le contestó hoy, 9:41”
     const nota = contestada && !aviso ? quien + ' replied today, ' + contestada.hora : null;
@@ -216,10 +218,10 @@
   const resumenDe = mias => {
     const n = t => mias.filter(x => x.aviso && x.aviso.tipo === t && !x.deBaja).length, partes = [];
     if (n('sin-contestar')) partes.push({texto: n('sin-contestar') + ' not answered', rojo: true});
-    else if (mias.some(x => x.contestada)) partes.push({texto: mias.length === 1 ? 'contestada' : 'all answered'});   // había alguien esperando y ya no
+    else if (mias.some(x => x.contestada)) partes.push({texto: mias.length === 1 ? 'answered' : 'all answered'});   // había alguien esperando y ya no
     if (n('queja')) partes.push({texto: n('queja') + ' complaining'});
     if (n('parada')) partes.push({texto: plural(n('parada'), 'stalled', 'stalled')});
-    if (n('papel')) partes.push({texto: plural(n('papel'), 'needs a paper', 'need a paper')});
+    if (n('papel')) partes.push({texto: plural(n('papel'), 'needs a document', 'need a document')});
     return partes;
   };
   const ORDEN_P = ['laura', 'anna', 'teresa', 'marc', 'david', 'montse'];
@@ -236,7 +238,7 @@
     return {id, p, ops: mias, atencion: mias.filter(x => x.mirar), partes, cuantas,
       resumen: cuantas + ' · ' + (partes.length ? partes.map(x => x.texto).join(' · ') : 'all up to date'),
       hace, total: (hace.mensajes || 0) + (hace.actas || 0) + (hace.avisos || 0),
-      pendientes, tocan, tarda: d.tarda, aprendido: d.aprendido || [], baja: id === 'teresa' && !X.cartera() ? p.baja : null};
+      pendientes, tocan, aprendido: d.aprendido || [], baja: id === 'teresa' && !X.cartera() ? p.baja : null};
   };
   const equipo = () => {
     const grupo = x => x.baja ? 0 : x.atencion.length ? 1 : 2;
@@ -256,9 +258,8 @@
   // “Hoy le tocan 6 cosas. Ya ha hecho 2.”: la misma cifra que su “Te toca a ti”, su barra y su caja (lo que le queda, R9:
   // baja cuando lo atiende); detrás, lo que ya ha hecho hoy. F2: antes decía el total del día y no cuadraba con lo que ve la persona.
   const cosas = n => n + (n === 1 ? ' thing' : ' things');
-  // “Contesta en 1 h 50 min. Cumple lo que decimos.” (lo que decimos: “Contestamos en el día”; todas las medias del equipo caben en el día)
-  const tardaTexto = (x, yo) => x.tarda ? `${yo ? 'You reply' : (x.p ? x.p.corto : 'They') + ' replies'} in ${x.tarda}. ${yo ? 'You keep to' : (x.p ? x.p.corto : 'They') + ' keeps to'} what we say.` : '';
+  // (25-nov-2026: se fue “Contesta en 1 h 50 min”: dirección no ve cuánto tarda cada persona en contestar)
   const tocanTexto = (x, yo) => `Today ${yo ? 'you have' : (x.p ? x.p.corto + ' has' : 'they have')} ${cosas(x.pendientes)}.` + (x.pendientes < x.tocan ? ` ${yo ? 'You have already' : (x.p ? x.p.corto + ' has already' : 'They have already')} done ${x.tocan - x.pendientes}.` : '');
-  Object.assign(X, {op, ops: lista, llevaOp, ponLleva, personaOps: persona, equipoOps: equipo, tocanTexto, tardaTexto,
+  Object.assign(X, {op, ops: lista, llevaOp, ponLleva, personaOps: persona, equipoOps: equipo, tocanTexto,
     anota: (id, texto) => apunta('notasOp', id, texto), pregunta: (id, texto) => apunta('preguntasOp', id, texto)});
 })();

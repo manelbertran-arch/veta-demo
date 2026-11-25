@@ -12,8 +12,6 @@
   window.addEventListener('hashchange', () => { recien = null; });
   const FIN = '2026-12-07', MANANA = '2026-11-24';               // fin de las dos semanas de prueba · desde cuándo se extiende
   const hasta = () => 'A prueba hasta el ' + VETA.fecha.corta(FIN, {frase: true});
-  // el trabajo de la agente que es este mismo, visto por ella: ahí están los cinco pasos y, para dirección, «Subir un paso para todos»
-  const DE_AGENTE = {dossier: 'r-valoraciones'};
 
   // fase de una regla: 'propuesta' | 'a-prueba' | 'en-marcha' | 'descartada' | 'luego'
   function fase(id) {
@@ -41,6 +39,7 @@
   VETA.d1.subidaRegla = id => !!subido(id);   // lo lee la raíz Veta (oficina.js)
   // la fase de un trabajo de la oficina, para «Cómo trabajamos» (G10): la misma práctica no puede decir dos cosas. null si no tiene pantalla aquí
   VETA.d1.decideRegla = id => { recien = id; VETA.repinta({hecho: 'regla-' + id}); VETA.d1.numeros(); };   // lo llama «Más» (d-regla-otra)
+  VETA.d1.pasoRegla = id => nivel(id, fase(id));   // en qué paso de «¿Quién lo hace?» va este trabajo de la OFICINA (lo lee la hoja d-escalera-of)
   VETA.d1.faseRegla = id => ((VETA.datos.reglasOficina || {})[id] ? fase(id) : null);
 
   VETA.pantalla('G2b', {
@@ -66,7 +65,7 @@
       if (puedeSubir(p.id, e) && !extiende(p.id, e) && recien !== p.id) h += r7.tarjeta({veta: true, i: 1, de: '¿Dejo de pedir permiso?', texto: 'Lo he hecho 42 veces y me corregisteis 1. Si quieres, lo hago yo y os lo cuento después.'});
       const filas = [];
       // «¿Quién lo hace?»: el paso de ahora, en texto (antes, cinco puntitos)
-      if (!['descartada', 'luego'].includes(e.f)) { const n = nivel(p.id, e), niv = VETA.vivo.niveles(); filas.push({nombre: '¿Quién lo hace?', pasa: `Paso ${n} de ${niv.length} · ${niv[n - 1].nombre}`, ir: DE_AGENTE[p.id] && e.f !== 'en-marcha' ? `regla/${DE_AGENTE[p.id]}/nivel` : null}); }
+      if (!['descartada', 'luego'].includes(e.f)) { const n = nivel(p.id, e), niv = VETA.vivo.niveles(); filas.push({nombre: '¿Quién lo hace?', pasa: `Paso ${n} de ${niv.length} · ${niv[n - 1].nombre}`, hoja: 'd-escalera-of', datos: {regla: p.id}}); }
       if (e.f === 'propuesta') filas.push({nombre: 'Si lo pruebas', pasa: 'Cada agente ve qué habría hecho yo.'});
       else if (e.f === 'a-prueba') { const dia = r.dia || 1; filas.push({nombre: `A prueba · día ${dia} de 14`,
         pasa: dia >= 9 ? 'El equipo lo habría dejado igual 9 de cada 10 veces.' : `Hasta el ${VETA.fecha.corta(FIN, {frase: true})}. Al acabar, te pregunto.`}); }

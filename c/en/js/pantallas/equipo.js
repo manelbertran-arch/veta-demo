@@ -1,37 +1,31 @@
-/* Veta demo · ronda 7 · pantallas · equipo.js · D1
-   G1 · Equipo · #/equipo — solo las personas: una rejilla de caras grandes con su nombre, cuántas operaciones lleva y,
-   si hace falta, una pastilla (en rojo solo “sin contestar”). Teresa, de baja, aparte, en una fila debajo, con “Pasar
-   clientes a otra persona” (reparto). Al tocar una persona, su ficha (persona/:id).
-   Lo que había antes aquí y ya no está:
-   - “Tienes que decidir” → caja Decidir (decidir.js).
-   - La entrada a Operaciones → caja Operaciones.
-   - El gráfico “Trabajo que Veta ya hace”, “Me corregisteis”, “Ver la semana”, la fecha (“Leído hasta…”), “Lo que tu equipo
-     le pide a Veta” y “Más de la oficina” (cómo va hoy, semana, qué hace Veta, antes y ahora, qué ve cada uno, ajustes)
-     → caja Veta de la oficina (oficina.js, D2). “Lo que entra” y “Avisos” → al final de Decidir. */
+/* Veta demo · ronda 8 · pantallas · equipo.js · carril D
+   G1 · Equipo · #/equipo — raíz. Una lista de personas con su cara: cuántas operaciones lleva y, en la segunda línea, lo que pasa.
+   Sin cifras ni pastillas por persona (25-nov-2026): el total de la oficina va en el subtítulo. Teresa, de baja, va en la misma lista. Al tocar una persona, su ficha (persona/:id).
+   Debajo, otra lista con “Pasar clientes a otra persona” (reparto).
+   Nada de aquí ordena ni compara a las personas: el orden es el de siempre (quien necesita algo hoy, y luego por nombre). */
 (function () {
   'use strict';
-  const esc = VETA.esc, X = VETA.dir;
+  const X = VETA.dir, r7 = VETA.r7;
 
-  // una persona en la rejilla: cara grande, nombre, cuántas lleva y como mucho una pastilla
-  function tarjeta(x, yo) {
-    const p = x.partes[0], soy = x.id === yo;
-    const pas = p ? VETA.r7.pastilla(p.texto, p.rojo ? 'rojo' : 'gris') : `<span class="d1-per-ok">All up to date</span>`;
-    const voz = `${x.p.nombre}${soy ? ', you' : ''}. ${x.cuantas}. ${p ? p.texto : 'All up to date'}.`;
-    return `<button type="button" class="d1-per" data-ir="persona/${esc(x.id)}" aria-label="${esc(voz)}">${VETA.d1.cara(x.id, 64)}` +
-      `<span class="d1-per-n">${esc(soy ? x.p.corto + ' (you)' : x.p.nombre)}</span><span class="d1-per-q">${esc(x.cuantas)}</span>${pas}</button>`;
+  // la segunda línea: solo dónde trabaja (o, si está de baja, quién lleva sus clientes). Ninguna cifra y ninguna pastilla por persona:
+  // lo que hay en la oficina va, junto y sin nombres, en el subtítulo (decisión del CTO del 25-nov-2026: nada por persona en dirección)
+  function fila(x, yo) {
+    const soy = x.id === yo;
+    const pasa = x.p.baja ? (x.baja ? 'On leave · her clients are waiting' : `On leave · ${X.carteraTexto(X.carteraA())} has her clients`) : 'Works in ' + X.zona(x.id);
+    return {cara: x.id, nombre: soy ? x.p.corto + ' (you)' : x.p.nombre, pasa, ir: 'persona/' + x.id};
   }
 
   VETA.pantalla('G1', {
     titulo: 'Team',
-    frase: 'Tap a person to see what they handle and how it is going.',
-    guia: ['Here you see each person in the team and how much they handle.', 'You tap one and see their deals.', 'This way you know where to lend a hand.'],
+    sub: () => {
+      const todas = X.ops(), sin = todas.filter(o => o.mirar && o.aviso && o.aviso.tipo === 'sin-contestar').length;
+      return `${todas.length} deals in the office` + (sin ? ` · ${sin} unanswered` : '') + '.';
+    },
     pinta: () => {
       const e = X.equipoOps(), yo = VETA.yo().id;
-      const fuera = e.todos.filter(x => x.p.baja), dentro = e.todos.filter(x => !x.p.baja).sort((a, b) => (a.id === yo) - (b.id === yo));
-      const filas = fuera.map(x => VETA.d1.fila({cara: x.id, nombre: x.p.nombre, pasa: x.baja ? x.pendientes + ' conversations are waiting' : 'Their clients are already handled by ' + X.carteraTexto(X.carteraA()),
-        pastilla: 'Off sick', tono: 'gris', ir: 'persona/' + x.id}));
-      filas.push({icono: 'equipo', nombre: 'Move clients to another person', pasa: 'When someone is away or leaves', ir: 'reparto'});
-      return `<div class="d1-equipo"><div class="d1-rejilla">${dentro.map(x => tarjeta(x, yo)).join('')}</div>${VETA.r7.lista(filas)}</div>`;
+      const orden = e.todos.filter(x => !x.p.baja).sort((a, b) => (a.id === yo) - (b.id === yo)).concat(e.todos.filter(x => x.p.baja));
+      return r7.lista(orden.map(x => fila(x, yo)), {i: 0}) +
+        r7.lista([{nombre: 'Move clients to another person', ir: 'reparto'}], {i: 1});
     }
   });
 })();

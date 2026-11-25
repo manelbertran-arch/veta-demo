@@ -14,19 +14,11 @@
 
   const $h = () => document.getElementById('hoja');
   const $v = () => document.getElementById('velo');
-  const FONDO = ['#lateral', '#marco', '#barra', '#guia'];
+  const FONDO = ['#lateral', '#marco', '#barra'];
   const inerte = on => FONDO.forEach(q => { const el = document.querySelector(q); if (el) { if (on) el.setAttribute('inert', ''); else el.removeAttribute('inert'); } });
 
-  // una hoja que aún no existe: dice su código y quién la hace
-  function provisional(id) {
-    const h = (VETA.HOJAS || {})[id];
-    return {
-      titulo: () => h ? h.titulo : 'Sheet',
-      pinta: () => `<p class="hoja-x">${h ? `${h.cod} · pending from package ${h.paq}` : 'This sheet doesn\'t exist yet.'}</p>` +
-        (h ? `<p class="hoja-x tenue">Goes in js/hojas/${h.archivo}.</p>` : '') +
-        VETA.UI.boton({tipo: 'secundario', texto: 'Close', datos: {cierra: '1'}})
-    };
-  }
+  // una hoja que no existe (un id mal escrito): lo dice y se cierra
+  const provisional = () => ({titulo: 'Sheet', pinta: () => '<p class="hoja-x">This sheet doesn\'t exist yet.</p>' + VETA.UI.boton({tipo: 'secundario', texto: 'Close', datos: {cierra: '1'}})});
 
   VETA.hoja = (id, d) => {
     const h = $h(); if (!h) return;
@@ -46,7 +38,7 @@
       h.classList.add('on'); $v().classList.add('on'); document.body.classList.add('hoja-on'); inerte(true);
     }
     if (def.alMontar) def.alMontar(h, d);
-    if (VETA.guia) VETA.guia.calla();
+    if (VETA.r7 && VETA.r7.filtrosVivos) VETA.r7.filtrosVivos(h);
     try { (h.querySelector('[autofocus]') || h).focus({preventScroll: true}); } catch (e) {}
   };
 

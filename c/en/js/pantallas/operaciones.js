@@ -1,52 +1,63 @@
-/* Veta demo · pantallas · operaciones.js · ronda 7 · D2 (antes: ronda 6, paquete D)
-   G17 · Operaciones · #/operaciones — raíz de la caja “Operaciones” de dirección (ESTRATEGIA_R7.md, sección 4).
-   Una sola cosa: la lista. Arriba, dos pastillas: “Hay que mirarlas 5” (se abre aquí) y “Todas 22”. Cada fila (R3):
-   cara + “Marta Puig” con una pastilla (roja si alguien espera o no la lleva nadie; si no, gris: cómo va) + “Compra en Gràcia · Laura”.
-   (El encargo pedía “Marta Puig · Compra en Gràcia” en la primera línea: con la pastilla al lado se cortaba a “Marta Puig · C…”.)
-   Lo de “no la lleva nadie” se decide en Decidir (D1) y “por persona” se ve en Equipo (D1): aquí ya no hay esos filtros.
-   Al final, “Cómo va la oficina hoy” (h34), que antes colgaba de “Más de la oficina” en Equipo. Cuentas: VETA.r7.cuentas(). */
+/* Veta demo · ronda 8 · pantallas · operaciones.js · carril D
+   G17 · Operaciones · #/operaciones — raíz. Cuatro filtros (vuelven los de la versión A; capacidad 8) y la lista:
+   “Mirar hoy” · “Todas” · “Sin dueño” · “De baja” (las de Teresa, mientras está de baja). Se fue “Por persona” (25-nov-2026: nada por persona en dirección);
+   en “Mirar hoy” ya no va el nombre de quien la lleva: el motivo y cuánto lleva así.
+   Cada fila: cara + nombre + una segunda línea. En “Mirar hoy” y “Sin dueño” no hay pastilla (todas lo serían):
+   el motivo va en la segunda línea. En “Todas”, qué es y cómo va; pastilla roja solo si alguien espera
+   respuesta (“sin dueño” va en la segunda línea: con tres o más pastillas dejan de ser la excepción); cómo va, al final de la segunda línea
+   (en un renglón, de 36 caracteres como mucho; quién la lleva está en la operación).
+   Aparte, la lista “De la oficina”: “Cómo va la oficina hoy” (hoja d-hoy, con sus seis cifras; capacidad 14) y “Lo que entra”.
+   Cuentas: VETA.r7.cuentas(). */
 (function () {
   'use strict';
-  const esc = VETA.esc, X = VETA.dir, r7 = VETA.r7;
+  const X = VETA.dir, r7 = VETA.r7;
   let filtro = 'mirar';
 
-  // la pastilla, una por fila y corta (R3, R5): roja si alguien espera respuesta o no la lleva nadie; si no, gris con cómo va
-  // arreglo FD (defecto 7): una sola tabla de pastillas. Rojas: “Sin contestar” y “Nadie la lleva”; “Queja” y “De baja”, grises.
-  const ROJO = {'sin-contestar': 'No reply yet', nadie: 'No one has it'};
-  const GRIS = {queja: 'Complaint', papel: 'Paper missing', parada: 'Stalled', espera: 'Stalled'};
-  const TIPO = {compra: 'Purchase', venta: 'Sale', alquiler: 'Rental'};
-  function pastilla(o) {
+  const minus = t => t.charAt(0).toLowerCase() + t.slice(1), mayus = t => t.charAt(0).toUpperCase() + t.slice(1);
+  // lo que pasa, sin repetir lo que ya dice el filtro
+  const motivo = o => o.aviso ? o.aviso.texto.replace(/^No l[ao] lleva nadie · /, '').replace(/ · quien la lleva está de baja$/, '').replace(/^escribió( el)? /, 'desde ') : '';
+  // la hora exacta ya está en la operación; en la lista basta “desde ayer”, y “queja del propietario” es “queja” (un renglón, D17)
+  const corto = t => t.replace(/, \d{1,2}:\d\d$/, '').replace(/^Owner complaint/, 'Complaint');
+  // cómo va, corto y en gris a la derecha (12 caracteres como mucho)
+  const GRIS = {queja: 'Complaint', papel: 'No document', parada: 'Stalled', espera: 'Waiting'};
+  const comoVa = o => {
     const t = o.aviso && o.aviso.tipo;
-    if (o.mirar && ROJO[t]) return [ROJO[t], 'rojo'];
-    if (o.deBaja) return ['Off sick', 'gris'];
-    if (GRIS[t]) return [GRIS[t], 'gris'];
-    return [String(o.comoCorto || '').replace(/^Parada en /, '').replace(/ \(\d de 5\)$/, ''), 'gris'];
-  }
-  // dos líneas (R3): “Marta Puig” + pastilla / “Compra en Gràcia · Laura”. El nombre de la operación va abajo para que no se corte.
-  const fila = o => {
-    const [pt, tono] = pastilla(o);
-    // arreglo FD (defecto 14): sin la zona, que cortaba la línea; queda qué es y quién la lleva
-    const tipo = TIPO[o.tipo] || 'Deal';
-    const pasa = !o.lleva ? 'New contact' : tipo + ' · ' + (o.lleva === VETA.yo().id ? 'you have it' : o.persona.corto);
-    return {cara: o.id, nombre: o.nombre, pasa, pastilla: pt || null, tono, ir: 'operacion/' + o.id};
+    if (o.deBaja) return 'On leave';
+    if (t === 'sin-contestar' || t === 'nadie' || !o.lleva) return null;
+    return GRIS[t] || String(o.comoCorto || '').replace(/^Stalled at /, '').replace(/ \(\d of 5\)$/, '') || null;
   };
-  // el número de “Hay que mirarlas” y el de “Todas” salen de la misma función que la caja y la barra (R9)
-  const cifras = () => { const c = r7.cuentas(); return {mirar: c.mirar, todas: c.operaciones}; };
+  const espera = o => !!(o.mirar && o.aviso && o.aviso.tipo === 'sin-contestar');   // la única pastilla: alguien espera respuesta
+  function fila(o, modo) {
+    const f = {cara: o.id, nombre: o.nombre, ir: 'operacion/' + o.id};
+    if (modo === 'mirar') f.pasa = mayus(minus(corto(o.aviso ? o.aviso.texto : o.texto)).replace(/ · /g, ', '));
+    else if (modo === 'nadie') f.pasa = [o.texto, motivo(o)].filter(Boolean).join(' · ');
+    else if (modo === 'teresa') f.pasa = [o.texto, minus(motivo(o)).replace(/^not answered .*/, 'not answered').replace(/^(\d+) days with nothing happening$/, 'stalled $1 days')].filter(Boolean).join(' · ');
+    else {
+      // el estado ya no va a la derecha (D17): cierra la segunda línea, en minúscula
+      const est = espera(o) ? '' : minus(comoVa(o) || '');
+      // “Venta en Sant Antoni · anuncio”: qué es y cómo va; quién la lleva está en la propia operación
+      f.pasa = [o.texto, !o.lleva ? 'unassigned' : '', est].filter(Boolean).join(' · ');
+      if (espera(o)) f.pastilla = 'No reply yet';
+    }
+    return f;
+  }
+  const vacia = () => r7.vacio('None right now.');
 
   VETA.pantalla('G17', {
     titulo: 'Deals',
-    frase: () => { const c = cifras(); return c.mirar ? `${c.todas} deals. First, the ${c.mirar} to look at today.` : `${c.todas} deals. None to look at today.`; },
     pinta: () => {
-      const todas = X.ops(), ojo = todas.filter(o => o.mirar), c = cifras();
-      if (filtro === 'mirar' && !ojo.length) filtro = 'todas';
-      const l = filtro === 'mirar' ? ojo : todas;
-      const pas = [['mirar', 'Need a look', c.mirar], ['todas', 'All', c.todas]];
-      let h = `<div class="d2-filtro" role="group" aria-label="Which deals to see" data-i="0">${pas.map(([id, t, n]) =>
-        `<button type="button" class="d2-filtro-b" data-accion="filtro" data-valor="${id}" aria-pressed="${filtro === id}">${esc(t)} <b>${n}</b></button>`).join('')}</div>`;
-      const temas = {icono: 'grafica', nombre: 'How the office is doing today', pasa: `${X.paradas().length} stalled for over 7 days`, hoja: 'h34'};
-      // arreglo FD (defecto 8): “Lo que entra” viene de Decidir y es la última fila, sin número
-      const entra = {icono: 'entra', nombre: 'What\'s coming in', pasa: 'Who writes to the office', ir: 'entra'};
-      h += r7.lista(l.map(fila).concat([temas, entra]), {i: 1, clase: 'd2-ops'});
+      const todas = X.ops(), c = r7.cuentas();
+      const nadie = todas.filter(o => !o.lleva), teresa = todas.filter(o => o.deBaja);
+      if (filtro === 'teresa' && !teresa.length) filtro = 'mirar';
+      let h = r7.filtros([
+        {id: 'mirar', texto: 'Check today', cuenta: c.mirar}, {id: 'todas', texto: 'All', cuenta: c.operaciones},
+        {id: 'nadie', texto: 'Unassigned', cuenta: nadie.length}, teresa.length ? {id: 'teresa', texto: 'On leave', cuenta: teresa.length} : null],
+        {valor: filtro, accion: 'filtro', etiqueta: 'Which deals to see', i: 0});
+      const l = filtro === 'mirar' ? todas.filter(o => o.mirar) : filtro === 'nadie' ? nadie : filtro === 'teresa' ? teresa : todas;
+      h += l.length ? r7.lista(l.map(o => fila(o, filtro)), {i: 1}) : vacia();
+      h += r7.lista([{nombre: 'How the office is doing today', hoja: 'd-hoy'}, {nombre: 'What\'s coming in', ir: 'entra'}], {rotulo: 'From the office', i: 2});
+      // las de Teresa son una sola decisión: pasar sus clientes
+      if (filtro === 'teresa') h += r7.enlace({texto: 'Pass her clients to someone else', ir: 'reparto'});
       return h;
     },
     acciones: {

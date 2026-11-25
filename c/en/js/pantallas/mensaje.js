@@ -1,9 +1,9 @@
-/* Veta demo · pantallas · mensaje.js · paquete A (El día)
-   A2 · Cambiar el mensaje · #/mensaje/<id de la cosa> (ronda 7: cuelga de la tarjeta toca/:id). El borrador en una caja que crece,
-   tres ajustes como mucho y, abajo, “Copiar el texto” y el negro “Abrir WhatsApp con el mensaje” (con la ventana de 24 h cerrada, solo “Copiar el texto”). */
+/* Veta demo · ronda 8 · pantallas · mensaje.js · carril A (El día)
+   A2 · Cambiar el mensaje · #/mensaje/<id de la cosa> (cuelga de la cosa de hoy, toca/:id). El mensaje en una caja que crece, los ajustes
+   rápidos en una fila de filtros (cuatro como mucho, y “Volver al mío” si lo has cambiado), el enlace “Copiar el texto” y un botón. */
 (function () {
   'use strict';
-  const UI = VETA.UI, M = VETA.modelo, esc = VETA.esc;
+  const UI = VETA.UI, M = VETA.modelo, esc = VETA.esc, r7 = VETA.r7;
   const AJ = [{id: 'corto', texto: 'Shorter'}, {id: 'cercano', texto: 'Warmer'}, {id: 'otroDia', texto: 'Suggest another day'}];
   const limpio = s => String(s || '').replace(/<[^>]+>/g, '');
   const informe = c => c && c.tipo === 'informe' ? ((VETA.datos.diaA || {}).informe || {})[c.cliente] : null;
@@ -19,31 +19,29 @@
 
   function crece(t) { if (!t) return; t.style.height = 'auto'; t.style.height = t.scrollHeight + 2 + 'px'; }
 
-  const corto = c => c.corto && !/\s/.test(c.corto) ? c.corto : String(c.titulo || '').split(' ')[0];
   VETA.pantalla('A2', {
     titulo: 'Change the message',
-    frase: p => { const c = M.cosa(p.id); return (c ? 'For ' + corto(c) + '. ' : '') + 'Change it as you like. If you change it, I ask if I should always write it like this.'; },
-    guia: ['Here you see the message Veta has prepared for you.', 'You change it however you like, or ask it to shorten it or make it warmer.', 'This is how it comes out with your words. If you change it, I will ask if I should always do it like that.'],
+    nota: 'If you change it, I\'ll ask whether to learn it.',
     pinta: p => {
       const c = M.cosa(p.id);
-      if (!c) return UI.vacio({titulo: 'This message is no longer here', texto: 'What you have to do is on the list.', icono: 'chat'});
+      if (!c) return r7.vacio('This message is no longer there.');
       const texto = actual(c), veta = deVeta(c), e = ed(c.id) || {}, x = c.extra || {};
-      // ronda 6 · el mensaje que Veta ha cambiado con lo recién aprendido: la frase nueva va subrayada en oro mientras no se toque
+      // el mensaje que Veta ha cambiado con lo recién aprendido: la frase nueva va subrayada en oro mientras no se toque
       const oro = !!(x.r6 && x.borradorHtml && texto === veta);
       const aj = ((VETA.datos.diaA || {}).ajustes || {})[c.id];
       let h = `<div class="campo a-msg" data-i="0"><label class="campo-e" for="a-msg">${oro ? 'Your message · what is new is underlined' : 'Your message'}</label><div class="campo-caja">${oro ? `<div class="a-msg-oro" aria-hidden="true">${x.borradorHtml}</div>` : ''}` +
         `<textarea id="a-msg" class="campo-i" rows="3">${esc(texto)}</textarea></div></div>`;
-      // tres ajustes como mucho (con “Dar dos horas” delante mientras Veta no lo haya aprendido); y, si lo has cambiado, volver al mío
-      const ajs = (dosHoras(c) ? [{id: 'dosHoras', texto: 'Offer two times'}] : []).concat(AJ).slice(0, 3);
-      const mio = texto !== veta ? `<button type="button" class="a1-mini a-mio" data-accion="al-de-veta">Put mine back</button>` : '';
-      if (aj || mio) h += `<div class="a1-minis a-ajustes" data-i="1" role="group" aria-label="Ask me for a change">${aj ? ajs.map(a => `<button type="button" class="a1-mini a-aj${e.ajuste === a.id ? ' on' : ''}" data-accion="ajusta" data-aj="${esc(a.id)}">${esc(a.texto)}</button>`).join('') : ''}${mio}</div>`;
-      if (copia24(c)) h += `<div data-i="2">${UI.nota({texto: c.bloqueo, icono: 'candado', caja: true})}</div>`;
+      // cuatro ajustes como mucho (“Dar dos horas” delante mientras Veta no lo haya aprendido); y, si lo has cambiado, volver al mío
+      const ajs = (aj ? (dosHoras(c) ? [{id: 'dosHoras', texto: 'Offer two times'}] : []).concat(AJ).slice(0, 4) : []).concat(texto !== veta ? [{id: 'mio', texto: 'Back to mine'}] : []);
+      if (ajs.length) h += r7.filtros(ajs, {i: 1, valor: e.ajuste, accion: 'ajusta', etiqueta: 'Ask me for a change'});
+      if (copia24(c)) h += r7.tarjeta({i: 2, veta: true, de: 'I looked at it myself', texto: c.bloqueo});
+      else if (texto.trim()) h += r7.enlace({i: 2, texto: 'Copy the text', accion: 'copiar-a2'});
       return h;
     },
     botonFijo: p => {
       const c = M.cosa(p.id); if (!c || !actual(c).trim()) return '';
-      if (copia24(c)) return VETA.r7.botones({texto: 'Copy the text', accion: 'copiar-a2'});
-      return VETA.r7.botones({texto: c.tipo === 'informe' ? 'Open WhatsApp with the report' : 'Open WhatsApp with the message', accion: 'enviar'}, [{texto: 'Copy the text', accion: 'copiar-a2'}]);
+      if (copia24(c)) return r7.botones({texto: 'Copy the text', accion: 'copiar-a2'});
+      return r7.botones({texto: c.tipo === 'informe' ? 'Open WhatsApp with the report' : 'Open WhatsApp with the message', accion: 'enviar'});
     },
     alMontar: (el, p) => {
       const t = el.querySelector('#a-msg'); if (!t) return;
@@ -60,7 +58,7 @@
         const vacio = !t.value.trim();
         // al vaciarse o volver a tener texto cambia el botón: se repinta sin perder el cursor
         const cambiado = t.value !== deVeta(c);
-        const marca = el.querySelector('.a-mio');
+        const marca = el.querySelector('[data-valor="mio"]');
         if (vacio !== vacioAntes || (!!marca) !== cambiado) {
           vacioAntes = vacio; const pos = t.selectionStart; VETA.repinta();
           const n = VETA.$('#a-msg'); if (n) { n.focus({preventScroll: true}); try { n.setSelectionRange(pos, pos); } catch (x) {} }
@@ -69,12 +67,12 @@
     },
     acciones: {
       ajusta(ev, el, p) {
-        const c = M.cosa(p.id), aj = ((VETA.datos.diaA || {}).ajustes || {})[p.id]; if (!c || !aj) return;
-        const k = el.dataset.aj, txt = k === 'dosHoras' ? dosHoras(c) : aj[k]; if (!txt) return;
+        const c = M.cosa(p.id), aj = ((VETA.datos.diaA || {}).ajustes || {})[p.id] || {}; if (!c) return;
+        const k = el.dataset.valor;
+        if (k === 'mio') { ponEd(p.id, {texto: deVeta(c), antes: actual(c)}); VETA.repinta(); return; }
+        const txt = k === 'dosHoras' ? dosHoras(c) : aj[k]; if (!txt) return;
         ponEd(c.id, {texto: txt, antes: actual(c), ajuste: k}); VETA.repinta();
       },
-      'deshacer-cambio'(ev, el, p) { const e = ed(p.id); if (!e) return; ponEd(p.id, {texto: e.antes, antes: null}); VETA.repinta(); },
-      'al-de-veta'(ev, el, p) { const c = M.cosa(p.id); ponEd(p.id, {texto: deVeta(c), antes: actual(c)}); VETA.repinta(); },
       'copiar-a2'(ev, el, p) {
         const c = M.cosa(p.id); if (!c) return; const t = actual(c);
         VETA.copia(t); VETA.aviso('Text copied. Send it from your WhatsApp.');

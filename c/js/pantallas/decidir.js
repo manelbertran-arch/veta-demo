@@ -16,7 +16,7 @@
   const DECISION = {
     'd-carmen': () => ({cara: 'carmen', nombre: 'Carmen López', pasa: 'Nadie la lleva · busca piso en Gràcia', primero: 'Yo se la daría a Laura', pastilla: 'Nadie la lleva'}),
     'd-regla': () => ({cara: 'veta', nombre: 'Informe del piso', pasa: X.laPropuso() ? 'Un trabajo nuevo · lo propone Laura' : 'Un trabajo nuevo para la oficina'}),
-    'd-teresa': () => ({cara: 'teresa', nombre: 'Teresa Gil', pasa: 'De baja · 12 clientes esperan'}),
+    'd-teresa': () => ({cara: 'teresa', nombre: 'Teresa Gil', pasa: 'De baja · sus clientes esperan'}),
     'd-joan': () => ({cara: 'joan-serra', nombre: 'Joan Serra', pasa: 'Se queja: diez días sin noticias'})
   };
   // un contacto que no lleva nadie (Pau Ríos, Lucía Gómez) es una decisión más, como Carmen: su ficha es asunto/:id
@@ -65,14 +65,23 @@
     // mientras se va: la lista de antes, con lo resuelto marcado; lo nuevo (algo deshecho) entra al repintar
     const ver = idas.length ? ultima.map(f => l.find(g => clave(g) === clave(f)) || Object.assign({}, f, {seVa: true})) : l;
     if (!idas.length) ultima = l;
-    let h = pintaLista(ver);
+    // con cero cosas, una frase sola en mitad de la pantalla y la de arriba dice otra cosa (para no decir lo mismo dos veces)
+    let h = ver.length ? pintaLista(ver) : r7.vacio({texto: 'Hoy ya no queda nada por decidir.', i: 1});
     if (hechas) h += r7.lista([{nombre: 'Decidido hoy', dato: hechas, hoja: 'd-decididas'}], {i: 3});
     // lo suyo como agente (Montse también vende), con su rótulo: sin él no se sabe que esas dos filas son otra cosa
+    // «Confirmar las visitas»: el trabajo que te propongo a ti, directo desde aquí (antes se llegaba a cuatro toques, por el informe del piso)
+    // y lo mismo con el informe del piso al valorar mientras siga siendo propuesta (hasta dos trabajos: es lo tuyo, no un listado)
+    // los trabajos de la OFICINA (VETA.d1.trabajos): dirección no usa las reglas de una agente
+    const trab = VETA.d1.trabajos ? VETA.d1.trabajos() : [];
+    const props = trab.filter(x => x.estado === 'propuesta').slice(0, 2);
+    // «Lo que Veta hace por ti» es fija: lo que aceptas desde un atajo (y deja de ser propuesta) sigue ahí, en «Ya lo hago yo»
+    const mios = trab.filter(x => ['propuesta', 'a-prueba', 'en-marcha'].includes(x.estado)).length;
     h += r7.lista([
       {nombre: 'Te toca a ti', dato: c.hoy || null, ir: 'hoy'},
-      {nombre: 'Tus clientes', dato: c.clientes || null, ir: 'clientes'}
-    ], {rotulo: 'Lo tuyo', i: 3});
-    return {html: h, alMontar: el => {
+      {nombre: 'Tus clientes', dato: c.clientes || null, ir: 'clientes'},
+      {nombre: 'Lo que Veta hace por ti', dato: mios || null, ir: 'veta/mia'}
+    ].concat(props.map(x => ({nombre: x.nombre, pasa: 'Te lo propongo', ir: x.ir}))), {rotulo: 'Lo tuyo', i: 3});
+    return {html: h, frase: ver.length ? undefined : 'Todo decidido. Mañana a las 8:00, lista nueva.', alMontar: el => {
       if (!idas.length || yendo) return;
       const els = [...el.querySelectorAll('.d-seva')];
       yendo = true;

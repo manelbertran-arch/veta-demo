@@ -33,8 +33,6 @@
   // en qué paso de «¿Quién lo hace?» está cada cosa (1 Solo te aviso … 5 Lo envío yo, cerrado)
   // lo que todavía es una propuesta lo haces tú: paso 1
   C.paso = id => id === 'r-visitas' ? C.visitas().n : (C.lee('nivel', {})[id] || (['propuesta', 'nueva'].includes((M.regla(id) || {}).estado) ? 1 : (R6().pasos[id] || {}).paso || 2));
-  // calendario conectado (H33)
-  C.calendario = () => lee('calendario', null);
   // la pila contiene Cuenta: el primer día va en repaso
   C.repaso = () => VETA.pila().some(x => x.ruta === 'cuenta');
   // la semana de quien mira (Laura: 31 mensajes; Montse: los suyos)
@@ -70,16 +68,14 @@
   // «Lo que dirección ve de ti» (Cuenta › hoja c-lee): la misma ficha que Montse ve de Laura, dato a dato, y lo que no ve.
   // Una sola fuente: lo que dirección ve en la ficha de la persona (VETA.dir.personaOps), con las mismas frases
   C.direccionVe = () => {
-    const yo = VETA.yo(), x = VETA.dir.personaOps(yo.id), h = x.hace || {};
-    const apr = x.aprendido.length + (yo.id === 'laura' && VETA.r6.siempre() ? 1 : 0);
+    // 25-nov-2026: dirección ya no ve cifras por persona (ni lo que tardas en contestar ni cuántas cosas te dejó listas Veta): lo que ve es esto, sin números
+    const x = VETA.dir.personaOps(VETA.yo().id);
     return [
       {texto: 'Montse ve de ti lo mismo que ves tú aquí.'},
-      {titulo: 'Lo que llevas', texto: x.ops.length ? x.resumen : 'Ahora no llevas ninguna operación.'},
-      {titulo: 'Lo que tienes pendiente', texto: x.pendientes ? VETA.dir.tocanTexto(x, true) : 'Hoy no tienes nada pendiente.'},
-      {titulo: 'Cuánto tardas en contestar', texto: x.tarda ? VETA.dir.tardaTexto(x, true) + ' · Ejemplo' : 'Todavía no lo sé.'},
-      {titulo: 'Lo que Veta ya hace por ti', texto: `${x.total} cosas que te dejé listas la semana pasada: ${h.mensajes} mensajes, ${h.actas} actas de visita y ${h.avisos} avisos`},
-      {titulo: 'Lo que he aprendido de ti', texto: `${apr} ${apr === 1 ? 'cosa' : 'cosas'}`},
-      {titulo: 'Lo que no ve', texto: 'No ve lo que escribes en tus chats ni tus notas. Tampoco los chats que dejas fuera.'}
+      {titulo: 'Tus operaciones', texto: x.ops.length ? 'Cada una, con cómo va y si alguien espera respuesta.' : 'Ahora no llevas ninguna operación.'},
+      {titulo: 'Lo que Veta hace por ti', texto: 'Los trabajos que ya hace por ti, sin cifras.'},
+      {titulo: 'Lo que he aprendido de ti', texto: 'Lo que le has enseñado a Veta, uno a uno.'},
+      {titulo: 'Lo que no ve', texto: 'No ve lo que escribes en tus chats ni tus notas. Tampoco los chats que dejas fuera. Y no hay cifras por persona.'}
     ];
   };
 
@@ -99,6 +95,28 @@
           {nombre: 'La semana pasada', ir: 'reglas/semana-pasada'}
         ], {rotulo: 'Cómo voy', i: 2}) +
         R7().enlace({texto: 'Enséñale algo a Veta', ir: 'dictar/orden', i: 3});
+    }
+  });
+
+  // ---- A8b · Lo que Veta hace por ti · #/veta/mia: lo mismo que A8 para dirección, que también es agente (Montse lleva clientes). Su pestaña
+  // «Veta» es la de la oficina; sus trabajos propios (los que acepta desde el atajo del Inicio) viven aquí, siempre en el mismo sitio:
+  // lo que propongo, lo que ya hago y lo que dijo que no. Sin «Cómo voy»: eso es de la agente. ----
+  VETA.pantalla('A8b', {
+    titulo: 'Lo que Veta hace por ti',
+    sub: 'Lo que hago con tus chats de clientes.',
+    pinta: () => {
+      // dirección: los trabajos de la OFICINA (los mismos que «Trabajos de la oficina» y que la ficha de Montse), nunca los de una agente
+      if (VETA.yo().papel === 'direccion') {
+        const t = VETA.d1.trabajos(), prop = t.filter(x => x.estado === 'propuesta'), vivos = t.filter(x => x.estado === 'a-prueba' || x.estado === 'en-marcha');
+        if (!prop.length && !vivos.length) return R7().vacio({texto: 'Todavía no hago nada por ti. Cuando vea un trabajo que repites, te lo propongo.', i: 0});
+        return (prop.length ? R7().lista(prop.map(x => ({nombre: x.nombre, pasa: 'Te lo propongo', ir: x.ir})), {rotulo: 'Te lo propongo', i: 0}) : '') +
+          (vivos.length ? R7().lista(vivos.map(x => ({nombre: x.nombre, pasa: x.pasa, ir: x.ir})), {rotulo: 'Ya lo hago yo', i: 1}) : '');
+      }
+      const pr = C.propuestas(), hago = C.hago(), fuera = C.noHago();
+      const yaNo = fuera.length ? [{nombre: 'Lo que ya no hago', dato: fuera.length, hoja: 'c-nohago'}] : [];
+      if (!pr.length && !hago.length && !yaNo.length) return R7().vacio({texto: 'Todavía no hago nada por ti. Cuando vea un trabajo que repites, te lo propongo.', i: 0});
+      return (pr.length ? R7().lista(pr.map(x => ({nombre: C.corto(x.id), pasa: `Lo has hecho ${vecesTexto(x.veces)}`, ir: 'regla/' + x.id})), {rotulo: 'Te lo propongo', i: 0}) : '') +
+        (hago.length || yaNo.length ? R7().lista(hago.map(x => ({nombre: C.corto(x.id), pasa: x.prueba || null, ir: 'regla/' + x.id})).concat(yaNo), {rotulo: 'Ya lo hago yo', i: 1}) : '');
     }
   });
 })();

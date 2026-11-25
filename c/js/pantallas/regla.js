@@ -126,16 +126,16 @@
   };
   const reciente = p => !!(lineaPaso(p.id) || (reglaDe(p) && linea(p.id)) || igual(p.id));
   // el pie: si hay pregunta, el sí o el no; recién contestada, el siguiente trabajo que te propongo o «Ir a Inicio»
-  const pie = p => {
+  const pie = (p, nivel) => {
     if (!existe(p)) return '';
     const q = pregunta(p.id, reglaDe(p));
-    if (q) return R7().botones({texto: 'Sí', accion: q.accion}, {texto: 'No, sigue igual', accion: 'igual'});
+    if (q) return R7().botones({texto: nivel ? 'Sí, hazlo tú' : 'Sí', accion: q.accion}, {texto: nivel ? 'Todavía no' : 'No, sigue igual', accion: 'igual'});
     if (!reciente(p)) return '';
     const otra = C.propuestas().filter(x => x.id !== p.id && !igual(x.id))[0];
     return otra ? R7().sigue({texto: 'Siguiente: ' + C.titulo(otra.id), ir: 'regla/' + otra.id}) : R7().sigue();
   };
   const acciones = {
-    prueba(ev, el, p) { C.cambiaRegla(p.id, 'a-prueba', `Lo estoy probando · ${C.fechaPrueba}`); },
+    prueba(ev, el, p) { C.cambiaRegla(p.id, 'a-prueba', 'Lo estoy probando'); },
     deshacer(ev, el, p) { M.deshaz(p.id); C.pon('linea', null); VETA.repinta({hecho: 'c-regla'}); },
     subir(ev, el, p) { C.subir(p.id); VETA.pintaBarra(); },
     baja(ev, el, p) { C.bajar(p.id); VETA.pintaBarra(); },
@@ -174,7 +174,7 @@
         R7().lista(NV().map(x => ({nombre: x.nombre, pasa: x.n === n || x.cerrado ? x.texto : null, dato: x.n === n ? 'Ahora' : null, clase: x.n === n ? 'r7c-aqui' : 'r7c-otro'})), {clase: 'r7c-pasos', i: 2});
     },
     botonFijo: p => {
-      const b = pie(p); if (b) return b;
+      const b = pie(p, true); if (b) return b;
       if (!existe(p) || p.id === 'r-visitas' || C.nivel(p.id) >= 3 || VETA.yo().papel !== 'direccion') return '';
       return R7().botones({texto: 'Subir un paso para todos', hoja: 'h22', de: p.id});
     },

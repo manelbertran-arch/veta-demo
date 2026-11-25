@@ -29,7 +29,7 @@
   const teNecesitan = () => hoyIds().map(id => B.cli(id)).filter(Boolean);   // en el orden del Inicio
   const de = estado => () => todos().filter(c => c.estado === estado);
   const FILTROS = [{id: 'todos', texto: 'Todos', l: todos}, {id: 'necesitan', texto: 'Te necesitan', l: teNecesitan},
-    {id: 'parado', texto: 'Parados', l: de('parado')}, {id: 'oportunidad', texto: 'Oportunidades', l: de('oportunidad')}, {id: 'esperando', texto: 'Esperando', l: de('esperando')}];
+    {id: 'parado', texto: 'Parados', l: de('parado')}, {id: 'oportunidad', texto: 'Ocasiones', l: de('oportunidad')}, {id: 'esperando', texto: 'Esperando', l: de('esperando')}];
   const VACIO = {todos: 'Todavía no llevas ningún cliente.', necesitan: 'Ahora nadie te necesita.', oportunidad: 'Ahora no hay oportunidades.',
     parado: 'No tienes a nadie parado.', esperando: 'No esperas la respuesta de nadie.'};
 

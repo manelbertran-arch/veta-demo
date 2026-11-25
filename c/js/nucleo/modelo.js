@@ -151,10 +151,9 @@
     return n.nombres.map((nombre, k) => ({nombre, valor: v[k]}));
   };
 
-  // ---- tiempos y coste (solo con «Ejemplo») ----
+  // ---- tiempos (solo con «Ejemplo»; sin euros calculados desde el 25-nov-2026) ----
   // tiempos de Laura: {mensajes: 4, actas: 12, avisos: 2} minutos por tarea → minutos totales
   M.minutosLaura = t => (D().tiempos.laura || []).reduce((s, x) => s + x.n * (Number((t || {})[x.id]) || 0), 0);
-  M.eurosEquipo = costeHora => Math.round(D().tiempos.equipo.minutos / 60 * (Number(costeHora) || 0));
 
   // ---- marcas sueltas de la tabla 6.8 ----
   M.lee = (k, porDefecto) => flag(k, porDefecto);

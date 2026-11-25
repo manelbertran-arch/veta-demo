@@ -1,11 +1,11 @@
 /* Veta demo · ronda 8 · hojas · direccion.js · carril D
-   H34 Los 3 temas de hoy · H35 ¿A quién se lo asignas? / ¿A quién pasas la cartera? · H36 Cómo habría ido · H38 Coste por hora ·
+   H34 Los 3 temas de hoy · H35 ¿A quién se lo asignas? / ¿A quién pasas la cartera? · H36 Cómo habría ido ·
    H40 Clientes con dos chats. Hojas propias de D: d-regla-otra (G2b «Otra cosa…»), d-tema (G3c), d-partes (G7c), d-entra (G9),
    d-preguntar y d-anotar (G18).
    Ronda 8 · nuevas, todas con las tres plantillas (acciones, texto, elegir):
    - «Más» de cada pantalla: d-asunto-mas (G2) · d-reparto-mas (G5) · d-op-mas (G18) · d-regla-mas (G2b) · d-resumen-mas (G3b)
    - r8-paradas (las operaciones paradas, con su enlace, y lo que espera decisión) · d-hoy (cómo va la oficina hoy, con sus cifras)
-   - de lectura: d-pasos (G2) · d-decididas (Inicio) · d-tarda y d-hace (G19) · d-sola y d-aprendi (G3) · d-ensenado (G21) · d-decimos (G16) · d-ejemplos (G3e)
+   - de lectura: d-pasos (G2) · d-decididas (Inicio) · d-hace (G19) · d-sola y d-aprendi (G3) · d-ensenado (G21) · d-decimos (G16) · d-ejemplos (G3e)
    Se fue H37 («Un aviso puesto»): cada aviso lleva ya su interruptor en la lista de Tus avisos (G6). */
 (function () {
   'use strict';
@@ -15,8 +15,8 @@
   let eleccion = [];
   const pintaTemas = () => `<p class="hoja-x">Elige hasta 3. Son los que verás arriba y en la reunión.</p>` +
     `<div class="ops d-temas-h">${D.temas.map(t => {
-      const on = eleccion.includes(t.id), lleno = !on && eleccion.length >= 3;
-      return `<button type="button" class="op op-elige d-tema-op" role="checkbox" aria-checked="${on}"${lleno ? ' aria-disabled="true"' : ''} data-accion="tema" data-tema="${esc(t.id)}">` +
+      const on = eleccion.includes(t.id);
+      return `<button type="button" class="op op-elige d-tema-op" role="checkbox" aria-checked="${on}" data-accion="tema" data-tema="${esc(t.id)}">` +
         `<span class="op-c"><span class="op-t">${esc(t.texto)}</span></span><b class="d-tema-n">${esc(t.cifra)}</b><span class="op-marca">${VETA.ic('check', 20)}</span></button>`;
     }).join('')}</div>` +
     `<p class="d-cuenta" aria-live="polite">${eleccion.length} de 3 elegidos</p>` +
@@ -27,7 +27,7 @@
     acciones: {
       tema(ev, el) {
         const id = el.dataset.tema, k = eleccion.indexOf(id);
-        if (k >= 0) eleccion.splice(k, 1); else if (eleccion.length < 3) eleccion.push(id); else return;
+        if (k >= 0) eleccion.splice(k, 1); else { if (eleccion.length >= 3) eleccion.shift(); eleccion.push(id); }   // con tres elegidas, la nueva sustituye a la primera: nunca un toque que no hace nada
         const c = VETA.$('#hoja .hoja-c'); if (!c) return;
         const y = c.parentNode.scrollTop; c.innerHTML = pintaTemas(); c.parentNode.scrollTop = y;
         const b = VETA.$('#hoja [data-tema="' + id + '"]'); if (b) b.focus({preventScroll: true});
@@ -84,7 +84,7 @@
   // ---------------- H35 · ¿A quién se lo asignas? / ¿A quién pasas la cartera? ----------------
   VETA.hojaElegir('h35', {
     titulo: d => d.para === 'cartera' ? '¿A quién pasas sus clientes?' : d.para === 'op' ? '¿Quién la lleva?' : '¿A quién se lo asignas?',
-    texto: d => d.para === 'cartera' ? 'Teresa Gil tiene 34 conversaciones con 12 clientes.' : d.para === 'op' ? opTexto(d) : 'Quien lo lleve decide cuándo y qué le contesta.',
+    texto: d => d.para === 'cartera' ? 'De Teresa Gil quedan 12 clientes por repartir.' : d.para === 'op' ? opTexto(d) : 'Quien lo lleve decide cuándo y qué le contesta.',
     opciones: d => {
       if (d.para === 'op') return opOpciones(d);
       if (d.para === 'cartera') return [{id: 'laura', texto: 'Laura Martí', sub: 'Gràcia · yo se lo daría', av: 'laura'}, {id: 'anna', texto: 'Anna Costa', sub: 'Gràcia', av: 'anna'},
@@ -109,35 +109,6 @@
       return [{texto: (e ? 'En los últimos 30 días te habría avisado ' + casos.length + ' veces:' : 'Con lo que has escrito, en los últimos 30 días te habría avisado ' + casos.length + ' veces:')},
         {lista: casos},
         {texto: 'Son casos pasados: no ha salido nada. Cuando lo crees, saltará en Inicio.'}];
-    }
-  });
-
-  // ---------------- H38 · Coste por hora ----------------
-  const etiquetaGuardar = v => (Number(v) > 0 ? 'Guardar ' + VETA.num(Number(v)) + ' € la hora' : 'Guardar');
-  VETA.hojaDef('h38', {
-    titulo: 'Coste por hora',
-    pinta: () => {
-      const c = M.lee('coste', null) || '';
-      return `<p class="hoja-x">Veta nunca pone euros por ti. Si escribes tu coste por hora, te digo cuánto son esas horas.</p>` +
-        `<div class="campo"><label class="campo-e" for="d-coste">€ la hora</label><div class="campo-caja d-coste-caja"><input id="d-coste" class="campo-i" type="number" inputmode="decimal" min="1" max="999" step="1" value="${esc(c)}" placeholder="35"><span class="d-coste-u">€</span></div></div>` +
-        UI.nota({texto: 'Se ve con la etiqueta «Ejemplo» y dice de dónde sale.', icono: 'info', clase: 'nota-gris'}) +
-        UI.boton({texto: etiquetaGuardar(c), accion: 'guardar', deshabilitado: !(Number(c) > 0), clase: 'd-coste-b'}) +
-        (c ? UI.boton({tipo: 'texto', texto: 'Quitar el coste', accion: 'quitar'}) : '');
-    },
-    alMontar: h => {
-      const i = h.querySelector('#d-coste'), b = h.querySelector('.d-coste-b'); if (!i || !b) return;
-      i.addEventListener('input', () => { const v = Number(i.value); b.disabled = !(v > 0); b.querySelector('span').textContent = etiquetaGuardar(i.value); });
-      i.addEventListener('keydown', e => { if (e.key === 'Enter' && !b.disabled) b.click(); });
-    },
-    acciones: {
-      guardar() {
-        const i = VETA.$('#d-coste'), v = Math.round(Number(i && i.value));
-        if (!(v > 0)) return;
-        M.pon('coste', v);
-        VETA.cierraHoja({foco: false}); VETA.repinta();
-        VETA.aviso('Coste guardado: ' + v + ' € la hora.', {deshacer: () => { M.deshazFlag('coste'); VETA.repinta(); }});
-      },
-      quitar() { M.pon('coste', null); VETA.cierraHoja({foco: false}); VETA.repinta(); VETA.aviso('Coste quitado.', {deshacer: () => { M.deshazFlag('coste'); VETA.repinta(); }}); }
     }
   });
 
@@ -185,16 +156,16 @@
       if (d.lista === 'contactos') {
         h = `<div class="lista">${X.sinResponder().map(c => c.sinDueno
           ? UI.fila({titulo: c.nombre, sub: c.cuando + ' · no lo lleva nadie', av: c.id, ir: 'asunto/' + c.id})
-          : UI.fila({titulo: c.nombre, sub: c.cuando + (c.lleva ? ' · lo lleva ' + X.persona(c.lleva).corto + ', de baja' : ' · sin ficha'), av: c.id, hoja: 'h01', datos: {chat: c.id}})).join('')}</div>`;
+          : UI.fila({titulo: c.nombre, sub: c.cuando + (c.lleva ? ' · lo lleva ' + X.persona(c.lleva).corto + ', de baja' : ' · sin ficha'), av: c.id})).join('')}</div>`;
         if (!X.sinResponder().length) h = `<p class="hoja-x">Todos tienen quien los lleve.</p>`;
       } else if (d.lista === 'dos') {
-        h = `<div class="lista">${D.entra.dosVeces.map(c => UI.fila({titulo: c.texto, av: c.id, hoja: 'h01', datos: {chat: c.id}})).join('')}</div>`;
+        h = `<div class="lista">${D.entra.dosVeces.map(c => UI.fila({titulo: c.texto, av: c.id})).join('')}</div>`;
       } else if (d.lista === 'no') {
         h = `<p class="hoja-x">Lo apunto para cuando entre algo así.</p><div class="lista">${D.entra.noTenemos.map(c => UI.fila({titulo: c.texto, sub: c.sub})).join('')}</div>`;
       } else {
-        h = UI.cita({texto: 'Busco piso de 3 habitaciones en Gràcia, hasta 450.000 €', origen: 'Carmen · WhatsApp de la oficina · ayer, 19:10', chat: 'carmen'}) +
-          VETA.r7.lista([{foto: 'verdi', nombre: 'Verdi 42 · 395.000 €', pasa: '3 habitaciones. Sin ascensor (ella lo prefiere con ascensor)'},
-            {cara: 'carmen', nombre: 'Carmen López', pasa: 'Ver qué ha pasado', ir: 'asunto/carmen'}]);
+        // sin citar su mensaje ni poner precios (25-nov-2026): el hecho, y de ahí a su asunto
+        h = VETA.r7.lista([{foto: 'verdi', nombre: 'Verdi 42', pasa: '3 habitaciones. Sin ascensor (ella lo prefiere con ascensor)'},
+          {cara: 'carmen', nombre: 'Carmen López', pasa: 'Busca piso de 3 habitaciones en Gràcia · ver qué ha pasado', ir: 'asunto/carmen'}]);
       }
       return h;
     }
@@ -237,7 +208,7 @@
   });
 
   // ---------------- «Más» de una operación (G18) ----------------
-  VETA.hojaAcciones('d-op-mas', {
+  VETA.hojaMas('d-op-mas', {
     titulo: d => { const o = X.op(d.op); return o ? o.nombre : 'Operación'; },
     opciones: d => {
       const o = X.op(d.op); if (!o) return [];
@@ -251,6 +222,17 @@
     }
   });
 
+  // ---------------- d-escalera-of · G2b, «¿Quién lo hace?»: los cinco pasos de ESTE trabajo de la oficina ----------------
+  // (antes la fila abría el trabajo personal de la agente, con «Lo has hecho tú 14 veces»: un trabajo que no es el de la oficina)
+  VETA.hojaTexto('d-escalera-of', {
+    titulo: '¿Quién lo hace?',
+    bloques: d => {
+      const R = (D.reglasOficina || {})[d.regla] || {}, n = VETA.d1.pasoRegla ? VETA.d1.pasoRegla(d.regla) : 1;
+      return [{texto: `${R.corto || R.titulo || 'Este trabajo'}, para todo el equipo. Voy subiendo de paso cuando me dices que sí.`},
+        {lista: VETA.vivo.niveles().map(x => `${x.nombre}${x.n === n ? ' · ahora' : ''}${x.n === n || x.cerrado ? '. ' + x.texto : ''}`)}];
+    }
+  });
+
   // ---------------- «Más» de un trabajo en marcha (G2b): dar un paso más ----------------
   VETA.hojaMas('d-regla-mas', {
     titulo: d => { const r = (D.reglasOficina || {})[d.regla] || {}; return r.corto || r.titulo || 'Este trabajo'; },
@@ -260,8 +242,9 @@
   });
 
   // ---------------- «Más» de Enviar el resumen (G3b) ----------------
-  VETA.hojaAcciones('d-resumen-mas', {
+  VETA.hojaMas('d-resumen-mas', {
     titulo: 'El resumen',
+    ensena: true,
     opciones: () => [{texto: 'Cambiar el texto', hace: () => VETA.d1.cambiaResumen()}]
   });
 
@@ -272,7 +255,7 @@
       const n = VETA.r7.cuentas().decidir;
       return X.paradas().map(o => {
         const c = M.cliente(o.cliente) || {};
-        return {cara: o.cliente, texto: c.nombre || o.texto, sub: o.texto + ' · ' + o.estadoTexto.replace('Parada · ', '').replace(/ · fase.*$/, '') + ' · ' + X.persona(X.llevaOp(o.cliente) || o.lleva).corto, ir: 'operacion/' + o.cliente};
+        return {cara: o.cliente, texto: c.nombre || o.texto, sub: o.texto + ' · ' + o.estadoTexto.replace('Parada · ', '').replace(/ · fase.*$/, ''), ir: 'operacion/' + o.cliente};
       }).concat(n ? [{texto: n === 1 ? '1 cosa espera tu decisión' : `${n} cosas esperan tu decisión`, ir: 'inicio'}] : []);
     }
   });
@@ -293,23 +276,19 @@
     opciones: () => VETA.d1.decididas().map(x => ({texto: x.linea, sub: x.hora ? `A las ${VETA.fecha.hora(x.hora)}` : '', ir: x.ir}))
   });
 
-  // ---------------- d-tarda y d-hace · G19, una persona. Cada cifra es suya: no se pone al lado de la de nadie ----------------
-  VETA.hojaTexto('d-tarda', {
-    titulo: 'Cuánto tarda en contestar',
-    bloques: d => {
-      const x = X.personaOps(d.persona), yo = d.persona === VETA.yo().id;
-      return [{texto: X.tardaTexto(x, yo)}, {texto: `Decimos «Contestamos en el día». Cuento desde que el cliente escribe hasta que ${yo ? 'contestas' : 'contesta'}, la semana pasada. Es un ejemplo.`}];
-    }
-  });
+  // ---------------- d-hace · G19, una persona. Sin cifras por persona (25-nov-2026): solo lo que Veta hace por ella, sin recuentos ----------------
   const ESTADO = {activa: 'Ya lo hago yo', 'a-prueba': 'Lo estoy probando', propuesta: 'Se lo he propuesto'};
   VETA.hojaTexto('d-hace', {
-    titulo: d => 'Lo que Veta hace por ' + (d.persona === VETA.yo().id ? 'ti' : X.persona(d.persona).corto),
+    titulo: d => d.persona === VETA.yo().id ? 'Lo que Veta hace por ti' : 'Lo que Veta hace por ' + X.persona(d.persona).corto,
     bloques: d => {
-      const x = X.personaOps(d.persona), yo = d.persona === VETA.yo().id, h = x.hace;
+      const x = X.personaOps(d.persona), yo = d.persona === VETA.yo().id;
       const ap = x.aprendido.map(([id, t]) => { const r = id ? M.regla(id) : null; return t + ' · ' + (ESTADO[r ? r.estado : 'activa'] || ESTADO.activa); });
       const hoy = d.persona === 'laura' && VETA.r6 && VETA.r6.siempre ? VETA.r6.siempre() : null;
       if (hoy) ap.unshift(hoy.regla + ' · Me lo enseñó hoy');
-      return [{texto: x.total ? `${h.mensajes} mensajes, ${h.actas} ${h.actas === 1 ? 'acta de visita' : 'actas de visita'} y ${h.avisos} avisos que ${yo ? 'te' : 'le'} dejé listos la semana pasada.` : 'La semana pasada, nada: está de baja.'},
+      // lo de quien mira: los trabajos de la oficina, la MISMA lista que «Lo que Veta hace por ti» del Inicio
+      const mios = yo && VETA.d1.trabajos ? VETA.d1.trabajos().filter(t => ['propuesta', 'a-prueba', 'en-marcha'].includes(t.estado)).map(t => t.nombre + ' · ' + (t.estado === 'propuesta' ? 'Te lo propongo' : t.estado === 'a-prueba' ? 'Lo estamos probando' : 'En marcha')) : [];   // sin cifras: es la ficha de una persona
+      return [!x.total ? {texto: 'La semana pasada, nada: está de baja.'} : null,
+        mios.length ? {titulo: 'Los trabajos de la oficina', lista: mios} : null,
         ap.length ? {titulo: yo ? 'Lo que he aprendido de ti' : `Lo que he aprendido de ${x.p.corto}`, lista: ap} : null].filter(Boolean);
     }
   });

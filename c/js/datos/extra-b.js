@@ -38,7 +38,7 @@
 
   // ---- A6 · cerrado (Carme): el mensaje para pedirle una recomendación (inventado por B) ----
   b.recomendacion = {
-    'carme-font': {texto: 'Vendió en Horta en junio. Te escribió el 14 de noviembre para darte las gracias.',
+    'carme-font': {texto: `Vendió en Horta en junio. Te escribió el ${ff('2026-11-14')} para darte las gracias.`,
       borrador: 'Hola, Carme, soy Laura. Me alegra mucho que todo saliera bien con la venta. Si alguien de tu entorno piensa en vender o comprar, ¿le pasarías mi contacto?'}
   };
 
@@ -85,14 +85,14 @@
   b.historia = {
     pere: [
       {cuando: f('2026-11-21'), tipo: 'Mensaje', titulo: 'Mensaje de Pere', texto: '«Si hace falta, bajo a 385.000 €»', hoja: 'h10'},
-      {cuando: f('2026-11-21'), tipo: 'Acta', titulo: 'Acta de la visita · Família Casals', texto: 'Les gusta; lo ven caro', det: 'acta-casals'},
-      {cuando: f('2026-11-19'), tipo: 'Acta', titulo: 'Acta de la visita · Toni Ribas', texto: 'Volverá con su arquitecto', det: 'acta-toni'},
-      {cuando: f('2026-11-17'), tipo: 'Acta', titulo: 'Acta de la visita · Sergi Font', texto: 'Lo ve caro y sin ascensor', det: 'acta-sergi-font'},
-      {cuando: f('2026-11-16'), tipo: 'Informe', titulo: 'Informe de la semana, enviado', texto: '2 visitas', det: 'informe-16'},
+      {cuando: f('2026-11-21'), tipo: 'Acta', titulo: 'Acta · Família Casals', texto: 'Lo ven caro', det: 'acta-casals'},
+      {cuando: f('2026-11-19'), tipo: 'Acta', titulo: 'Acta · Toni Ribas', texto: 'Con su arquitecto', det: 'acta-toni'},
+      {cuando: f('2026-11-17'), tipo: 'Acta', titulo: 'Acta · Sergi Font', texto: 'Lo ve caro', det: 'acta-sergi-font'},
+      {cuando: f('2026-11-16'), tipo: 'Informe', titulo: 'Informe de la semana', texto: 'Enviado', det: 'informe-16'},
       {cuando: f('2026-09-02'), tipo: 'Encargo', titulo: 'Encargo de venta firmado', texto: `Vence el ${ff('2026-12-02')}`, papeles: true}],
-    toni: [{cuando: f('2026-11-19'), tipo: 'Acta', titulo: 'Acta de la visita · Verdi 42', texto: 'Volverá con su arquitecto', det: 'acta-toni'}],
+    toni: [{cuando: f('2026-11-19'), tipo: 'Acta', titulo: 'Acta de la visita · Verdi 42', texto: 'Con su arquitecto', det: 'acta-toni'}],
     casals: [{cuando: f('2026-11-21'), tipo: 'Acta', titulo: 'Acta de la visita · Verdi 42', texto: 'Les gusta; lo ven caro', det: 'acta-casals'}],
-    'sergi-font': [{cuando: f('2026-11-17'), tipo: 'Acta', titulo: 'Acta de la visita · Verdi 42', texto: 'Lo ve caro y sin ascensor', det: 'acta-sergi-font'}]
+    'sergi-font': [{cuando: f('2026-11-17'), tipo: 'Acta', titulo: 'Acta de la visita · Verdi 42', texto: 'Lo ve caro', det: 'acta-sergi-font'}]
   };
   // lo que añade el modelo al resolver (cliente|cosa): cómo se lee en la historia
   b.vivo = {

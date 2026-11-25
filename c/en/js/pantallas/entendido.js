@@ -1,37 +1,38 @@
-/* Veta demo · pantallas · entendido.js · paquete C (Veta, cuenta y entrada)
-   - A11 · Así lo he entendido · #/entendido/<id>   (completa; llega desde Dictar con el guion de orden)
-   #/entendido/recordatorios: la orden de ejemplo · #/entendido/no-entendida: el estado “no lo he entendido”. */
+/* Veta demo · pantallas · entendido.js · carril C (Veta y cuenta)
+   - A11 · Esto he entendido · #/entendido/<id>   (completa; llega desde Dictar con el guion de orden)
+   #/entendido/recordatorios: la orden de ejemplo · #/entendido/no-entendida: el estado “no lo he entendido”.
+   Pie: el par “No es eso” / “Pruébalo”. “Escribirlo yo” es el enlace del final. Al probarlo, un solo final: la fila de hecho y “Ir a Inicio”. */
 (function () {
   'use strict';
-  const UI = VETA.UI, esc = VETA.esc, M = VETA.modelo, C = VETA.c;
+  const UI = VETA.UI, M = VETA.modelo, C = VETA.c;
   const ID = 'r-recordatorios';
   const noEntendida = p => p.id !== 'recordatorios';
+  const hecha = p => { const r = M.regla(ID); return !noEntendida(p) && !!r && r.estado !== 'nueva'; };
   let escribe = false, texto = '';
+  const campo = () => `<div data-i="3">${UI.campo({id: 'c-escribe', etiqueta: 'Type it yourself', area: true, filas: 3, valor: texto, placeholder: 'When this happens, I want you to do this'})}</div>`;
 
   VETA.pantalla('A11', {
-    titulo: 'This is what I understood', completa: true, fraseCuerpo: true,
-    frase: p => (noEntendida(p) ? 'I didn\'t understand it. Tell me another way or type it.' : 'This is how I understood what you asked. If that is right, I try it.'),
+    titulo: 'What I understood', completa: true,
+    sub: p => (noEntendida(p) ? 'I didn\'t understand it. Tell me another way or type it.' : 'That\'s how I understood it. If that\'s right, I\'ll try it.'),
     pinta: p => {
-      const o = VETA.datos.c.orden;
-      if (noEntendida(p)) return escribe ? campo() : '';
-      const r = M.regla(ID), hecha = r && r.estado !== 'nueva';
-      return (hecha ? UI.lineaHecho({texto: `I'm trying it ${C.fechaPrueba}`, hora: r.hora, boton: {texto: 'Undo', accion: 'deshacer'}, vt: 'c-entendido', i: 0}) : '') +
-        `<div class="r7-ficha" data-i="0"><span class="r7-ficha-de">What you said · today</span><p>“${esc(o.dijiste)}”</p></div>` +
-        `<div class="r7-ficha r7-oro" data-i="1" data-vt="c-entendido"><span class="r7-ficha-de">${hecha ? 'I\'m trying it' : 'I will do this'}</span><p>${esc(C.info(ID).frase)}</p></div>` +
-        VETA.r7.lista([
-          {icono: 'cal', nombre: 'Where it would have come up', pasa: '6 cases from your chats', hoja: 'h19', datos: {regla: ID}},
-          {icono: 'orden', nombre: 'What I understood', pasa: 'When, what and with whom', hoja: 'h21'},
-          hecha ? {icono: 'probeta', nombre: 'See this job', pasa: 'And decide who does it', ir: 'regla/' + ID} : null
-        ], {i: 2, clase: 'r7c-tras'}) +
-        (escribe && !hecha ? campo() : '');
+      const R = VETA.r7, o = VETA.datos.c.orden;
+      if (noEntendida(p)) return escribe ? campo() : R.enlace({texto: 'Type it', accion: 'escribir', i: 1});
+      const r = M.regla(ID), ya = hecha(p);
+      return (ya ? R.hecho({texto: 'I\'m trying it', hora: r.hora, deshacer: 'deshacer', vt: 'c-entendido'}) : '') +
+        R.tarjeta({de: 'What you said · today', texto: `“${o.dijiste}”`, i: 0}) +
+        R.tarjeta({veta: true, de: ya ? 'I\'m trying it' : 'I\'ll do this', texto: C.info(ID).frase, vt: 'c-entendido', i: 1}) +
+        R.lista([
+          {nombre: 'Where it applies', dato: ((r || {}).casos || []).length || null, hoja: 'h19', datos: {regla: ID}},
+          {nombre: 'What I understood', hoja: 'h21'},
+          ya ? {nombre: 'See this job', ir: 'regla/' + ID} : null
+        ], {i: 2}) +
+        (ya ? '' : escribe ? campo() : R.enlace({texto: 'Type it', accion: 'escribir', i: 3}));
     },
     botonFijo: p => {
-      const r = M.regla(ID), hecha = !noEntendida(p) && r && r.estado !== 'nueva', B = VETA.r7.botones;
-      if (hecha) return '';
-      const otra = {texto: 'Put it another way', ir: 'dictar/orden'};
-      if (noEntendida(p)) return escribe ? B({texto: 'Save and try it', accion: 'guardar'}, [otra]) : B({texto: 'Type it myself', accion: 'escribir'}, [otra]);
-      return escribe ? B({texto: 'Save and try it', accion: 'guardar'}, [{texto: 'That\'s not it', hoja: 'h09'}])
-        : B({texto: 'Try it', accion: 'prueba'}, [{texto: 'That\'s not it', hoja: 'h09'}, {texto: 'Type it myself', accion: 'escribir'}]);
+      const B = VETA.r7.botones;
+      if (hecha(p)) return VETA.r7.sigue();
+      if (noEntendida(p)) return escribe ? B({texto: 'Save and try it', accion: 'guardar'}) : B({texto: 'Put it another way', ir: 'dictar/orden'});
+      return B(escribe ? {texto: 'Save', accion: 'guardar'} : {texto: 'Try it', accion: 'prueba'}, {texto: 'That\'s not it', hoja: 'h09'});
     },
     alMontar: el => { const t = el.querySelector('#c-escribe'); if (t && escribe) { t.addEventListener('input', () => { texto = t.value; }); } },
     acciones: {
@@ -47,8 +48,4 @@
       deshacer() { M.deshaz(ID); VETA.repinta({hecho: 'c-entendido'}); }
     }
   });
-
-  function campo() {
-    return `<div data-i="3">${UI.campo({id: 'c-escribe', etiqueta: 'Type it yourself', area: true, filas: 3, valor: texto, placeholder: 'When… I want…'})}</div>`;
-  }
 })();

@@ -22,6 +22,37 @@
     return Math.floor(m / 60) + ':' + String(m % 60).padStart(2, '0');
   };
 
+  // ---- fechas y horas: un solo formato en toda la app (ronda 8, 6.3). Tres formas cerradas; nadie escribe una fecha a mano ----
+  //   VETA.fecha.corta('2026-11-25')        → “Mié 25”   la cola de una fila y cualquier sitio estrecho. Hoy, ayer y mañana → “Hoy”, “Ayer”, “Mañana”;
+  //                                            a más de seis días → “3 dic”. Con hora: “Mié 25, 10:00” · “Hoy, 9:41”
+  //   VETA.fecha.larga('2026-11-25T10:00')  → “Miércoles 25 de noviembre, 10:00”   cabeceras y documentos
+  //   VETA.fecha.hora('2026-11-25T9:05') · VETA.fecha.hora('09:05') → “9:05”   24 horas, sin cero delante y sin “h”
+  // Dentro de una frase, en minúscula: {frase: true} → “mié 25”, “hoy”, “miércoles 25 de noviembre”. {dia: true} en corta no dice “Hoy”: “Lun 23”.
+  // Aceptan 'AAAA-MM-DD', 'AAAA-MM-DDTHH:MM' o un Date. “Hoy” es el de la demo (datos.fecha.hoyISO).
+  const DIAS = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'], DIA3 = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+  const MESES = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+  const MES3 = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  const parte = x => {
+    if (x instanceof Date) return {d: new Date(x.getFullYear(), x.getMonth(), x.getDate()), h: x.getHours() + ':' + String(x.getMinutes()).padStart(2, '0')};
+    const m = /^(\d{4})-(\d\d?)-(\d\d?)(?:[T ](\d\d?):(\d\d))?/.exec(String(x || '')); if (!m) return null;
+    return {d: new Date(+m[1], m[2] - 1, +m[3]), h: m[4] != null ? +m[4] + ':' + m[5] : null};
+  };
+  const mayus = (t, o) => (o && o.frase ? t : t.replace(/^./, c => c.toUpperCase()));
+  const hoyD = () => (parte((VETA.datos.fecha || {}).hoyISO) || {d: new Date()}).d;
+  VETA.fecha = {
+    hora: x => { const m = /(\d\d?):(\d\d)\s*$/.exec(String(x || '')); if (m) return +m[1] + ':' + m[2]; const p = parte(x); return p && p.h ? p.h : ''; },
+    corta: (x, o) => {
+      const p = parte(x); if (!p) return String(x || '');
+      const n = Math.round((p.d - hoyD()) / 864e5);
+      const dia = !(o && o.dia) && n >= -1 && n <= 1 ? ['yesterday', 'today', 'tomorrow'][n + 1] : Math.abs(n) <= 6 ? DIA3[p.d.getDay()] + ' ' + p.d.getDate() : p.d.getDate() + ' ' + MES3[p.d.getMonth()];
+      return mayus(dia, o) + (p.h ? ', ' + p.h : '');
+    },
+    larga: (x, o) => {
+      const p = parte(x); if (!p) return String(x || '');
+      return mayus(DIAS[p.d.getDay()], o) + ' ' + p.d.getDate() + ' ' + MESES[p.d.getMonth()] + (p.d.getFullYear() !== hoyD().getFullYear() ? ' ' + p.d.getFullYear() : '') + (p.h ? ', ' + p.h : '');
+    }
+  };
+
   // privacidad de dirección: un cliente es “ajeno” si quien mira es dirección y lo lleva otra persona.
   // De un cliente ajeno no se enseña nunca el texto de su chat (ni citas ni burbujas): solo quién lo lleva y los hitos.
   VETA.ajeno = id => {

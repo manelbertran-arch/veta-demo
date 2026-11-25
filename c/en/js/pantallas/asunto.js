@@ -1,84 +1,82 @@
-/* Veta demo · ronda 7 · pantallas · asunto.js · D1
+/* Veta demo · ronda 8 · pantallas · asunto.js · carril D
    G2 · Un asunto · #/asunto/<id> — un contacto que no lleva nadie (Carmen López, Pau Ríos, Lucía Gómez) o una queja (Joan Serra).
-   Ficha (R2): lo que ha pasado (su mensaje, o por qué lo ves), en oro lo que haría Veta y por qué, y una fila que se abre con los pasos.
-   Botones (R4): el negro hace lo que propone Veta (“Dársela a Laura”); el claro, “Elegir a otra persona” (H35, también “Tú”).
-   Al decidir: aviso con deshacer, vuelta a Decidir con una menos y el número nuevo en caja y barra. */
+   Dos tarjetas: lo que escribió (o por qué lo ves) y, en oro, lo que haría Veta. Una fila, “Lo que ha pasado”, abre su hoja (d-pasos).
+   Un botón: hacer lo que propone Veta (“Dársela a Laura”). Lo demás, en “Más” (hoja d-asunto-mas): elegir a otra persona,
+   dejarlo para luego, enseñarle a Veta con este caso o descartarlo (capacidad 15 de la A). Nota sobre el botón: decides tú.
+   Al decidir, el final de toda la app (D12): la pantalla se repinta en el sitio con “✓ Asignada a Laura · 9:41 · Deshacer” arriba y,
+   en el pie, “Siguiente: Pau Ríos” (o “Ir a Inicio”). Sin aviso negro y sin “Deshacer” de botón. */
 (function () {
   'use strict';
-  const esc = VETA.esc, M = VETA.modelo, X = VETA.dir;
+  const M = VETA.modelo, X = VETA.dir, r7 = VETA.r7;
   const A = id => (VETA.datos.asuntos || {})[id] || VETA.datos.asuntos.carmen;
   const contacto = id => (VETA.datos.contactos || []).find(c => c.id === id) || {};
   const nombre = id => (M.quien(id) || {}).nombre || contacto(id).nombre || id;
-  const ELLA = {carmen: true, lucia: true};                       // “Dársela” / “Dárselo”
-  const la = id => ELLA[id] ? 'her' : 'him';
+  const ELLA = {carmen: true, lucia: true};                       // “Dársela” / “Dárselo”: cada frase va entera (en inglés no hay “la” ni “lo”)
+  const ella = id => !!ELLA[id];
 
   // lo que haría Veta y por qué, en palabras de todos los días
   const PORQUE = {
-    carmen: 'She is looking in Gràcia. You have a flat that suits her: Verdi 42, €395,000.',
-    'pau-rios': 'The Eixample is close to him. You have no premises there: I note it down.',
-    lucia: 'She has a flat in Sant Gervasi. She wants to sell: it is a new flat for the office.'
+    carmen: 'Covers Gràcia. You have a flat that suits her: Verdi 42.',
+    'pau-rios': 'The Eixample is close to him. You have no unit there: I note it down.',
+    lucia: 'Marc covers Sant Gervasi. She wants to sell: it is a new flat for the office.'
+  };
+  const propone = id => {
+    const a = A(id);
+    return a.tipo === 'queja' ? {de: 'I would ask Marc to call him today', texto: 'Marc handles the sale. With a call today, Joan knows someone is looking after it.'}
+      : {de: ella(id) ? `I'd give her to ${X.persona(a.propone).corto}` : `I'd give him to ${X.persona(a.propone).corto}`, texto: PORQUE[id] || ''};
   };
 
+  // ya decidido: asignado, aparcado (“Para luego”, “Descartarlo”) o, en la queja, pedido a Marc
   function resuelto(id) {
     const a = A(id);
-    if (a.tipo === 'queja') { const c = M.cosa('d-joan'); return c && X.resuelta(c) && c.estado !== 'para-manana' ? {linea: (c.extra && c.extra.linea) || 'Asked Marc: call Joan Serra today', hora: c.hora} : null; }
-    return X.asignado(id);
+    if (a.tipo === 'queja') { const c = M.cosa('d-joan'); return c && X.resuelta(c) ? {linea: (c.extra && c.extra.linea) || 'Asked Marc: call Joan Serra today', corto: (c.extra && c.extra.corto) || 'Asked Marc: call them today', hora: c.hora} : null; }
+    return X.asignado(id) || X.aparcado(id);
   }
-  const dia = o => o.replace('WhatsApp from the office · ', '').replace('WhatsApp · ', '');
-  const pasos = a => `<ol class="d1-pasos">${a.paso.map(p => `<li><b>${esc(p.cuando)}</b><span>${esc(p.texto)}</span></li>`).join('')}</ol>`;
-  // tras decidir: aviso con deshacer, vuelta a la lista y números nuevos
-  const hecho = (linea, deshacer) => {
-    X.vuelve(); VETA.d1.numeros();
-    setTimeout(() => VETA.aviso(linea, {deshacer: () => { deshacer(); VETA.repinta(); VETA.d1.numeros(); }}), 60);
-  };
+  // lo que quiere, dicho por Veta: solo cuando el chat ya es de una agente (dirección no lo lee, 25-nov-2026): queda el hecho, sin hueco.
+  const QUIERE = {carmen: 'Looking for a 3-bedroom flat in Gràcia.', 'pau-rios': 'Asking about a place to rent in the Eixample.', lucia: 'Wants to sell their parents\' flat in Sant Gervasi.'};
+  const dia = o => o.replace('Office WhatsApp · ', '').replace('WhatsApp · ', '');
+  const elDia = t => /^(today|yesterday)/.test(t) ? t : 'on ' + t;      // “wrote yesterday, 19:10” · “wrote on Sat 21, 13:20”
+  // tras decidir (aquí o en su hoja “Más”): la pantalla se repinta en el sitio con su “hecho”, y el punto de la barra se pone al día
+  const hecho = id => { VETA.repinta({hecho: 'asunto-' + id}); VETA.d1.numeros(); };
+  // lo decidido, sin repetir el nombre que ya está en la cabecera: “Asignada a Laura”, “Para luego”, “Le llamas tú”
+  const corta = (r, n) => { const t = r.corto || String(r.linea || 'Done').replace(' · ' + n, '').replace(n + ' · ', '').replace(n + ', ', '').replace(/\.$/, ''); return t.charAt(0).toUpperCase() + t.slice(1); };
+  const deshaz = id => { if (A(id).tipo === 'queja') M.deshaz('d-joan'); else if (X.aparcado(id)) X.desaparca(id); else X.desasigna(id); };
+  // lo que comparte con su hoja “Más” (js/hojas/direccion.js)
+  VETA.d1.asunto = {A, nombre, hecho, deshaz};
 
   VETA.pantalla('G2', {
     titulo: p => nombre(p.id),
-    cabDerecha: p => VETA.av(p.id, 32, {foco: 'foto'}),
-    frase: p => {
-      if (resuelto(p.id)) return 'It is decided. If you got it wrong, you can undo it.';
-      return A(p.id).tipo === 'queja' ? 'An owner is complaining. I tell you what I would do. You decide.'
-        : `No one has ${la(p.id)}. I tell you who I would give ${la(p.id)} to. You decide.`;
-    },
-    guia: ['Here you see what happened and what I would do.', 'You decide with one tap or you choose someone else.', 'This way no one is left waiting.'],
+    mas: p => resuelto(p.id) ? null : {hoja: 'd-asunto-mas', datos: {asunto: p.id}},
+    nota: p => resuelto(p.id) ? '' : A(p.id).tipo === 'queja' ? 'I say what I\'d do. You decide.' : ella(p.id) ? 'I\'ll tell you who I\'d give her to. You decide.' : 'I\'ll tell you who I\'d give him to. You decide.',
+    // lo que se le enseña a Veta si se toca el micro desde aquí
+    casoDictado: p => ({de: 'asunto-' + p.id, quien: p.id, titulo: nombre(p.id), texto: propone(p.id).de + '. ' + propone(p.id).texto}),
     pinta: p => {
-      const a = A(p.id), r = resuelto(p.id), nom = nombre(p.id), corto = nom.split(' ')[0];
-      if (r) return `<div class="r7-ficha d1-hecho"><span class="r7-ficha-de">Decided${r.hora ? ' at ' + esc(r.hora) : ''}</span><p>${VETA.ic('check', 18)} ${esc(r.linea)}</p></div>`;
-      let h;
+      const a = A(p.id), r = resuelto(p.id), corto = nombre(p.id).split(' ')[0];
+      // decidido: la fila de “hecho” arriba, con su “Deshacer”; debajo queda lo que escribió, sin la propuesta
+      let h = r ? r7.hecho({texto: corta(r, nombre(p.id)), hora: r.hora ? VETA.fecha.hora(r.hora) : '', deshacer: 'deshacer-asunto', vt: 'asunto-' + p.id}) : '';
       // el cliente de otra persona (la queja de Joan, de Marc): dirección no lee su chat; lo sabe por su aviso
-      if (VETA.ajeno(a.contacto)) h = `<div class="r7-ficha"><span class="r7-ficha-de">I know because of your alert on ${esc(dia(a.pide.origen))}</span>` +
-        `<p>Ten days with no news about their home. They say they will go to another agency.</p></div>`;
-      else h = `<div class="r7-ficha"><span class="r7-ficha-de">${esc(corto)} wrote ${esc(dia(a.pide.origen))}</span><p>“${esc(a.pide.texto)}”</p></div>`;
-      // lo que haría Veta, en oro, con “Enséñale a Veta” a mano
-      const quien = a.tipo === 'queja' ? 'I would ask Marc to call him today' : `I would give ${la(p.id)} to ${X.persona(a.propone).corto}`;
-      const porque = a.tipo === 'queja' ? 'Marc handles the sale. With a call today, Joan knows someone is looking after it.'
-        : (PORQUE[p.id] || '');
-      h += `<div class="r7-ficha r7-oro"><span class="r7-ficha-de">${esc(quien)}</span><p>${esc(porque)}</p>${VETA.r7.ensena({texto: 'Show me how you would do it'})}</div>`;
-      h += VETA.r7.lista([{icono: 'reloj', nombre: 'What has happened', pasa: a.paso.length + ' steps, since ' + a.paso[0].cuando.toLowerCase(), abre: pasos(a)}]);
-      return `<div class="d1-asunto">${h}</div>`;
+      h += a.tipo === 'queja' && VETA.ajeno(a.contacto)
+        ? r7.tarjeta({de: 'I know from your alert on ' + dia(a.pide.origen), texto: 'Ten days with no news about their home. They say they will go to another agency.', i: 0})
+        // el chat del WhatsApp de la OFICINA lo ve dirección con su cita; en cuanto el contacto pasa a una agente, el chat es suyo (VETA.ajeno) y queda el hecho, dicho por Veta
+        : VETA.ajeno(p.id) ? r7.tarjeta({de: corto + ' wrote ' + elDia(dia(a.pide.origen)), texto: QUIERE[p.id] || 'Wrote to the office\'s WhatsApp.', i: 0})
+        : VETA.UI.cita({texto: a.pide.texto, origen: corto + ' · ' + a.pide.origen, chat: p.id});
+      if (!r) h += r7.tarjeta(Object.assign({veta: true, i: 1}, propone(p.id)));
+      h += r7.lista([{nombre: 'What has happened', dato: a.paso.length, hoja: 'd-pasos', datos: {asunto: p.id}}], {i: 2});
+      return h;
     },
     botonFijo: p => {
       const a = A(p.id);
-      if (resuelto(p.id)) return VETA.r7.botones(null, [{texto: 'Undo', accion: 'deshacer-asunto'}]);
-      if (a.tipo === 'queja') return VETA.r7.botones({texto: 'Ask Marc to call him today', accion: 'pedir'},
-        [{texto: 'I\'ll call him', accion: 'yo'}, {texto: 'For later', hoja: 'h02', de: 'd-joan'}]);
-      return VETA.r7.botones({texto: `Give ${la(p.id)} to ${X.persona(a.propone).corto}`, accion: 'asignar'},
-        [{texto: 'Choose someone else', hoja: 'h35', datos: {para: p.id}}]);
+      if (resuelto(p.id)) return r7.sigue(VETA.d1.siguiente());
+      if (a.tipo === 'queja') return r7.botones({texto: 'Ask Marc to call him', accion: 'pedir'});
+      return r7.botones({texto: ella(p.id) ? `Give her to ${X.persona(a.propone).corto}` : `Give him to ${X.persona(a.propone).corto}`, accion: 'asignar'});
     },
     acciones: {
       asignar(ev, el, p) {
-        const id = p.id; X.asigna(id, A(id).propone);
-        const r = X.asignado(id); hecho((r && r.linea) || 'Done.', () => X.desasigna(id));
+        X.asigna(p.id, A(p.id).propone); hecho(p.id);
       },
-      pedir() { M.marca('d-joan', 'hecha'); hecho('Marc is asked to call Joan Serra today.', () => M.deshaz('d-joan')); },
-      yo(ev, el, p) {
-        if (A(p.id).tipo === 'queja') { M.marca('d-joan', 'quitada', {linea: 'Joan Serra · you call him'}); hecho('Joan Serra: you call him.', () => M.deshaz('d-joan')); }
-        else { const id = p.id; X.asigna(id, 'montse'); hecho(nombre(id) + ': you take it.', () => X.desasigna(id)); }
-      },
-      'deshacer-asunto'(ev, el, p) {
-        if (A(p.id).tipo === 'queja') M.deshaz('d-joan'); else X.desasigna(p.id);
-        VETA.repinta(); VETA.d1.numeros();
-      }
+      pedir(ev, el, p) { M.marca('d-joan', 'hecha'); hecho(p.id); },
+      'deshacer-asunto'(ev, el, p) { deshaz(p.id); hecho(p.id); },
+      'd-sigue': (ev, el) => VETA.d1.sigue(ev, el)
     }
   });
 })();

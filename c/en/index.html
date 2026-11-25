@@ -19,7 +19,7 @@
 /* tema antes del primer pintado (lo mismo que hace js/nucleo/tema.js) */
 (function(){var r=document.documentElement,p={},s={};try{p=JSON.parse(localStorage.getItem('veta_pref_v1')||'{}')||{}}catch(e){}
 try{s=JSON.parse(sessionStorage.getItem('veta_demo_en_v1')||'{}')||{}}catch(e){}
-var mm=function(q){return !!(window.matchMedia&&matchMedia(q).matches)};var m=p.modo||'claro';if(m==='auto')m=mm('(prefers-color-scheme: dark)')?'oscuro':'claro';
+var mm=function(q){return !!(window.matchMedia&&matchMedia(q).matches)};var m=p.modo||'auto';if(m==='auto')m=mm('(prefers-color-scheme: dark)')?'oscuro':'claro';
 r.setAttribute('data-modo',m==='oscuro'?'oscuro':'claro');r.setAttribute('data-color',p.color||'veta');
 var red=p.mov==='reducido'||s.mov==='reducido'||/[?&]mov=reducido/.test(location.search)||mm('(prefers-reduced-motion: reduce)');r.setAttribute('data-mov',red?'reducido':'normal')})();
 </script>
@@ -37,11 +37,11 @@ var red=p.mov==='reducido'||s.mov==='reducido'||/[?&]mov=reducido/.test(location
 <link rel="stylesheet" href="css/r7.css">
 <link rel="stylesheet" href="css/r7-a1.css">
 <link rel="stylesheet" href="css/r7-a2.css">
-<link rel="stylesheet" href="css/r7-e.css">
 <link rel="stylesheet" href="css/r7-b.css">
 <link rel="stylesheet" href="css/r7-c.css">
-<link rel="stylesheet" href="css/r7-d1.css">
 <link rel="stylesheet" href="css/r7-d2.css">
+<!-- ronda 8: el fichero del carril E, el último -->
+<link rel="stylesheet" href="css/r8-entrada.css">
 <link rel="stylesheet" href="css/imprimir.css" media="print">
 </head>
 <body>
@@ -52,10 +52,8 @@ var red=p.mov==='reducido'||s.mov==='reducido'||/[?&]mov=reducido/.test(location
     <div id="col-a" class="col"></div>
     <div id="col-b" class="col"></div>
   </main>
-  <aside id="cajon" class="cajon" aria-label="Guide"></aside>
   <nav id="barra" class="barra" aria-label="Destinations"></nav>
 </div>
-<div id="guia" class="guia" role="status" hidden></div>
 <div id="aviso" class="aviso" role="status" aria-live="polite" hidden></div>
 <div id="velo" class="velo" hidden></div>
 <div id="hoja" class="hoja" role="dialog" aria-modal="true" tabindex="-1" hidden></div>
@@ -74,7 +72,6 @@ var red=p.mov==='reducido'||s.mov==='reducido'||/[?&]mov=reducido/.test(location
 <script src="js/nucleo/modelo.js"></script>
 <script src="js/nucleo/vivo.js"></script>
 <script src="js/nucleo/rutas.js"></script>
-<script src="js/nucleo/guia.js"></script>
 <!-- datos (los extra-*.js son de cada paquete) -->
 <script src="js/datos/base.js"></script>
 <script src="js/datos/dia.js"></script>
@@ -96,7 +93,6 @@ var red=p.mov==='reducido'||s.mov==='reducido'||/[?&]mov=reducido/.test(location
 <script src="js/datos/r7-b.js"></script>
 <script src="js/datos/r7-c.js"></script>
 <script src="js/datos/r7-d1.js"></script>
-<script src="js/datos/r7-d2.js"></script>
 <script src="js/nucleo/r7.js"></script>
 <!-- pantallas: núcleo, A, B, C, D -->
 <script src="js/pantallas/portada.js"></script>

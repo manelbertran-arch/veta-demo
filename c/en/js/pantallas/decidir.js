@@ -1,50 +1,91 @@
-/* Veta demo · ronda 7 · pantallas · decidir.js · D1
-   G20 · Decidir · #/decidir — la lista de lo que espera la decisión de dirección (antes, tarjetas dentro de Equipo).
-   Una fila por cosa: cara o icono, quién o qué, qué pasa y una pastilla. Al tocarla, su ficha (asunto/:id, reparto o el trabajo
-   para la oficina). Debajo, lo ya decidido hoy (se abre aquí). Arreglo FD: Pau Ríos y Lucía Gómez (nadie los lleva) son filas
-   como Carmen; “Lo que entra” está al final de Operaciones y “Tus avisos”, en Cuenta.
-   El número sale de VETA.r7.cuentas().decidir: el mismo de la caja de Inicio, la barra y la frase. */
+/* Veta demo · ronda 8 · pantallas · decidir.js · carril D
+   El Inicio de dirección (PLAN_R8.md, 3.2 y D-1). Rellena el gancho VETA.inicioDe.direccion, que pinta js/pantallas/inicio.js
+   bajo el saludo y la frase (“6 cosas esperan tu decisión.”):
+   1) “lo primero”: la primera cosa que espera decisión, con su botón negro “Ver y decidir”;
+   2) la lista del resto, una fila con cara por cosa (la propuesta de trabajo lleva la cara de Veta). Aquí no hay pastillas:
+      lo que pasa va en la segunda línea. La única roja, “Nadie la lleva”, solo en “lo primero”;
+   3) si hoy has decidido algo, la fila “Decidido hoy”; y la lista “Lo tuyo”: “Te toca a ti” y “Tus clientes” (Montse también vende).
+   Al volver de decidir, la fila resuelta se va (opacidad y alto, 200 ms) y las demás suben.
+   La pantalla G20 (#/decidir) ya no existe: el núcleo lleva esa ruta a Inicio.
+   El número sale de VETA.r7.cuentas().decidir (VETA.d1.esperan): el mismo de la frase y del punto de la barra. */
 (function () {
   'use strict';
-  const esc = VETA.esc, M = VETA.modelo, X = VETA.dir;
+  const M = VETA.modelo, X = VETA.dir, r7 = VETA.r7;
 
-  // cómo se ve cada decisión en la lista (R3: una línea de nombre, una de qué pasa, una pastilla)
-  const FILA = {
-    'd-carmen': () => ({cara: 'carmen', nombre: 'Carmen López', pasa: 'No reply since yesterday', pastilla: 'No one has it', tono: 'rojo'}),
-    'd-regla': () => ({icono: 'estrella', oro: true, nombre: 'Flat report', pasa: 'A new job for the office',
-      pastilla: X.laPropuso() ? 'Laura suggests it' : 'I suggest it', tono: 'oro'}),
-    'd-teresa': () => ({cara: 'teresa', nombre: 'Teresa Gil', pasa: 'She is off sick. 12 clients are waiting', pastilla: 'Off sick'}),
-    'd-joan': () => ({cara: 'joan-serra', nombre: 'Joan Serra', pasa: 'Ten days with no news about their flat', pastilla: 'Complaint'})
+  // cómo se ve cada decisión. `primero`: lo que dice cuando es “lo primero” (ahí cabe la pastilla y lo que haría Veta)
+  const DECISION = {
+    'd-carmen': () => ({cara: 'carmen', nombre: 'Carmen López', pasa: 'No one has her · wants a flat in Gràcia', primero: 'I\'d give her to Laura', pastilla: 'No one has her'}),
+    'd-regla': () => ({cara: 'veta', nombre: 'Flat report', pasa: X.laPropuso() ? 'A new job · suggested by Laura' : 'A new job for the office'}),
+    'd-teresa': () => ({cara: 'teresa', nombre: 'Teresa Gil', pasa: 'On leave · her clients are waiting'}),
+    'd-joan': () => ({cara: 'joan-serra', nombre: 'Joan Serra', pasa: 'Complaint: ten days with no news'})
   };
-  const filaDe = c => Object.assign({nombre: c.fila || c.titulo, pasa: c.filaSub, icono: 'estrella'}, FILA[c.id] ? FILA[c.id]() : {}, {ir: X.rutaDe(c), datos: {vt: 'cola-' + c.id}});
+  // un contacto que no lleva nadie (Pau Ríos, Lucía Gómez) es una decisión más, como Carmen: su ficha es asunto/:id
+  const CONTACTO = {
+    'pau-rios': {pasa: 'No one has him · looking for premises', primero: 'I\'d give him to David', pastilla: 'No one has him'},
+    lucia: {pasa: 'No one has her · wants to sell', primero: 'I\'d give her to Marc'}
+  };
+  const cosa = e => {
+    if (e.tipo === 'contacto') return Object.assign({cara: e.x.id, nombre: e.x.nombre, pasa: 'New contact', pastilla: 'No one has her', ir: 'asunto/' + e.x.id}, CONTACTO[e.x.id]);
+    const c = e.c;
+    return Object.assign({cara: 'veta', nombre: c.fila || c.titulo, pasa: c.filaSub, ir: X.rutaDe(c)}, DECISION[c.id] ? DECISION[c.id]() : {});
+  };
 
-  // lo decidido hoy: una fila que se abre aquí con una línea por cosa
-  const lineaDe = c => (c.extra && c.extra.linea) || (c.lineas && c.lineas[c.estado]) || (c.lineas && c.lineas.hecha) || c.titulo;
-  function decididas() {
-    const l = M.decisiones().filter(c => X.resuelta(c)).sort((a, b) => a.orden - b.orden);
-    if (!l.length) return null;
-    return {icono: 'check', nombre: l.length === 1 ? 'Decided today' : 'Decided today', pasa: l.length === 1 ? lineaDe(l[0]) : 'Tap to see them', numero: l.length > 1 ? l.length : null,
-      abre: `<ul class="d1-hechas">${l.map(c => `<li>${VETA.ic('check', 16)}<span>${esc(lineaDe(c))}${c.hora ? ' · ' + esc(c.hora) : ''}</span></li>`).join('')}</ul>`};
-  }
-  // arreglo FD (defecto 8): “Lo que entra” pasa a ser la última fila de Operaciones y “Tus avisos” va a Cuenta.
-  // Un contacto que no lleva nadie (Pau Ríos, Lucía Gómez) es una decisión más, como Carmen: su ficha es asunto/:id.
-  const CONTACTO = {'pau-rios': 'Look for a place to rent', lucia: 'Wants to sell her parents\' flat'};
-  const filaContacto = x => ({cara: x.id, nombre: x.nombre, pasa: CONTACTO[x.id] || 'New contact', pastilla: 'No one has it', tono: 'rojo', ir: 'asunto/' + x.id, datos: {vt: 'cola-' + x.id}});
+  // lo decidido hoy: una fila que abre su hoja (d-decididas). Cuentan las decisiones y los contactos ya repartidos o aparcados:
+  // cada línea lleva a su ficha, que es donde se deshace
+  const lineaDe = c => {
+    const l = (c.extra && c.extra.linea) || (c.lineas && c.lineas[c.estado]) || (c.lineas && c.lineas.hecha) || c.titulo;
+    return c.id === 'd-regla' && c.extra && c.extra.linea ? 'Flat report ·  ' + l.charAt(0).toLowerCase() + l.slice(1) : l;   // en su pantalla el nombre ya está en la cabecera; aquí hay que decirlo
+  };
+  VETA.d1.decididas = () => M.decisiones().filter(c => X.resuelta(c)).sort((a, b) => a.orden - b.orden).map(c => ({linea: lineaDe(c), hora: c.hora, ir: X.rutaDe(c)}))
+    .concat((VETA.datos.contactos || []).filter(c => c.id !== 'carmen').map(c => { const r = X.asignado(c.id) || X.aparcado(c.id); return r ? {linea: r.linea, hora: r.hora, ir: 'asunto/' + c.id} : null; }).filter(Boolean));
+  const decididas = () => VETA.d1.decididas().length;
 
-  VETA.pantalla('G20', {
-    titulo: 'Decide',
-    frase: () => {
-      const n = VETA.r7.cuentas().decidir;
-      return n ? `${n} ${n === 1 ? 'thing is waiting for' : 'things are waiting for'} your decision. Tap one.` : 'You have decided everything. If something comes in, I put it here.';
-    },
-    guia: ['Here you see what is waiting for your decision.', 'You tap one and I tell you what I would do.', 'You decide with one tap.'],
-    pinta: () => {
-      const pend = VETA.d1.esperan();
-      const filas = pend.map(e => VETA.d1.fila(e.tipo === 'contacto' ? filaContacto(e.x) : filaDe(e.c)));
-      // lo ya decidido hoy va después, separado por un poco de aire
-      const hechas = decididas();
-      if (hechas) { if (pend.length) hechas.clase = 'd1-sep'; filas.push(VETA.r7.fila(hechas)); }
-      return `<div class="d1-decidir">${VETA.r7.lista(filas)}</div>`;
+  // tras decidir, el botón del pie lleva a lo siguiente que espera (o a Inicio): VETA.r7.sigue(VETA.d1.siguiente())
+  // `reemplaza`: “volver” sigue llevando a donde se empezó, no a la decisión anterior
+  VETA.d1.siguiente = () => { const l = VETA.d1.esperan().map(cosa); return l.length ? {texto: 'Next: ' + l[0].nombre, accion: 'd-sigue', datos: {ruta: l[0].ir}} : {}; };
+  VETA.d1.sigue = (ev, el) => VETA.ir(el.dataset.ruta, {reemplaza: true});
+
+  // la fila resuelta se va (6.6): Inicio recuerda lo que enseñó la última vez; si al volver falta algo, lo pinta una vez más
+  // en su sitio y lo deja irse (VETA.mov.seVa). Con “Reducir movimiento” se pinta ya sin ello.
+  let ultima = null, yendo = false;
+  const clave = f => f.ir;
+  const pintaLista = l => {
+    let h = '';
+    if (l.length) {
+      const p = l[0];
+      h += r7.primero({cara: p.cara, nombre: p.nombre, pasa: p.primero || p.pasa, pastilla: p.pastilla, i: 1, clase: p.seVa ? 'd-seva' : '', boton: {texto: 'See and decide', ir: p.ir}});
+      if (l.length > 1) h += r7.lista(l.slice(1).map(f => ({cara: f.cara, nombre: f.nombre, pasa: f.pasa, ir: f.ir, clase: f.seVa ? 'd-seva' : ''})), {i: 2});
     }
-  });
+    return h;
+  };
+
+  VETA.inicioDe.direccion = () => {
+    const l = VETA.d1.esperan().map(cosa), c = r7.cuentas(), hechas = decididas();
+    const idas = ultima && !VETA.reducido() ? ultima.filter(f => !l.some(g => clave(g) === clave(f))) : [];
+    // mientras se va: la lista de antes, con lo resuelto marcado; lo nuevo (algo deshecho) entra al repintar
+    const ver = idas.length ? ultima.map(f => l.find(g => clave(g) === clave(f)) || Object.assign({}, f, {seVa: true})) : l;
+    if (!idas.length) ultima = l;
+    // con cero cosas, una frase sola en mitad de la pantalla y la de arriba dice otra cosa (para no decir lo mismo dos veces)
+    let h = ver.length ? pintaLista(ver) : r7.vacio({texto: 'Nothing left to decide today.', i: 1});
+    if (hechas) h += r7.lista([{nombre: 'Decided today', dato: hechas, hoja: 'd-decididas'}], {i: 3});
+    // lo suyo como agente (Montse también vende), con su rótulo: sin él no se sabe que esas dos filas son otra cosa
+    // “Confirmar las visitas”: el trabajo que te propongo a ti, directo desde aquí (antes se llegaba a cuatro toques, por el informe del piso)
+    // y lo mismo con el informe del piso al valorar mientras siga siendo propuesta (hasta dos trabajos: es lo tuyo, no un listado)
+    // los trabajos de la OFICINA (VETA.d1.trabajos): dirección no usa las reglas de una agente
+    const trab = VETA.d1.trabajos ? VETA.d1.trabajos() : [];
+    const props = trab.filter(x => x.estado === 'propuesta').slice(0, 2);
+    // “Lo que Veta hace por ti” es fija: lo que aceptas desde un atajo (y deja de ser propuesta) sigue ahí, en “Ya lo hago yo”
+    const mios = trab.filter(x => ['propuesta', 'a-prueba', 'en-marcha'].includes(x.estado)).length;
+    h += r7.lista([
+      {nombre: 'Your turn', dato: c.hoy || null, ir: 'hoy'},
+      {nombre: 'Your clients', dato: c.clientes || null, ir: 'clientes'},
+      {nombre: 'What Veta does for you', dato: mios || null, ir: 'veta/mia'}
+    ].concat(props.map(x => ({nombre: x.nombre, pasa: 'My suggestion', ir: x.ir}))), {rotulo: 'Yours', i: 3});
+    return {html: h, frase: ver.length ? undefined : 'All decided. New list tomorrow at 8:00.', alMontar: el => {
+      if (!idas.length || yendo) return;
+      const els = [...el.querySelectorAll('.d-seva')];
+      yendo = true;
+      Promise.all(els.map(x => VETA.mov.seVa(x))).then(() => { yendo = false; ultima = null; VETA.repinta(); });
+    }};
+  };
 })();

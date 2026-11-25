@@ -1,26 +1,25 @@
 /* Veta demo · núcleo · ordenador.css
    A 900 px o más (5.5): barra lateral negra de 240, lista del destino (380) y panel de detalle (hasta 720).
-   Las hojas son diálogos centrados de 480. Con la guía encendida, cajón de 320 a la derecha con el índice. */
+   Las hojas son diálogos centrados de 480. Ronda 8: sin cajón de guía; el menú lleva los cuatro sitios, «Dictar» y la cuenta. */
 @media (min-width:900px){
   .app{display:grid;grid-template-columns:240px minmax(0,1fr);grid-template-rows:minmax(0,1fr)}
-  .app.guia-on{grid-template-columns:240px minmax(0,1fr) 320px}
-  .reloj,#barra,#guia{display:none!important}
+  .reloj,#barra{display:none!important}
   .marco{grid-column:2;grid-row:1}
 
   /* barra lateral */
   .lateral{display:flex;flex-direction:column;gap:var(--e2);grid-column:1;grid-row:1;padding:var(--e5) var(--e3) var(--e4);background:var(--top-b);color:var(--top-t);overflow-y:auto}
   .lat-marca{display:flex;align-items:center;gap:var(--e2);min-height:var(--toque);padding:0 var(--e3);margin-bottom:var(--e3)}
   .lat-marca img{width:30px;height:24px;object-fit:contain}
-  .lat-marca b{font:600 var(--f-cuerpo)/1 var(--display);letter-spacing:.2em}
+  .lat-marca b{font:700 var(--f-cuerpo)/1 var(--display);letter-spacing:.2em}
   .lat-dest{display:flex;flex-direction:column;gap:var(--e1)}
-  .lat-d{position:relative;display:flex;align-items:center;gap:var(--e3);min-height:var(--toque);padding:0 var(--e3);border-radius:var(--r-2);color:var(--top-t2);font:600 var(--f-cuerpo)/1.2 var(--body)}
+  .lat-d{position:relative;display:flex;align-items:center;gap:var(--e3);min-height:var(--toque);padding:0 var(--e3);border-radius:var(--r-2);color:var(--top-t2);font:700 var(--f-cuerpo)/1.2 var(--body)}
   .lat-d.on{background:color-mix(in srgb,var(--top-t) 10%,transparent);color:var(--top-t);font-weight:700;box-shadow:inset 3px 0 0 var(--top-acento)}
-  .lat-n{margin-left:auto;min-width:24px;height:24px;padding:0 6px;border-radius:12px;background:var(--rojo-b);color:var(--rojo-t);font:700 var(--f-apoyo)/24px var(--body);text-align:center}
+  .lat-d .tab-punto{position:static;margin-left:auto;background:var(--top-t);box-shadow:none}
   .lat-mic{display:flex;align-items:center;gap:var(--e3);min-height:56px;margin-top:var(--e4);padding:0 var(--e2);border-radius:var(--r-pill);color:var(--top-t);font:700 var(--f-cuerpo)/1 var(--body)}
   .lat-mic .mic-c{width:44px;height:44px;box-shadow:inset 0 0 0 1px var(--mic-borde,transparent)}
   .lat-yo{margin-top:auto;display:flex;align-items:center;gap:var(--e3);min-height:56px;padding:var(--e2);border-radius:var(--r-2);text-align:left;color:var(--top-t)}
   .lat-yo-c{display:flex;flex-direction:column;min-width:0}
-  .lat-yo-n{font:600 var(--f-cuerpo)/1.2 var(--body);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .lat-yo-n{font:700 var(--f-cuerpo)/1.2 var(--body)}
   .lat-yo-p{font:500 var(--f-apoyo)/1.2 var(--body);color:var(--top-t3)}
 
   /* dos columnas */
@@ -31,20 +30,23 @@
   .col-panel{background:var(--fondo)}
   .cab-panel{padding:0 var(--e5);justify-content:space-between}
   .miga{display:flex;align-items:center;gap:var(--e1);min-width:0}
-  .miga-b{min-height:var(--toque);min-width:var(--toque);padding:0 var(--e1);font:600 var(--f-apoyo)/1.2 var(--body);color:var(--t2);white-space:nowrap}
+  .miga-b{min-height:var(--toque);min-width:var(--toque);padding:0 var(--e1);font:500 var(--f-apoyo)/1.2 var(--body);color:var(--t2);white-space:nowrap}
   .miga-quieta{display:flex;align-items:center;min-width:0}
-  .miga-s{color:var(--t3);font:600 var(--f-apoyo)/1 var(--body)}
+  .miga-s{color:var(--t3);font:500 var(--f-apoyo)/1 var(--body)}
   .fijo{align-items:flex-end;padding-left:var(--e5);padding-right:var(--e5)}
   .fijo>*{max-width:360px}
   .col-panel .borrador{max-width:560px}
 
-  /* pantallas completas y anchas */
+  /* pantallas completas y anchas. Sin menú lateral solo antes de entrar (portada, entrar, primer día): el acta, los informes y Dictar
+     lo conservan (D20; rutas.js les pone data-vista=ancha) */
   .app[data-vista=completa]{grid-template-columns:minmax(0,1fr)}
-  .app[data-vista=completa] .lateral,.app[data-vista=completa] .cajon{display:none}
+  .app[data-vista=completa] .lateral{display:none}
   .app[data-vista=completa] .marco{grid-column:1}
-
-  /* ocho números en 4×2 */
-  .n8{grid-template-columns:repeat(4,minmax(0,1fr))}
+  /* ronda 8 · lo que va a una columna (pantallas completas y lo que se abre desde Inicio) se centra a 560, cabecera y pie incluidos */
+  .col-completa>.cab,.col-detalle>.cab{width:100%;max-width:calc(var(--col-max) + 2*var(--margen));margin:0 auto}
+  .col-completa .pant,.col-detalle .pant{max-width:calc(var(--col-max) + 2*var(--margen));padding-left:var(--margen);padding-right:var(--margen)}
+  .col-completa .fijo,.col-detalle .fijo{align-items:center;padding-left:var(--margen);padding-right:var(--margen)}
+  .col-completa .fijo>*,.col-detalle .fijo>*{max-width:var(--col-max)}
 
   /* hojas: diálogos centrados de 480 */
   .hoja{left:50%;right:auto;top:50%;bottom:auto;width:480px;max-height:86dvh;border-radius:var(--r-4);padding-bottom:var(--e5);translate:-50% -50%;transform:translateY(16px);opacity:0;transition:transform var(--t-corto) var(--c-sale),opacity var(--t-corto) var(--c-sale)}
@@ -52,26 +54,8 @@
   .asa{height:16px;cursor:default}
   .asa i{visibility:hidden}
 
-  /* aviso: centrado en la zona de contenido */
-  .aviso{left:calc(240px + var(--margen))}
-  .app.guia-on ~ .aviso{right:calc(320px + var(--margen))}
-
-  /* cajón de la guía */
-  .app.guia-on .cajon{display:block;grid-column:3;grid-row:1;overflow-y:auto;background:var(--s1);border-left:1px solid var(--borde)}
-  .cajon-c{padding:var(--e4);display:flex;flex-direction:column;gap:var(--e3)}
-  .cajon-cab{display:flex;align-items:center;justify-content:space-between}
-  .cajon-cab h2{font:700 var(--f-hoja)/1.1 var(--display)}
-  .guia-pt{font:700 var(--f-apoyo)/1.2 var(--body);color:var(--acento);margin-top:var(--e2)}
-  .cajon .guia-f{font:500 var(--f-apoyo)/1.4 var(--body)}
-  .guia-g h3{font:700 var(--f-apoyo)/1.2 var(--body);color:var(--t2);margin:var(--e3) 0 var(--e1)}
-  .guia-i{width:100%;min-height:var(--toque);display:flex;align-items:center;justify-content:space-between;gap:var(--e2);padding:0 var(--e2);border-radius:var(--r-1);font:500 var(--f-apoyo)/1.2 var(--body);text-align:left}
-  .guia-cod{color:var(--t3);font-variant-numeric:tabular-nums}
-  .guia-tt{font:500 var(--f-apoyo)/1.4 var(--body);padding:var(--e3);border-radius:var(--r-2);background:var(--tinte)}
-  .guia-toque:empty{display:none}
-
-  /* muestrario a lo ancho */
-  .mu-efectos{grid-template-columns:repeat(4,minmax(0,1fr))}
+  /* aviso: su sitio y su ancho son los de la columna activa (los pone aviso.js) */
 }
 
-/* ronda 7 · «Enséñale a Veta» marcado en el menú */
+/* «Dictar» marcado en el menú */
 @media (min-width:900px){.lat-mic.on{background:color-mix(in srgb,var(--top-t) 10%,transparent)}}

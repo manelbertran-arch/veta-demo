@@ -47,11 +47,11 @@
       h += `<ul class="a-canales">${(L.canales || []).filter(c => /whatsapp/i.test(c.nombre)).map(c => `<li><span class="a-verde" aria-hidden="true"></span><span class="a-can-n">${esc(c.nombre)}</span><span class="a-can-h">${esc(c.hace)}</span></li>`).join('')}</ul>`;
       h += `<p class="a-h-txt">${esc(equipo ? '46 chats de trabajo leídos hoy en la oficina' : hoy.chats + ' chats leídos hoy')}</p>`;
       // dirección: en Equipo, lo de la oficina (sin chats de nadie); en lo suyo, sus clientes
-      const det = equipo ? ['Carmen López escribe al WhatsApp de la oficina y nadie le contesta', 'Joan Serra se queja: lleva diez días sin noticias', 'Teresa está de baja: 34 conversaciones sin atender']
+      const det = equipo ? ['Carmen López escribe al WhatsApp de la oficina y nadie le contesta', 'Joan Serra se queja: lleva diez días sin noticias', 'Teresa está de baja: sus conversaciones esperan']
         : dir ? ['Rubén Gil pregunta por las visitas del ático', 'Guillem Roig pide que le confirmes la visita del miércoles', 'Sílvia Prat espera respuesta a su oferta'] : (DA().detectado || []);
       h += sec('Detectado hoy · ' + det.length, `<ul class="a-h-lista">${det.map(t => `<li>${esc(t)}</li>`).join('')}</ul>`);
       if (sergi && sergi.estado === 'quitada') h += sec('Ya no está aquí · 1', `<ul class="a-h-lista"><li>${esc(DA().yaNo.texto)}</li></ul>`);
-      h += `<p class="a-h-gris a-h-aun"><span><b>Todavía no:</b> el correo, las llamadas y los audios no los leo.</span></p>`;
+      h += `<p class="a-h-gris a-h-aun"><span><b>Notas de voz:</b> transcribo la nota de voz y borro el audio.</span></p>`;
       h += `<p class="a-h-gris">${ic('candado', 18)} ${equipo ? 'Aquí solo sale lo de la oficina: los chats de cada persona no salen en dirección.' : 'Tus grupos personales y los chats que dejaste fuera no los leo.'}</p>`;
       return h + cerrar();
     }
@@ -100,7 +100,7 @@
       if (vis) {
         const e = VETA.a2.est(vis.id);
         return `<p class="hoja-x">${esc(vis.cuando)} · ${esc(e.escrito ? 'Lo escribiste tú' : vis.dur)}</p><blockquote class="a-h-dijo">«${esc(e.dicho || vis.dicho)}»</blockquote>` +
-          `<p class="a-h-gris">No guardo el audio: solo el texto.</p>`;
+          `<p class="a-h-gris">Transcribo la nota de voz y borro el audio.</p>`;
       }
       const g = d.guion || 'acta', u = VETA.est.lee('a.ultimoDictado', null);
       const mio = u && u.guion === g ? u : null;
@@ -108,7 +108,7 @@
       const seg = mio ? mio.seg : (DA().duracion || {})[g] || 0;
       return `<p class="hoja-x">Hoy, ${esc(mio ? mio.hora : '9:47')} · ${esc(VETA.A.mmss(seg))}</p>` +
         `<blockquote class="a-h-dijo">«${esc(texto || '')}»</blockquote>` +
-        `<p class="a-h-gris">No guardo el audio: solo el texto.</p>`;
+        `<p class="a-h-gris">Transcribo la nota de voz y borro el audio.</p>`;
     }
   });
 

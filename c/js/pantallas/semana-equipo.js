@@ -13,14 +13,16 @@
   const resumenTexto = () => X.lee('resumenTexto', RESUMEN);
   const enviado = () => X.lee('resumen', null);
   const R6 = () => VETA.datos.r6.direccion;
-  const hecho = o => `<div data-i="0">${UI.lineaHecho(o)}</div>`;
+
+  // deshacer el envío del resumen (desde su pantalla o desde la de la semana): el papel vuelve a estar sin enviar
+  const deshaceResumen = () => { X.guarda('resumen', null); VETA.repinta({hecho: 'd-resumen'}); };
 
   // ---------------- G3 · La semana pasada ----------------
   VETA.pantalla('G3', {
     titulo: 'La semana pasada',
     pinta: () => {
       const n = N(), env = enviado(), s = R6().semanas;
-      return (env ? hecho({texto: 'Resumen enviado a 4 personas', hora: 'hoy, ' + env.hora, vt: 'd-resumen'}) : '') +
+      return (env ? r7.hecho({texto: 'Resumen enviado', hora: env.hora, vt: 'd-resumen', deshacer: 'deshacer-resumen'}) : '') +
         // el número sale de la misma función que la fila de «Veta» (R9)
         r7.cifra({valor: r7.cuentas().oficina, frase: `cosas que os dejé listas. Hace un mes, ${s.listos[0]}.`, id: 'd-cifra-156', i: 0}) +
         r7.barras(s.etiquetas.map((e, k) => ({valor: s.listos[k], fecha: e})), {etiqueta: 'Cosas que os dejé listas cada semana', i: 1}) +
@@ -33,7 +35,8 @@
           {nombre: 'Tiempo ganado', ir: 'tiempo-equipo'},
           {nombre: 'Informe completo', ir: 'informe-completo'}], {i: 2});
     },
-    botonFijo: () => enviado() ? '' : r7.botones({texto: 'Enviar el resumen al equipo', ir: 'semana-equipo/resumen'}),
+    botonFijo: () => enviado() ? r7.sigue() : r7.botones({texto: 'Enviar el resumen al equipo', ir: 'semana-equipo/resumen'}),
+    acciones: { 'deshacer-resumen': deshaceResumen },
     alMontar: el => {
       // la cifra rueda desde la de la semana anterior
       const c = el.querySelector('#d-cifra-156 .r7-cifra-n');
@@ -52,15 +55,17 @@
     casoDictado: () => ({de: 'resumen-semana', titulo: 'El resumen de la semana', texto: resumenTexto()}),
     pinta: () => {
       const env = enviado();
-      return (env ? hecho({texto: 'Resumen enviado a 4 personas', hora: 'hoy, ' + env.hora}) : '') +
+      return (env ? r7.hecho({texto: 'Enviado a 4 personas', hora: env.hora, vt: 'd-resumen', deshacer: 'deshacer-resumen'}) : '') +
         (editando ? `<div data-i="0">${UI.campo({etiqueta: 'Lo estás cambiando', area: true, filas: 10, id: 'd-resumen-t', valor: resumenTexto()})}</div>`
           : r7.doc({i: 0, datos: [resumenTexto() === RESUMEN ? 'Te lo dejo escrito' : 'Te lo dejo escrito · lo cambiaste tú'], texto: resumenTexto()}));
     },
-    botonFijo: () => enviado() ? '' : editando ? r7.botones({texto: 'Guardar', accion: 'editar'}) : r7.botones({texto: 'Enviar a las 4 personas', accion: 'enviar'}),
+    botonFijo: () => enviado() ? r7.sigue() : editando ? r7.botones({texto: 'Guardar', accion: 'editar'}) : r7.botones({texto: 'Enviar a las 4 personas', accion: 'enviar'}),
     alMontar: el => { if (editando) { const t = el.querySelector('#d-resumen-t'); if (t) try { t.focus({preventScroll: true}); } catch (e) {} } },
     acciones: {
       editar() { if (editando) guardaTexto(); editando = !editando; VETA.repinta(); },
-      enviar() { X.guarda('resumen', {hora: VETA.ahora()}); X.vuelve(); }
+      // el final de siempre: la pantalla se queda y enseña «✓ Resumen enviado · Deshacer» arriba y «Ir a Inicio» en el pie
+      enviar() { X.guarda('resumen', {hora: VETA.ahora()}); VETA.repinta({hecho: 'd-resumen'}); },
+      'deshacer-resumen': deshaceResumen
     }
   });
 
@@ -69,15 +74,18 @@
     titulo: 'Reunión del lunes',
     pinta: () => {
       const env = X.lee('reunion', null), t = X.temas();
-      return (env ? hecho({texto: 'Enviado a 4 personas', hora: 'hoy, ' + env.hora}) : '') +
+      return (env ? r7.hecho({texto: 'Enviado a 4 personas', hora: env.hora, vt: 'd-reunion', deshacer: 'deshacer-reunion'}) : '') +
         r7.lista(t.map(x => ({nombre: x.corto || x.texto, dato: x.cifra, hoja: 'd-tema', datos: {tema: x.id}})), {rotulo: t.length === 3 ? 'Los tres temas' : 'Los temas', i: 0}) +
         r7.lista([
           {nombre: 'Cambiar los temas', hoja: 'h34'},
-          {nombre: 'El parte de las 19:30', hoja: 'h41', datos: {parte: '1930'}},
-          {nombre: 'Informe para socios', hoja: 'h41', datos: {parte: 'socios'}}], {rotulo: 'Además', i: 1});
+          {nombre: 'El parte de la oficina', hoja: 'h41', datos: {parte: 'oficina'}},
+          {nombre: 'Informe para socios', hoja: 'h41', datos: {parte: 'socios'}}], {rotulo: 'Para la reunión', i: 1});
     },
-    botonFijo: () => X.lee('reunion', null) ? '' : r7.botones({texto: 'Enviar el orden del día', accion: 'enviar'}),
-    acciones: { enviar() { X.guarda('reunion', {hora: VETA.ahora()}); VETA.repinta(); } }
+    botonFijo: () => X.lee('reunion', null) ? r7.sigue() : r7.botones({texto: 'Enviar el orden del día', accion: 'enviar'}),
+    acciones: {
+      enviar() { X.guarda('reunion', {hora: VETA.ahora()}); VETA.repinta({hecho: 'd-reunion'}); },
+      'deshacer-reunion'() { X.guarda('reunion', null); VETA.repinta({hecho: 'd-reunion'}); }
+    }
   });
 
   // ---------------- G3d · Por oficina ----------------
@@ -86,10 +94,10 @@
     sub: 'Cada oficina se compara solo consigo misma.',
     pinta: () => {
       const ofs = [
-        {nombre: 'Gràcia', quien: 'Anna, Laura y Teresa', p: [92, 84], c: [78, 70], par: 3},
-        {nombre: 'Sant Gervasi', quien: 'David, Marc y tú', p: [64, 57], c: [54, 48], par: 1}];
+        {nombre: 'Gràcia', p: [92, 84], c: [78, 70], par: 3},
+        {nombre: 'Sant Gervasi', p: [64, 57], c: [54, 48], par: 1}];
       return r7.lista(ofs.map(o => ({nombre: o.nombre, pasa: `${o.p[0]} listas · ${o.c[0]} terminadas · ${o.par} ${o.par === 1 ? 'parada' : 'paradas'}`,
-        abre: `<p>${esc(o.quien)}.</p><p>Cosas listas: <b>${o.p[0]}</b> (la semana de antes, ${o.p[1]}).</p><p>Terminadas: <b>${o.c[0]}</b> (antes, ${o.c[1]}).</p><p>Paradas más de 7 días: <b>${o.par}</b>.</p>`})), {i: 0});
+        abre: `<p>Cosas listas: <b>${o.p[0]}</b> (la semana de antes, ${o.p[1]}).</p><p>Terminadas: <b>${o.c[0]}</b> (antes, ${o.c[1]}).</p><p>Paradas más de 7 días: <b>${o.par}</b>.</p>`})), {i: 0});
     }
   });
 
@@ -98,18 +106,15 @@
     titulo: 'Tiempo ganado',
     sub: 'No me invento horas: las pone cada persona.',
     pinta: () => {
-      const t = D.tiempos.equipo, coste = M.lee('coste', null), pedido = X.lee('pedidoTiempos', null);
-      return (pedido ? hecho({texto: 'Pedido a 2 personas', hora: pedido.hora, vt: 'd-pedido', boton: {texto: 'Deshacer', accion: 'deshacer-pedido'}}) : '') +
-        r7.cifra({valor: VETA.horas(t.minutos), i: 0, frase: 'la semana pasada. Es un ejemplo.'}) +
-        r7.barras(D.semanas.map(s => ({valor: s.n, fecha: s.texto})), {etiqueta: 'Mensajes y tareas listos, semana a semana', i: 1}) +
+      const t = D.tiempos.equipo, pedido = X.lee('pedidoTiempos', null);
+      // sin gráfica: las barras de antes eran mensajes y tareas, no horas (D9). La cifra dice con cuántos tiempos está hecha
+      return (pedido ? r7.hecho({texto: 'Pedido a 2 personas', hora: pedido.hora, vt: 'd-pedido', deshacer: 'deshacer-pedido'}) : '') +
+        r7.cifra({valor: VETA.horas(t.minutos), i: 0, frase: `la semana pasada, según ${t.conTiempos} de ${t.personas} personas. Es un ejemplo.`}) +
         r7.lista([
-          {nombre: 'Han puesto sus tiempos', dato: `${t.conTiempos} de ${t.personas}`},
-          {nombre: 'Coste por hora', dato: coste ? coste + ' €' : 'Sin poner', hoja: 'h38'},
-          coste ? {nombre: 'A ese coste (ejemplo)', dato: `unos ${VETA.num(M.eurosEquipo(coste))} €`} : null,
           {nombre: 'Semanas anteriores', hoja: 'h25'},
           {nombre: 'Dos ejemplos', hoja: 'd-ejemplos'}], {i: 2});
     },
-    botonFijo: () => X.lee('pedidoTiempos', null) ? '' : r7.botones({texto: 'Pedir sus tiempos a las 2 que faltan', accion: 'pedir'}),
+    botonFijo: () => X.lee('pedidoTiempos', null) ? r7.sigue() : r7.botones({texto: 'Pedir sus tiempos a las 2 que faltan', accion: 'pedir'}),
     acciones: {
       pedir() { X.guarda('pedidoTiempos', {hora: VETA.ahora()}); VETA.repinta({hecho: 'd-pedido'}); },
       'deshacer-pedido'() { X.guarda('pedidoTiempos', null); VETA.repinta({hecho: 'd-pedido'}); }

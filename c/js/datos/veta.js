@@ -35,7 +35,7 @@
 
   // A15, A15b, H13 · lo que lee Veta
   D.lectura = {chats: 212, canales: [
-    {nombre: 'WhatsApp Business', hace: 'hace 4 min'}, {nombre: 'Correo de la oficina', hace: 'hace 9 min'}, {nombre: 'Llamadas de la oficina', hace: 'hace 12 min'}],
+    {nombre: 'WhatsApp Business', hace: 'hace 4 min'}],
     hoy: {chats: 8, audios: 10, porEscuchar: 1},
     fuera: ['Mamá', 'Javi (hermano)', 'Grupo de la cena del viernes']};
 

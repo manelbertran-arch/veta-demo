@@ -98,6 +98,34 @@
     clearTimeout(el._tac); el._tac = setTimeout(() => el.classList.remove('tac'), 700);
   }
 
+  // escalonado (ronda 8, 6.6): las seis primeras filas de una raíz entran una tras otra, a 30 ms. Solo al entrar en una raíz o en Inicio
+  // (lo llama rutas.js); nunca en una hoja ni al repintar. Con “Reducir movimiento”, nada.
+  function escalona(el) {
+    if (!el || VETA.reducido()) return;
+    VETA.$$('.r7-primero, .r7-lista > .r7-fila, .r7-lista > .r7-fila-d, .r7-lista > .interr', el).slice(0, 6).forEach((f, n) => { f.style.setProperty('--f', n); f.classList.add('r7-esc'); });
+    el.classList.remove('esc'); void el.offsetWidth; el.classList.add('esc');
+    clearTimeout(el._esc); el._esc = setTimeout(() => el.classList.remove('esc'), 900);
+  }
+
+  // la fila resuelta se va (ronda 8, 6.1 y 6.6): opacidad y alto a cero en 200 ms y las de debajo suben; al acabar se llama a `despues`,
+  // que es quien cambia el modelo y repinta. VETA.mov.seVa(el, () => { M.resuelve(id); VETA.repinta(); })
+  // `el`: la fila, la tarjeta de “lo primero” o cualquier bloque (o un selector dentro de la columna activa). Si era la única fila de su
+  // lista, se va la lista entera (y su rótulo). Con “Reducir movimiento”, o si no hay elemento, llama a `despues` sin más.
+  function seVa(el, despues) {
+    const fin = () => { if (typeof despues === 'function') despues(); };
+    if (typeof el === 'string') el = VETA.$(el, VETA.$('.col.activa') || document);
+    if (!el || !el.isConnected || VETA.reducido() || typeof el.animate !== 'function') { fin(); return Promise.resolve(); }
+    while (el.parentNode && el.parentNode.matches && ((el.parentNode.matches('.r7-lista') && el.parentNode.children.length === 1) || el.parentNode.matches('.r7-grupo'))) el = el.parentNode;
+    const cs = getComputedStyle(el), h = el.offsetHeight, sep = el.parentNode ? parseFloat(getComputedStyle(el.parentNode).rowGap) || 0 : 0;
+    el.style.overflow = 'hidden'; el.style.pointerEvents = 'none';
+    const a = el.animate([
+      {height: h + 'px', minHeight: h + 'px', paddingTop: cs.paddingTop, paddingBottom: cs.paddingBottom, marginTop: cs.marginTop, marginBottom: cs.marginBottom, opacity: 1},
+      {opacity: 0, offset: .6},
+      {height: '0px', minHeight: '0px', paddingTop: '0px', paddingBottom: '0px', marginTop: '0px', marginBottom: -sep + 'px', opacity: 0}
+    ], {duration: 200, easing: 'ease-out', fill: 'forwards'});
+    return a.finished.then(fin, fin);
+  }
+
   // cifra que rueda: columnas de dígitos que se desplazan; cifras tabulares para que no bailen
   VETA.rueda = (el, n, o) => {
     if (!el) return;
@@ -126,5 +154,5 @@
     scroller.addEventListener('scroll', mira, {passive: true}); mira();
   }
 
-  VETA.mov = {hayVT, transiciona, cascada, entraSinVT, vigilaDesplazamiento, nombra, ocupada, alAcabar};
+  VETA.mov = {hayVT, transiciona, cascada, escalona, seVa, entraSinVT, vigilaDesplazamiento, nombra, ocupada, alAcabar};
 })();

@@ -53,10 +53,6 @@
 .d-tema-op[aria-checked=true] .d-tema-n{color:var(--t1)}
 .d-temas-h,.d-temas-h+.d-cuenta{margin-bottom:var(--e3)}
 .d-cuenta{font:500 var(--f-apoyo)/1.3 var(--body);color:var(--t2);text-align:center}
-/* h38: coste por hora */
-.d-coste-caja{display:flex;align-items:center}
-.d-coste-caja .campo-i{font:700 var(--f-hoja)/1.2 var(--display)}
-.d-coste-u{flex:none;padding:0 var(--e4);font:700 var(--f-hoja)/1 var(--display);color:var(--t2)}
 #hoja .lista{margin-bottom:var(--e3)}
 
 /* ---------- movimiento propio (apagado con «Reducir movimiento») ---------- */
