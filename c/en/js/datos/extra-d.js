@@ -4,6 +4,7 @@
    Al final, VETA.dir: utilidades que comparten las pantallas y hojas de Dirección (estado propio con prefijo “d.”). */
 (function () {
   'use strict';
+  const f = iso => VETA.fecha.corta(iso), ff = iso => VETA.fecha.corta(iso, {frase: true});   // las fechas salen de VETA.fecha, no se escriben a mano
   const D = VETA.datos;
   const pon = (k, v) => { if (!(k in D)) D[k] = v; };
 
@@ -12,33 +13,33 @@
     carmen: {
       contacto: 'carmen', tipo: 'contacto', zona: 'Gràcia', decision: 'd-carmen', propone: 'laura',
       etiqueta: 'No one has her · Gràcia',
-      pide: {texto: 'Looking for a 3-bedroom flat in Gràcia, up to €450,000', origen: 'Office WhatsApp · yesterday, 19:10'},
-      paso: [{cuando: 'Yesterday 19:10', texto: 'Writes to the office WhatsApp'}, {cuando: 'Yesterday 19:11', texto: 'Nobody handles contacts that arrive out of hours'}, {cuando: 'Today 8:00', texto: 'Still no reply: 13 hours'}],
+      pide: {texto: 'Looking for a 3-bedroom flat in Gràcia, up to €450,000', origen: 'Office WhatsApp · ' + ff('2026-11-22T19:10')},
+      paso: [{cuando: f('2026-11-22T19:10'), texto: 'Writes to the office WhatsApp'}, {cuando: f('2026-11-22T19:11'), texto: 'Nobody handles contacts that arrive out of hours'}, {cuando: f('2026-11-23T08:00'), texto: 'Still no reply: 13 hours'}],
       encaja: {piso: 'verdi', texto: 'Verdi 42 · 3 bedrooms · €395,000', pega: 'No lift'},
       pueden: [{id: 'laura', sub: 'Gràcia · I would give it to her'}, {id: 'anna', sub: 'Gràcia'}, {id: 'montse', sub: 'Sant Gervasi', tu: true}]
     },
     'pau-rios': {
       contacto: 'pau-rios', tipo: 'contacto', zona: 'Eixample', propone: 'david',
       etiqueta: 'No one has him · Eixample',
-      pide: {texto: 'Do you have any unit to rent in the Eixample?', origen: 'Office WhatsApp · Saturday 21, 13:20'},
-      paso: [{cuando: 'Sat 21, 13:20', texto: 'Writes to the office WhatsApp'}, {cuando: 'Sat 21, 13:21', texto: 'Nobody handles weekend contacts'}, {cuando: 'Today 8:00', texto: 'Still no reply: 2 days'}],
-      noHay: 'You don\'t have any unit in the Eixample. It\'s logged in “Asked for what you don\'t have”.',
+      pide: {texto: 'Do you have any commercial premises to rent in the Eixample?', origen: 'Office WhatsApp · ' + ff('2026-11-21T13:20')},
+      paso: [{cuando: f('2026-11-21T13:20'), texto: 'Writes to the office WhatsApp'}, {cuando: f('2026-11-21T13:21'), texto: 'Nobody handles weekend contacts'}, {cuando: f('2026-11-23T08:00'), texto: 'Still no reply: 2 days'}],
+      noHay: 'You don\'t have any commercial premises in the Eixample. It\'s logged in “Asked for what you don\'t have”.',
       pueden: [{id: 'david', sub: 'Sant Gervasi · I would give it to him'}, {id: 'marc', sub: 'Sant Gervasi'}, {id: 'montse', sub: 'Sant Gervasi', tu: true}]
     },
     lucia: {
       contacto: 'lucia', tipo: 'contacto', zona: 'Sant Gervasi', propone: 'marc',
       etiqueta: 'No one has her · Sant Gervasi',
-      pide: {texto: 'I want to sell my parents\' flat in Sant Gervasi. How do you work?', origen: 'Office WhatsApp · today, 7:40'},
-      paso: [{cuando: 'Today 7:40', texto: 'Writes to the office WhatsApp'}, {cuando: 'Today 7:41', texto: 'Arrives before the office opens'}, {cuando: 'Today 8:00', texto: 'Still no reply'}],
+      pide: {texto: 'I want to sell my parents\' flat in Sant Gervasi. How do you work?', origen: 'Office WhatsApp · ' + ff('2026-11-23T07:40')},
+      paso: [{cuando: f('2026-11-23T07:40'), texto: 'Writes to the office WhatsApp'}, {cuando: f('2026-11-23T07:41'), texto: 'Arrives before the office opens'}, {cuando: f('2026-11-23T08:00'), texto: 'Still no reply'}],
       noHay: 'Wants to sell: it is a new flat for Sant Gervasi.',
       pueden: [{id: 'marc', sub: 'Sant Gervasi · I would give it to him'}, {id: 'david', sub: 'Sant Gervasi'}, {id: 'montse', sub: 'Sant Gervasi', tu: true}]
     },
     'joan-serra': {
       contacto: 'joan-serra', tipo: 'queja', decision: 'd-joan', lleva: 'marc',
       etiqueta: 'Owner complaint',
-      pide: {texto: 'Ten days without news about the flat. If nobody tells me anything, I\'m going to another agency.', origen: 'WhatsApp · Saturday 21, 20:05'},
-      paso: [{cuando: 'Thu 12 Nov', texto: 'The sale of his Sant Cugat house stalls at the offer stage'}, {cuando: 'Sat 21, 20:05', texto: 'Writes on WhatsApp: complains'}, {cuando: 'Today 8:00', texto: 'Still open since Saturday'}],
-      operacion: 'Sale of the Sant Cugat house · stalled · 10 days · Offer stage'
+      pide: {texto: 'Ten days without news about the flat. If nobody tells me anything, I\'m going to another agency.', origen: 'WhatsApp ·  ' + ff('2026-11-21T20:05')},
+      paso: [{cuando: f('2026-11-12'), texto: 'The sale of his Sant Cugat house stalls at the offer stage'}, {cuando: f('2026-11-21T20:05'), texto: 'Writes on WhatsApp: complains'}, {cuando: f('2026-11-23T08:00'), texto: 'Still open since Saturday'}],
+      operacion: 'Sale in Sant Cugat · stalled · 10 days · Offer stage'
     }
   });
 
@@ -61,43 +62,43 @@
   // ---- G3c · los casos de cada tema (sin nombres de agentes; inventados por D salvo los contactos) ----
   pon('casosTema', {
     esperando: ['Marta Puig · waiting for a reply since Thursday', 'Rubén Gil · wants to know how the viewings are going', 'Guillem Roig · Wednesday\'s viewing to be confirmed', '… and 8 more'],
-    promesas: ['“I\'ll send you the certificate this week” · 5 days with no record', '“I\'ll call you on Monday” · 4 days', '“I\'ll send you the photos tomorrow” · 3 days', '… and 4 more'],
-    quieren: ['Lucía Gómez · wants to sell in Sant Gervasi', 'Carmen López · wants to buy in Gràcia', 'Pau Ríos · looking for a unit to rent', '… and 6 more'],
+    promesas: ['A certificate promised for this week · 5 days with no proof', 'A call promised for Monday · 4 days', 'Some photos promised for tomorrow · 3 days', '… and 4 more'],
+    quieren: ['Lucía Gómez · wants to sell in Sant Gervasi', 'Carmen López · wants to buy in Gràcia', 'Pau Ríos · looking for premises to rent', '… and 6 more'],
     contactos: null,
     respuesta: ['Monday to Friday, in office hours: 1 h 50 min', 'Out of hours and at weekends: 14 h', 'Best day: Tuesday'],
-    visitas: ['Wednesday 25 · Muntaner 214', 'Thursday 26, 10:00 · with Ramon Pujol', 'Saturday 28 · two viewings in Gràcia', 'Saturday 28 · one viewing in Sants']
+    visitas: ['Wed 25 · Muntaner 214', 'Thu 26, 10:00 · with Ramon Pujol', 'Sat 28 · two viewings in Gràcia', 'Sat 28 · one viewing in Sants']
   });
 
   // ---- G3e · semana a semana (casos preparados); 16 nov = 156 del cuadro de ocho ----
-  pon('semanas', [{id: '26-oct', texto: '26 Oct', n: 118}, {id: '2-nov', texto: '2 Nov', n: 127}, {id: '9-nov', texto: '9 Nov', n: 141}, {id: '16-nov', texto: '16 Nov', n: 156}]);
+  pon('semanas', [{id: '26-oct', texto: f('2026-10-26'), n: 118}, {id: '2-nov', texto: f('2026-11-02'), n: 127}, {id: '9-nov', texto: f('2026-11-09'), n: 141}, {id: '16-nov', texto: f('2026-11-16'), n: 156}]);
 
   // ---- G6 · avisos ----
   pon('avisos', {
     ejemplos: [
-      {id: 'ej-2h', corto: '2 h no reply', texto: 'A new contact goes 2 hours without a reply', casos: ['Sun 22, 19:10 · Carmen López, new contact', 'Sat 21, 13:20 · Pau Ríos, new contact', 'Thu 19, 21:05 · an unnamed number', 'Tue 17, 14:30 · a buyer in Sants', 'Mon 16, 20:45 · a seller in Gràcia']},
-      {id: 'ej-firma', corto: 'Signing, no doc', texto: 'A signing approaches without the land registry extract', casos: ['Fri 20 · Poblenou signing, 1 Dec, no land registry extract', 'Wed 11 · Horta signing, 5 days away', 'Mon 2 · Sants signing, 4 days away', 'Tue 27 Oct · Gràcia signing, 6 days away', 'Thu 15 Oct · Sant Gervasi signing, 3 days away']},
-      {id: 'ej-parada', corto: 'Stalled 10 days', texto: 'A deal stays stalled for more than 10 days', casos: ['Today · a sale in Gràcia, 12 days in Viewings', 'Today · the Sant Cugat house, 10 days in Offer', 'Fri 13 · a unit, 6 weeks in Contact', 'Mon 2 · a purchase in Sants, 11 days', 'Wed 21 Oct · a sale in Horta, 14 days']}
+      {id: 'ej-2h', corto: '2 h no reply', texto: 'A new contact goes 2 hours without a reply', casos: ['Yesterday, 19:10 · Carmen López, new contact', 'Sat 21, 13:20 · Pau Ríos, new contact', 'Thu 19, 21:05 · an unnamed number', 'Tue 17, 14:30 · a buyer in Sants', '16 Nov, 20:45 · a seller in Gràcia']},
+      {id: 'ej-firma', corto: 'Signing, no doc', texto: 'A signing approaches without the land registry extract', casos: ['Fri 20 · Poblenou signing, 1 Dec, no land registry extract', '11 Nov · Horta signing, 5 days away', '2 Nov · Sants signing, 4 days away', '27 Oct · Gràcia signing, 6 days away', '15 Oct · Sant Gervasi signing, 3 days away']},
+      {id: 'ej-parada', corto: 'Stalled 10 days', texto: 'A deal stays stalled for more than 10 days', casos: ['Today · a sale in Gràcia, 12 days in Viewings', 'Today · the Sant Cugat house, 10 days in Offer', '13 Nov · premises, 6 weeks in Contact', '2 Nov · a purchase in Sants, 11 days', '21 Oct · a sale in Horta, 14 days']}
     ],
     puestos: [
-      {id: 'av-queja', texto: 'An owner complains', salto: 'alerted you on Saturday 21, 20:05', saltoLargo: 'Alerted you on Saturday 21 at 20:05: complaint from Joan Serra.'},
+      {id: 'av-queja', texto: 'An owner complains', salto: 'alerted you ' + ff('2026-11-21T20:05'), saltoLargo: 'Alerted you ' + ff('2026-11-21T20:05') + ': complaint from Joan Serra.'},
       {id: 'av-sabado', texto: 'A Saturday viewing is cancelled', salto: 'hasn\'t alerted you yet'},
       {id: 'av-valoracion', texto: 'Valuation asked out of hours', salto: 'hasn\'t alerted you yet'}
     ],
-    generico: ['Sun 22 · a similar case in Gràcia', 'Fri 20 · a similar case in Sant Gervasi', 'Tue 17 · a similar case in Sants']
+    generico: ['Yesterday · a similar case in Gràcia', 'Fri 20 · a similar case in Sant Gervasi', 'Tue 17 · a similar case in Sants']
   });
 
   // ---- G7 · lo que escucha Veta ----
   pon('escucha', [
-    {id: 'whatsapp', texto: 'WhatsApp Business'}, {id: 'calendario', texto: 'Calendar'}
+    {id: 'whatsapp', texto: 'WhatsApp Business'}
   ]);
 
   // ---- G7c · parte diario del piloto y los cinco anteriores (inventados por D) ----
   pon('partesPiloto', [
-    {dia: 'Friday 20', texto: 'Read 38 chats. Detected 24 cases; prepared 21; completed 18. Awaiting approval: 3.'},
-    {dia: 'Thursday 19', texto: 'Read 44 chats. Found 29 cases; prepared 25; completed 22.'},
-    {dia: 'Wednesday 18', texto: 'Read 35 chats. Detected 22 cases; prepared 19; completed 17.'},
-    {dia: 'Tuesday 17', texto: 'Read 41 chats. Found 27 cases; prepared 23; completed 19.'},
-    {dia: 'Monday 16', texto: 'Read 47 chats. Detected 31 cases; prepared 26; completed 21.'}
+    {dia: f('2026-11-20'), texto: 'Read 38 chats. Detected 24 cases; prepared 21; completed 18. Awaiting approval: 3.'},
+    {dia: f('2026-11-19'), texto: 'Read 44 chats. Found 29 cases; prepared 25; completed 22.'},
+    {dia: f('2026-11-18'), texto: 'Read 35 chats. Detected 22 cases; prepared 19; completed 17.'},
+    {dia: f('2026-11-17'), texto: 'Read 41 chats. Found 27 cases; prepared 23; completed 19.'},
+    {dia: f('2026-11-16'), texto: 'Read 47 chats. Detected 31 cases; prepared 26; completed 21.'}
   ]);
 
   // ---- G8 · captación, radiografía y decisiones ----
@@ -111,11 +112,11 @@
   // ---- G9 · lo que entra (los dos “escriben dos veces” y el “parking”, inventados por D) ----
   pon('entra', {
     dosVeces: [{id: 'ramon', texto: 'Ramon Pujol · 2 messages since yesterday'}, {id: 'sin-nombre', texto: 'Unnamed number · 2 messages today'}],
-    noTenemos: [{texto: 'Unit in the Eixample, to rent', sub: 'Pau Ríos · Saturday 21'}, {texto: 'Flat with parking in Sant Gervasi', sub: 'A buyer · Thursday 19'}]
+    noTenemos: [{texto: 'Commercial premises in the Eixample, to rent', sub: 'Pau Ríos ·  ' + ff('2026-11-21')}, {texto: 'Flat with parking in Sant Gervasi', sub: 'A buyer ·  ' + ff('2026-11-19')}]
   });
 
   // ---- H40 · clientes con dos chats (inventados por D) ----
-  pon('dosChats', [{texto: 'Elena Vives', sub: 'The office WhatsApp and their agent\'s · merged on Tuesday 17'}, {texto: 'Ramon Pujol', sub: 'The office WhatsApp and their agent\'s · merged on Thursday 19'}]);
+  pon('dosChats', [{texto: 'Elena Vives', sub: 'The office WhatsApp and their agent\'s · merged on Tue 17'}, {texto: 'Ramon Pujol', sub: 'The office WhatsApp and their agent\'s · merged on Thu 19'}]);
 
   // =====================================================================================================
   // VETA.dir · utilidades de Dirección

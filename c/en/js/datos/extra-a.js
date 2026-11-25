@@ -46,7 +46,7 @@
         dias: [{id: 'jue', texto: 'Thursday 26, 10:00', fecha: 'Thu 26', fechaISO: '2026-11-26'},
           {id: 'vie', texto: 'Friday 27, 10:00', fecha: 'Fri 27', fechaISO: '2026-11-27'},
           {id: 'lun', texto: 'Monday 30, 10:00', fecha: 'Mon 30', fechaISO: '2026-11-30'}],
-        pie: 'I watch it and put it in your calendar.', boton: 'Save the task', linea: 'Saved · Call Jordi'},
+        pie: 'I\'ll keep watch on it. I\'ll put it in the calendar if you ask me.', boton: 'Save the task', linea: 'Saved · Call Jordi'},
       nota: {tipo: 'nota', entendido: 'Understood: a note for Pere Soler\'s profile', texto: 'Pere prefers me to call him in the afternoon, after 16:00.', cliente: 'pere',
         pie: 'It stays in his History.', boton: 'Save the note', linea: 'Saved · Note on Pere\'s profile'}
     },

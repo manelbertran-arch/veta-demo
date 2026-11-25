@@ -38,6 +38,7 @@
       h.classList.add('on'); $v().classList.add('on'); document.body.classList.add('hoja-on'); inerte(true);
     }
     if (def.alMontar) def.alMontar(h, d);
+    if (VETA.r7 && VETA.r7.filtrosVivos) VETA.r7.filtrosVivos(h);
     try { (h.querySelector('[autofocus]') || h).focus({preventScroll: true}); } catch (e) {}
   };
 

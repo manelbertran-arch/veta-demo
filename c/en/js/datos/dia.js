@@ -93,12 +93,12 @@
       borrador: 'Hi Elena, it\'s Laura. Have you managed to find the payslip? The bank needs it to continue.',
       boton: {texto: 'Prepare a reminder for Elena'}, secundarios: [{texto: 'It was kept', accion: 'se-cumplio'}, otra],
       lineas: {hecha: 'You\'ll have it in Home on Wednesday at 9:00'}},
-    {id: 'e-pere', quien: 'laura', tipo: 'espera', fechaISO: '2026-11-27', fecha: 'Fri 27', cliente: 'pere', titulo: 'Pere Soler', texto: 'Energy certificate deadline',
+    {id: 'e-pere', quien: 'laura', tipo: 'espera', fechaISO: '2026-11-27', fecha: 'Fri 27', cliente: 'pere', titulo: 'Pere Soler', texto: 'Certificate deadline',
       resumen: 'If it is not done by Friday, management will see 1 thing stalled, without your name or the client\'s.', boton: {texto: 'Ask Pere for it', hoja: 'h14'}},
-    {id: 'e-jordi', quien: 'laura', tipo: 'espera', fechaISO: '2026-11-30', fecha: 'Mon 30', cliente: 'jordi', titulo: 'Jordi Ferrer', texto: 'Registry extract requested'},
+    {id: 'e-jordi', quien: 'laura', tipo: 'espera', fechaISO: '2026-11-30', fecha: 'Mon 30', cliente: 'jordi', titulo: 'Jordi Ferrer', texto: 'Land-registry extract'},
     {id: 'e-laia', quien: 'laura', tipo: 'espera', fechaISO: '2026-12-01', fecha: 'Tue 1 Dec', cliente: 'laia', titulo: 'Laia Casas', texto: 'Notary signing, 12:00'},
     {id: 'e-pere-encargo', quien: 'laura', tipo: 'espera', fechaISO: '2026-12-02', fecha: 'Wed 2 Dec', cliente: 'pere', titulo: 'Pere Soler', texto: 'The mandate expires'},
-    {id: 'e-nuria', quien: 'laura', tipo: 'espera', fechaISO: '2026-12-03', fecha: 'Thu 3 Dec', cliente: 'nuria', titulo: 'Núria Camps', texto: 'Said he\'d call you when he\'s back'}
+    {id: 'e-nuria', quien: 'laura', tipo: 'espera', fechaISO: '2026-12-03', fecha: 'Thu 3 Dec', cliente: 'nuria', titulo: 'Núria Camps', texto: 'Said she\'d call you when she\'s back'}
   ];
 
   // 6.5 · lo que se “dicta” (guiones de #/dictar/<guion>)
@@ -121,6 +121,8 @@
     {texto: 'Today you talked to Marta, Elena, Pere, Núria and Jordi.'},
     {titulo: 'You promised', texto: 'Call Elena on Thursday 26.'},
     {titulo: 'Due tomorrow', texto: 'Nothing.'},
-    {titulo: 'This week', lista: ['Wed 25 · Elena\'s payslip', 'Thu 26 · call Elena and Marta\'s reply', 'Fri 27 · Pere\'s certificate']},
+    // `semana`: lo mismo con su fecha, para la hoja “Día cerrado” (filas con la fecha a la derecha, por VETA.fecha)
+    {titulo: 'This week', lista: ['Wed 25 · Elena\'s payslip', 'Thu 26 · call Elena and Marta\'s reply', 'Fri 27 · Pere\'s certificate'],
+      semana: [{iso: '2026-11-25', que: 'Elena\'s payslip'}, {iso: '2026-11-26', que: 'Call Elena'}, {iso: '2026-11-26', que: 'Marta\'s reply'}, {iso: '2026-11-27', que: 'Pere\'s certificate'}]},
     {texto: 'I keep watching what\'s still open. Tomorrow you open the app and the urgent stuff is already prepared.'}]};
 })();

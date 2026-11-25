@@ -37,7 +37,7 @@
     pinta: () => {
       const yo = VETA.yo(), p = papel(), d = dentro(), c = R.cuentas();
       const frase = d.frase || FRASE[p](p === 'direccion' ? c.decidir : c.hoy);
-      const hola = `<header class="r7-hola" data-i="0"><div class="r7-hola-c"><p class="r7-hola-d">${esc(mayus((VETA.datos.fecha || {}).hoyTexto))}</p>` +
+      const hola = `<header class="r7-hola" data-i="0"><div class="r7-hola-c"><p class="r7-hola-d">${esc(VETA.fecha.larga((VETA.datos.fecha || {}).hoyISO) || mayus((VETA.datos.fecha || {}).hoyTexto))}</p>` +
         `<h1 class="r7-hola-t">Hola, ${esc(yo.corto || yo.nombre)}.</h1><p class="r7-hola-f">${esc(frase)}</p></div>` +
         `<button type="button" class="r7-yo" data-ir="cuenta" aria-label="Tu cuenta, ${esc(yo.nombre)}">${VETA.av(yo.id, 40)}</button></header>`;
       return `<div class="r7-inicio" data-papel="${p}">${hola}${d.html || ''}</div>`;

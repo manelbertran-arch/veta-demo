@@ -17,7 +17,7 @@
   const pares = lista => `<dl class="d-pares">${lista.map(([t, n]) => `<div><dt>${esc(t)}</dt><dd>${esc(n)}</dd></div>`).join('')}</dl>`;
   const sec = (titulo, html) => `<section class="d-inf-s"><p class="d-inf-h">${esc(titulo)}</p>${html}</section>`;
   function enPapel(n, I, par, decidir) {
-    const ocho = `<table class="d-tabla d-tabla-8"><thead><tr><th scope="col">Number</th><th scope="col">Last 7 days</th><th scope="col">Since 3 Oct</th></tr></thead><tbody>` +
+    const ocho = `<table class="d-tabla d-tabla-8"><thead><tr><th scope="col">Number</th><th scope="col">Last 7 days</th><th scope="col">Since ${esc(VETA.fecha.corta('2026-10-03', {frase: true}))}</th></tr></thead><tbody>` +
       n.nombres.map((t, k) => `<tr><th scope="row">${esc(t)}</th><td>${VETA.num(n['7d'][k])}</td><td>${VETA.num(n.desde[k])}</td></tr>`).join('') + '</tbody></table>';
     const ofi = `<table class="d-tabla"><thead><tr><th scope="col">Office</th><th scope="col">Prepared</th><th scope="col">Completed</th><th scope="col">Stalled</th></tr></thead><tbody>` +
       `<tr><th scope="row">Gràcia</th><td>92 <span>before 84</span></td><td>78 <span>before 70</span></td><td>3</td></tr>` +
@@ -39,11 +39,11 @@
       const n = D.numeros, I = D.informeSemana, par = X.paradas(), decidir = String(r7.cuentas().decidir);
       const oficina = (rotulo, p, c, parn) => ({rotulo, filas: [{nombre: 'Prepared', valor: p[0], sub: `before ${p[1]}`}, {nombre: 'Completed', valor: c[0], sub: `before ${c[1]}`}, {nombre: 'Stalled', valor: parn}]});
       const ocho = (rotulo, v) => ({rotulo, filas: n.nombres.map((t, k) => ({nombre: t, valor: VETA.num(v[k])}))});
-      return grupo('Summary', r7.doc({secciones: [ocho('Last 7 days', n['7d']), ocho('Since 3 October', n.desde)]}), 0) +
+      return grupo('Summary', r7.doc({secciones: [ocho('Last 7 days', n['7d']), ocho('Since  ' + VETA.fecha.corta('2026-10-03', {frase: true}), n.desde)]}), 0) +
         papel('New business', filasDe(captacion(I)), 1) +
         papel('X-ray', filasDe(I.radiografia), 1) +
         grupo('By office', r7.doc({secciones: [oficina('Gràcia', [92, 84], [78, 70], 3), oficina('Sant Gervasi', [64, 57], [54, 48], 1)]}), 2) +
-        r7.lista(par.map(o => ({nombre: (M.cliente(o.cliente) || {}).nombre || o.texto, pasa: o.texto + ' · ' + o.estadoTexto.replace('Stalled · ', '').replace(/ · complaint$/, ''), ir: 'operacion/' + o.cliente})),
+        r7.lista(par.map(o => ({nombre: (M.cliente(o.cliente) || {}).nombre || o.texto, pasa: o.texto + ' · ' + o.estadoTexto.replace('Stalled · ', '').replace(/ · [A-Za-z]+ stage.*$/, ''), ir: 'operacion/' + o.cliente})),
           {rotulo: 'What\'s stalled · ' + par.length, i: 3}) +
         grupo('What I\'ve learned · 7', r7.doc({secciones: [{lineas: D.aprendidoSemana}]}), 4) +
         papel('Decisions', filasDe([I.decisiones[0], ['You have to decide today', decidir]]), 4) +

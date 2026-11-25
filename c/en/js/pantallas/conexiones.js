@@ -11,13 +11,12 @@
     titulo: 'Connections and settings',
     sub: 'Each person chooses which chats I read.',
     pinta: () => {
-      const e = escucha(), coste = M.lee('coste', null);
+      const e = escucha();
       return r7.lista(D.escucha.map(c => UI.interruptor({texto: c.texto, on: e[c.id] !== false, accion: 'escucha', de: c.id})), {i: 0}) +
         r7.lista([
           {nombre: 'The last thing I read', dato: `Today, ${VETA.ahora(-3)}`, hoja: 'h04', datos: {quien: 'equipo'}},
           {nombre: 'What each one sees', ir: 'confianza'},
           {nombre: 'Daily pilot wrap-up', ir: 'piloto'},
-          {nombre: 'Cost per hour', dato: coste ? coste + ' €' : 'Not set', hoja: 'h38'},
           {nombre: 'Security', ir: 'cuenta/seguridad'}], {i: 1});
     },
     acciones: {
@@ -33,10 +32,10 @@
   // dirección ve nombres (decisión de Manel, 21-nov), no chats. Nadie se compara
   VETA.pantalla('G7b', {
     titulo: 'What each one sees',
-    sub: 'You don\'t see their chats. No one is compared.',
+    sub: VETA.PROMESA.chats + ' Nobody is compared.',
     pinta: () => r7.lista([
         {nombre: 'What you see', pasa: 'Deals and people, without their chats',
-          abre: '<p>You see every deal: who has it, how it\'s going, the latest and what\'s next. And every person: what they have, what\'s pending and what Veta does for them.</p>' +
+          abre: '<p>You see every deal: who handles it, how it\'s going, what happened last and what\'s next. And each person: their deals and what Veta does for them, with no figures.</p>' +
             '<p>You don\'t see what they write to clients, their notes or their personal chats.</p>'},
         {nombre: 'What each one sees', pasa: 'Their own, in full; others\', nothing',
           abre: '<p>They see their own deals and clients in full, with their chats, and the same things you see about them.</p>' +
@@ -46,12 +45,12 @@
         {nombre: 'How Veta looks after data', hoja: 'h29', datos: {texto: 'resumen'}},
         {nombre: 'What\'s kept and what\'s deleted', hoja: 'h29', datos: {texto: 'borrado'}},
         {nombre: 'What\'s been read and what goes out', hoja: 'h29', datos: {texto: 'leido'}},
-        {nombre: 'Who said yes', hoja: 'h29', datos: {texto: 'consentimientos'}}], {rotulo: 'Also', i: 1})
+        {nombre: 'Who said yes', hoja: 'h29', datos: {texto: 'consentimientos'}}], {rotulo: 'About the data', i: 1})
   });
 
   VETA.pantalla('G7c', {
     titulo: 'Daily pilot wrap-up',
-    sub: 'Every evening, until 15 December.',
+    sub: 'Every afternoon, until  ' + VETA.fecha.corta('2026-12-15', {frase: true}) + '.',
     pinta: () => r7.tarjeta({veta: true, i: 0, de: `Today · ${D.fecha.hoyTexto}`, texto: '41 chats read. 27 cases found; 22 prepared; 9 completed (at 9:38). 19 awaiting approval.'}) +
       r7.lista([{nombre: 'Previous wrap-ups', dato: (D.partesPiloto || []).length, hoja: 'd-partes'}], {i: 1})
   });

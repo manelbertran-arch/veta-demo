@@ -14,7 +14,7 @@
   function fila(x) {
     const on = !pausadas().includes(x.id);
     const usos = x.hechas ? `Lo he usado ${x.hechas} ${x.hechas === 1 ? 'vez' : 'veces'} y me corregiste ${x.corregidas || 0}.` : (x.usos || '');
-    return {nombre: x.corto || x.texto, pasa: x.hoy ? 'Me lo enseñaste hoy' : on ? null : 'En pausa: no lo uso',
+    return {nombre: x.corto || x.texto, pasa: x.hoy ? 'Me lo enseñaste hoy' : on ? null : 'En pausa: no lo uso', datos: {apr: x.id},
       abre: dentro([x.texto, `${x.quien} ${x.cuando}. ${usos}`], {texto: 'Cambiarlo', hoja: 'c-aprendido', de: x.id})};
   }
   // una cosa aprendida, por su id (la lee la hoja c-aprendido)
@@ -26,11 +26,11 @@
     const p = pausadas(), on = !p.includes(id);
     C.pon('pausados', on ? p.concat(id) : p.filter(x => x !== id)); VETA.repinta(); VETA.aviso(on ? 'Vale. No lo uso hasta que me lo digas.' : 'Vale. Lo vuelvo a usar.');
   };
-  C.olvidaAprendido = id => {
+  C.olvidaAprendido = id => VETA.mov.seVa(`.r7-fila-d[data-apr="${id}"]`, () => {
     if (id === 'siempre') { C.pon('siempreOlvidado', VETA.r6.siempre()); VETA.r6.olvida(); }
     else C.pon('olvidados', C.lee('olvidados', []).concat(id));
     VETA.repinta({hecho: 'c-apr-' + id});
-  };
+  });
   VETA.pantalla('A13', {
     titulo: 'Lo he aprendido de ti',
     pinta: () => {
@@ -40,9 +40,9 @@
       C.ensenados().filter(x => !x.regla).reverse().forEach(x => filas.push({nombre: x.que || x.texto, pasa: 'Me lo enseñaste hoy, ' + x.hora,
         abre: dentro([x.texto], {texto: 'Olvidarlo', accion: 'olvida-ensenado', de: x.id})}));
       if (hoy) filas.push(fila({id: 'siempre', hoy: true, texto: hoy.regla, corto: hoy.regla, quien: 'Me lo enseñaste tú al cambiar un mensaje,', cuando: 'hoy' + (hoy.cuando ? ' a las ' + hoy.cuando : ''), usos: 'Lo verás en el próximo mensaje de visita.'}));
-      else if (C.lee('siempreOlvidado', null)) arriba.push(UI.lineaHecho({texto: 'Olvidado: ' + C.lee('siempreOlvidado', {}).regla, boton: {texto: 'Deshacer', accion: 'recordar'}, de: 'siempre', vt: 'c-apr-siempre'}));
+      else if (C.lee('siempreOlvidado', null)) arriba.push(R7().hecho({texto: 'Olvidado: ' + C.lee('siempreOlvidado', {}).regla, deshacer: 'recordar', de: 'siempre', vt: 'c-apr-siempre'}));
       D().aprendido.forEach(a => {
-        if (olv.includes(a.id)) { arriba.push(UI.lineaHecho({texto: 'Olvidado: ' + a.corto, boton: {texto: 'Deshacer', accion: 'recordar'}, de: a.id, vt: 'c-apr-' + a.id})); return; }
+        if (olv.includes(a.id)) { arriba.push(R7().hecho({texto: 'Olvidado: ' + a.corto, deshacer: 'recordar', de: a.id, vt: 'c-apr-' + a.id})); return; }
         filas.push(fila(Object.assign({id: a.id, corto: a.corto}, r6[a.id] || {texto: a.texto, quien: a.origen, cuando: ''})));
       });
       filas.push({nombre: 'Me corregiste 4 veces', abre: dentro(['4 veces me corregiste y ahora lo hago como tú.', '6 de 31 mensajes los cambiaste antes de enviarlos.'])});
@@ -75,7 +75,7 @@
     nota: 'Busco casos en tus chats. Decide Montse.',
     pinta: () => {
       const R = R7(), env = C.lee('mejoraEnviada', null);
-      if (env) return UI.lineaHecho({texto: 'Propuesta enviada. Dirección decide si se prueba.', hora: env.hora, boton: {texto: 'Deshacer', accion: 'deshacer'}, vt: 'c-mejora', i: 0}) +
+      if (env) return R.hecho({texto: 'Propuesta enviada a la oficina', hora: env.hora, deshacer: 'deshacer', vt: 'c-mejora'}) +
         R.tarjeta({de: 'Tu propuesta · hoy', texto: `«${env.texto}»`, i: 1});
       const k = D().mejoras.indexOf(texto);
       return `<div data-i="0" data-vt="c-mejora">${UI.campo({id: 'c-mejora', etiqueta: '¿Qué haríais mejor?', area: true, filas: 3, valor: texto, placeholder: 'Escríbelo con tus palabras'})}</div>` +
@@ -83,7 +83,7 @@
         (busca ? R.tarjeta({veta: true, de: 'Lo que he encontrado', texto: busca, i: 2}) : '') +
         R.enlace({texto: 'Buscar casos', accion: 'buscar', i: 3});
     },
-    botonFijo: () => (C.lee('mejoraEnviada', null) ? '' : R7().botones({texto: 'Proponerlo a la oficina', accion: 'proponer'})),
+    botonFijo: () => (C.lee('mejoraEnviada', null) ? R7().sigue() : R7().botones({texto: 'Proponerlo a la oficina', accion: 'proponer'})),
     alMontar: el => { const t = el.querySelector('#c-mejora'); if (t) t.addEventListener('input', () => { texto = t.value; }); },
     acciones: {
       ejemplo(ev, el) { texto = D().mejoras[Number(el.dataset.valor)] || ''; busca = null; VETA.repinta(); },

@@ -33,7 +33,7 @@
     santantoni: {id: 'santantoni', nombre: 'Sant Antoni', zona: 'Sant Antoni', corto: 'Sant Antoni · 2 bedrooms · balcony · €289,000', datos: '2 bedrooms · balcony', precio: 289000, nota: 'Joined the office portfolio yesterday; Anna brought it in', fotos: ['poblenou']},
     olzinelles: {id: 'olzinelles', nombre: 'Olzinelles, Sants', zona: 'Sants', corto: 'Sants flat · c/ Olzinelles', datos: '', fotos: ['sants']},
     atico: {id: 'atico', nombre: 'Sant Gervasi penthouse', zona: 'Sant Gervasi', corto: 'Sant Gervasi penthouse', datos: '', precio: 545000, de: 'ruben', fotos: ['santgervasi']},
-    local: {id: 'local', nombre: 'Eixample unit', zona: 'Eixample', corto: 'Eixample unit · for rent', datos: 'For rent', fotos: ['local']},
+    local: {id: 'local', nombre: 'Eixample commercial premises', zona: 'Eixample', corto: 'Eixample commercial premises · for rent', datos: 'For rent', fotos: ['local']},
     santcugat: {id: 'santcugat', nombre: 'Sant Cugat house', zona: 'Sant Cugat', corto: 'Sant Cugat house', datos: '', de: 'joan-serra', fotos: ['santcugat']}
   };
 })();

@@ -1,7 +1,7 @@
 /* Veta demo · pantallas · entendido.js · carril C (Veta y cuenta)
    - A11 · Esto he entendido · #/entendido/<id>   (completa; llega desde Dictar con el guion de orden)
    #/entendido/recordatorios: la orden de ejemplo · #/entendido/no-entendida: el estado “no lo he entendido”.
-   Pie: el par “No es eso” / “Pruébalo”. “Escribirlo yo” es el enlace del final. */
+   Pie: el par “No es eso” / “Pruébalo”. “Escribirlo yo” es el enlace del final. Al probarlo, un solo final: la fila de hecho y “Ir a Inicio”. */
 (function () {
   'use strict';
   const UI = VETA.UI, M = VETA.modelo, C = VETA.c;
@@ -13,16 +13,16 @@
 
   VETA.pantalla('A11', {
     titulo: 'What I understood', completa: true,
-    sub: p => (noEntendida(p) ? 'I didn\'t understand it. Tell me another way or type it.' : 'Here\'s what I understood. If that\'s right, I\'ll try it.'),
+    sub: p => (noEntendida(p) ? 'I didn\'t understand it. Tell me another way or type it.' : 'That\'s how I understood it. If that\'s right, I\'ll try it.'),
     pinta: p => {
       const R = VETA.r7, o = VETA.datos.c.orden;
       if (noEntendida(p)) return escribe ? campo() : R.enlace({texto: 'Type it', accion: 'escribir', i: 1});
       const r = M.regla(ID), ya = hecha(p);
-      return (ya ? UI.lineaHecho({texto: `I'm trying it ${C.fechaPrueba}`, hora: r.hora, boton: {texto: 'Undo', accion: 'deshacer'}, vt: 'c-entendido', i: 0}) : '') +
+      return (ya ? R.hecho({texto: 'I\'m trying it', hora: r.hora, deshacer: 'deshacer', vt: 'c-entendido'}) : '') +
         R.tarjeta({de: 'What you said · today', texto: `“${o.dijiste}”`, i: 0}) +
         R.tarjeta({veta: true, de: ya ? 'I\'m trying it' : 'I\'ll do this', texto: C.info(ID).frase, vt: 'c-entendido', i: 1}) +
         R.lista([
-          {nombre: 'Where it applies', dato: '6 cases', hoja: 'h19', datos: {regla: ID}},
+          {nombre: 'Where it applies', dato: ((r || {}).casos || []).length || null, hoja: 'h19', datos: {regla: ID}},
           {nombre: 'What I understood', hoja: 'h21'},
           ya ? {nombre: 'See this job', ir: 'regla/' + ID} : null
         ], {i: 2}) +
@@ -30,7 +30,7 @@
     },
     botonFijo: p => {
       const B = VETA.r7.botones;
-      if (hecha(p)) return '';
+      if (hecha(p)) return VETA.r7.sigue();
       if (noEntendida(p)) return escribe ? B({texto: 'Save and try it', accion: 'guardar'}) : B({texto: 'Put it another way', ir: 'dictar/orden'});
       return B(escribe ? {texto: 'Save', accion: 'guardar'} : {texto: 'Try it', accion: 'prueba'}, {texto: 'That\'s not it', hoja: 'h09'});
     },

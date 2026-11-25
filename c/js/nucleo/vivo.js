@@ -23,7 +23,7 @@
   const NIVELES = () => (VETA.datos.c && VETA.datos.c.niveles) || [
     {n: 1, nombre: 'Solo te aviso', texto: 'Te digo que toca. Lo haces tú.'}, {n: 2, nombre: 'Te lo dejo escrito', texto: 'Te dejo el mensaje listo. Tú lo envías.'},
     {n: 3, nombre: 'Lo apunto yo', texto: 'Apunto, marco y guardo yo. No envío nada.'}, {n: 4, nombre: 'Lo hago yo y te lo cuento', texto: 'Lo dejo hecho y te lo cuento.'},
-    {n: 5, nombre: 'Lo envío yo', texto: 'Todavía no. Nada se envía sin ti.', cerrado: true}];
+    {n: 5, nombre: 'Lo envío yo', texto: 'Todavía no. Nada sale sin ti.', cerrado: true}];
   V.niveles = NIVELES;
 
   // ---- 7 · escena «Veta lee» ----

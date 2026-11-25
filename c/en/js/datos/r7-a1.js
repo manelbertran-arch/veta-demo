@@ -9,7 +9,7 @@
     cosas: {
       'c-marta': {titulo: 'Reply to Marta', pasa: 'Wants to see the flat', pastilla: 'No reply yet', tono: 'rojo'},
       'c-elena': {pasa: 'Viewing today at 9:00', ir: 'visita/elena'},
-      'c-pere': {titulo: 'Weekly report', pasa: 'Expecting the weekly report', boton: 'Open the report', hecho: 'I did it for you'},
+      'c-pere': {titulo: 'Pere is waiting for the report', pasa: 'Expecting the weekly report', boton: 'Open the report', hecho: 'I did it for you'},
       'c-nuria': {titulo: 'A flat for Núria', pasa: 'A flat for her'},
       'c-jordi': {titulo: 'Reply to Jordi', pasa: 'You promised him the report'},
       'c-sergi': {titulo: 'Remove Sergi', pasa: 'Anna already replied: take him off', boton: 'Take it off the list'}

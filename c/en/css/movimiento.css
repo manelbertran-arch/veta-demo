@@ -56,13 +56,19 @@ html[data-dir=cambia]::view-transition-new(pantalla){animation:none}
 ::view-transition-old(foco-tarjeta),::view-transition-new(foco-tarjeta){width:100%;height:100%;object-fit:none;object-position:0 0}
 ::view-transition-old(foco-tarjeta){animation:vt-sale var(--t-toque) var(--c-sale) both}
 ::view-transition-new(foco-tarjeta){animation:vt-funde var(--t-corto) var(--c-estandar) 60ms both}
-/* 7 · hecho en el sitio: se dibuja el visto */
-.hecho .visto path{animation:dibuja var(--t-corto) var(--c-estandar) 100ms both}
+/* 7 · hecho en el sitio: la fila entra y su visto se dibuja. Una vez por acción: solo cuando la fila es nueva (.nuevo, lo pone el núcleo
+   al repintar la misma pantalla); al volver a entrar ya está quieta */
+.hecho.nuevo{animation:hecho-entra var(--t-corto) var(--c-entra) both}
+.hecho.nuevo .visto path{animation:dibuja var(--t-medio) var(--c-estandar) 120ms both}
+@keyframes hecho-entra{from{opacity:0;transform:translateY(-4px)}}
 @keyframes dibuja{from{stroke-dashoffset:1}}
+/* 5b · escalonado (ronda 8): al entrar en una raíz, sus seis primeras filas suben 6 px una tras otra, a 30 ms. Ni en hojas ni al repintar */
+.esc .r7-esc{animation:fila-entra 180ms var(--c-entra) both;animation-delay:calc(var(--f,0) * 30ms)}
+@keyframes fila-entra{from{opacity:0;transform:translateY(6px)}}
 
-/* 8 · aviso negro: sube 8 px y aparece */
-.aviso{transition:opacity var(--t-corto) var(--c-sale),translate var(--t-corto) var(--c-sale)}
-.aviso.on{transition:opacity var(--t-corto) var(--c-muelle),translate var(--t-corto) var(--c-muelle)}
+/* 8 · aviso: sale de detrás del borde del pie (se descubre de abajo arriba, 200 ms) y se recoge más deprisa (150 ms) */
+.aviso{transition:opacity 150ms var(--c-sale),clip-path 150ms var(--c-sale)}
+.aviso.on{transition:opacity 100ms linear,clip-path var(--t-corto) var(--c-estandar)}
 
 /* 10 · sombra bajo la cabecera y sobre el botón fijo, ligada al desplazamiento */
 @supports (animation-timeline:scroll()){
@@ -112,7 +118,7 @@ html.cambia-tema *,html.cambia-tema *::before,html.cambia-tema *::after{transiti
 html[data-mov=reducido] *,html[data-mov=reducido] *::before,html[data-mov=reducido] *::after{animation:none!important;transition-property:opacity!important;transition-duration:var(--t-toque)!important;transition-delay:0s!important;scroll-behavior:auto!important}
 html[data-mov=reducido] .hoja{transform:none!important;opacity:0}
 html[data-mov=reducido] .hoja.on{opacity:1}
-html[data-mov=reducido] .aviso{translate:none}
+html[data-mov=reducido] .aviso{clip-path:none}
 html[data-mov=reducido] :active{transform:none!important}
 html[data-mov=reducido] ::view-transition-group(*),html[data-mov=reducido] ::view-transition-old(*),html[data-mov=reducido] ::view-transition-new(*){animation:none!important}
 

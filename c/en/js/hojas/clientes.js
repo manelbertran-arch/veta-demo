@@ -17,7 +17,7 @@
       const leido = B.lee('notaPere', null);
       if (VETA.ajeno('pere')) return `<p class="hoja-x">${esc(VETA.chatAjenoTexto('pere'))}</p>`;
       return `<div class="b-voz"><p class="hoja-x"><b>What he says:</b> “Laura, if it's needed to close, I'll go down to €385,000, but no lower.”</p>` +
-        `<p class="hoja-x tenue">Pere · WhatsApp · Sat 21, 21:10</p></div>` +
+        `<p class="hoja-x tenue">Pere · WhatsApp · ${VETA.fecha.corta('2026-11-21T21:10', {frase: true})}</p></div>` +
         (leido ? UI.nota({texto: `You read it today at ${leido}.`, icono: 'check', caja: true}) : UI.boton({texto: 'I have read it', icono: 'check', accion: 'oido'}));
     },
     acciones: {
@@ -33,8 +33,9 @@
   // Arriba, su teléfono, a 20 px; debajo, las acciones. En dirección van aquí “Marcar como importante” y “Anotar una queja”.
   const marca = (id, k, v) => { const m = Object.assign({}, B.mapa('marcas')[id] || {}); if (v == null) delete m[k]; else m[k] = v; B.ponEn('marcas', id, Object.keys(m).length ? m : null); VETA.repinta(); };
   const telDe = d => { const id = cliDe(d); return VETA.ajeno(id) ? '' : (M.cliente(id) || {}).tel || ''; };
-  VETA.hojaAcciones('h11', {
+  VETA.hojaMas('h11', {
     titulo: d => (M.cliente(cliDe(d)) || {}).nombre || 'Call or write',
+    ensena: d => !VETA.ajeno(cliDe(d)),
     texto: telDe,
     alMontar: (h, d) => { const t = h.querySelector('.hoja-x'); if (!t) return; if (telDe(d)) t.classList.add('rb-tel'); else t.remove(); },
     opciones: d => {
@@ -60,7 +61,7 @@
     const c = B.cli(id) || {}, h = B.historia(id)[0], et = UI.ETIQUETAS[c.estado];
     return [`${c.nombre}${c.tel ? ' · ' + c.tel : ''}`, c.quienEs || '', `Status: ${et ? et[2] : 'New contact'}${c.operacion && c.operacion.texto ? ' · ' + c.operacion.texto : ''}`,
       `Next step: ${c.siguiente && c.siguiente.texto ? c.siguiente.texto.replace(/\.$/, '') : 'nothing pending'}`,
-      h ? `Latest: ${h.cuando} · ${h.titulo}${h.texto ? ' · ' + h.texto.replace(/[“”]/g, '') : ''}` : 'Latest: nothing yet'].filter(Boolean).slice(0, 5);
+      h ? `Latest: ${h.cuando.charAt(0).toLowerCase() + h.cuando.slice(1)} · ${h.titulo}${h.texto ? ' · ' + h.texto.replace(/[“”]/g, '') : ''}` : 'Latest: nothing yet'].filter(Boolean).slice(0, 5);
   };
   VETA.hojaDef('h12', {
     titulo: 'Share summary',
@@ -97,7 +98,7 @@
           UI.nota({texto: 'WhatsApp doesn\'t open in this demo: no message goes out.', clase: 'nota-gris'});
       }
       return `<p class="hoja-x tenue">For ${esc(c.nombre)}, via WhatsApp.</p>` + UI.borrador({texto: t}) +
-        UI.nota({texto: 'Nothing goes out without you', icono: 'candado'}) +
+        VETA.r7.nota('envio') +
         UI.boton({texto: 'Open WhatsApp with the message', accion: 'abrir'}) + UI.botones([{texto: 'Edit', icono: 'editar', accion: 'editar'}]);
     },
     alMontar: (h, d) => { if (d.paso === 'editar') { const t = h.querySelector('#b-h14-t'); if (t) { t.focus(); t.setSelectionRange(t.value.length, t.value.length); } } },
@@ -115,8 +116,9 @@
         if (doc.cosa) M.marca(doc.cosa, 'enviada', {linea: `Requested from ${B.corto(c)} · ${doc.texto.toLowerCase()}`});
         else B.ponEn('pedidos', id + '|' + doc.k, {hora: VETA.ahora()});
         VETA.cierraHoja({foco: false});
+        B.ultDoc = {id, k: doc.k, tipo: 'pedido'};
         VETA.repinta(doc.cosa && d.de === doc.cosa ? {hecho: doc.cosa} : {});
-        VETA.aviso(`Requested from ${B.corto(c)} · stays in their history.`);
+        if (!['A6', 'A6d'].includes(((VETA.actual() || {}).def || {}).cod)) VETA.aviso(`Requested from ${B.corto(c)} · stays in their history.`);
       }
     }
   });

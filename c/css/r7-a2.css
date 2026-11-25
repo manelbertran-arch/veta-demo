@@ -19,5 +19,16 @@
 html[data-mov=reducido] .a2-cuenta .r7-micro-c,html[data-mov=reducido] .e-oye .r7-micro-c{animation:none}
 @media (prefers-reduced-motion:reduce){.a2-cuenta .r7-micro-c,.e-oye .r7-micro-c{animation:none}}
 
+/* escuchando: un punto rojo que late delante de «Te escucho» desde el primer instante (con «Reducir movimiento», fijo) */
+.e-oye .r7-micro-t{display:inline-flex;align-items:center;gap:var(--e2)}
+.e-oye .r7-micro-t::before{content:"";width:10px;height:10px;border-radius:50%;background:var(--rojo-b);flex:none;animation:e-punto 1.1s ease-in-out infinite alternate}
+@keyframes e-punto{from{opacity:1}to{opacity:.35}}
+html[data-mov=reducido] .e-oye .r7-micro-t::before{animation:none}
+@media (prefers-reduced-motion:reduce){.e-oye .r7-micro-t::before{animation:none}}
+.pant-A3 .e-dicho-t:empty::before{content:"…";color:var(--t2)}
+
 /* ---- las fotos que se añaden al informe desde «Más»: dentro del papel, a su ancho ---- */
 .a2-foto-mas .foto{width:100%;height:170px;aspect-ratio:auto;border-radius:var(--r-2)}
+
+/* ---- el informe: «Enviar a Pere» y la promesa van al final del papel, no en el pie (así el pie no parte ningún párrafo) ---- */
+.a2-fin{display:flex;flex-direction:column;gap:var(--e3);padding-top:var(--e4)}

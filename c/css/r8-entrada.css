@@ -14,20 +14,18 @@
 /* ---- entrar (E2): lema, dos tarjetas de una línea, enlace y aviso (E-2, E-4) ---- */
 .c-entrar-c{gap:var(--e5)}
 .c-lema .c-entrar-c{gap:var(--e5)}
-.c-entrar-h,.c-entrar .campo-e,.c-entrar-papel,.c-entrar-err{font-weight:700}
-.c-entrar-papel{font-weight:500}
+.c-entrar-h,.c-entrar .campo-e,.c-entrar-err{font-weight:700}
 .c-papel{min-height:var(--fila-1);padding:var(--e2) var(--e4)}
 .c-cuenta,.c-papel .c-cuenta-t{font:700 var(--f-cuerpo)/1.2 var(--body)}
 .c-papel-chev{color:var(--port-t2)}
-.c-primer{justify-content:flex-start}
+.c-primer{flex-direction:column;align-items:flex-start;gap:0}
 .c-primer .r7-enlace{color:var(--port-3);padding:0}
 .port-aviso{margin-top:var(--e5);color:var(--port-t2);font:500 var(--f-apoyo)/1.4 var(--body)}
 .c-entrar .port-acc .btn-texto{font-weight:700}
 
 /* ---- primer día (A18): cabecera de paso, tarjeta con comillas, un botón (E-3) ---- */
 .c-pd{gap:var(--e4)}
-.c-pd-h{font-weight:700}
-.c-busca-l,.c-nudo{font-weight:500}
+.c-busca-l{font-weight:500}
 .c-pd-c .r7-ficha p{margin:0}
 .c-pd-orig{font-weight:500;color:var(--t2)}
 /* la escena «Veta lee» del primer paso, sin «Ver otra vez», sin subrayado amarillo en la cita y sin la pastilla de origen (E-3) */

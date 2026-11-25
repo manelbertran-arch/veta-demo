@@ -8,8 +8,9 @@
 html[data-color][data-modo=oscuro]{--somb:0 0 0 0 transparent;--velo-foto:rgba(0,0,0,.08)}
 /* paleta Veta en oscuro: el botón negro es oro apagado, no crema casi blanco; el aro, un punto más visible */
 html[data-color=veta][data-modo=oscuro]{--accion:#D9C59A;--accion-t:#0A0906;--borde:rgba(242,237,230,.14)}
-/* el micro de la barra, en oscuro: círculo oro con el micro negro */
-html[data-modo=oscuro] .tab-mic-c,html[data-modo=oscuro] .lat-mic .mic-c{background:var(--top-acento);color:var(--fondo);box-shadow:none}
+/* el micro de la barra, en oscuro: el espejo del claro (círculo claro con el micro oscuro). No va en oro: con el botón y el aro de la
+   tarjeta de Veta eran tres oros a la vez en Contestar (D21) */
+html[data-modo=oscuro] .tab-mic-c,html[data-modo=oscuro] .lat-mic .mic-c{background:var(--t1);color:var(--fondo);box-shadow:none}
 
 /* ---- caras ---- */
 .r7-caras{display:inline-flex;align-items:center;flex:none}
@@ -26,14 +27,17 @@ html[data-modo=oscuro] .av.r7-veta{box-shadow:inset 0 0 0 1.5px var(--top-acento
 .r7-pastilla{flex:none;display:inline-flex;align-items:center;height:26px;padding:0 10px;border-radius:var(--r-pill);background:var(--urg-b);color:var(--urg-t);font:700 var(--f-apoyo)/1 var(--body);white-space:nowrap}
 /* el dato gris de la derecha (un número o hasta 12 caracteres) */
 .r7-dato{flex:none;color:var(--t3);font:500 var(--f-cuerpo)/1 var(--body);font-variant-numeric:tabular-nums;white-space:nowrap}
+/* 6.3 · la cola de la fila tiene una sola forma: ese dato gris de 17 px, de 12 caracteres como mucho y sin unidad si el rótulo de la lista
+   ya la dice («9», no «9 veces»). Una fecha, siempre con VETA.fecha.corta («Mié 25»). Un estado que no es excepción no va aquí: va en la segunda línea. */
 
 /* ---- piezas 3, 4 y 5 · fila, lista y plegable ---- */
 .r7-grupo{display:flex;flex-direction:column;gap:var(--e2)}
 .r7-rotulo{padding:var(--e2) var(--e1) 0;color:var(--t3);font:700 var(--f-apoyo)/1.2 var(--body)}
 .r7-lista{display:flex;flex-direction:column;border-radius:var(--r-3);background:var(--s1);box-shadow:var(--somb),inset 0 0 0 1px var(--borde);overflow:hidden}
-.r7-fila{position:relative;display:flex;align-items:center;gap:var(--e3);width:100%;min-height:var(--fila);padding:var(--e3) var(--e3) var(--e3) var(--e4);color:var(--t1);text-align:left;background:none;-webkit-tap-highlight-color:transparent;transition:background-color var(--t-toque) var(--c-estandar)}
+.r7-fila{position:relative;display:flex;align-items:center;gap:var(--e3);width:100%;min-height:var(--fila);padding:var(--e3) var(--e3) var(--e3) var(--e4);color:var(--t1);text-align:left;background:none;-webkit-tap-highlight-color:transparent;transition:background-color 120ms ease-out}
 .r7-fila-1l{min-height:var(--fila-1);padding-top:var(--e2);padding-bottom:var(--e2)}
-button.r7-fila:active{background:var(--tinte)}
+/* el toque: el fondo llega al instante al apoyar el dedo y se va en 120 ms al soltar (no parpadea) */
+button.r7-fila:active{background:var(--tinte);transition-duration:0s}
 /* el filete empieza donde empieza el texto: a 16, o a 68 si las dos filas llevan cara */
 :is(.r7-fila,.r7-fila-d)+.r7-fila::before,:is(.r7-fila,.r7-fila-d)+.r7-fila-d>.r7-fila::before{content:"";position:absolute;top:0;left:var(--e4);right:0;height:1px;background:var(--borde)}
 :is(.r7-fila,.r7-fila-d).r7-con+.r7-fila.r7-con::before,:is(.r7-fila,.r7-fila-d).r7-con+.r7-fila-d.r7-con>.r7-fila::before{left:calc(var(--e4) + 40px + var(--e3))}
@@ -44,6 +48,9 @@ button.r7-fila:active{background:var(--tinte)}
 .r7-fila-p{color:var(--t2);font:500 var(--f-apoyo)/var(--l-fila) var(--body)}
 .r7-fila-chev{flex:none;display:grid;place-items:center;width:16px;color:var(--t3);opacity:.6}
 .r7-fila-quieta{padding-right:var(--e4)}
+/* D18 · en una lista donde unas filas se tocan y otras no, la que no se toca pesa menos: nombre en gris y sin negrita (se ve al mirar, no al tocar).
+   En una lista donde ninguna se toca no cambia nada */
+.r7-lista:has(>button.r7-fila)>.r7-fila-quieta .r7-fila-n{color:var(--t2);font-weight:500}
 .r7-foto{flex:none;display:block}
 .r7-foto .foto{width:40px;height:40px;border-radius:var(--r-2)}
 /* la que se despliega aquí: «+» que pasa a «−», nunca flecha */
@@ -91,6 +98,15 @@ button.r7-fila:active{background:var(--tinte)}
 /* ---- pieza 9 · filtros: pastillas de 40 que se deslizan de lado ---- */
 .r7-filtros{display:flex;gap:var(--e2);margin:0 calc(-1*var(--margen));padding:0 var(--margen);overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch}
 .r7-filtros::-webkit-scrollbar{display:none}
+/* D10 · cuando queda algo sin ver, el borde por el que sigue se funde 24 px (las clases las pone el núcleo al montar y al desplazar) */
+.r7-filtros.r7-mas-d{-webkit-mask-image:linear-gradient(to left,transparent,#000 24px);mask-image:linear-gradient(to left,transparent,#000 24px)}
+.r7-filtros.r7-mas-i{-webkit-mask-image:linear-gradient(to right,transparent,#000 24px);mask-image:linear-gradient(to right,transparent,#000 24px)}
+.r7-filtros.r7-mas-i.r7-mas-d{-webkit-mask-image:linear-gradient(to right,transparent,#000 24px,#000 calc(100% - 24px),transparent);mask-image:linear-gradient(to right,transparent,#000 24px,#000 calc(100% - 24px),transparent)}
+/* 6.6 · el fondo de la elegida se desliza de una pastilla a otra (180 ms). Va por debajo del texto y por encima del blanco de las demás,
+   que por eso pasa a un ::before. Sin el núcleo (.r7-desl) no hay fondo aparte y la elegida es negra como siempre */
+.r7-filtros{position:relative;isolation:isolate}
+.r7-filtros-f{position:absolute;left:0;top:0;z-index:-1;width:0;height:40px;border-radius:var(--r-pill);background:var(--t1);opacity:0;pointer-events:none;transition:transform 180ms var(--c-estandar),width 180ms var(--c-estandar)}
+.r7-desl>.r7-filtros-f{opacity:1}
 /* la pastilla se ve de 40 (pieza 9) y se toca en 44: el botón crece 2 px por arriba y por abajo con un borde transparente, y el fondo y el aro
    se quedan en la pastilla (background-clip). La fila compensa esos 4 px con margen negativo para no mover nada */
 .r7-filtros{margin-top:-2px;margin-bottom:-2px}
@@ -98,11 +114,19 @@ button.r7-fila:active{background:var(--tinte)}
 .r7-filtro b{margin-left:var(--e1);color:var(--t3);font-weight:500;font-variant-numeric:tabular-nums}
 .r7-filtro[aria-pressed=true]{background-color:var(--t1);color:var(--fondo);box-shadow:none;font-weight:700}
 .r7-filtro[aria-pressed=true] b{color:inherit;font-weight:500;opacity:.7}
+/* el fondo de la pastilla no funde nunca por su cuenta (al acabar el deslizamiento volvería a aparecer poco a poco): cambia de golpe bajo el fondo que se desliza */
+.r7-filtro{transition:transform var(--t-corto) var(--c-muelle),opacity var(--t-corto) var(--c-muelle),color 180ms var(--c-estandar)}
+.r7-desl>.r7-filtro{position:relative;background-color:transparent;box-shadow:none}
+.r7-desl>.r7-filtro::before{content:"";position:absolute;inset:0;z-index:-2;border-radius:inherit;background:var(--s1);box-shadow:inset 0 0 0 1px var(--borde)}
 
 /* ---- pieza 12 · cifra y barras ---- */
-.r7-cifra{display:flex;align-items:baseline;gap:10px;padding:var(--e1) var(--e1) 0}
-.r7-cifra-n{flex:none;font:700 var(--f-cifra)/1 var(--display);letter-spacing:-.03em;font-variant-numeric:tabular-nums}
-.r7-cifra-f{min-width:0;color:var(--t2);font:500 var(--f-cuerpo)/var(--l-fila) var(--body)}
+/* D8 · número y frase, una unidad: el número arriba y la frase debajo a todo el ancho con los renglones igualados; en una línea
+   (.r7-cifra-fila) solo cuando caben enteros, y si aun así no cupieran la frase baja entera, no se parte en una columna */
+.r7-cifra{display:flex;flex-direction:column;gap:6px;padding:var(--e1) var(--e1) 0}
+.r7-cifra-n{flex:none;font:700 var(--f-cifra)/1 var(--display);letter-spacing:-.03em;font-variant-numeric:tabular-nums;white-space:nowrap}
+.r7-cifra-f{min-width:0;color:var(--t2);font:500 var(--f-cuerpo)/var(--l-fila) var(--body);text-wrap:balance}
+.r7-cifra-fila{flex-direction:row;flex-wrap:wrap;align-items:baseline;gap:6px 10px}
+.r7-cifra-fila .r7-cifra-f{white-space:nowrap}
 .r7-barras{display:grid;grid-template-columns:repeat(var(--n,4),1fr);gap:var(--e3);align-items:end;padding:var(--e4);border-radius:var(--r-3);background:var(--s1);box-shadow:var(--somb),inset 0 0 0 1px var(--borde)}
 .r7-barra{display:flex;flex-direction:column;justify-content:flex-end;gap:var(--e1);color:var(--t3);font:500 var(--f-apoyo)/1.2 var(--body);text-align:center;font-variant-numeric:tabular-nums}
 .r7-barra i{display:block;border-radius:6px 6px 0 0;background:var(--s2)}
@@ -127,6 +151,20 @@ html[data-modo=oscuro] .r7-barra:not(.on) i{background:color-mix(in srgb,var(--t
 .r7-doc-fs{display:block;color:var(--t3);font:500 var(--f-apoyo)/var(--l-fila) var(--body)}
 .r7-doc-fv{flex:none;font-weight:700;font-variant-numeric:tabular-nums}
 
+/* ---- 6.2 · ritmo vertical ----
+   Entre filas, un filete; entre un rótulo y su lista, 8; entre dos bloques seguidos, 12; entre dos grupos (lista, grupo con rótulo, barras,
+   «lo primero»), 24: así dos listas seguidas no se leen como una. Vale también si el bloque viene envuelto en un <div data-i>. */
+:is(.pant-cuerpo,.r7-inicio)>:is(.r7-grupo,.r7-lista,.r7-primero,.r7-barras,.r7-ficha,.r7-doc,[data-i]:has(>:is(.r7-grupo,.r7-lista,.r7-barras)))+:is(.r7-grupo,.r7-lista,.r7-barras,[data-i]:has(>:is(.r7-grupo,.r7-lista,.r7-barras))){margin-top:var(--e3)}
+/* La pantalla de una o dos tarjetas con el botón abajo: el bloque va centrado en el hueco, un poco por encima del centro (2 a 3), y no
+   pegado arriba con 300 px vacíos debajo. El subtítulo y la fila de «hecho» se quedan arriba. La clase la pone el núcleo al montar
+   (sin listas, campos ni documento, y con 144 px libres o más); `centra: true | false` en la pantalla lo fuerza. */
+.r7-centro::before{content:"";order:-1;flex:2 0 0}
+.r7-centro::after{content:"";flex:3 0 0}
+.r7-centro>:is(.r7-sub,.hecho,[data-i]:has(>.hecho)){order:-2}
+/* ---- el vacío: una frase sola a 28 px en mitad de lo que quede de pantalla ---- */
+.r7-vacio{flex:1 0 auto;display:grid;place-items:center;min-height:200px;padding:var(--e5) var(--e4) var(--e7)}
+.r7-vacio-t{max-width:12em;color:var(--t1);font:700 var(--f-titulo)/var(--l-tit) var(--display);letter-spacing:-.02em;text-align:center;text-wrap:balance}
+
 /* ---- pieza 16 · el micro grande (104, oro). Solo en Dictar y «¿Cómo ha ido?» ---- */
 .r7-micro{align-self:center;display:flex;flex-direction:column;align-items:center;gap:var(--e3);padding:20px 0 var(--e2);color:var(--t1)}
 .r7-micro-c{width:104px;height:104px;display:grid;place-items:center;border-radius:50%;background:var(--veta-g);color:var(--port-b);transition:transform var(--t-toque) var(--c-estandar)}
@@ -136,7 +174,7 @@ html[data-modo=oscuro] .r7-barra:not(.on) i{background:color-mix(in srgb,var(--t
 
 /* ---- Inicio: fecha, saludo, la frase y tu cara; debajo, lo que pone cada papel (VETA.inicioDe) ---- */
 #marco .pant:has(.r7-inicio){padding-top:0}
-.r7-inicio{display:flex;flex-direction:column;gap:var(--e3)}
+.r7-inicio{flex:1 0 auto;display:flex;flex-direction:column;gap:var(--e3)}
 .r7-hola{display:flex;align-items:flex-start;justify-content:space-between;gap:var(--e3);padding:14px 2px 6px}
 .r7-hola-c{min-width:0}
 .r7-hola-d{color:var(--t3);font:500 var(--f-apoyo)/var(--l-fila) var(--body)}
@@ -150,6 +188,7 @@ html[data-modo=oscuro] .r7-barra:not(.on) i{background:color-mix(in srgb,var(--t
   #marco .pant:has(.r7-inicio){max-width:calc(var(--col-max) + 2*var(--margen));padding:var(--e6) var(--margen) var(--e6)}
   .r7-fila:is(button):hover,.r7-filtro:not([aria-pressed=true]):hover{background-color:var(--tinte)}
   .r7-filtros{flex-wrap:wrap;overflow:visible;row-gap:var(--e1)}   /* parten en varias filas: con los 2+2 px de cada botón, la separación a la vista sigue siendo 8 */
+  .col-lista .r7-filtros{flex-wrap:nowrap;overflow-x:auto}   /* D20 · en la columna estrecha de la lista no se apilan en tres pisos: se deslizan, como en el móvil */
 }
 
 /* con «Reducir movimiento» nada se mueve */

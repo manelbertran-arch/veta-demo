@@ -7,3 +7,5 @@
 
 /* «lo primero» de Inicio se abre también tocando la tarjeta entera */
 .r7-primero[data-ir]{cursor:pointer;-webkit-tap-highlight-color:transparent}
+/* lo que acabas de resolver se pinta una vez más en su sitio y se va (VETA.mov.seVa, desde hoy.js): mientras tanto no se toca */
+.a1-ida{pointer-events:none}

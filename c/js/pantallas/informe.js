@@ -1,10 +1,12 @@
 /* Veta demo · ronda 8 · pantallas · informe.js · carril A
    A12 · Informe para el propietario · #/informe/<id>. Documento a pantalla completa (PLAN_R8.md, 8.1). Dos usos, un mismo papel:
-     · informe/<id de la visita> (elena…): lo que pasó en esa visita, para el dueño del piso.
-     · informe/pere: el de cada lunes (cosa c-pere del día): la semana entera. Al enviarlo, esa cosa queda enviada.
+     · informe/<id de la visita> (elena…): lo que pasó en esa visita, para el dueño del piso. Se llama «Visita de hoy, para Pere».
+     · informe/pere: el de cada lunes (cosa c-pere del día): la semana entera. Se llama «Informe de la semana». Al enviarlo, esa cosa queda enviada.
+     No se llaman igual (D5): quien envía el de la visita y ve en Inicio «Pere espera el informe de la semana» sabe que es otro papel.
    El papel: foto, datos, titular, un párrafo, las cifras en filas de dato, lo que dijeron y el siguiente paso.
-   Pie: «Enviar a Pere» (abre «¿Cómo lo envías?») con su nota. «Más»: Editar · Añadir fotos · Guardar para luego · Ver de dónde sale · Guardar en PDF.
-   Enviar uno no toca el otro. Enviado: la línea de hecho y un botón negro al sitio por el que se entró.
+   «Enviar a Pere» (abre «¿Cómo lo envías?») y la promesa van al final del papel, no en el pie: así el pie no parte ningún párrafo (D24).
+   «Más»: Editar · Añadir fotos · Guardar para luego · Ver de dónde sale · Guardar en PDF.
+   Enviar uno no toca el otro. Enviado: la fila de «hecho» con su «Deshacer» y, en el pie, el siguiente paso.
    H42 · ¿Cómo lo envías? · WhatsApp, PDF o copiar el texto (correo no). Vale para el acta y para el informe. Nada sale solo. */
 (function () {
   'use strict';
@@ -24,12 +26,14 @@
   function estado(x) {
     const d = A2().doc(x.clave, 'informe'), c = x.cosa && M.cosa(x.cosa);
     if (c && c.estado === 'enviada') return {estado: 'enviada', hora: c.hora, como: d.como};
-    return {estado: d.estado || null, hora: d.hora, como: d.como};
+    return {estado: d.estado || null, hora: d.hora, dia: d.dia, como: d.como};
   }
   const area = (x, k, etiqueta, filas) => `<div class="campo"><label class="campo-e" for="a2-inf-${k}">${esc(etiqueta)}</label><div class="campo-caja"><textarea id="a2-inf-${k}" class="campo-i" rows="${filas}">${esc(campo(x, k))}</textarea></div></div>`;
   const CAMPOS = ['resumen', 'dijo', 'paso'];
   const mayus = t => String(t || '').replace(/^./, c => c.toUpperCase());
   const guardaLuego = (x, como) => A2().ponDoc(x.clave, 'informe', {estado: 'guardada', como, hora: VETA.ahora()});
+  // tras enviar o guardar, la fila de «hecho» está arriba del papel: se sube a verla
+  const arriba = VETA.a2.arriba = () => { const d = VETA.$('.col.activa .desplaza'); if (d) d.scrollTop = 0; };
 
   VETA.a2.textoInforme = id => {
     const x = datos(id); if (!x) return '';
@@ -46,55 +50,54 @@
         A2().ponDoc(x.clave, 'informe', {fotos: true}); VETA.repinta();
         const n = VETA.datos.r7a2.fotos.visita.length; VETA.aviso(`${n === 1 ? 'Foto añadida' : n + ' fotos añadidas'}. En la demo es de ejemplo.`);
       }});
-      if (!e.estado) l.push({texto: 'Guardar para luego', hace: () => { guardaLuego(x, 'luego'); VETA.repinta(); VETA.aviso('Guardado sin enviar.'); }});
+      if (!e.estado) l.push({texto: 'Guardar para luego', hace: () => { guardaLuego(x, 'luego'); arriba(); VETA.repinta({hecho: true}); }});
     }
     // de dónde sale: el de la semana, del chat en el que Pere lo pidió; el de una visita, de lo que contaste
-    l.push(x.semana ? {texto: 'Ver de dónde sale', sub: 'El mensaje en el que te lo pidió', hoja: 'h01', datos: {de: x.cosa}} : {texto: 'Ver de dónde sale', sub: 'Lo que me contaste, con tus palabras', hoja: 'h07', datos: {visita: x.id}});
-    if (e.estado !== 'enviada') l.push({texto: 'Guardar en PDF', sub: 'Con las fotos, para adjuntarlo tú', hace: () => { guardaLuego(x, 'pdf'); VETA.repinta(); VETA.aviso('PDF guardado. Lo adjuntas tú.'); }});
+    l.push(x.semana ? {texto: 'Ver de dónde sale', hoja: 'h01', datos: {de: x.cosa}} : {texto: 'Ver de dónde sale', hoja: 'h07', datos: {visita: x.id}});
+    if (e.estado !== 'enviada') l.push({texto: 'Guardar en PDF', hace: () => { guardaLuego(x, 'pdf'); arriba(); VETA.repinta({hecho: true}); }});
     return l;
   };
 
   VETA.pantalla('A12', {
-    titulo: p => { A2().llega(p.id); const x = datos(p.id); return 'Informe para ' + (x ? A2().corto(x.propietario) : 'el propietario'); },
+    titulo: p => { A2().llega(p.id); const x = datos(p.id); return x ? A2().nombreInforme(x.id) : 'Informe'; },
     completa: true,   // como el acta: un papel para leer y enviar, sin la barra de abajo
     padreRuta: p => A2().semana(p.id) && !A2().visita(p.id) ? 'cliente/' + p.id : null,   // el de la semana cuelga de la ficha del propietario
     sub: p => {
       const x = datos(p.id); if (!x) return '';
       const corto = A2().corto(x.propietario);
       if (A2().doc(x.clave, 'informe').edita) return 'Cambia lo que quieras. Las fotos se quedan como están.';
-      const e = estado(x);
-      if (e.estado === 'enviada') return A2().viejo(e) ? `Así lo recibió ${corto}.` : `Hecho: ${corto} ya lo tiene. Queda en su ficha.`;
-      if (e.estado === 'guardada') return 'Guardado sin enviar. Lo envías tú cuando quieras.';
-      return x.semana ? `${corto} te lo pidió cada lunes.` : `Informe de la visita. Así lo verá ${corto}.`;
+      if (estado(x).estado) return '';   // enviado o guardado lo dice la fila de «hecho», y solo ella
+      return x.semana ? `${corto} te lo pidió cada lunes.` : `Así lo verá ${corto}.`;
     },
     mas: p => { const x = datos(p.id); return x && !A2().doc(x.clave, 'informe').edita ? {hoja: 'r8-mas', datos: {que: 'informe', id: x.id}} : null; },
-    nota: p => { const x = datos(p.id); return x && !A2().doc(x.clave, 'informe').edita && estado(x).estado !== 'enviada' ? {texto: 'No sale solo: lo envías tú.', candado: true} : ''; },
-    casoDictado: p => { const x = datos(p.id); return x ? {tipo: 'informe', de: x.id, quien: x.propietario, titulo: 'Informe para ' + A2().corto(x.propietario), texto: campo(x, 'resumen')} : null; },
+    casoDictado: p => { const x = datos(p.id); return x ? {tipo: 'informe', de: x.id, quien: x.propietario, titulo: A2().nombreInforme(x.id), texto: campo(x, 'resumen')} : null; },
     pinta: p => {
       const x = datos(p.id);
-      if (!x) return UI.vacio({titulo: 'No hay informe', texto: 'Sale al contarme cómo ha ido una visita.', icono: 'doc'});
+      if (!x) return r7.vacio('No hay informe de esta visita.');
       const d = A2().doc(x.clave, 'informe'), e = estado(x), yo = VETA.yo(), corto = A2().corto(x.propietario);
       if (d.edita) return area(x, 'resumen', 'En dos frases', 3) + area(x, 'dijo', x.hDijo, 3) + area(x, 'paso', 'Siguiente paso', 2);
-      const hecho = e.estado ? UI.lineaHecho({i: 0, texto: e.estado === 'enviada' ? 'Enviado a ' + corto : e.como === 'pdf' ? 'Guardado en PDF' : 'Guardado sin enviar', hora: e.hora,
-        boton: A2().viejo(e) ? null : {texto: 'Deshacer', accion: 'deshacer'}}) : '';
+      // el final: qué papel es y a quién fue («Visita de hoy enviada a Pere»), con su «Deshacer» (uno de antes se enseña como quedó, sin él)
+      const hecho = e.estado ? r7.hecho({texto: e.estado === 'enviada' ? A2().hechoInforme(x.id) : e.como === 'pdf' ? 'Guardado en PDF' : 'Guardado sin enviar', hora: A2().horaDoc(e),
+        deshacer: A2().viejo(e) ? null : 'deshacer'}) : '';
       let h = hecho + r7.doc({i: 1, foto: x.piso, datos: [`Para ${A2().nombre(x.propietario)} · ${x.dia}`, `De ${yo.nombre}, tu agente`], titular: x.titulo, texto: campo(x, 'resumen'),
         secciones: [{filas: x.cifras.map(c => ({nombre: mayus(c.t), valor: c.n}))}, {rotulo: x.hDijo, lineas: A2().lineas(campo(x, 'dijo'))}, {rotulo: 'Siguiente paso', texto: campo(x, 'paso')},
           d.fotos ? {rotulo: 'Más fotos', html: `<div class="a2-foto-mas">${UI.foto(x.piso, {tam: 'ancha', n: 1})}</div>`} : null]});
       // lo que ya había en el informe del lunes y no es del papel: el mensaje de Pere
       if (x.semana && !M.lee('nota-pere-escuchada') && e.estado !== 'enviada') h += r7.lista([{cara: x.propietario, nombre: corto + ' te dejó un mensaje', pasa: 'El sábado. Léelo antes de enviar.', hoja: 'h10', de: x.id}], {i: 2});
+      // enviar va al final del papel, con la promesa encima: se llega a él leyendo y el pie no tapa nada (D24)
+      if (e.estado !== 'enviada') h += `<div class="a2-fin" data-i="3">${r7.nota('envio')}${r7.boton({texto: 'Enviar a ' + corto, hoja: 'h42', datos: {que: 'informe', id: x.id}})}</div>`;
       return h;
     },
     botonFijo: p => {
       const x = datos(p.id); if (!x) return '';
       const d = A2().doc(x.clave, 'informe'), e = estado(x), corto = A2().corto(x.propietario);
       if (d.edita) return r7.botones({texto: 'Guardar', accion: 'guarda-cambios'}, {texto: 'No cambiar', accion: 'sin-cambios'});
-      const enviar = {texto: 'Enviar a ' + corto, hoja: 'h42', datos: {que: 'informe', id: x.id}};
-      if (e.estado !== 'enviada') return r7.botones(enviar);
+      if (e.estado !== 'enviada') return '';   // «Enviar a Pere» está al final del papel
       if (A2().viejo(e)) return '';   // un informe de antes: se enseña como quedó
       // lo que sigue va en negro
-      if (!x.semana && A2().falta(x.id) === 'acta') return r7.botones({texto: 'Siguiente: el acta', accion: 'sigue'});
+      if (!x.semana && A2().falta(x.id) === 'acta') return r7.sigue({texto: 'Siguiente: el acta', accion: 'sigue'});
       const fin = A2().fin();
-      return fin ? r7.botones(fin) : '';
+      return fin ? r7.sigue(fin) : r7.sigue();
     },
     acciones: {
       'sin-cambios'(ev, el, p) { const x = datos(p.id); if (!x) return; A2().ponDoc(x.clave, 'informe', {edita: false}); VETA.repinta(); },
@@ -127,17 +130,18 @@
       const texto = () => que === 'acta' ? A2().textoActa(v) : A2().textoInforme(id);
       const corto = que === 'informe' ? A2().corto(x.propietario) : '';
       const fem = que === 'acta';
-      const hecho = (como, estado, aviso) => {
+      const hecho = (como, estado) => {
         A2().ponDoc(clave, que, {estado, como, hora: VETA.ahora()});
         if (que === 'acta' && cosa) { VETA.est.pon('a.sinTareaElena', false); A2().cierraCosa(cosa, 'hecha'); }
         if (que === 'informe' && cosa && estado === 'enviada') A2().cierraCosa(cosa, 'enviada');
-        VETA.repinta(); VETA.hojaHecha(aviso);
+        // una sola confirmación: la fila de «hecho» del papel, que se pinta arriba (se sube a verla). Sin aviso
+        VETA.hojaHecha(); arriba(); VETA.repinta({hecho: true});
       };
       return [
         {texto: 'WhatsApp', sub: fem ? 'Te abro WhatsApp con el acta. Eliges a quién y la envías tú.' : `Te abro el chat de ${corto} con el informe. Lo envías tú.`, cierra: false,
-          hace: () => hecho('whatsapp', 'enviada', (fem ? 'Acta enviada.' : 'Enviado a ' + corto + '.') + ' En la demo no sale ningún mensaje de verdad.')},
+          hace: () => hecho('whatsapp', 'enviada')},
         {texto: 'PDF', sub: fem ? 'Para guardarla o adjuntarla tú' : 'Con las fotos, para adjuntarlo tú', cierra: false,
-          hace: () => hecho('pdf', 'guardada', 'PDF guardado. Lo adjuntas tú.')},
+          hace: () => hecho('pdf', 'guardada')},
         {texto: 'Copiar el texto', sub: 'Lo pegas tú donde quieras', cierra: false,
           hace: () => { VETA.copia(texto()); VETA.hojaHecha('Texto copiado.'); }}];
     }

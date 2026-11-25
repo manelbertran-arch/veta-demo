@@ -5,7 +5,8 @@
 (function () {
   'use strict';
   const UI = VETA.UI, esc = VETA.esc, R = VETA.r7;
-  let filtro = 'todos', elegido = 'si', interr = true;
+  let filtro = 'todos', elegido = 'si', interr = true, hecho = null, idas = [];
+  const COLA = [['marta', 'Marta Puig', 'Quiere ver el piso de Gràcia'], ['elena', 'Elena Vives', 'Visita hoy a las 9:00'], ['pere', 'Pere Soler', 'Espera el informe de la semana']];
 
   const pieza = (n, nombre, html) => `<section class="mu-sec" data-pieza="${n}"><h2 class="mu-n">${n} · ${esc(nombre)}</h2>${html}</section>`;
   // una cabecera o una barra de muestra, quietas (las de verdad las pinta el armazón)
@@ -20,7 +21,7 @@
   VETA.pantalla('muestrario', {
     ruta: 'muestrario', titulo: 'Las 18 piezas', destino: null, grupo: 'Núcleo',
     sub: 'El juego de piezas de la ronda 8. Toca lo que quieras probar.',
-    nota: {texto: 'No sale hasta que tú lo envíes.', candado: true},
+    nota: 'envio',
     mas: 'mu-acciones',
     casoDictado: () => ({quien: 'marta', titulo: 'Marta Puig', texto: 'Quiere ver el piso de Gràcia'}),
     pinta: () => [
@@ -53,19 +54,34 @@
         secciones: [{rotulo: 'Lo que le gustó', lineas: ['La luz del salón', 'La terraza']}, {rotulo: 'Lo que no', lineas: ['El ruido de la calle por la noche']},
           {rotulo: 'Esta semana', filas: [{nombre: 'Visitas', valor: 3}, {nombre: 'Lo ven caro', valor: 3, sub: 'antes 2'}]}]})),
       pieza(14, 'Hoja: acciones, texto y elegir', R.lista([{nombre: 'Hoja de acciones', hoja: 'mu-acciones'}, {nombre: 'Hoja de texto', hoja: 'mu-texto'}, {nombre: 'Hoja de elegir', hoja: 'mu-elegir'}])),
-      pieza(15, 'Línea de apoyo: subtítulo y nota', R.sub('Propietario del piso de Verdi 42 · 612 48 39 07') + R.nota('No sale sola: la envías tú.', {candado: true})),
+      pieza(15, 'Línea de apoyo: subtítulo y nota. La promesa, por nombre', R.sub('Propietario del piso de Verdi 42 · 612 48 39 07') + R.nota('envio') + R.nota('nada') + R.nota('chats')),
       pieza(16, 'Micro y pasos', R.micro({accion: 'toca'}) + `<div class="mu-fila">${R.pasos(2, 4)}</div>` +
         R.elegir([{id: 'si', texto: 'Le ha gustado'}, {id: 'duda', texto: 'Tiene dudas'}, {id: 'no', texto: 'No le encaja'}], {valor: elegido, accion: 'elige'})),
       pieza(17, 'Interruptor', R.lista([UI.interruptor({texto: 'Avisarme antes de una firma', on: interr, accion: 'interr'}), UI.interruptor({texto: 'Reducir movimiento', on: false, accion: 'toca'})])),
       pieza(18, 'Hecho, aviso y vacío', UI.lineaHecho({texto: 'Enviado a Marta', hora: '9:41', boton: {texto: 'Deshacer', accion: 'toca'}}) +
         R.lista([{nombre: 'Sacar un aviso', accion: 'aviso'}, {nombre: 'Cambiar entre claro y oscuro', accion: 'tema'}]) +
-        UI.vacio({titulo: 'Hoy ya no te toca nada.', boton: {texto: 'Cerrar el día', accion: 'toca'}}))
+        UI.vacio({titulo: 'Hoy ya no te toca nada.', boton: {texto: 'Cerrar el día', accion: 'toca'}})),
+      // ---- segunda vuelta de la ronda 8: el final, el vacío, «Más», el dato y los movimientos ----
+      pieza(19, 'El final de una acción: hecho + «Deshacer», y el siguiente paso en el pie', (hecho ? R.hecho({texto: 'Acta enviada a Elena', hora: hecho, deshacer: 'deshaz'}) : '') +
+        R.lista([{nombre: hecho ? 'Ya está enviado' : 'Enviar (pinta el hecho; el ✓ se dibuja una vez)', accion: hecho ? null : 'envia'}]) + `<div class="mu-pie"><div class="fijo">${R.sigue({texto: 'Siguiente: Elena', accion: 'toca'})}</div></div>`),
+      pieza(20, 'La fila resuelta se va y las demás suben', R.lista(COLA.filter(c => !idas.includes(c[0])).map(c => ({cara: c[0], nombre: c[1], pasa: c[2], accion: 'resuelve', datos: {quien: c[0]}})).concat(idas.length ? [{nombre: 'Volver a empezar', accion: 'vuelve'}] : [])) +
+        (idas.length === COLA.length ? R.vacio('Hoy ya no te toca nada.') : '')),
+      pieza(21, 'Vacío: una frase sola', R.vacio('Hoy ya no te toca nada.')),
+      pieza(22, 'Cifra: en una línea solo si cabe entera', R.cifra({valor: 38, frase: 'cosas hechas por ti.'}) + R.cifra({valor: '12 h 45 min', frase: 'ganadas la semana pasada. Es un ejemplo.'}) + R.cifra({valor: 212, frase: 'de 301 contactos tienen algo apuntado por alguien de la oficina.'})),
+      pieza(23, 'Fechas y horas: tres formas', R.lista([{nombre: 'Corta', dato: VETA.fecha.corta('2026-11-25')}, {nombre: 'Corta, con hora', dato: VETA.fecha.corta('2026-11-23T09:41')}, {nombre: 'Corta, otro mes', dato: VETA.fecha.corta('2026-12-03')},
+        {nombre: 'Larga', pasa: VETA.fecha.larga('2026-11-26T10:00')}, {nombre: 'Hora', dato: VETA.fecha.hora('09:05')}])),
+      pieza(24, '«Más»: lo frecuente, enseñar, y lo destructivo al final', R.lista([{nombre: 'Abrir «Más»', hoja: 'mu-mas'}, {nombre: 'Repetir el escalonado de entrada', accion: 'escalona'}]))
     ].join(''),
     botonFijo: () => R.botones({texto: 'Enviar', accion: 'toca'}, {texto: 'Ahora no', accion: 'toca'}),
     acciones: {
       toca() { VETA.aviso('Tocado.'); },
       aviso() { VETA.aviso('Enviado a Marta.', {deshacer: () => VETA.aviso('Deshecho.')}); },
       filtra(ev, el) { filtro = el.dataset.valor; },
+      envia() { hecho = VETA.ahora(); VETA.repinta({hecho: true}); },
+      deshaz() { hecho = null; VETA.repinta({hecho: true}); },
+      resuelve(ev, el) { VETA.mov.seVa(el, () => { idas.push(el.dataset.quien); VETA.repinta(); VETA.aviso('Resuelto.', {deshacer: () => { idas.pop(); VETA.repinta(); }}); }); },
+      vuelve() { idas = []; VETA.repinta(); },
+      escalona(ev, el) { VETA.mov.escalona(el.closest('.pant')); },
       elige(ev, el) { elegido = el.dataset.valor; },
       interr(ev, el) { interr = el.getAttribute('aria-checked') === 'true'; },
       tema() { VETA.tema.pon({modo: document.documentElement.dataset.modo === 'oscuro' ? 'claro' : 'oscuro'}); }
@@ -76,6 +92,10 @@
   VETA.hojaAcciones('mu-acciones', {
     titulo: 'Más',
     opciones: [{texto: 'Ya lo llevé por teléfono', hace: () => VETA.aviso('Resuelto: lo llevaste por teléfono.')}, {texto: 'Para luego', hace: () => VETA.aviso('Para luego.')}, {texto: 'Descartarlo', peligro: true, hace: () => VETA.aviso('Descartado.')}]
+  });
+  VETA.hojaMas('mu-mas', {
+    titulo: 'Marta Puig', ensena: true,
+    opciones: [{texto: 'Descartarlo', peligro: true, hace: () => VETA.aviso('Descartado.')}, {texto: 'Ya lo llevé por teléfono', hace: () => VETA.aviso('Resuelto: lo llevaste por teléfono.')}, {texto: 'Para luego', hace: () => VETA.aviso('Para luego.')}]
   });
   VETA.hojaTexto('mu-texto', {titulo: 'Lo que he leído', bloques: [{texto: 'He leído 8 chats desde ayer. Solo los de trabajo.'}, {titulo: 'Lo que no leo', lista: ['Tus chats personales', 'Los grupos que no has marcado']}]});
   VETA.hojaElegir('mu-elegir', {

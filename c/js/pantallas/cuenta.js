@@ -3,7 +3,7 @@
    - A15b · Chats que no leo · #/cuenta/chats
    - A15c · Seguridad · #/cuenta/seguridad
    Lo que antes se desplegaba en el sitio ahora abre una hoja (js/hojas/veta.js): c-confirma (desconectar, volver a empezar),
-   c-lee («Lo que dirección ve de ti»), c-chat (un chat de la lista), c-anadir, c-avisos, h26, h28, h29, h30, h31, h33. */
+   c-lee («Lo que dirección ve de ti»), c-chat (un chat de la lista), c-anadir, c-avisos, h26, h28, h29, h30, h31. */
 (function () {
   'use strict';
   const UI = VETA.UI, M = VETA.modelo, C = VETA.c;
@@ -18,11 +18,10 @@
     sub: () => { const yo = VETA.yo(), acceso = yo.papel === 'direccion' ? 'Dirección y agente' : 'Agente'; return `${yo.nombre} · ${acceso} · oficina de ${(VETA.datos.oficinas[yo.oficina] || {}).nombre || ''}`; },
     pinta: () => {
       const R = R7(), dir = VETA.yo().papel === 'direccion', desc = C.lee('desconectado', false), inicio = C.inicio();
-      return (desc ? UI.lineaHecho({texto: 'WhatsApp desconectado', hora: desc, boton: {texto: 'Deshacer', accion: 'reconecta'}, vt: 'c-confirma', i: 0}) : '') +
+      return (desc ? R.hecho({texto: 'WhatsApp desconectado', hora: desc, deshacer: 'reconecta', vt: 'c-confirma'}) : '') +
         R.lista([{nombre: 'Cómo funciona Veta', ir: 'que-hace'}], {i: 1}) +
         R.lista([
           {nombre: 'Chats que no leo', dato: C.fuera(), ir: 'cuenta/chats'},
-          {nombre: 'Calendario', dato: C.calendario() || 'Sin conectar', hoja: 'h33'},
           dir ? null : {nombre: 'Lo que encontré en tus chats', ir: 'mapa'},
           dir ? null : {nombre: 'Ver el primer día', ir: 'primer-dia/0'},
           dir && existe('conexiones') ? {nombre: 'Conexiones y ajustes', ir: 'conexiones'} : null,
@@ -68,8 +67,11 @@
   C.cambiaChat = d => {
     const x = C.chat(d); if (!x) return;
     if (x.cliente) {
-      M.pon('chats-fuera', M.lee('chats-fuera', []).filter(id => id !== x.cliente));
-      VETA.repinta(); VETA.aviso(`${x.nombre} entra. Veta vuelve a leerlo.`, {deshacer: () => { M.deshazFlag('chats-fuera'); VETA.repinta(); }});
+      // el cliente sale de la lista: su fila se va y el aviso es la única confirmación, con «Deshacer»
+      VETA.mov.seVa(`.r7-fila[data-cliente="${x.cliente}"]`, () => {
+        M.pon('chats-fuera', M.lee('chats-fuera', []).filter(id => id !== x.cliente));
+        VETA.repinta(); VETA.aviso(`${x.nombre} entra. Veta vuelve a leerlo.`, {deshacer: () => { M.deshazFlag('chats-fuera'); VETA.repinta(); }});
+      });
       return;
     }
     const entra = !x.leo, l = C.dentro().filter(y => y !== x.n); if (entra) l.push(x.n); C.pon('dentro', l);
@@ -78,12 +80,12 @@
   };
   VETA.pantalla('A15b', {
     titulo: 'Chats que no leo',
-    sub: 'No los leo. No los ve nadie, tampoco dirección.',
+    sub: 'No los leo y no los ve nadie.',
     pinta: () => {
       const dentro = C.dentro(), borr = C.lee('borrados', []);
       const filas = personales().map((n, k) => ({nombre: n, dato: dentro.includes(n) ? 'Lo leo' : null, hoja: 'c-chat', datos: {n: k}}))
         .concat(fueraClientes().map(id => ({nombre: (M.quien(id) || {}).nombre || id, dato: 'Cliente', hoja: 'c-chat', datos: {cliente: id}})));
-      return borr.map(x => UI.lineaHecho({texto: `${x.nombre} · borrado antes del jueves 26`, hora: x.hora, hoja: 'h30', de: x.nombre})).join('') +
+      return borr.map(x => R7().hecho({texto: `${x.nombre} · borrado pedido`, hora: x.hora, hoja: 'h30', de: x.nombre})).join('') +
         R7().lista(filas, {i: 0}) + R7().enlace({texto: 'Borrar un chat', hoja: 'h30', i: 1});
     },
     botonFijo: () => R7().botones({texto: 'Añadir un chat', hoja: 'c-anadir'})
@@ -94,7 +96,7 @@
     titulo: 'Seguridad',
     pinta: () => {
       const dir = VETA.yo().papel === 'direccion', hecha = C.lee('claveCambiada', null);
-      return (hecha ? UI.lineaHecho({texto: 'Contraseña cambiada', hora: hecha, vt: 'c-clave', i: 0}) : '') +
+      return (hecha ? R7().hecho({texto: 'Contraseña cambiada', hora: hecha, vt: 'c-clave'}) : '') +
         `<div class="r7c-campos" data-i="1">` + UI.campo({etiqueta: 'Contraseña de ahora', tipo: 'password', id: 'c-k1'}) + UI.campo({etiqueta: 'Contraseña nueva', tipo: 'password', id: 'c-k2'}) +
         UI.campo({etiqueta: 'Otra vez la nueva', tipo: 'password', id: 'c-k3'}) + '</div>' +
         R7().lista([dir ? {nombre: 'Código al entrar', pasa: 'Obligatorio para dirección', dato: 'Activado'}

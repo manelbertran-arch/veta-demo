@@ -19,7 +19,7 @@
 /* tema antes del primer pintado (lo mismo que hace js/nucleo/tema.js) */
 (function(){var r=document.documentElement,p={},s={};try{p=JSON.parse(localStorage.getItem('veta_pref_v1')||'{}')||{}}catch(e){}
 try{s=JSON.parse(sessionStorage.getItem('veta_demo_en_v1')||'{}')||{}}catch(e){}
-var mm=function(q){return !!(window.matchMedia&&matchMedia(q).matches)};var m=p.modo||'claro';if(m==='auto')m=mm('(prefers-color-scheme: dark)')?'oscuro':'claro';
+var mm=function(q){return !!(window.matchMedia&&matchMedia(q).matches)};var m=p.modo||'auto';if(m==='auto')m=mm('(prefers-color-scheme: dark)')?'oscuro':'claro';
 r.setAttribute('data-modo',m==='oscuro'?'oscuro':'claro');r.setAttribute('data-color',p.color||'veta');
 var red=p.mov==='reducido'||s.mov==='reducido'||/[?&]mov=reducido/.test(location.search)||mm('(prefers-reduced-motion: reduce)');r.setAttribute('data-mov',red?'reducido':'normal')})();
 </script>

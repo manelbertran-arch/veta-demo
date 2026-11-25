@@ -18,7 +18,7 @@
 
     // “Hasta dónde llego”: empieza en “Te lo dejo escrito”. Enviar sola, todavía no.
     hasta: [
-      {id: 'escrito', texto: 'I write it for you', sub: 'I get it ready. You send it.', fila: 'I write it. Nothing goes out without you.'},
+      {id: 'escrito', texto: 'I write it for you', sub: 'I get it ready. You send it.', get fila() { return 'I\'ll leave it written for you. ' + VETA.PROMESA.nada; }},   // la promesa, por su nombre (una sola redacción)
       {id: 'aviso', texto: 'I only tell you', sub: 'I tell you it is time. You do it.', fila: 'I only tell you. You do it.'}],
     hastaOficina: [
       {id: 'escrito', texto: 'I write it for you', sub: 'I get it ready for whoever it is for. That person sends it.', fila: 'I write it for you. Each person sends it.'},

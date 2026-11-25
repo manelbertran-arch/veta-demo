@@ -9,7 +9,7 @@
     cosas: {
       'c-marta': {titulo: 'Contestar a Marta', pasa: 'Quiere ver el piso', pastilla: 'Sin contestar', tono: 'rojo'},
       'c-elena': {pasa: 'Visita hoy a las 9:00', ir: 'visita/elena'},
-      'c-pere': {titulo: 'Informe de la semana', pasa: 'Espera el informe de la semana', boton: 'Abrir el informe', hecho: 'Te lo dejo hecho'},
+      'c-pere': {titulo: 'Pere espera el informe', pasa: 'Espera el informe de la semana', boton: 'Abrir el informe', hecho: 'Te lo dejo hecho'},
       'c-nuria': {titulo: 'Un piso para Núria', pasa: 'Hay un piso para ella'},
       'c-jordi': {titulo: 'Contestar a Jordi', pasa: 'Le prometiste el informe'},
       'c-sergi': {titulo: 'Quitar a Sergi', pasa: 'Ya le contestó Anna: quítalo', boton: 'Quitarla de la lista'}

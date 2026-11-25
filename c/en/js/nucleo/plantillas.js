@@ -36,6 +36,21 @@
     alMontar: o.alMontar
   });
 
+  // ---- la hoja de “Más” (D23): una sola forma en toda la app ----
+  // VETA.hojaMas('a-mas', {titulo: d => 'El acta', opciones: d => [{texto: 'Cambiar el texto', ir}, {texto: 'Borrar el acta', peligro: true, hace}], ensena: true})
+  //   · Título: el nombre de la cosa de la que va (“El acta”, “Marta Puig”, “El reparto”), nunca “Más”.
+  //   · Orden: lo frecuente primero, tal como venga; después “Enséñale a Veta con este caso” (con `ensena`); lo destructivo (`peligro`), al final y en rojo.
+  //   · Todas las filas pesan igual: una línea de 56, sin segunda línea. Con una sola opción no se abre una hoja: es un enlace en la pantalla (r7.enlace).
+  // `ensena: true` (o d => true, o el texto de la fila) añade la fila que lleva a dictar/orden con el caso de la pantalla abierta (su `casoDictado`):
+  // por ahí vuelven los enlaces de enseñar que se quitaron de las tarjetas. VETA.opEnsena() da esa misma fila para una hojaAcciones que no sea “Más”.
+  VETA.opEnsena = texto => ({texto: texto || 'Teach Veta with this case', hace: () => VETA.dictar('orden')});
+  VETA.hojaMas = (id, o) => VETA.hojaAcciones(id, Object.assign({}, o, {
+    opciones: d => {
+      const l = (val(o.opciones, d) || []).filter(Boolean), e = val(o.ensena, d);
+      return l.filter(x => !x.peligro).concat(e ? [VETA.opEnsena(typeof e === 'string' ? e : null)] : [], l.filter(x => x.peligro));
+    }
+  }));
+
   // ---- hoja de texto: bloques de lectura (sin “Cerrar” abajo: V7) ----
   // VETA.hojaTexto('H29', {titulo: d => '…', bloques: d => [{titulo, texto, lista: ['…'], html}, null], boton: {texto, accion} | d => ({…}) | d => null})
   VETA.hojaTexto = (id, o) => VETA.hojaDef(id, {

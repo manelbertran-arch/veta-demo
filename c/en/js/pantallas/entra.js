@@ -1,5 +1,5 @@
 /* Veta demo · ronda 8 · pantallas · entra.js · carril D
-   G9 · Lo que entra · #/entra — cuatro filas; cada una abre una hoja con su lista (d-entra). Botón: repartir los que nadie lleva (G5). */
+   G9 · Lo que entra · #/entra — cuatro filas; cada una abre una hoja con su lista (d-entra). Botón: repartir los que nadie lleva (abre el primero, G2; al decidir, “Siguiente” lleva al otro). */
 (function () {
   'use strict';
   const X = VETA.dir, D = VETA.datos, r7 = VETA.r7;
@@ -13,8 +13,9 @@
       {nombre: 'Want what you have', pasa: 'A flat that suits them', dato: 1, hoja: 'd-entra', datos: {lista: 'si'}}
     ], {i: 0}),
     botonFijo: () => {
-      const sd = X.sinDueno().length;
-      return sd ? r7.botones({texto: sd === 1 ? 'Allocate the one no one has' : 'Allocate the ' + sd + ' no one has', ir: 'reparto'}) : '';
+      // cada contacto que nadie lleva es una decisión: empieza por el primero y, al decidir, su botón lleva al siguiente
+      const l = X.sinDueno(), sd = l.length;
+      return sd ? r7.botones({texto: sd === 1 ? 'Allocate the one no one has' : 'Allocate the ' + sd + ' no one has', ir: 'asunto/' + l[0].id}) : '';
     }
   });
 })();

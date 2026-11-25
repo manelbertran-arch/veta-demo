@@ -6,7 +6,7 @@
    - G14 · Lo que sabe tu oficina · #/oficina/sabe   (también la agente) */
 (function () {
   'use strict';
-  const UI = VETA.UI, C = VETA.c;
+  const C = VETA.c;
   const D = () => VETA.datos.c, R7 = () => VETA.r7;
 
   // prácticas con su estado. Las tres que son un trabajo de la oficina (dossier, mismo-dia, actas) lo cambian en su pantalla, que solo abre
@@ -59,11 +59,11 @@
     sub: 'Clàudia Ribas · deal fell through · buying a flat in Sants',
     pinta: () => {
       const hecha = C.lee('practicaClaudia', false);
-      return (hecha ? UI.lineaHecho({texto: 'Proposal created: call within 48 hours anyone who asks for a viewing', hora: hecha, ir: 'oficina/practicas', boton: {texto: 'Undo', accion: 'deshacer'}, vt: 'c-caso', i: 0}) : '') +
+      return (hecha ? R7().hecho({texto: 'Proposal created: call within 48 hours', hora: hecha, ir: 'oficina/practicas', deshacer: 'deshacer', vt: 'c-caso'}) : '') +
         R7().lista(VETA.datos.casoClaudia.map(x => ({nombre: x.cuando, pasa: x.texto})), {rotulo: 'What happened', i: 1}) +
         R7().tarjeta({veta: true, de: 'What it teaches', texto: 'Whoever asks to see a flat and doesn\'t get a call within 48 hours leaves.', i: 2});
     },
-    botonFijo: () => (C.lee('practicaClaudia', false) ? '' : R7().botones({texto: 'Draw a practice', accion: 'saca'})),
+    botonFijo: () => (C.lee('practicaClaudia', false) ? R7().sigue() : R7().botones({texto: 'Draw a practice', accion: 'saca'})),
     acciones: {
       saca() { C.pon('practicaClaudia', VETA.ahora()); VETA.repinta({hecho: 'c-caso'}); },
       deshacer() { C.pon('practicaClaudia', false); VETA.repinta({hecho: 'c-caso'}); }

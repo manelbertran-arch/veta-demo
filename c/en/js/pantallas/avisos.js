@@ -18,13 +18,13 @@
       const ult = X.lee('avisoNuevo', null);
       let h = `<div data-i="0">${UI.campo({etiqueta: 'When should I alert you?', id: 'd-aviso-t', valor: texto, placeholder: 'Alert me when…'})}</div>`;
       h += r7.filtros(D.avisos.ejemplos.map(e => ({id: e.id, texto: e.corto})), {valor: ejemplo, accion: 'usar', etiqueta: 'Examples', i: 0});
-      if (ult) h += `<div data-i="0">${UI.lineaHecho({texto: 'Alert created. When it triggers, you\'ll see it in Home.', hora: ult.hora, vt: 'aviso-' + ult.id, boton: {texto: 'Undo', accion: 'deshacer-aviso', de: ult.id}})}</div>`;
+      if (ult) h += r7.hecho({texto: 'Alert created', hora: ult.hora, vt: 'aviso-' + ult.id, deshacer: {accion: 'deshacer-aviso', de: ult.id}});
       h += r7.lista(puestos().map(a => UI.interruptor({texto: a.texto, on: !a.off, accion: 'apagar', de: a.id})), {rotulo: 'Your alerts', i: 1});
-      h += r7.lista([{cara: 'joan-serra', nombre: 'Complaint from Joan Serra', pasa: 'I told you on Saturday 21, 20:05', ir: 'asunto/joan-serra'}], {rotulo: 'I\'ve already alerted you', i: 2});
+      h += r7.lista([{cara: 'joan-serra', nombre: 'Complaint from Joan Serra', pasa: 'I alerted you ' + VETA.fecha.corta('2026-11-21T20:05', {frase: true}), ir: 'asunto/joan-serra'}], {rotulo: 'I\'ve already alerted you', i: 2});
       if (texto.trim()) h += r7.enlace({texto: 'How it would have gone', hoja: 'h36', datos: {ejemplo: ejemplo || ''}});
       return h;
     },
-    botonFijo: () => texto.trim() ? r7.botones({texto: 'Create the alert', accion: 'crear'}) : '',
+    botonFijo: () => texto.trim() ? r7.botones({texto: 'Create the alert', accion: 'crear'}) : X.lee('avisoNuevo', null) ? r7.sigue() : '',
     alMontar: el => {
       const i = el.querySelector('#d-aviso-t'); if (!i) return;
       i.addEventListener('input', () => {

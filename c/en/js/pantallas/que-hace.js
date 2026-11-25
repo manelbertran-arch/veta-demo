@@ -25,7 +25,7 @@
 
   VETA.pantalla('A19', {
     titulo: 'How Veta works',
-    sub: 'I read your chats, get things ready, learn from you.',
+    sub: 'What I do with your work chats.',
     pinta: () => grupos().map(([rotulo, filas], k) => {
       const l = filas.map(([nombre, r, dato]) => ({nombre, dato, ir: destino(r)})).filter(f => abre(f.ir));
       return l.length ? VETA.r7.lista(l, {rotulo, i: k}) : '';

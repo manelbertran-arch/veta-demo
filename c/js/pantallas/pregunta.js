@@ -64,7 +64,7 @@
 
   VETA.pantalla('A5p', {
     titulo: 'Pregúntale a Veta',
-    sub: 'Contesto con lo escrito en tus chats. Si no está, lo digo.',
+    sub: 'Contesto con lo escrito en tus chats.',
     pinta: p => {
       const r = responde(p.id);
       const primera = !vistas.has(p.id);

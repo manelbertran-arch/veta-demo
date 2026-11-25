@@ -1,9 +1,9 @@
 /* Veta demo · hojas · veta.js · carril C (Veta y cuenta)
    Todas salen de las tres plantillas (acciones, texto, elegir), salvo las que llevan campos (h24, c-avisos) y las instrucciones de h31;
    ninguna lleva iconos a la izquierda.
-   De siempre: h18 Un caso · h19 Los casos iguales · h20 Cambiar algo (de un trabajo) · h21 Qué he entendido · h22 Subir un paso ·
+   De siempre: h18 Un caso · h19 Los casos iguales · h20 Cambiar algo (de un trabajo; con la forma de “Más”) · h21 Qué he entendido · h22 Subir un paso ·
    h23 Una práctica · h24 Tus tiempos · h25 Una semana anterior · h28 Sin señal · h30 ¿Qué chat borras? · h31 Poner Veta en la pantalla
-   de inicio · h32 Un hallazgo del mapa · h33 Calendario · c-mano (lo que aún haces a mano) · c-avisos · c-anadir (añadir un chat).
+   de inicio · h32 Un hallazgo del mapa  · c-mano (lo que aún haces a mano) · c-avisos · c-anadir (añadir un chat).
    Ronda 8 (lo que antes se desplegaba en la fila, ahora en una hoja): c-lee (un texto corto, según `que`) · c-veces (los casos de un
    trabajo) · c-excepto (no con un cliente) · c-nohago (lo que ya no hago) · c-cerre (lo que cerré sola) · c-aprendido (una cosa
    aprendida) · c-chat (un chat que no leo) · c-confirma (desconectar WhatsApp, volver a empezar).
@@ -46,7 +46,7 @@
 
   // ---- h19 · Los casos iguales ----
   VETA.hojaTexto('h19', {
-    titulo: d => (d.regla === 'r-recordatorios' ? 'The 6 cases' : 'All 11 times the same'),
+    titulo: d => (d.regla === 'r-recordatorios' ? 'Where it applies' : `${(((M.regla(d.regla) || {}).casos || {}).comoYo || []).length} times you did it the same way`),
     bloques: d => {
       const r = M.regla(d.regla) || {}, l = d.regla === 'r-recordatorios' ? (r.casos || []) : ((r.casos || {}).comoYo || []);
       return [{texto: d.regla === 'r-recordatorios' ? 'A buyer took more than three days to reply to you. A reminder would have been due here.' : 'Someone asked for a valuation and the next day you sent them the flat report.'},
@@ -54,32 +54,32 @@
     }
   });
 
-  // ---- c-veces · Los casos de un trabajo: los iguales (h19) y, uno a uno, los distintos o los de la prueba (h18) ----
+  // ---- c-veces · Las veces que lo hiciste distinto, una a una (h18). Las iguales (h19) y los casos de la prueba se abren desde la pantalla ----
   VETA.hojaAcciones('c-veces', {
-    titulo: d => (d.regla === 'r-cancelaciones' ? 'What I would have suggested' : `The ${C.veces(M.regla(d.regla))} times`),
+    titulo: d => `${((((M.regla(d.regla) || {}).casos || {}).distinto) || []).length} times you did it differently`,
     opciones: d => {
-      if (d.regla === 'r-cancelaciones') return D().aPrueba.map(c => ({texto: `${c.nombre} · ${c.cuando}`, sub: c.propone, hoja: 'h18', datos: {caso: c.id}}));
-      const r = M.regla(d.regla) || {}, k = r.casos || {}, ex = C.excepciones(d.regla);
-      return [{texto: `${(k.comoYo || []).length} times you did it the same way`, sub: 'You sent the report the next day', hoja: 'h19'}].concat((k.distinto || []).map(c =>
-        ({texto: `${c.nombre} · ${c.cuando}`, sub: ((D().distinto[c.cliente] || {}).motivo || 'You did it differently') + (ex.includes(c.cliente) ? ' · not with him' : ''), hoja: 'h18', datos: {caso: c.cliente}})));
+      const k = (M.regla(d.regla) || {}).casos || {}, ex = C.excepciones(d.regla);
+      return (k.distinto || []).map(c => ({cara: c.cliente, texto: `${c.nombre} · ${c.cuando}`, sub: ((D().distinto[c.cliente] || {}).motivo || 'You did it differently') + (ex.includes(c.cliente) ? ' · not with him' : ''), hoja: 'h18', datos: {caso: c.cliente}}));
     }
   });
 
-  // ---- h20 · Cambiar algo (de un trabajo) ----
-  VETA.hojaAcciones('h20', {
+  // ---- h20 · Cambiar algo (de un trabajo): la forma de “Más”. Lo frecuente primero, “Decirlo de otra forma” (lleva a Dictar con
+  // este trabajo como caso) y lo que lo quita, al final y en rojo. “No con un cliente” sale aquí solo en una propuesta: cuando el
+  // trabajo ya lo hago yo, es una fila de su pantalla ----
+  VETA.hojaMas('h20', {
     titulo: 'Change something',
+    ensena: 'Put it another way',
     opciones: d => {
       const r = M.regla(d.de) || {}, activa = r.estado === 'activa', ofi = C.lee('aOficina', {})[d.de];
       return [
         r.estado === 'a-prueba' ? {texto: 'Make it do it now, without waiting for 7 Dec', hace: () => C.cambiaRegla(d.de, 'activa', 'I already do it · I\'ll leave it in Home')} : null,
-        {texto: activa ? 'Stop doing it' : 'I do not want it', peligro: true, hace: () => C.cambiaRegla(d.de, 'descartada', activa ? 'I don\'t do it any more · stopped today' : 'I no longer do it · I will not suggest it again')},
-        {texto: 'Put it another way', ir: 'dictar/orden'},
-        {texto: 'Not with one client', hoja: 'c-excepto'},
-        ofi ? null : {texto: 'Suggest it to the office', sub: 'Montse will see it with your name and decide if the whole office tries it.', hace: () => {
+        r.estado === 'propuesta' || r.estado === 'nueva' ? {texto: 'Not with one client', hoja: 'c-excepto'} : null,
+        ofi ? null : {texto: 'Suggest it to the office', hace: () => {
           const o = C.lee('aOficina', {}); o[d.de] = VETA.ahora(); C.pon('aOficina', o); VETA.repinta();
           VETA.aviso('I have suggested it to the office, with your name', {deshacer: () => { const x = C.lee('aOficina', {}); delete x[d.de]; C.pon('aOficina', x); VETA.repinta(); }});
-        }}
-      ].filter(Boolean);
+        }},
+        {texto: activa ? 'Stop doing it' : 'I do not want it', peligro: true, hace: () => C.cambiaRegla(d.de, 'descartada', activa ? 'I don\'t do it any more · stopped today' : 'I no longer do it · I will not suggest it again')}
+      ];
     }
   });
   // ---- c-excepto · No con un cliente ----
@@ -196,8 +196,8 @@
   const borrables = () => { const ya = C.lee('borrados', []).map(b => b.nombre); return M.lectura().fuera.concat(M.clientes(VETA.yo().id).slice(0, 6).map(c => c.nombre)).filter(n => !ya.includes(n)); };
   VETA.hojaAcciones('h30', {
     titulo: d => (d.de ? 'What was deleted' : 'Which chat to delete?'),
-    texto: d => (d.de ? '' : 'It goes away in 72 h and I tell you what was deleted.'),
-    bloques: d => (d.de ? [{titulo: d.de, texto: '1 conversation · requested today · fully deleted before Thursday 26'}, {texto: 'Whatever was already on a client\'s profile stays on the profile.'}] : null),
+    texto: d => (d.de ? '' : 'You can ask me to delete a chat whenever you like. I\'ll tell you what I deleted.'),
+    bloques: d => (d.de ? [{titulo: d.de, texto: '1 conversation · requested today · I\'ll tell you here once it\'s deleted'}, {texto: 'Whatever was already on a client\'s profile stays on the profile.'}] : null),
     opciones: d => (d.de ? [] : borrables().map(n => ({texto: n, peligro: true, cierra: false,
       hace: () => { C.pon('borrados', C.lee('borrados', []).concat([{nombre: n, hora: VETA.ahora()}])); VETA.hoja('h30', {de: n}); repintaSiVe('cuenta/chats'); }})))
   });
@@ -240,21 +240,10 @@
     boton: d => (C.hallazgo(d.hallazgo) || {}).boton || null
   });
 
-  // ---- h33 · Calendario ----
-  VETA.hojaElegir('h33', {
-    titulo: 'Calendar', texto: 'I read your appointments, never change them.',
-    opciones: () => D().calendarios.map(c => ({id: c, texto: c})),
-    valor: () => C.calendario(),
-    alElegir: op => {
-      const antes = C.calendario(); C.pon('calendario', op.id); VETA.repinta();
-      VETA.aviso('Calendar connected: ' + op.id, {deshacer: () => { C.pon('calendario', antes); VETA.repinta(); }});
-    }
-  });
-
   // ---- c-mano · Lo que aún haces a mano (A14) ----
   VETA.hojaTexto('c-mano', {
     titulo: 'What you still do by hand',
-    bloques: () => [{texto: 'Work that repeats in your chats and that you still do yourself.'}, {lista: D().aMano.map(([t, n]) => `${t} · ${n} times`)}],
+    bloques: () => [{texto: 'Work that repeats in your chats and that you still do yourself.'}, {lista: D().aMano.map(([t, n]) => `${t} · you've done it ${n} times`)}],
     boton: {texto: 'See the first one', ir: 'regla/r-valoraciones'}
   });
 
@@ -264,7 +253,7 @@
     pinta: () => {
       const av = C.lee('avisos', false);
       return `<p class="hoja-x">I only alert you about what can't wait.</p>` +
-        (av ? UI.lineaHecho({texto: 'Alerts allowed', hora: av, boton: {texto: 'Undo', accion: 'quita'}}) : UI.boton({texto: 'Allow alerts', accion: 'permite'})) +
+        (av ? R7().hecho({texto: 'Alerts allowed', hora: av, deshacer: 'quita'}) : UI.boton({texto: 'Allow alerts', accion: 'permite'})) +
         R7().lista([UI.interruptor({texto: 'Get the day\'s summary at 19:30', on: C.lee('parteCorreo', false), accion: 'parte'})]);
     },
     acciones: {

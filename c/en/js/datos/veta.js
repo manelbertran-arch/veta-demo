@@ -5,35 +5,37 @@
 (function () {
   'use strict';
   const D = VETA.datos;
+  // las fechas, por la única regla (VETA.fecha.corta): “Sáb 21” hasta seis días, “13 nov” si hace más
+  const F = iso => VETA.fecha.corta(iso);
 
   D.reglas = [
     {id: 'r-valoraciones', texto: 'Get the flat report ready before a valuation', estadoInicial: 'propuesta', estadoTexto: 'to decide', pruebaDias: 14,
       casos: {
-        comoYo: [['13 Nov', 'Rosa Vidal'], ['5 Nov', 'Casals family'], ['29 Oct', 'Sergi Font'], ['22 Oct', 'Anna Bosch'], ['15 Oct', 'Pau Mir'], ['8 Oct', 'Carme Roca'],
-          ['30 Sep', 'Lluís Pons'], ['24 Sep', 'Marta Puig'], ['16 Sep', 'Joan Vila'], ['5 Sep', 'Elena Vives'], ['27 Aug', 'Pere Soler']].map(([cuando, nombre]) => ({cuando, nombre})),
-        distinto: [{cuando: '6 Nov', nombre: 'Jordi Ferrer', cliente: 'jordi', texto: 'How much could I ask for my mother\'s flat?'},
-          {cuando: '21 Oct', nombre: 'Núria Camps', cliente: 'nuria', texto: 'First of all, can you come and see it?'},
-          {cuando: '2 Sep', nombre: 'Toni Ribas', cliente: 'toni', texto: 'No need for a report, just give me a rough figure.'}]
+        comoYo: [[F('2026-11-13'), 'Rosa Vidal'], [F('2026-11-05'), 'Casals family'], [F('2026-10-29'), 'Sergi Font'], [F('2026-10-22'), 'Anna Bosch'], [F('2026-10-15'), 'Pau Mir'], [F('2026-10-08'), 'Carme Roca'],
+          [F('2026-09-30'), 'Lluís Pons'], [F('2026-09-24'), 'Marta Puig'], [F('2026-09-16'), 'Joan Vila'], [F('2026-09-05'), 'Elena Vives'], [F('2026-08-27'), 'Pere Soler']].map(([cuando, nombre]) => ({cuando, nombre})),
+        distinto: [{cuando: F('2026-11-06'), nombre: 'Jordi Ferrer', cliente: 'jordi', texto: 'How much could I ask for my mother\'s flat?'},
+          {cuando: F('2026-10-21'), nombre: 'Núria Camps', cliente: 'nuria', texto: 'First of all, can you come and see it?'},
+          {cuando: F('2026-09-02'), nombre: 'Toni Ribas', cliente: 'toni', texto: 'No need for a report, just give me a rough figure.'}]
       }},
     {id: 'r-cancelaciones', texto: 'Suggest another date when a viewing is cancelled', estadoInicial: 'a-prueba', dia: 5, pruebaDias: 14},
     {id: 'r-actas', texto: 'Ask you for the notes after each viewing', estadoInicial: 'activa', desde: '3 Sep',
-      ultimo: ['Sat 21 · Casals family', 'Thu 19 · Toni Ribas', 'Tue 17 · Sergi Font']},
+      ultimo: [F('2026-11-21') + ' · Família Casals', F('2026-11-19') + ' · Toni Ribas', F('2026-11-17') + ' · Sergi Font']},
     {id: 'r-promesas', texto: 'Write down what people promise you and alert you if it does not arrive', estadoInicial: 'activa', desde: '3 Sep',
-      ultimo: ['Fri 20 · Jordi (you, the flat report)', 'Mon 16 · Elena (the payslip)', 'Fri 13 · Pere (the certificate)']},
+      ultimo: [F('2026-11-20') + ' · Jordi (you, the flat report)', F('2026-11-16') + ' · Elena (the payslip)', F('2026-11-13') + ' · Pere (the certificate)']},
     {id: 'r-informes', texto: 'Get each owner\'s report ready on Mondays', estadoInicial: 'activa', desde: '7 Oct',
-      ultimo: ['Mon 16 · Pere Soler · sent', 'Mon 9 · Pere Soler · sent', 'Mon 2 · Pere Soler · sent']},
+      ultimo: [F('2026-11-16') + ' · Pere Soler · sent', F('2026-11-09') + ' · Pere Soler · sent', F('2026-11-02') + ' · Pere Soler · sent']},
     {id: 'r-contestado', texto: 'Mark who has replied to you', estadoInicial: 'activa', desde: '3 Sep',
-      ultimo: ['Fri 20 · Jordi', 'Thu 19 · Toni', 'Wed 18 · Anna Bosch']},
+      ultimo: [F('2026-11-20') + ' · Jordi', F('2026-11-19') + ' · Toni', F('2026-11-18') + ' · Anna Bosch']},
     {id: 'r-firmas', texto: 'Warn you the day before a signing', estadoInicial: 'activa', desde: '3 Sep',
-      ultimo: ['Mon 30 · I\'ll alert you about Laia Casas\'s signing', 'Mon 9 · deposit for the Sants flat', '15 Oct · deposit for the Pujades flat']}
+      ultimo: [F('2026-11-30') + ' · I\'ll tell you about Laia Casas\'s signing', F('2026-11-09') + ' · deposit on the Sants flat', F('2026-10-15') + ' · deposit on the Pujades flat']}
   ];
   // la regla que nace en A11 al dictar la orden; entra en la lista cuando se marca 'a-prueba'
   D.reglaNueva = {id: 'r-recordatorios', texto: 'Get a reminder ready when a buyer does not reply in three days', estadoInicial: 'nueva', pruebaDias: 14,
-    casos: [['9 Nov', 'Marta Puig'], ['30 Oct', 'Toni Ribas'], ['28 Oct', 'Elena Vives'], ['19 Oct', 'Sergi Font'], ['15 Oct', 'Jordi Ferrer'], ['2 Oct', 'Anna Bosch']].map(([cuando, nombre]) => ({cuando, nombre}))};
+    casos: [[F('2026-11-09'), 'Marta Puig'], [F('2026-10-30'), 'Toni Ribas'], [F('2026-10-28'), 'Elena Vives'], [F('2026-10-19'), 'Sergi Font'], [F('2026-10-15'), 'Jordi Ferrer'], [F('2026-10-02'), 'Anna Bosch']].map(([cuando, nombre]) => ({cuando, nombre}))};
 
   // A15, A15b, H13 · lo que lee Veta
   D.lectura = {chats: 212, canales: [
-    {nombre: 'WhatsApp Business', hace: '4 min ago'}, {nombre: 'Office email', hace: '9 min ago'}, {nombre: 'Office calls', hace: '12 min ago'}],
+    {nombre: 'WhatsApp Business', hace: '4 min ago'}],
     hoy: {chats: 8, audios: 10, porEscuchar: 1},
     fuera: ['Mum', 'Javi (brother)', 'Friday dinner group']};
 

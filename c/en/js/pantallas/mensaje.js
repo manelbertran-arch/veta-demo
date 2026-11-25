@@ -21,10 +21,10 @@
 
   VETA.pantalla('A2', {
     titulo: 'Change the message',
-    nota: 'Change it and I\'ll ask whether to always do that.',
+    nota: 'If you change it, I\'ll ask whether to learn it.',
     pinta: p => {
       const c = M.cosa(p.id);
-      if (!c) return UI.vacio({titulo: 'This message is no longer here', texto: 'What you have to do is in Home.', icono: 'chat'});
+      if (!c) return r7.vacio('This message is no longer there.');
       const texto = actual(c), veta = deVeta(c), e = ed(c.id) || {}, x = c.extra || {};
       // el mensaje que Veta ha cambiado con lo recién aprendido: la frase nueva va subrayada en oro mientras no se toque
       const oro = !!(x.r6 && x.borradorHtml && texto === veta);

@@ -7,13 +7,14 @@
   'use strict';
   const raiz = document.documentElement;
   const COLORES = ['veta', 'joya', 'medianoche', 'nube', 'lima', 'coral', 'lavanda', 'mocha', 'cobalto', 'zafiro', 'aurora', 'salvia'];
-  const NOMBRES = {veta: 'Veta', joya: 'Joya', medianoche: 'Medianoche', nube: 'Nube y petróleo', lima: 'Bosque y lima', coral: 'Coral', lavanda: 'Lavanda', mocha: 'Mocha y musgo', cobalto: 'Cobalto y lima', zafiro: 'Zafiro y ámbar', aurora: 'Aurora', salvia: 'Salvia y terracota'};
+  const NOMBRES = {veta: 'Veta', joya: 'Joya', medianoche: 'Medianoche', nube: 'Nube', lima: 'Bosque', coral: 'Coral', lavanda: 'Lavanda', mocha: 'Mocha', cobalto: 'Cobalto', zafiro: 'Zafiro', aurora: 'Aurora', salvia: 'Salvia'};
   const MODOS = {claro: 'Claro', oscuro: 'Oscuro', auto: 'Automático'};
   const mm = q => !!(window.matchMedia && matchMedia(q).matches);
 
   if (VETA.param('mov') === 'reducido') VETA.est.pon('mov', 'reducido');
 
-  const modo = () => (VETA.pref.lee('modo', 'claro') in MODOS ? VETA.pref.lee('modo', 'claro') : 'claro');
+  // D21 · quien no ha elegido sigue al móvil: el modo por defecto es «auto»
+  const modo = () => (VETA.pref.lee('modo', 'auto') in MODOS ? VETA.pref.lee('modo', 'auto') : 'auto');
   const color = () => (COLORES.includes(VETA.pref.lee('color', 'veta')) ? VETA.pref.lee('color', 'veta') : 'veta');
   const movPedido = () => VETA.est.lee('mov', null) || VETA.pref.lee('mov', 'normal');
   const reducido = () => movPedido() === 'reducido' || mm('(prefers-reduced-motion: reduce)');

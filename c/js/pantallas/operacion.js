@@ -39,10 +39,11 @@
         abre: lista(pasos.map((x, k) => `<li${k + 1 === fase && !fin ? ' class="d2-aqui"' : ''}>${esc(x)}</li>`), 'd2-pasos')});
       if (o.aviso && o.aviso.tipo === 'papel') { const t = o.aviso.texto.replace(/^Falta un papel: /, ''); filas.push({nombre: 'Papeles', pasa: 'Falta 1', abre: `<p>${esc(t.charAt(0).toUpperCase() + t.slice(1))}.</p>`}); }
       const hit = (o.hitos || []).slice().reverse();
-      if (hit.length) filas.push({nombre: 'Lo último', pasa: hit[0].cuando + ' · ' + hit[0].texto,
+      // lo último: la fecha a la cola (es un dato) y, en la segunda línea, qué pasó
+      if (hit.length) filas.push({nombre: 'Lo último', pasa: hit[0].texto, dato: hit[0].cuando.replace(/, \d{1,2}:\d\d$/, ''),
         abre: lista(hit.map(x => `<li><b>${esc(x.cuando)}</b> · ${esc(x.texto)}</li>`), 'd2-hitos')});
       const nombre = o.nombre.split(' ')[0];
-      filas.push({nombre: 'Qué ves tú y qué no', pasa: corto && corto !== 'ti' ? 'No ves sus chats ni sus notas' : 'Tus notas se guardan aquí',
+      filas.push({nombre: 'Qué ves tú y qué no', pasa: corto && corto !== 'ti' ? VETA.PROMESA.chats : 'Tus notas se guardan aquí',
         abre: `<p>${corto && corto !== 'ti' ? `No ves lo que se escriben ${esc(corto)} y ${esc(nombre)}, ni las notas de ${esc(corto)}. ${esc(corto)} ve en su app lo mismo que ves tú de esta operación.` : 'Tus notas y preguntas se guardan aquí, con su hora.'}</p>`});
       return h + r7.lista(filas, {i: 1});
     },

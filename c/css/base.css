@@ -64,9 +64,10 @@ mark{background:var(--tinte);color:inherit;border-radius:4px;padding:0 2px}
 .marco{flex:1;min-height:0;display:flex;position:relative}
 .col{flex:1;min-width:0;min-height:0;display:flex;flex-direction:column;background:var(--fondo);position:relative;timeline-scope:--desp}
 #col-b:empty{display:none}
-.desplaza{flex:1;min-height:0;overflow-y:auto;overflow-x:hidden;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;scroll-timeline:--desp block}
-.pant{width:100%;max-width:calc(var(--col-max) + 2*var(--margen));margin:0 auto;padding:var(--e4) var(--margen) var(--e6)}
-.pant-cuerpo{display:flex;flex-direction:column;gap:var(--e3)}
+.desplaza{flex:1;min-height:0;display:flex;flex-direction:column;overflow-y:auto;overflow-x:hidden;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;scroll-timeline:--desp block}
+/* la pantalla ocupa al menos todo el alto que hay: así el cuerpo puede centrar un bloque en el hueco (.r7-centro) o un vacío (.r7-vacio) */
+.pant{flex:1 0 auto;display:flex;flex-direction:column;width:100%;max-width:calc(var(--col-max) + 2*var(--margen));margin:0 auto;padding:var(--e4) var(--margen) var(--e6)}
+.pant-cuerpo{flex:1 0 auto;display:flex;flex-direction:column;gap:var(--e3)}
 .app[data-completa=si] .barra{display:none}
 
 /* ---- cabeceras (ronda 8 · pieza 1): raíz de 56 sin «volver», detalle de 60 con el nombre de donde vienes sobre el título ---- */
@@ -117,8 +118,12 @@ mark{background:var(--tinte);color:inherit;border-radius:4px;padding:0 2px}
 .hoja{position:fixed;left:0;right:0;bottom:0;z-index:21;max-height:86dvh;overflow-y:auto;overscroll-behavior:contain;background:var(--s1);color:var(--t1);border-radius:var(--r-4) var(--r-4) 0 0;padding:0 var(--margen) calc(var(--e6) + env(safe-area-inset-bottom,0px));box-shadow:var(--flota);transform:translateY(105%)}
 .hoja.on{transform:none}
 .hoja>*{max-width:var(--col-max);margin-left:auto;margin-right:auto}
-.aviso{position:fixed;left:var(--margen);right:var(--margen);bottom:var(--aviso-b,104px);z-index:30;margin:0 auto;max-width:var(--col-max);min-height:var(--toque);display:flex;align-items:center;justify-content:space-between;gap:var(--e3);padding:var(--e2) var(--e2) var(--e2) var(--e4);border-radius:var(--r-3);background:var(--t1);color:var(--fondo);font:500 var(--f-apoyo)/var(--l-fila) var(--body);box-shadow:var(--flota);opacity:0;translate:0 8px}
-.aviso.on{opacity:1;translate:0 0}
+/* el aviso (ronda 8): una franja pegada al borde de arriba del pie o de la barra, a lo ancho de la columna (el sitio lo pone aviso.js).
+   No flota ni tapa: el contenido le cede su alto mientras está. Los toques lo atraviesan salvo en «Deshacer» */
+.aviso{position:fixed;box-sizing:border-box;left:var(--aviso-l,0);width:var(--aviso-w,100%);bottom:var(--aviso-b,0);z-index:30;min-height:44px;display:flex;align-items:center;justify-content:space-between;gap:var(--e3);padding:var(--e1) var(--e1) var(--e1) var(--margen);background:var(--t1);color:var(--fondo);font:500 var(--f-apoyo)/var(--l-fila) var(--body);pointer-events:none;opacity:0;clip-path:inset(100% 0 0 0)}
+.aviso.on{opacity:1;clip-path:inset(0)}
+.aviso .aviso-d{pointer-events:auto;min-height:36px}
+.aviso.al-fondo{padding-bottom:calc(var(--e1) + env(safe-area-inset-bottom,0px))}
 .aviso .btn-texto{color:var(--fondo);text-decoration:underline;text-underline-offset:3px}
 /* móviles bajos (375×667): un poco menos de aire arriba y entre bloques de la tarjeta, para que el botón principal
    de la primera tarjeta quede por encima del micro */

@@ -18,13 +18,13 @@
       const ult = X.lee('avisoNuevo', null);
       let h = `<div data-i="0">${UI.campo({etiqueta: '¿Cuándo te aviso?', id: 'd-aviso-t', valor: texto, placeholder: 'Avísame cuando…'})}</div>`;
       h += r7.filtros(D.avisos.ejemplos.map(e => ({id: e.id, texto: e.corto})), {valor: ejemplo, accion: 'usar', etiqueta: 'Ejemplos', i: 0});
-      if (ult) h += `<div data-i="0">${UI.lineaHecho({texto: 'Aviso creado. Cuando salte, lo verás en Inicio.', hora: ult.hora, vt: 'aviso-' + ult.id, boton: {texto: 'Deshacer', accion: 'deshacer-aviso', de: ult.id}})}</div>`;
+      if (ult) h += r7.hecho({texto: 'Aviso creado', hora: ult.hora, vt: 'aviso-' + ult.id, deshacer: {accion: 'deshacer-aviso', de: ult.id}});
       h += r7.lista(puestos().map(a => UI.interruptor({texto: a.texto, on: !a.off, accion: 'apagar', de: a.id})), {rotulo: 'Avisos puestos', i: 1});
-      h += r7.lista([{cara: 'joan-serra', nombre: 'Queja de Joan Serra', pasa: 'Te avisé el sábado 21, 20:05', ir: 'asunto/joan-serra'}], {rotulo: 'Ya te avisé', i: 2});
+      h += r7.lista([{cara: 'joan-serra', nombre: 'Queja de Joan Serra', pasa: 'Te avisé ' + VETA.fecha.corta('2026-11-21T20:05', {frase: true}), ir: 'asunto/joan-serra'}], {rotulo: 'Ya te avisé', i: 2});
       if (texto.trim()) h += r7.enlace({texto: 'Cómo habría ido', hoja: 'h36', datos: {ejemplo: ejemplo || ''}});
       return h;
     },
-    botonFijo: () => texto.trim() ? r7.botones({texto: 'Crear el aviso', accion: 'crear'}) : '',
+    botonFijo: () => texto.trim() ? r7.botones({texto: 'Crear el aviso', accion: 'crear'}) : X.lee('avisoNuevo', null) ? r7.sigue() : '',
     alMontar: el => {
       const i = el.querySelector('#d-aviso-t'); if (!i) return;
       i.addEventListener('input', () => {

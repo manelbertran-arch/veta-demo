@@ -9,3 +9,7 @@
 .d2-pasos{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:var(--e1) var(--e2)}
 .d2-pasos li+li::before{content:'›';margin-right:var(--e2);color:var(--t3)}
 .d2-pasos .d2-aqui{color:var(--t1);font-weight:700}
+/* Inicio de dirección con «Lo tuyo»: la última fila («Tus clientes») no puede asomar bajo el pie a 390×844; entre bloques queda el hueco de la columna (12), sin el margen doble */
+.r7-inicio:has(>.r7-primero+.r7-lista+.r7-grupo)>:is(.r7-lista,.r7-grupo){margin-top:0}
+.r7-inicio:has(>.r7-primero+.r7-lista+.r7-grupo)>.r7-primero{padding-block:var(--e3)}
+.r7-inicio:has(>.r7-primero+.r7-lista+.r7-grupo) .r7-rotulo{padding-top:var(--e1)}

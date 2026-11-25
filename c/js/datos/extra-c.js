@@ -4,6 +4,8 @@
 (function () {
   'use strict';
   const C = VETA.datos.c = {};
+  // fechas por la única regla: F (cola o título, con mayúscula) y f (dentro de una frase, en minúscula)
+  const F = iso => VETA.fecha.corta(iso), f = iso => VETA.fecha.corta(iso, {frase: true});
 
   // A10 · nombre corto (cabecera) y frase entera de cada regla
   C.reglas = {
@@ -18,17 +20,17 @@
   };
   // A10 · los 3 casos distintos de valoraciones (H18): hora del mensaje y qué habría hecho Veta
   C.distinto = {
-    jordi: {origen: 'Jordi · WhatsApp · 6 nov, 10:12', habria: 'Esta vez no enviaste el informe del piso: escribiste otra cosa.', motivo: 'Escribiste otra cosa'},
-    nuria: {origen: 'Núria · WhatsApp · 21 oct, 17:40', habria: 'Esta vez no enviaste el informe del piso ni nada más.', motivo: 'No enviaste nada'},
-    toni: {origen: 'Toni · WhatsApp · 2 sep, 12:05', habria: 'Esta vez no enviaste el informe del piso: escribiste otra cosa.', motivo: 'Escribiste otra cosa'}
+    jordi: {origen: 'Jordi · WhatsApp · ' + f('2026-11-06T10:12'), habria: 'Esta vez no enviaste el informe del piso: escribiste otra cosa.', motivo: 'Escribiste otra cosa'},
+    nuria: {origen: 'Núria · WhatsApp · ' + f('2026-10-21T17:40'), habria: 'Esta vez no enviaste el informe del piso ni nada más.', motivo: 'No enviaste nada'},
+    toni: {origen: 'Toni · WhatsApp · ' + f('2026-09-02T12:05'), habria: 'Esta vez no enviaste el informe del piso: escribiste otra cosa.', motivo: 'Escribiste otra cosa'}
   };
   // A10 · la regla a prueba (visitas canceladas): lo que habría hecho, sin enviarlo
   C.aPrueba = [
-    {id: 'jordi', cuando: 'Vie 20', nombre: 'Jordi Ferrer', propone: 'Propondría el jueves 26, 18:00',
-      cita: 'Al final mañana no puedo ir a ver el piso, lo siento.', origen: 'Jordi · WhatsApp · vie 20, 9:05',
+    {id: 'jordi', cuando: F('2026-11-20'), nombre: 'Jordi Ferrer', propone: 'Propondría el jueves 26, 18:00',
+      cita: 'Al final mañana no puedo ir a ver el piso, lo siento.', origen: 'Jordi · WhatsApp · ' + f('2026-11-20T09:05'),
       borrador: 'Hola, Jordi, soy Laura. No pasa nada. ¿Te va bien el jueves 26 a las 18:00 para verlo?'},
-    {id: 'anna-bosch', cuando: 'Jue 19', nombre: 'Anna Bosch', propone: 'Propondría el sábado 21, 10:00',
-      cita: 'Me ha surgido un viaje, ¿podemos cambiar la visita?', origen: 'Anna · WhatsApp · jue 19, 16:30',
+    {id: 'anna-bosch', cuando: F('2026-11-19'), nombre: 'Anna Bosch', propone: 'Propondría el sábado 21, 10:00',
+      cita: 'Me ha surgido un viaje, ¿podemos cambiar la visita?', origen: 'Anna · WhatsApp · ' + f('2026-11-19T16:30'),
       borrador: 'Hola, Anna, soy Laura. Claro. ¿Te va bien el sábado 21 a las 10:00?'}
   ];
   // A11 · la orden dictada y sus partes (H21)
@@ -50,12 +52,12 @@
   // A13 · lo que he aprendido
   C.aprendido = [
     {id: 'pere-tarde', texto: 'A Pere le escribes por la tarde, después de las 16:00.', corto: 'A Pere le escribes por la tarde', origen: 'De tus mensajes de octubre'},
-    {id: 'marta-sabados', texto: 'Marta Puig solo puede ver pisos los sábados.', corto: 'Marta solo puede los sábados', origen: 'De su chat del 3 nov'},
+    {id: 'marta-sabados', texto: 'Marta Puig solo puede ver pisos los sábados.', corto: 'Marta solo puede los sábados', origen: 'De su chat del ' + f('2026-11-03')},
     {id: 'arras-notaria', texto: 'Las arras las firmas en la notaría de Gran de Gràcia.', corto: 'Las arras, en Gran de Gràcia', origen: 'De tus 4 últimas arras'}
   ];
   C.oficinaDice = ['Las visitas se apuntan en la ficha el mismo día.', 'El certificado energético se pide antes de anunciar el precio.'];
   // A13b · ejemplos de mejora
-  C.mejoras = ['Llamar en 48 horas a quien pide ver un piso', 'Confirmar las visitas el día antes', 'Pedir el certificado energético al captar el piso'];
+  C.mejoras = ['Llamar en 48 h al que pide visita', 'Confirmar las visitas el día antes', 'Pedir el certificado al captar'];
   // A14 · lo que aún haces a mano (hoja c-mano)
   C.aMano = [['Preparar el informe del piso antes de una valoración', 14], ['Confirmar las visitas el día antes', 9], ['Pedir el certificado energético', 6]];
   // H25 · semanas anteriores (casos preparados de la oficina, los de G3e; mensajes de Laura inventados)
@@ -74,27 +76,27 @@
       {id: 'sin-respuesta', titulo: 'Contactos sin respuesta', sub: '5 · el más antiguo, de ayer', texto: 'Personas que te escribieron y todavía esperan una respuesta tuya.',
         citas: [{texto: '¿Sigue disponible el piso de Gràcia? Podríamos verlo este sábado', origen: 'Marta · ayer, 18:42'}]},
       {id: 'quieren', titulo: 'Querían vender o comprar', sub: '9 personas', texto: 'Lo dijeron en el chat y no siempre se apuntó en ninguna ficha.',
-        citas: [{texto: 'Antes de nada, ¿puedes venir a verlo?', origen: 'Núria · 21 oct'}, {texto: '¿Cuánto podría pedir por el piso de mi madre?', origen: 'Jordi · 6 nov'}]},
+        citas: [{texto: 'Antes de nada, ¿puedes venir a verlo?', origen: 'Núria · ' + f('2026-10-21')}, {texto: '¿Cuánto podría pedir por el piso de mi madre?', origen: 'Jordi · ' + f('2026-11-06')}]},
       {id: 'promesas', titulo: 'Promesas', sub: '7 sin constancia', texto: 'Lo que te prometieron, o prometiste tú, y no consta que se haya cumplido.',
-        citas: [{texto: 'El miércoles te paso la nómina', origen: 'Elena · lun 16'}]},
+        citas: [{texto: 'El miércoles te paso la nómina', origen: 'Elena · ' + f('2026-11-16')}]},
       {id: 'papeles', titulo: 'Papeles pendientes', sub: '4', texto: 'Documentos que alguien tiene que mandar antes de seguir.',
-        citas: [{texto: 'Te mando el certificado energético cuando me lo den', origen: 'Pere · vie 13'}]},
+        citas: [{texto: 'Te mando el certificado energético cuando me lo den', origen: 'Pere · ' + f('2026-11-13')}]},
       {id: 'enfrian', titulo: 'Relaciones que se enfrían', sub: '3', texto: 'Clientes con los que hace semanas que no hablas.',
         citas: [{texto: 'Si sale algún local en el Eixample, avísame', origen: 'Albert · hace 7 semanas'}]}]},
     {titulo: 'Cosas abiertas', filas: [
       {id: 'visita-gracia', titulo: 'La visita del piso de Gràcia', sub: 'Marta Puig · el sábado', texto: 'Marta quiere ver Verdi 42 este sábado. Falta confirmarle la hora.',
         citas: [{texto: '¿Sigue disponible el piso de Gràcia? Podríamos verlo este sábado', origen: 'Marta · ayer, 18:42'}]},
       {id: 'dossier-sants', titulo: 'El informe del piso de Sants', sub: 'Jordi Ferrer · se lo prometiste', texto: 'Le dijiste a Jordi que le mandabas el informe del piso de Sants.',
-        citas: [{texto: 'Perfecto, quedo a la espera del informe', origen: 'Jordi · vie 20'}]},
+        citas: [{texto: 'Perfecto, quedo a la espera del informe', origen: 'Jordi · ' + f('2026-11-20')}]},
       {id: 'papeles-verdi', titulo: 'Los papeles del piso de Verdi', sub: 'Pere Soler · el certificado', texto: 'Falta el certificado energético para poder anunciar el precio.',
-        citas: [{texto: 'Te mando el certificado energético cuando me lo den', origen: 'Pere · vie 13'}]}]},
+        citas: [{texto: 'Te mando el certificado energético cuando me lo den', origen: 'Pere · ' + f('2026-11-13')}]}]},
     {titulo: 'Trabajos que se repiten', filas: [
       {id: 'dossier', titulo: 'Preparar el informe del piso antes de una valoración', sub: '14 veces en seis meses', texto: 'Cuando alguien pide una valoración, al día siguiente le mandas el informe del piso. Lo has hecho 14 veces; en 11 de la misma forma.',
-        citas: [{texto: '¿Cuánto podría pedir por el piso de mi madre?', origen: 'Jordi · 6 nov'}], boton: {texto: 'Ver los 14 casos', ir: 'regla/r-valoraciones'}},
+        citas: [{texto: '¿Cuánto podría pedir por el piso de mi madre?', origen: 'Jordi · ' + f('2026-11-06')}], boton: {texto: 'Ver los 14 casos', ir: 'regla/r-valoraciones'}},
       {id: 'certificado', titulo: 'Pedir el certificado energético', sub: '6 veces', texto: 'Al captar un piso, pides el certificado energético al propietario.',
-        citas: [{texto: 'Te mando el certificado energético cuando me lo den', origen: 'Pere · vie 13'}]},
+        citas: [{texto: 'Te mando el certificado energético cuando me lo den', origen: 'Pere · ' + f('2026-11-13')}]},
       {id: 'visitas', titulo: 'Confirmar las visitas el día antes', sub: '9 veces', texto: 'El día antes de una visita escribes para confirmarla.',
-        citas: [{texto: 'Sí, mañana a las 11:00 nos vemos en el portal', origen: 'Elena · vie 20'}]}]}
+        citas: [{texto: 'Sí, mañana a las 11:00 nos vemos en el portal', origen: 'Elena · ' + f('2026-11-20')}]}]}
   ];
 
   // G10 · cómo trabajamos (H23). `corto`: el nombre en una línea para la fila y el título de la hoja
@@ -115,9 +117,7 @@
   // G12 · lo que Veta aún no hace
   C.falta = [['Responder a contactos nuevos', 23], ['Preparar informes del piso', 14], ['Pedir certificados energéticos', 6]];
   // G14 · lo que sabe tu oficina
-  C.sabe = [['Quien pide fotos del balcón, visita', 31, 38], ['Si el propietario no recibe noticias en 10 días, suele quejarse', 5, 7], ['En Gràcia casi todos piden ver el piso en sábado', 64, 92]];
-  // H33 · calendarios
-  C.calendarios = ['Calendly', 'Cal.com', 'Google Calendar'];
+  C.sabe = [['Quien pide fotos del balcón, visita', 31, 38], ['Sin noticias en 10 días, el propietario se queja', 5, 7], ['En Gràcia, casi todos quieren ver en sábado', 64, 92]];
   // E2 · cuentas de ejemplo
   C.cuentas = {laura: 'laura@ejemplo.es', montse: 'montse@ejemplo.es'};
 })();

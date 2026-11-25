@@ -64,7 +64,7 @@
 
   VETA.pantalla('A5p', {
     titulo: 'Ask Veta',
-    sub: 'I answer from your chats. If it\'s not there, I say so.',
+    sub: 'I answer from what\'s in your chats.',
     pinta: p => {
       const r = responde(p.id);
       const primera = !vistas.has(p.id);

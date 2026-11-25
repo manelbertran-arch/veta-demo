@@ -47,7 +47,7 @@
     const ini = VETA.iniciales(q.nombre || o.nombre || id);
     const foto = o.sinFoto ? null : q.foto;
     return `<span class="av av-${tam}${foto ? ' con-foto' : ''}${o.aro ? ' av-aro' : ''}"${o.foco ? ` data-foco="${esc(o.foco)}"` : ''}>` +
-      (foto ? `<img src="assets/perfiles/${esc(foto)}.webp" alt="" width="${tam}" height="${tam}" decoding="async">` : '') +
+      (foto ? `<img src="assets/perfiles/${esc(foto)}.webp" alt="" width="${tam}" height="${tam}" loading="eager" decoding="async">` : '') +
       `<b aria-hidden="true">${esc(ini)}</b></span>`;
   };
 

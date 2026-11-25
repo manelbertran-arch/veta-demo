@@ -1,11 +1,11 @@
 /* Veta demo · ronda 8 · hojas · direccion.js · carril D
-   H34 Los 3 temas de hoy · H35 ¿A quién se lo asignas? / ¿A quién pasas la cartera? · H36 Cómo habría ido · H38 Coste por hora ·
+   H34 Los 3 temas de hoy · H35 ¿A quién se lo asignas? / ¿A quién pasas la cartera? · H36 Cómo habría ido ·
    H40 Clientes con dos chats. Hojas propias de D: d-regla-otra (G2b “Otra cosa…”), d-tema (G3c), d-partes (G7c), d-entra (G9),
    d-preguntar y d-anotar (G18).
    Ronda 8 · nuevas, todas con las tres plantillas (acciones, texto, elegir):
    - “Más” de cada pantalla: d-asunto-mas (G2) · d-reparto-mas (G5) · d-op-mas (G18) · d-regla-mas (G2b) · d-resumen-mas (G3b)
    - r8-paradas (las operaciones paradas, con su enlace, y lo que espera decisión) · d-hoy (cómo va la oficina hoy, con sus cifras)
-   - de lectura: d-pasos (G2) · d-decididas (Inicio) · d-tarda y d-hace (G19) · d-sola y d-aprendi (G3) · d-ensenado (G21) · d-decimos (G16) · d-ejemplos (G3e)
+   - de lectura: d-pasos (G2) · d-decididas (Inicio) · d-hace (G19) · d-sola y d-aprendi (G3) · d-ensenado (G21) · d-decimos (G16) · d-ejemplos (G3e)
    Se fue H37 (“Un aviso puesto”): cada aviso lleva ya su interruptor en la lista de Tus avisos (G6). */
 (function () {
   'use strict';
@@ -15,8 +15,8 @@
   let eleccion = [];
   const pintaTemas = () => `<p class="hoja-x">Choose up to 3. They're the ones you'll see at the top and in the meeting.</p>` +
     `<div class="ops d-temas-h">${D.temas.map(t => {
-      const on = eleccion.includes(t.id), lleno = !on && eleccion.length >= 3;
-      return `<button type="button" class="op op-elige d-tema-op" role="checkbox" aria-checked="${on}"${lleno ? ' aria-disabled="true"' : ''} data-accion="tema" data-tema="${esc(t.id)}">` +
+      const on = eleccion.includes(t.id);
+      return `<button type="button" class="op op-elige d-tema-op" role="checkbox" aria-checked="${on}" data-accion="tema" data-tema="${esc(t.id)}">` +
         `<span class="op-c"><span class="op-t">${esc(t.texto)}</span></span><b class="d-tema-n">${esc(t.cifra)}</b><span class="op-marca">${VETA.ic('check', 20)}</span></button>`;
     }).join('')}</div>` +
     `<p class="d-cuenta" aria-live="polite">${eleccion.length} of 3 chosen</p>` +
@@ -27,7 +27,7 @@
     acciones: {
       tema(ev, el) {
         const id = el.dataset.tema, k = eleccion.indexOf(id);
-        if (k >= 0) eleccion.splice(k, 1); else if (eleccion.length < 3) eleccion.push(id); else return;
+        if (k >= 0) eleccion.splice(k, 1); else { if (eleccion.length >= 3) eleccion.shift(); eleccion.push(id); }   // con tres elegidas, la nueva sustituye a la primera: nunca un toque que no hace nada
         const c = VETA.$('#hoja .hoja-c'); if (!c) return;
         const y = c.parentNode.scrollTop; c.innerHTML = pintaTemas(); c.parentNode.scrollTop = y;
         const b = VETA.$('#hoja [data-tema="' + id + '"]'); if (b) b.focus({preventScroll: true});
@@ -84,7 +84,7 @@
   // ---------------- H35 · ¿A quién se lo asignas? / ¿A quién pasas la cartera? ----------------
   VETA.hojaElegir('h35', {
     titulo: d => d.para === 'cartera' ? 'Who do you give their clients to?' : d.para === 'op' ? 'Who handles it?' : 'Who do you assign it to?',
-    texto: d => d.para === 'cartera' ? 'Teresa Gil has 34 conversations with 12 clients.' : d.para === 'op' ? opTexto(d) : 'Whoever handles it decides when and what to reply.',
+    texto: d => d.para === 'cartera' ? 'Teresa Gil has 12 clients to share out.' : d.para === 'op' ? opTexto(d) : 'Whoever handles it decides when and what to reply.',
     opciones: d => {
       if (d.para === 'op') return opOpciones(d);
       if (d.para === 'cartera') return [{id: 'laura', texto: 'Laura Martí', sub: 'Gràcia · I would give it to her', av: 'laura'}, {id: 'anna', texto: 'Anna Costa', sub: 'Gràcia', av: 'anna'},
@@ -96,10 +96,7 @@
     alElegir: (op, d) => {
       if (d.para === 'op') return opElige(op, d);
       if (d.para === 'cartera') { X.guarda('carteraA', op.id); VETA.repinta(); return; }
-      X.asigna(d.para, op.id);
-      const r = X.asignado(d.para), id = d.para;
-      X.vuelve(); if (VETA.d1) VETA.d1.numeros();
-      setTimeout(() => VETA.aviso((r && r.linea) || 'Assigned.', {deshacer: () => { X.desasigna(id); VETA.repinta(); if (VETA.d1) VETA.d1.numeros(); }}), 60);
+      X.asigna(d.para, op.id); AS().hecho(d.para);   // el asunto se repinta en el sitio con su “hecho” y “Deshacer"
     }
   });
 
@@ -115,35 +112,6 @@
     }
   });
 
-  // ---------------- H38 · Coste por hora ----------------
-  const etiquetaGuardar = v => (Number(v) > 0 ? 'Save ' + VETA.num(Number(v)) + ' € per hour' : 'Save');
-  VETA.hojaDef('h38', {
-    titulo: 'Cost per hour',
-    pinta: () => {
-      const c = M.lee('coste', null) || '';
-      return `<p class="hoja-x">Veta never puts euros in for you. If you enter your cost per hour, I'll tell you what those hours are worth.</p>` +
-        `<div class="campo"><label class="campo-e" for="d-coste">€ per hour</label><div class="campo-caja d-coste-caja"><input id="d-coste" class="campo-i" type="number" inputmode="decimal" min="1" max="999" step="1" value="${esc(c)}" placeholder="35"><span class="d-coste-u">€</span></div></div>` +
-        UI.nota({texto: 'It shows with the “Example” label and says where it comes from.', icono: 'info', clase: 'nota-gris'}) +
-        UI.boton({texto: etiquetaGuardar(c), accion: 'guardar', deshabilitado: !(Number(c) > 0), clase: 'd-coste-b'}) +
-        (c ? UI.boton({tipo: 'texto', texto: 'Remove the cost', accion: 'quitar'}) : '');
-    },
-    alMontar: h => {
-      const i = h.querySelector('#d-coste'), b = h.querySelector('.d-coste-b'); if (!i || !b) return;
-      i.addEventListener('input', () => { const v = Number(i.value); b.disabled = !(v > 0); b.querySelector('span').textContent = etiquetaGuardar(i.value); });
-      i.addEventListener('keydown', e => { if (e.key === 'Enter' && !b.disabled) b.click(); });
-    },
-    acciones: {
-      guardar() {
-        const i = VETA.$('#d-coste'), v = Math.round(Number(i && i.value));
-        if (!(v > 0)) return;
-        M.pon('coste', v);
-        VETA.cierraHoja({foco: false}); VETA.repinta();
-        VETA.aviso('Cost saved: ' + v + ' € per hour.', {deshacer: () => { M.deshazFlag('coste'); VETA.repinta(); }});
-      },
-      quitar() { M.pon('coste', null); VETA.cierraHoja({foco: false}); VETA.repinta(); VETA.aviso('Cost removed.', {deshacer: () => { M.deshazFlag('coste'); VETA.repinta(); }}); }
-    }
-  });
-
   // ---------------- H40 · Clientes con dos chats ----------------
   VETA.hojaTexto('h40', {
     titulo: 'Clients with two chats',
@@ -151,16 +119,15 @@
       {titulo: 'Put together last week · ' + D.dosChats.length, html: `<div class="lista">${D.dosChats.map(c => UI.fila({titulo: c.texto, sub: c.sub})).join('')}</div>`}]
   });
 
-  // ---------------- d-regla-otra · G2b, “Más” de una propuesta ----------------
-  VETA.hojaAcciones('d-regla-otra', {
+  // ---------------- d-regla-otra · G2b, “Más” de una propuesta: lo que no es probarla ----------------
+  // (“¿Quién lo hace?” ya se toca en la pantalla: de ahí a “Subir un paso para todos” hay un toque)
+  const marcaRegla = (d, estado, linea) => { const r = (D.reglasOficina || {})[d.regla] || {}; if (r.decision) { M.marca(r.decision, estado, {linea}); VETA.d1.decideRegla(d.regla); } };
+  VETA.hojaMas('d-regla-otra', {
     titulo: d => { const r = (D.reglasOficina || {})[d.regla] || {}; return r.corto || r.titulo || 'This job'; },
-    opciones: d => {
-      const r = (D.reglasOficina || {})[d.regla] || {};
-      return [
-        {texto: 'Dismiss it', sub: 'It won\'t be tried; Laura will see it in her Veta', hace: () => { if (r.decision) { M.marca(r.decision, 'quitada', {linea: 'Dismissed · ' + r.titulo}); VETA.repinta(); } }},
-        {texto: 'For later', sub: 'Back in Home tomorrow', hace: () => { if (r.decision) { M.marca(r.decision, 'para-manana', {linea: 'For later · ' + r.titulo}); VETA.repinta(); } }},
-        {texto: 'Who does it? Change it', sub: 'What Veta does and what the agent does', ir: 'regla/r-valoraciones/nivel'}];
-    }
+    ensena: true,
+    opciones: d => [
+      {texto: 'For later', hace: () => marcaRegla(d, 'para-manana', 'For later')},
+      {texto: 'Dismiss it', peligro: true, hace: () => marcaRegla(d, 'quitada', 'Dismissed')}]
   });
 
   // ---------------- d-tema · G3c, los casos de un tema (sin nombres de agentes) ----------------
@@ -189,16 +156,16 @@
       if (d.lista === 'contactos') {
         h = `<div class="lista">${X.sinResponder().map(c => c.sinDueno
           ? UI.fila({titulo: c.nombre, sub: c.cuando + ' · no one has it', av: c.id, ir: 'asunto/' + c.id})
-          : UI.fila({titulo: c.nombre, sub: c.cuando + (c.lleva ? ' · ' + X.persona(c.lleva).corto + ', on leave' : ' · no profile'), av: c.id, hoja: 'h01', datos: {chat: c.id}})).join('')}</div>`;
+          : UI.fila({titulo: c.nombre, sub: c.cuando + (c.lleva ? ' · ' + X.persona(c.lleva).corto + ', on leave' : ' · no profile'), av: c.id})).join('')}</div>`;
         if (!X.sinResponder().length) h = `<p class="hoja-x">Everyone has someone handling them.</p>`;
       } else if (d.lista === 'dos') {
-        h = `<div class="lista">${D.entra.dosVeces.map(c => UI.fila({titulo: c.texto, av: c.id, hoja: 'h01', datos: {chat: c.id}})).join('')}</div>`;
+        h = `<div class="lista">${D.entra.dosVeces.map(c => UI.fila({titulo: c.texto, av: c.id})).join('')}</div>`;
       } else if (d.lista === 'no') {
         h = `<p class="hoja-x">I'll note it for when one comes in.</p><div class="lista">${D.entra.noTenemos.map(c => UI.fila({titulo: c.texto, sub: c.sub})).join('')}</div>`;
       } else {
-        h = UI.cita({texto: 'Looking for a 3-bedroom flat in Gràcia, up to €450,000', origen: 'Carmen · Office WhatsApp · yesterday, 19:10', chat: 'carmen'}) +
-          VETA.r7.lista([{foto: 'verdi', nombre: 'Verdi 42 · €395,000', pasa: '3 bedrooms. No lift (she\'d prefer one)'},
-            {cara: 'carmen', nombre: 'Carmen López', pasa: 'See what happened', ir: 'asunto/carmen'}]);
+        // sin citar su mensaje ni poner precios (25-nov-2026): el hecho, y de ahí a su asunto
+        h = VETA.r7.lista([{foto: 'verdi', nombre: 'Verdi 42', pasa: '3 bedrooms. No lift (she\'d prefer one)'},
+          {cara: 'carmen', nombre: 'Carmen López', pasa: 'Looking for a 3-bedroom flat in Gràcia · see what happened', ir: 'asunto/carmen'}]);
       }
       return h;
     }
@@ -209,19 +176,21 @@
 
   // ---------------- “Más” de un asunto (G2): elegir a otra persona · para luego · descartarlo (capacidad 15 de la A) ----------------
   const AS = () => VETA.d1.asunto;
-  const aparca = (id, que) => { const linea = X.aparca(id, que); AS().hecho(linea + '.', () => X.desaparca(id)); };
-  VETA.hojaAcciones('d-asunto-mas', {
+  const aparca = (id, que) => { X.aparca(id, que); AS().hecho(id); };
+  const joan = (estado, linea, corto) => { M.marca('d-joan', estado, {linea, corto}); AS().hecho('joan-serra'); };
+  VETA.hojaMas('d-asunto-mas', {
     titulo: d => AS().nombre(d.asunto),
+    ensena: true,
     opciones: d => {
       const id = d.asunto;
       if (AS().A(id).tipo === 'queja') return [
-        {texto: 'I\'ll call him', hace: () => { M.marca('d-joan', 'quitada', {linea: 'Joan Serra · you call him'}); AS().hecho('Joan Serra: you call him.', () => M.deshaz('d-joan')); }},
-        {texto: 'For later', sub: 'Back in Home tomorrow', hace: () => { M.marca('d-joan', 'para-manana', {linea: 'For later · Joan Serra'}); AS().hecho('For later · Joan Serra.', () => M.deshaz('d-joan')); }},
-        {texto: 'Dismiss it', hace: () => { M.marca('d-joan', 'quitada', {linea: 'Dismissed · complaint from Joan Serra'}); AS().hecho('Dismissed · complaint from Joan Serra.', () => M.deshaz('d-joan')); }}];
+        {texto: 'I\'ll call him', hace: () => joan('quitada', 'Joan Serra · you call him', 'You call them')},
+        {texto: 'For later', hace: () => joan('para-manana', 'For later · Joan Serra', 'For later')},
+        {texto: 'Dismiss the complaint', peligro: true, hace: () => joan('quitada', 'Dismissed · complaint from Joan Serra', 'Complaint dismissed')}];
       return [
         {texto: 'Choose someone else', hoja: 'h35', datos: {para: id}},
-        {texto: 'For later', sub: 'Back in Home tomorrow', hace: () => aparca(id, 'luego')},
-        {texto: 'Dismiss it', hace: () => aparca(id, 'descartado')}];
+        {texto: 'For later', hace: () => aparca(id, 'luego')},
+        {texto: 'Dismiss it', peligro: true, hace: () => aparca(id, 'descartado')}];
     }
   });
 
@@ -232,13 +201,14 @@
   });
 
   // ---------------- “Más” de Reparto (G5) ----------------
-  VETA.hojaAcciones('d-reparto-mas', {
-    titulo: 'Allocation',
-    opciones: () => [{texto: 'Choose someone else', hoja: 'h35', datos: {para: 'cartera'}}, {texto: 'Clients with two chats', sub: `${D.dosChats.length} merged last week`, hoja: 'h40'}]
+  VETA.hojaMas('d-reparto-mas', {
+    titulo: 'Teresa\'s clients',
+    ensena: true,
+    opciones: () => [{texto: 'Choose someone else', hoja: 'h35', datos: {para: 'cartera'}}, {texto: 'Clients with two chats', hoja: 'h40'}]
   });
 
   // ---------------- “Más” de una operación (G18) ----------------
-  VETA.hojaAcciones('d-op-mas', {
+  VETA.hojaMas('d-op-mas', {
     titulo: d => { const o = X.op(d.op); return o ? o.nombre : 'Deal'; },
     opciones: d => {
       const o = X.op(d.op); if (!o) return [];
@@ -252,15 +222,29 @@
     }
   });
 
+  // ---------------- d-escalera-of · G2b, “¿Quién lo hace?”: los cinco pasos de ESTE trabajo de la oficina ----------------
+  // (antes la fila abría el trabajo personal de la agente, con “Lo has hecho tú 14 veces”: un trabajo que no es el de la oficina)
+  VETA.hojaTexto('d-escalera-of', {
+    titulo: 'Who does it?',
+    bloques: d => {
+      const R = (D.reglasOficina || {})[d.regla] || {}, n = VETA.d1.pasoRegla ? VETA.d1.pasoRegla(d.regla) : 1;
+      return [{texto: `${R.corto || R.titulo || 'This job'}, for the whole team. I move up a step when you say yes.`},
+        {lista: VETA.vivo.niveles().map(x => `${x.nombre}${x.n === n ? ' · now' : ''}${x.n === n || x.cerrado ? '. ' + x.texto : ''}`)}];
+    }
+  });
+
   // ---------------- “Más” de un trabajo en marcha (G2b): dar un paso más ----------------
-  VETA.hojaAcciones('d-regla-mas', {
+  VETA.hojaMas('d-regla-mas', {
     titulo: d => { const r = (D.reglasOficina || {})[d.regla] || {}; return r.corto || r.titulo || 'This job'; },
-    opciones: d => [{texto: 'Stop asking first', sub: 'I\'ll do it and tell you afterwards', hace: () => VETA.d1.subeRegla(d.regla)}]
+    texto: 'I\'ve done it 42 times and you corrected me once.',
+    ensena: true,
+    opciones: d => [{texto: 'Stop asking first', hace: () => VETA.d1.subeRegla(d.regla)}]
   });
 
   // ---------------- “Más” de Enviar el resumen (G3b) ----------------
-  VETA.hojaAcciones('d-resumen-mas', {
+  VETA.hojaMas('d-resumen-mas', {
     titulo: 'The summary',
+    ensena: true,
     opciones: () => [{texto: 'Change the text', hace: () => VETA.d1.cambiaResumen()}]
   });
 
@@ -271,7 +255,7 @@
       const n = VETA.r7.cuentas().decidir;
       return X.paradas().map(o => {
         const c = M.cliente(o.cliente) || {};
-        return {cara: o.cliente, texto: c.nombre || o.texto, sub: o.texto + ' · ' + o.estadoTexto.replace('Stalled · ', '').replace(/ · \w+ stage.*$/, '') + ' · ' + X.persona(X.llevaOp(o.cliente) || o.lleva).corto, ir: 'operacion/' + o.cliente};
+        return {cara: o.cliente, texto: c.nombre || o.texto, sub: o.texto + ' · ' + o.estadoTexto.replace('Stalled · ', '').replace(/ · fase.*$/, ''), ir: 'operacion/' + o.cliente};
       }).concat(n ? [{texto: n === 1 ? '1 thing is waiting for your decision' : `${n} things are waiting for your decision`, ir: 'inicio'}] : []);
     }
   });
@@ -287,29 +271,24 @@
   });
 
   // ---------------- d-decididas · Inicio, lo decidido hoy (cada fila lleva a su ficha, donde se deshace) ----------------
-  const lineaDe = c => (c.extra && c.extra.linea) || (c.lineas && c.lineas[c.estado]) || (c.lineas && c.lineas.hecha) || c.titulo;
   VETA.hojaAcciones('d-decididas', {
     titulo: 'Decided today',
-    opciones: () => M.decisiones().filter(c => X.resuelta(c)).sort((a, b) => a.orden - b.orden).map(c => ({texto: lineaDe(c), sub: c.hora ? `At ${c.hora}` : '', ir: X.rutaDe(c)}))
+    opciones: () => VETA.d1.decididas().map(x => ({texto: x.linea, sub: x.hora ? `At ${VETA.fecha.hora(x.hora)}` : '', ir: x.ir}))
   });
 
-  // ---------------- d-tarda y d-hace · G19, una persona. Cada cifra es suya: no se pone al lado de la de nadie ----------------
-  VETA.hojaTexto('d-tarda', {
-    titulo: 'How long they take to reply',
-    bloques: d => {
-      const x = X.personaOps(d.persona), yo = d.persona === VETA.yo().id;
-      return [{texto: X.tardaTexto(x, yo)}, {texto: `We say “We reply within the day”. I count from when the client writes until ${yo ? 'you reply' : 'they reply'}, last week. It is an example.`}];
-    }
-  });
+  // ---------------- d-hace · G19, una persona. Sin cifras por persona (25-nov-2026): solo lo que Veta hace por ella, sin recuentos ----------------
   const ESTADO = {activa: 'I already do it', 'a-prueba': 'I\'m trying it', propuesta: 'I have suggested it'};
   VETA.hojaTexto('d-hace', {
-    titulo: d => 'What Veta does for ' + (d.persona === VETA.yo().id ? 'ti' : X.persona(d.persona).corto),
+    titulo: d => d.persona === VETA.yo().id ? 'What Veta does for you' : 'What Veta does for ' + X.persona(d.persona).corto,
     bloques: d => {
-      const x = X.personaOps(d.persona), yo = d.persona === VETA.yo().id, h = x.hace;
+      const x = X.personaOps(d.persona), yo = d.persona === VETA.yo().id;
       const ap = x.aprendido.map(([id, t]) => { const r = id ? M.regla(id) : null; return t + ' · ' + (ESTADO[r ? r.estado : 'activa'] || ESTADO.activa); });
       const hoy = d.persona === 'laura' && VETA.r6 && VETA.r6.siempre ? VETA.r6.siempre() : null;
       if (hoy) ap.unshift(hoy.regla + ' · Taught me today');
-      return [{texto: x.total ? `${h.mensajes} messages, ${h.actas} ${h.actas === 1 ? 'viewing note' : 'viewing notes'} and ${h.avisos} alerts that I left ready for ${yo ? 'te' : 'le'} last week.` : 'Last week, nothing: on leave.'},
+      // lo de quien mira: los trabajos de la oficina, la MISMA lista que “Lo que Veta hace por ti” del Inicio
+      const mios = yo && VETA.d1.trabajos ? VETA.d1.trabajos().filter(t => ['propuesta', 'a-prueba', 'en-marcha'].includes(t.estado)).map(t => t.nombre + ' · ' + (t.estado === 'propuesta' ? 'My suggestion' : t.estado === 'a-prueba' ? 'We\'re testing it' : 'In use')) : [];   // sin cifras: es la ficha de una persona
+      return [!x.total ? {texto: 'Last week, nothing: on leave.'} : null,
+        mios.length ? {titulo: 'Office jobs', lista: mios} : null,
         ap.length ? {titulo: yo ? 'What I\'ve learned from you' : `What I've learned from ${x.p.corto}`, lista: ap} : null].filter(Boolean);
     }
   });
