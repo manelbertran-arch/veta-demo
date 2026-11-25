@@ -20,9 +20,9 @@
   };
   // A10 · los 3 casos distintos de valoraciones (H18): hora del mensaje y qué habría hecho Veta
   C.distinto = {
-    jordi: {origen: 'Jordi · WhatsApp · ' + f('2026-11-06T10:12'), habria: 'Esta vez no enviaste el informe del piso: escribiste otra cosa.', motivo: 'Escribiste otra cosa'},
-    nuria: {origen: 'Núria · WhatsApp · ' + f('2026-10-21T17:40'), habria: 'Esta vez no enviaste el informe del piso ni nada más.', motivo: 'No enviaste nada'},
-    toni: {origen: 'Toni · WhatsApp · ' + f('2026-09-02T12:05'), habria: 'Esta vez no enviaste el informe del piso: escribiste otra cosa.', motivo: 'Escribiste otra cosa'}
+    jordi: {origen: 'Jordi · WhatsApp · ' + f('2026-11-06T10:12'), habria: 'Esta vez no enviaste el informe del piso: escribiste otra cosa.', motivo: 'Escribiste otra cosa', habriaOf: 'Esta vez no se envió el informe del piso: se escribió otra cosa.', motivoOf: 'Se escribió otra cosa'},
+    nuria: {origen: 'Núria · WhatsApp · ' + f('2026-10-21T17:40'), habria: 'Esta vez no enviaste el informe del piso ni nada más.', motivo: 'No enviaste nada', habriaOf: 'Esta vez no se envió el informe del piso ni nada más.', motivoOf: 'No se envió nada'},
+    toni: {origen: 'Toni · WhatsApp · ' + f('2026-09-02T12:05'), habria: 'Esta vez no enviaste el informe del piso: escribiste otra cosa.', motivo: 'Escribiste otra cosa', habriaOf: 'Esta vez no se envió el informe del piso: se escribió otra cosa.', motivoOf: 'Se escribió otra cosa'}
   };
   // A10 · la regla a prueba (visitas canceladas): lo que habría hecho, sin enviarlo
   C.aPrueba = [

@@ -231,7 +231,7 @@
         if (!texto) { const t = document.getElementById('e-texto'); if (t) t.focus(); VETA.aviso(d ? 'First write what you wanted to say.' : 'First write what you want me to learn.'); return; }
         const dur = Math.max(2, Math.round(palabras(texto).length / 2.4));
         clearInterval(reloj); halo(false);
-        const cs = caso(p);   // el cliente de quien se habla, si se viene de su ficha: lo necesita «Lo que he entendido» de dirección
+        const cs = caso(p);   // el cliente de quien se habla, si se viene de su ficha: lo necesita “Lo que he entendido” de dirección
         VETA.est.pon('a.ultimoDictado', {guion: d ? d.guion : 'orden', seg: dur, texto, hora: VETA.ahora(), cliente: cs && cs.tipo === 'cliente' ? cs.cara : null});
         sinMedias();
         v = null;

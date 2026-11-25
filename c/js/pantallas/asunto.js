@@ -10,7 +10,7 @@
   const M = VETA.modelo, X = VETA.dir, r7 = VETA.r7;
   const A = id => (VETA.datos.asuntos || {})[id] || null;   // un id que no existe no se pinta con los datos de otro (estado vacío en la pantalla)
   const contacto = id => (VETA.datos.contactos || []).find(c => c.id === id) || {};
-  const nombre = id => (M.quien(id) || {}).nombre || contacto(id).nombre || id;
+  const nombre = id => (M.quien(id) || {}).nombre || contacto(id).nombre || '';   // nunca el id crudo
   const ELLA = {carmen: true, lucia: true};                       // «Dársela» / «Dárselo»: cada frase va entera (en inglés no hay «la» ni «lo»)
   const ella = id => !!ELLA[id];
 

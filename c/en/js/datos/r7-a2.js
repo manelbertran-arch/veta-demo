@@ -67,7 +67,7 @@
         acta: {impresion: 'It does not suit him: he thinks it is expensive and it has no lift.',
           gusto: ['The light'],
           no: ['The price: he thinks it is expensive', 'There is no lift'],
-          ahora: 'Nothing more with this flat. Tell him if one with a lift comes in.', apunta: 'Let them know if one with a lift comes up'},
+          ahora: 'Nothing more with this flat. Tell him if one with a lift comes in.', apunta: 'Tell him if one with a lift comes up'},
         informe: {nombre: 'Tuesday\'s viewing', titulo: 'Tuesday\'s viewing of your flat in Gràcia',
           resumen: 'Sergi Font came on Tuesday. He likes the light, but it does not suit him.',
           dijo: 'He thinks it is expensive and does not want a third floor with no lift.',

@@ -8,9 +8,9 @@
 (function () {
   'use strict';
   const M = VETA.modelo, X = VETA.dir, r7 = VETA.r7;
-  const A = id => (VETA.datos.asuntos || {})[id] || null;   // an id that does not exist is never painted with another contact's data (empty state on screen)
+  const A = id => (VETA.datos.asuntos || {})[id] || null;   // un id que no existe no se pinta con los datos de otro (estado vacío en la pantalla)
   const contacto = id => (VETA.datos.contactos || []).find(c => c.id === id) || {};
-  const nombre = id => (M.quien(id) || {}).nombre || contacto(id).nombre || id;
+  const nombre = id => (M.quien(id) || {}).nombre || contacto(id).nombre || '';   // nunca el id crudo
   const ELLA = {carmen: true, lucia: true};                       // “Dársela” / “Dárselo”: cada frase va entera (en inglés no hay “la” ni “lo”)
   const ella = id => !!ELLA[id];
 
@@ -29,7 +29,7 @@
   // ya decidido: asignado, aparcado (“Para luego”, “Descartarlo”) o, en la queja, pedido a Marc
   function resuelto(id) {
     const a = A(id); if (!a) return null;
-    if (a.tipo === 'queja') { const c = M.cosa('d-joan'); return c && X.resuelta(c) ? {linea: (c.extra && c.extra.linea) || 'Asked Marc: call Joan Serra today', corto: (c.extra && c.extra.corto) || 'Asked Marc: call them today', hora: c.hora} : null; }
+    if (a.tipo === 'queja') { const c = M.cosa('d-joan'); return c && X.resuelta(c) ? {linea: (c.extra && c.extra.linea) || 'Asked Marc: call Joan Serra today', corto: (c.extra && c.extra.corto) || 'Asked Marc: call him today', hora: c.hora} : null; }
     return X.asignado(id) || X.aparcado(id);
   }
   // lo que quiere, dicho por Veta, SIEMPRE: dirección no lee el texto de ningún contacto, ni el de la oficina sin dueño (M-29, 25-nov-2026): queda el hecho, sin cita.
@@ -45,14 +45,14 @@
   VETA.d1.asunto = {A, nombre, hecho, deshaz};
 
   VETA.pantalla('G2', {
-    titulo: p => A(p.id) ? nombre(p.id) : 'Matter',   // an id that does not exist is never painted in the header
+    titulo: p => A(p.id) ? nombre(p.id) : 'Matter',   // un id que no existe no se pinta nunca en la cabecera
     mas: p => !A(p.id) || resuelto(p.id) ? null : {hoja: 'd-asunto-mas', datos: {asunto: p.id}},
     nota: p => !A(p.id) || resuelto(p.id) ? '' : A(p.id).tipo === 'queja' ? 'I say what I\'d do. You decide.' : ella(p.id) ? 'I\'ll tell you who I\'d give her to. You decide.' : 'I\'ll tell you who I\'d give him to. You decide.',
     // lo que se le enseña a Veta si se toca el micro desde aquí
     casoDictado: p => !A(p.id) ? null : ({de: 'asunto-' + p.id, quien: p.id, titulo: nombre(p.id), texto: propone(p.id).de + '. ' + propone(p.id).texto}),
     pinta: p => {
       const a = A(p.id);
-      if (!a) return r7.vacio('I can\'t find this matter.');   // honest empty state; “back” comes from the header
+      if (!a) return r7.vacio('I can\'t find this matter.');   // estado vacío honesto; “volver” lo pone la cabecera
       const r = resuelto(p.id), corto = nombre(p.id).split(' ')[0];
       // decidido: la fila de “hecho” arriba, con su “Deshacer”; debajo queda lo que escribió, sin la propuesta
       let h = r ? r7.hecho({texto: corta(r, nombre(p.id)), hora: r.hora ? VETA.fecha.hora(r.hora) : '', deshacer: 'deshacer-asunto', vt: 'asunto-' + p.id}) : '';

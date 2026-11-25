@@ -184,7 +184,7 @@
     opciones: d => {
       const id = d.asunto;
       if (AS().A(id).tipo === 'queja') return [
-        {texto: 'I\'ll call him', hace: () => joan('quitada', 'Joan Serra · you call him', 'You call them')},
+        {texto: 'I\'ll call him', hace: () => joan('quitada', 'Joan Serra · you call him', 'You call him')},
         {texto: 'For later', hace: () => joan('para-manana', 'For later · Joan Serra', 'For later')},
         {texto: 'Dismiss the complaint', peligro: true, hace: () => joan('quitada', 'Dismissed · complaint from Joan Serra', 'Complaint dismissed')}];
       return [
@@ -230,7 +230,9 @@
       const R = (D.reglasOficina || {})[d.regla] || {}, n = VETA.d1.pasoRegla ? VETA.d1.pasoRegla(d.regla) : 1;
       return [{texto: `${R.corto || R.titulo || 'This job'}, for the whole team. I move up a step when you say yes.`},
         {lista: VETA.vivo.niveles().map(x => `${x.nombre}${x.n === n ? ' · now' : ''}${x.n === n || x.cerrado ? '. ' + x.texto : ''}`)}];
-    }
+    },
+    // el mismo botón que A10b le da a dirección: sube el paso de ESTE trabajo para todo el equipo (h22 pide la confirmación)
+    boton: d => (VETA.d1.sigPaso && VETA.d1.sigPaso(d.regla) ? {texto: 'One step up for everyone', hoja: 'h22', de: d.regla} : null)
   });
 
   // ---------------- “Más” de un trabajo en marcha (G2b): dar un paso más ----------------

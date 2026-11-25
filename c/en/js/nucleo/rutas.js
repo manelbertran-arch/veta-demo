@@ -212,9 +212,10 @@
     if (ruta === 'reglas') ruta = 'veta';
     if (ruta === 'veta' && dir) return 'oficina';
     if (ruta === 'veta/mia' && !dir) return 'veta';
-    // las reglas de una agente (sus casos, con los nombres y las frases de sus clientes) y lo que ella dictó (entendido-dictado: su guion con Jordi y Pere) no las abre dirección: por la ruta escrita a mano va a “Lo que Veta hace por ti”
-    if (dir && /^(regla|entendido)\//.test(ruta)) return 'veta/mia';
-    // lo que dicta la propia dirección (una tarea suya, o una nota de un cliente SUYO) llega a su «Lo que he entendido»; sin dictado propio, o de un contacto que no es suyo, no hay nada que enseñar
+    // las reglas de una agente (sus casos, con los nombres y las frases de sus clientes) y lo que ella dictó (entendido-dictado: su guion con Jordi y Pere) no las abre dirección: por la ruta escrita a mano va a su Oficina
+    // (K2: van a “Veta” de dirección, la Oficina, y no a “Lo que Veta hace por ti”: su “volver” caía en Inicio; los trabajos de la oficina se abren desde ahí, en G2b)
+    if (dir && /^(regla|entendido)\//.test(ruta)) return 'oficina';
+    // lo que dicta la propia dirección (una tarea suya, o una nota de un cliente SUYO) llega a su “Lo que he entendido”; sin dictado propio, o de un contacto que no es suyo, no hay nada que enseñar
     if (dir && /^entendido-dictado\//.test(ruta)) { const u = VETA.est.lee('a.ultimoDictado', null); return u && u.texto && (!u.cliente || VETA.esSuyo(u.cliente)) ? ruta : 'veta/mia'; }
     return ruta;
   }

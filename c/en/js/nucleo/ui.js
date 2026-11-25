@@ -102,7 +102,7 @@
   // con dirección mirando el cliente de otra persona, la cita no enseña el texto del chat (VETA.ajeno)
   UI.cita = o => {
     const dueno = VETA.duenoDe ? VETA.duenoDe({chat: o.chat, de: o.de}) : null;
-    if (dueno && VETA.sinLiteral(dueno)) return `<p class="cita cita-ajena">${ic('candado', 18)}<span>${esc(VETA.chatAjenoTexto(dueno))}</span></p>`;
+    if (VETA.literalCerrado(dueno)) return `<p class="cita cita-ajena">${ic('candado', 18)}<span>${esc(VETA.chatAjenoTexto(dueno))}</span></p>`;
     return `<button type="button" class="cita" data-hoja="h01"${o.de ? ` data-de="${esc(o.de)}"` : ''}${o.chat ? ` data-chat="${esc(o.chat)}"` : ''}>` +
       `<span class="cita-t">“${esc(o.texto)}”</span><span class="cita-o">${esc(o.origen)} ›</span></button>`;
   };

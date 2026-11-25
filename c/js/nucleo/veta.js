@@ -76,6 +76,8 @@
     return (c.lleva || (asig && asig.a)) === yo.id;
   };
   VETA.sinLiteral = id => !VETA.verLiteral(id);
+  // lo mismo para quien PUEDE no saber de quién es el chat (duenoDe da null): para dirección, sin dueño conocido se cierra por defecto; la agente lee siempre
+  VETA.literalCerrado = dueno => (dueno ? VETA.sinLiteral(dueno) : !!(VETA.yo && VETA.yo() && VETA.yo().papel === 'direccion'));
   // el cliente dueño de un chat («pere-voz» → pere) o de una cosa de la cola («c-marta» → marta)
   VETA.duenoDe = ({chat, de} = {}) => {
     const cl = VETA.datos.clientes || {};

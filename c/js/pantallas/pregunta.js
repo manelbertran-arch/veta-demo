@@ -43,7 +43,7 @@
     if (r.ajeno) {
       const c = M.cliente(r.cliente) || {};
       const lleva = (M.persona(c.lleva) || {}).corto;
-      return veta(lleva ? `${c.nombre} lo lleva ${lleva}. Lo que hablan en su chat no lo leo desde dirección.` : `${c.nombre} todavía no tiene quien la lleve. Lo que escribe no lo leo desde dirección: solo te cuento cómo está.`) + otras({});
+      return veta(lleva ? `${c.nombre} lo lleva ${lleva}. Lo que hablan en su chat no lo leo desde dirección.` : `Nadie lleva todavía a ${c.nombre}. Lo que escribe no lo leo desde dirección: solo te cuento cómo está.`) + otras({});
     }
     if (r.nada) return veta('No lo encuentro en tus chats. Solo contesto con lo que está escrito.') + otras({});
     let texto = r.respuesta, filas = [];

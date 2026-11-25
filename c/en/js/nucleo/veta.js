@@ -63,8 +63,8 @@
     const lleva = c && (c.lleva || (asig && asig.a));
     return !!(lleva && lleva !== yo.id);
   };
-  // can the viewer read the literal text (quote, bubble) of this contact? One gate for everything that paints a contact's text.
-  // Agent: yes. Management: only if the contact is THEIRS; one with no owner, or looked after by someone else, shows the status, never the text.
+  // ¿puede quien mira leer el literal (cita, burbuja) de este contacto? Una sola puerta para todo lo que pinta texto de un contacto.
+  // Agente: sí. Dirección: solo si el contacto es SUYO; el que no tiene dueño o lo lleva otra persona enseña el estado, nunca el texto.
   VETA.verLiteral = id => {
     const yo = VETA.yo && VETA.yo(); if (!yo || yo.papel !== 'direccion') return true;
     return VETA.esSuyo(id);
@@ -76,6 +76,8 @@
     return (c.lleva || (asig && asig.a)) === yo.id;
   };
   VETA.sinLiteral = id => !VETA.verLiteral(id);
+  // lo mismo para quien PUEDE no saber de quién es el chat (duenoDe da null): para dirección, sin dueño conocido se cierra por defecto; la agente lee siempre
+  VETA.literalCerrado = dueno => (dueno ? VETA.sinLiteral(dueno) : !!(VETA.yo && VETA.yo() && VETA.yo().papel === 'direccion'));
   // el cliente dueño de un chat (“pere-voz” → pere) o de una cosa de la cola (“c-marta” → marta)
   VETA.duenoDe = ({chat, de} = {}) => {
     const cl = VETA.datos.clientes || {};

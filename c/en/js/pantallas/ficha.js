@@ -32,7 +32,7 @@
   // lo que le pareció es el texto del acta de quien lo lleva y no sale
   const conActa = c => B.historia(c.id).some(h => /^(notes?|viewing notes?)\b/i.test(h.tipo || '') && h.tipo !== 'Voice note');
   // el teléfono no se parte entre dos líneas (espacios duros), y el punto de antes se va con él
-  // dirección no lee lo que escribió un contacto que no es suyo, y los euros que él dijo («hasta 450.000 €») tampoco
+  // dirección no lee lo que escribió un contacto que no es suyo, y los euros que él dijo (“hasta 450.000 €”) tampoco
   const sinSuyo = c => t => VETA.sinLiteral(c.id) ? String(t || '').replace(/,?\s*(?:hasta|up to)\s+(?:€\s?[\d.,]+|[\d.,]+\s?€)/i, '') : t;
   const quienEs = c => sinSuyo(c)(VETA.ajeno(c.id) ? (conActa(c) ? String(c.quienEs || '').split(';')[0] : c.quienEs || '')
     : [c.quienEs, c.tel && c.tel.replace(/ /g, '\u00a0')].filter(Boolean).join(' ·\u00a0'));
