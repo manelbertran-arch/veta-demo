@@ -27,7 +27,7 @@
     titulo: 'Where it comes from',
     pinta: d => {
       const ch = chatDe(d), dueno = VETA.duenoDe({chat: d.chat, de: d.de});
-      if (dueno && VETA.ajeno(dueno)) return `<p class="hoja-x">${esc(VETA.chatAjenoTexto(dueno))}</p>${cerrar()}`;
+      if (dueno && VETA.sinLiteral(dueno)) return `<p class="hoja-x">${esc(VETA.chatAjenoTexto(dueno))}</p>${cerrar()}`;
       if (!ch) return `<p class="hoja-x">I can't find the source chat.</p>${cerrar()}`;
       const frase = fraseDe(d), k = frase ? ch.mensajes.findIndex(m => String(m.texto).indexOf(frase) >= 0) : -1;
       if (k < 0) return `<p class="hoja-x tenue">${esc(ch.titulo)}</p>${UI.burbujas(ch.mensajes)}${cerrar()}`;

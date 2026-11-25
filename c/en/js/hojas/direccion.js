@@ -62,7 +62,7 @@
   // ---- ronda 6 · d-preguntar y d-anotar (G18): lo que dirección le pregunta a quien la lleva o anota para sí ----
   VETA.hojaAcciones('d-preguntar', {
     titulo: d => { const o = X.op(d.op); return o && o.persona ? 'Ask ' + o.persona.corto : 'Ask'; },
-    texto: d => { const o = X.op(d.op); return o ? 'About ' + o.nombre + '. It reaches their Home, in their Veta. It doesn\'t go by WhatsApp.' : ''; },
+    texto: d => { const o = X.op(d.op); return o ? 'About ' + o.nombre + '. It reaches ' + (o.persona ? o.persona.corto + "'s Home" : 'the Home of whoever handles it') + ', in Veta. It doesn\'t go by WhatsApp.' : ''; },
     opciones: d => ['How is it going?', 'Do you need help with this one?', 'Can you call them today?'].map(t => ({texto: t, hace: () => {
       const o = X.op(d.op); X.pregunta(d.op, t); VETA.repinta();
       setTimeout(() => VETA.aviso('Question left for ' + (o && o.persona ? o.persona.corto : 'whoever handles it') + '.'), 60);

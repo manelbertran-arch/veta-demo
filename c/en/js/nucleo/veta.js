@@ -63,6 +63,19 @@
     const lleva = c && (c.lleva || (asig && asig.a));
     return !!(lleva && lleva !== yo.id);
   };
+  // can the viewer read the literal text (quote, bubble) of this contact? One gate for everything that paints a contact's text.
+  // Agent: yes. Management: only if the contact is THEIRS; one with no owner, or looked after by someone else, shows the status, never the text.
+  VETA.verLiteral = id => {
+    const yo = VETA.yo && VETA.yo(); if (!yo || yo.papel !== 'direccion') return true;
+    return VETA.esSuyo(id);
+  };
+  VETA.esSuyo = id => {
+    const yo = VETA.yo && VETA.yo(); if (!yo) return false;
+    const c = (VETA.datos.clientes || {})[id]; if (!c) return false;
+    const asig = !c.lleva && VETA.dir && VETA.dir.asignado ? VETA.dir.asignado(id) : null;
+    return (c.lleva || (asig && asig.a)) === yo.id;
+  };
+  VETA.sinLiteral = id => !VETA.verLiteral(id);
   // el cliente dueño de un chat (“pere-voz” → pere) o de una cosa de la cola (“c-marta” → marta)
   VETA.duenoDe = ({chat, de} = {}) => {
     const cl = VETA.datos.clientes || {};
@@ -76,7 +89,9 @@
   };
   // “Está en el chat de Laura con Jordi”: la frase que sustituye a una cita ajena
   VETA.chatAjenoTexto = id => {
-    const c = (VETA.datos.clientes || {})[id] || {}, p = (VETA.datos.personas || {})[c.lleva] || {};
+    const c = (VETA.datos.clientes || {})[id] || {}, asig = !c.lleva && VETA.dir && VETA.dir.asignado ? VETA.dir.asignado(id) : null;
+    const p = (VETA.datos.personas || {})[c.lleva || (asig && asig.a)];
+    if (!p) return 'Nobody looks after them yet. Management does not read what contacts write: it only sees the status.';
     return `It is in ${p.corto || 'another person'}'s chat with ${c.corto || c.nombre || 'their client'}. Management does not read each person's chats.`;
   };
 
