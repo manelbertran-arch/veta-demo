@@ -40,14 +40,14 @@
     o = o || {}; const q = quien(p), tam = Math.min(o.tam || 56, 64), ini = VETA.iniciales(q.nombre || q.id), t = tonoDe(q.id);
     const aro = o.aro === false ? '' : ' v-aro', est = `width:${tam}px;height:${tam}px`;
     if (q.foto && !o.sinFoto) return `<img class="v-cara${aro}" src="${rutaFoto(q.foto)}" alt="" width="${tam}" height="${tam}" style="${est}" data-v-ini="${esc(ini)}" data-v-t="${t}" data-v-aro="${aro ? 1 : 0}" loading="eager" decoding="async">`;
-    return `<span class="v-ini v-t${t}${aro}" style="${est};font-size:${Math.round(tam * .36)}px" aria-hidden="true">${esc(ini)}</span>`;
+    return `<span class="v-ini v-t${t}${aro}" style="${est};font-size:${tam <= 48 ? 'var(--f-apoyo)' : 'var(--f-hoja)'}" aria-hidden="true">${esc(ini)}</span>`;
   };
   // si la foto no carga quedan las iniciales
   document.addEventListener('error', e => {
     const im = e.target;
     if (!im || im.tagName !== 'IMG' || !im.classList.contains('v-cara') || !im.dataset.vIni) return;
     const s = document.createElement('span');
-    s.className = 'v-ini v-t' + im.dataset.vT + (im.dataset.vAro === '1' ? ' v-aro' : ''); s.setAttribute('style', im.getAttribute('style') + ';font-size:' + Math.round(im.width * .36) + 'px');
+    s.className = 'v-ini v-t' + im.dataset.vT + (im.dataset.vAro === '1' ? ' v-aro' : ''); s.setAttribute('style', im.getAttribute('style') + ';font-size:' + (im.width <= 48 ? 'var(--f-apoyo)' : 'var(--f-hoja)'));
     s.setAttribute('aria-hidden', 'true'); s.textContent = im.dataset.vIni; im.replaceWith(s);
   }, true);
 
@@ -115,49 +115,6 @@
     return {irA, quitar, indice, total: () => items().length, actualiza};
   };
 
-  // ---- tira del día ----
-  // VETA.v.tiraDia({piezas: [{tipo: 'mensaje', hecha: false, id}], actual: 0}) → HTML. “k de N” = las hechas. Debajo, el rótulo del tipo de la pieza actual con su pico (se coloca solo al montarse)
-  V.tiraDia = o => {
-    const l = o.piezas || [], hechas = l.filter(p => p.hecha).length, a = o.actual == null ? 0 : o.actual;
-    const pz = l.map((p, i) => {
-      const t = V.tipo(p.hecha ? 'hecho' : p.tipo), r = V.tipo(p.tipo).rotulo;
-      return `<button type="button" class="v-pz ${V.tipo(p.tipo).clase}${p.hecha ? ' v-hecha' : ''}${i === a ? ' v-actual' : ''}" data-v-pz="${i}"${p.id != null ? ` data-id="${esc(p.id)}"` : ''} aria-label="${esc(p.hecha ? `${r} · Done` : r)}"${i === a ? ' aria-current="true"' : ''}>${ic(t.icono, 22)}</button>`;
-    }).join('');
-    const t0 = l[a] ? V.tipo(l[a].tipo) : null;
-    return `<div class="v-tira-w"><div class="v-tira" role="group" aria-label="Your day">${pz}<span class="v-tira-cuenta">${`${hechas} of ${l.length}`}</span></div><div class="v-tira-rot" aria-live="polite">${t0 ? `<span class="${t0.clase}">${esc(t0.rotulo)}</span>` : ''}</div></div>`;
-  };
-  // coloca el rótulo bajo la pieza actual, dentro de los márgenes, con el pico apuntándole
-  const coloca = w => {
-    const r = w.querySelector('.v-tira-rot'), sp = r && r.firstElementChild, pz = w.querySelector('.v-pz.v-actual'); if (!sp || !pz) return;
-    const R = r.getBoundingClientRect(), Z = pz.getBoundingClientRect(); if (!R.width) return;
-    const ancho = sp.offsetWidth, cx = Z.left + Z.width / 2 - R.left, izq = Math.max(0, Math.min(R.width - ancho, cx - ancho / 2));
-    sp.style.left = izq + 'px'; sp.style.setProperty('--pico', (cx - izq) + 'px'); w.dataset.vPos = '1';
-  };
-  V.tiraDiaColoca = coloca;
-  try {
-    new MutationObserver(ms => ms.forEach(m => m.addedNodes.forEach(n => {
-      if (n.nodeType !== 1) return;
-      (n.matches && n.matches('.v-tira-w') ? [n] : Array.from(n.querySelectorAll ? n.querySelectorAll('.v-tira-w:not([data-v-pos])') : [])).forEach(w => requestAnimationFrame(() => coloca(w)));
-    }))).observe(document.documentElement, {childList: true, subtree: true});
-  } catch (e) {}
-  // VETA.v.tiraDiaMarca(el, {actual: 2, hechas: [0, 1], tipo: 'visita'}) → cambia la pieza actual, las hechas, el rótulo (el del tipo de la pieza actual) y la cuenta sin repintar
-  V.tiraDiaMarca = (el, o) => {
-    const w = el.classList.contains('v-tira-w') ? el : el.closest('.v-tira-w') || el, pz = Array.from(w.querySelectorAll('.v-pz'));
-    pz.forEach((b, i) => {
-      if (o.actual != null) { b.classList.toggle('v-actual', i === o.actual); if (i === o.actual) b.setAttribute('aria-current', 'true'); else b.removeAttribute('aria-current'); }
-      if (o.hechas) {
-        const h = o.hechas.includes(i), era = b.classList.contains('v-hecha');
-        b.classList.toggle('v-hecha', h);
-        if (h !== era) { if (!b.dataset.vIc) b.dataset.vIc = b.innerHTML; b.innerHTML = h ? ic('check', 22) : b.dataset.vIc; }
-      }
-    });
-    if (o.hechas) { const c = w.querySelector('.v-tira-cuenta'); if (c) c.textContent = `${o.hechas.length} of ${pz.length}`; }
-    const r = w.querySelector('.v-tira-rot'); let tipo = o.tipo;
-    if (!tipo && o.actual != null && pz[o.actual]) { const m = Array.from(pz[o.actual].classList).find(c => /^v-tipo-/.test(c)); if (m) tipo = m.slice(7); }
-    if (r && tipo) { const t = V.tipo(tipo); r.innerHTML = `<span class="${t.clase}">${esc(o.rotulo != null ? o.rotulo : t.rotulo)}</span>`; }
-    coloca(w);
-  };
-
   // ---- conmutador de dos pastillas ----
   // VETA.v.conmutador({id, opciones: [{id: 'pend', texto: 'Pendiente', n: 6}, {id: 'hecho', texto: 'Hecho', n: 0}], valor: 'pend'}) → HTML
   V.conmutador = o => `<div class="v-conm" role="tablist"${o.id ? ` id="${esc(o.id)}"` : ''}>` + (o.opciones || []).map(x =>
@@ -187,16 +144,6 @@
   V.franjaVeta = o => `<button type="button" class="v-franja-veta"${at(o)}><span class="v-franja-cab">${ic('aprende', 24)}<span>${esc(o.titulo || 'Veta did today')}</span></span>` +
     `<span class="v-franja-datos">${(o.datos || []).slice(0, 3).map(d => `<span><b>${esc(d.n)}</b>${esc(d.texto)}</span>`).join('')}</span></button>`;
 
-  // ---- tarjeta de tarea (Hoy): VETA.v.tarea({tipo: 'mensaje', persona: 'marta', nombre: 'Marta Puig', frase: '…', boton: 'Ver mi respuesta', chapa: {tono: 'urg', texto: '…'}, piso: 'gracia', pisoTexto: 'Verdi 42, Gràcia', ir: '…'}) ----
-  // el color sale del tipo (degradado de --v-tipo-<clave>-a/-b); la foto de la persona va desenfocada al 17 % debajo y el icono del tipo enorme al 13 %
-  V.tarea = o => {
-    const t = V.tipo(o.tipo), q = quien(o.persona), img = q.foto ? ` style="--v-img:url(${abs(rutaFoto(q.foto))})"` : '';
-    return `<article class="v-tj ${t.clase}"${img}${at({id: o.id, datos: o.datos})}><span class="v-tj-marca" aria-hidden="true">${ic(t.icono)}</span>` +
-      `<div class="v-tj-arr"><span class="v-tj-tp"><span class="v-tj-ic">${ic(t.icono, 32)}</span>${esc(o.rotulo || t.rotulo)}</span></div>` +
-      `<div class="v-tj-quien">${V.cara(o.persona, {tam: 52})}<div><h2 class="v-tj-nom">${esc(o.nombre)}</h2><p class="v-tj-frase">${esc(o.frase || '')}</p>${o.chapa ? `<div style="margin-top:8px">${V.chapa(o.chapa.tono, o.chapa.texto, {solida: true})}</div>` : ''}</div></div>` +
-      (o.piso ? `<div class="v-tj-piso"><img src="assets/pisos/${esc(o.piso)}.webp" alt="" width="60" height="44">${o.pisoTexto ? `<span>${esc(o.pisoTexto)}</span>` : ''}</div>` : '') +
-      `<button type="button" class="v-btn v-btn-claro"${at(o)}><span>${esc(o.boton || '')}</span>${ic('flecha', 22)}</button></article>`;
-  };
 
   // ---- hero de visita (Visitas): VETA.v.hero({hora: '9:00', nombre: 'Elena Vives', donde: 'Verdi 42, Gràcia', persona: 'elena', foto: 'gracia', boton: 'Abrir la visita', pasada: false, sello: true, chapa}) ----
   V.hero = o => `<article class="v-hero${o.foto ? '' : ' v-hero-sf'}${o.pasada ? ' v-hero-pas' : ''}"${o.foto ? ` style="--v-img:url(${abs('assets/pisos/' + esc(o.foto) + '.webp')})"` : ''}>${o.foto ? '' : `<span class="v-hero-casa" aria-hidden="true">${ic('casa', 210)}</span>`}` +
@@ -206,7 +153,7 @@
     (o.boton ? `<button type="button" class="v-btn v-btn-claro"${at(o)}><span>${esc(o.boton)}</span>${ic('flecha', 22)}</button>` : '') + '</div></article>';
 
   // ---- sugerencia (“Te lo propongo”): VETA.v.propuesta({titulo, n: 9, vez: 'Lo has hecho <b>9/14 veces</b>' (html), boton: 'Ver este trabajo', accion…}); en un carrusel, con clase 'v-car-prop' ----
-  V.propuesta = o => `<article class="v-prop"><span class="v-prop-sim"><img src="assets/veta-symbol-gold.png" alt="" width="24" height="19"></span><h3>${esc(o.titulo)}</h3>${V.marcas(o.n || 0)}<p class="v-prop-vez">${o.vez || ''}</p>` +
+  V.propuesta = o => `<article class="v-prop"><span class="v-prop-sim">${ic('marca', 24)}</span><h3>${esc(o.titulo)}</h3>${V.marcas(o.n || 0)}<p class="v-prop-vez">${o.vez || ''}</p>` +
     (o.boton ? `<button type="button" class="v-btn v-btn-oro"${at(o)} aria-label="${esc(o.boton + ' · ' + o.titulo)}"><span>${esc(o.boton)}</span></button>` : '') + '</article>';
 
   // ---- baldosa de trabajo (“Ya lo hago yo”) ----
@@ -251,19 +198,28 @@
   // VETA.v.mosaicoPisos([grande, alto, normal, normal]) → la grande arriba y, debajo, una alta y dos apiladas (cada elemento son las opciones de V.piso; el tamaño lo pone esta función)
   V.mosaicoPisos = l => { l = l || []; return (l[0] ? V.piso(Object.assign({}, l[0], {tam: 'grande'})) : '') + (l.length > 1 ? `<div class="v-mos2">${l.slice(1, 4).map((x, i) => V.piso(Object.assign({}, x, {tam: i === 0 ? 'alto' : 'normal'}))).join('')}</div>` : ''); };
 
-  // ---- Operaciones: la línea de cinco pasos ----
-  // VETA.v.pasos(3, ['Contacto', 'Visitas', 'Oferta', 'Arras', 'Notaría']) → los cinco nodos: los anteriores a `actual` hechos (llenos), `actual` en ámbar con aro, el resto vacíos. actual 0 = todos pendientes; 6 = todos hechos
-  V.pasos = (actual, nombres) => `<ol class="v-cinco" aria-label="${`Step ${actual} of 5`}">${[1, 2, 3, 4, 5].map(k => `<li class="${k < actual ? 'v-hecho' : k === actual ? 'v-aqui' : ''}"${k === actual ? ' aria-current="step"' : ''}><i></i><span>${esc((nombres || [])[k - 1] || '')}</span></li>`).join('')}</ol>`;
+  // ---- Operaciones: el avance, una barra fina de cinco tramos y una línea con la fase ----
+  // VETA.v.pasos(4, ['Contacto', 'Visitas', 'Oferta', 'Arras', 'Notaría'], {dentroBoton, sinLinea, lista}) → barra (role=progressbar con nombre y valor) + “Arras · paso 4 de 5”:
+  // hechos en tinta, el actual en dorado, el resto atenuado. dentroBoton: la barra se oculta al lector (el botón ya lee la línea una vez). sinLinea: sin la línea (la dice la fila que la contiene).
+  // lista: debajo de la barra, los cinco pasos con su estado (hecho · en curso · pendiente).
+  V.pasos = (actual, nombres, o) => {
+    o = o || {};
+    const nom = (nombres || [])[actual - 1] || '', txt = `${nom} · step ${actual} of 5`, valor = `${nom}, step ${actual} of 5`;
+    const barra = `<div class="v-cinco"${o.dentroBoton ? ' aria-hidden="true"' : ` role="progressbar" aria-label="${esc('Deal progress')}" aria-valuemin="1" aria-valuemax="5" aria-valuenow="${actual}" aria-valuetext="${esc(valor)}"`}>${[1, 2, 3, 4, 5].map(k => `<i class="${k < actual ? 'v-hecho' : k === actual ? 'v-aqui' : ''}"></i>`).join('')}</div>`;
+    const linea = o.sinLinea ? '' : `<p class="v-avance-t"><span class="v-fase">${esc(nom)}</span>${esc(txt.slice(nom.length))}</p>`;
+    const lista = o.lista ? `<ol class="v-avance-l">${(nombres || []).map((x, k) => `<li class="${k + 1 < actual ? 'v-hecho' : k + 1 === actual ? 'v-aqui' : ''}"${k + 1 === actual ? ' aria-current="step"' : ''}>${esc(x)}</li>`).join('')}</ol>` : '';
+    return `<div class="v-avance">${barra}${linea}${lista}</div>`;
+  };
   // VETA.v.operacion({persona, nombre, tipo: 'compra' | 'venta', etiqueta: 'La compra', actual: 2, nombres: [5], siguiente: 'Pasarle el informe', cerrada: false, ir}) → tarjeta con cara de 32, etiqueta, la línea y “lo siguiente”; en <div class="v-ops">
   V.operacion = o => `<button type="button" class="v-op${o.tipo === 'venta' ? ' v-op-venta' : ''}${o.cerrada ? ' v-op-cerrada' : ''}"${at(o)}><span class="v-op-top">${V.cara(o.persona, {tam: 32, aro: false})}<span class="v-op-nom">${esc(o.nombre)}</span><span class="v-op-tag">${esc(o.etiqueta || '')}</span></span>` +
-    (o.cerrada ? '' : V.pasos(o.actual, o.nombres)) + (o.siguiente ? `<span class="v-op-sig" style="display:block">${esc(o.siguiente)}</span>` : '') + '</button>';
+    (o.cerrada ? '' : V.pasos(o.actual, o.nombres, {dentroBoton: true})) + (o.siguiente ? `<span class="v-op-sig" style="display:block">${esc(o.siguiente)}</span>` : '') + '</button>';
 
   // ---- Veta: hero “Enséñale a Veta”, presencia, cifras, subtítulo de sección y enlace ----
   // VETA.v.ensena({titulo: 'Enséñale a Veta', texto: '…', boton: 'Toca y dímelo', accion…}) → tarjeta dorada con el micro de 76 px y el botón oscuro; todo el botón dicta
   V.ensena = o => `<section class="v-ensena"><div class="v-ensena-fl"><div><h2>${esc(o.titulo)}</h2><p>${esc(o.texto || '')}</p></div><span class="v-ensena-mic" aria-hidden="true">${ic('mic', 38)}</span></div>` +
     `<button type="button" class="v-btn"${at(o)}>${ic('mic', 22)}<span>${esc(o.boton || '')}</span></button></section>`;
   // VETA.v.presencia({titulo: 'Lo que <em>Veta</em> hace por ti' (html), texto}) · VETA.v.cifras([{n: 2, texto: 'cerradas'}, …3])
-  V.presencia = o => `<div class="v-pres"><span class="v-pres-sim"><img src="assets/veta-symbol-gold.png" alt="" width="56" height="44"></span><div><h1>${o.titulo}</h1><p>${esc(o.texto || '')}</p></div></div>`;
+  V.presencia = o => `<div class="v-pres"><span class="v-pres-sim">${ic('marca', 48)}</span><div><h1>${o.titulo}</h1><p>${esc(o.texto || '')}</p></div></div>`;
   V.cifras = l => `<div class="v-cifras">${(l || []).slice(0, 3).map(d => `<div><b>${esc(d.n)}</b>${esc(d.texto)}</div>`).join('')}</div>`;
   V.subSeccion = t => `<p class="v-sec-sub">${esc(t)}</p>`;
   V.enlaceOro = o => `<button type="button" class="v-quienlo"${at(o)}><span>${esc(o.texto)}</span>${ic('chev', 20)}</button>`;

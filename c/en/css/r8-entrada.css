@@ -7,14 +7,14 @@
 .m-elige i{opacity:1}
 .m-par{width:100%}
 .m-par .m-idioma{position:static;transform:none;animation:none;opacity:1;flex:1 1 0;min-width:0;min-height:var(--btn);padding:var(--e2) var(--e3);border-radius:var(--r-btn);text-indent:0;letter-spacing:0;text-transform:none;font:700 var(--f-cuerpo)/1.2 var(--body);background:var(--port-btn-b);color:var(--port-btn-t);border:0;box-shadow:none}
-.m-par .m-idioma.r7-boton-claro{background:transparent;color:var(--port-t);box-shadow:inset 0 0 0 1.5px color-mix(in srgb,var(--port-t) 40%,transparent)}
+.m-par .m-idioma.r7-boton-claro{background:transparent;color:var(--port-t);outline:1.5px solid color-mix(in srgb,var(--port-t) 40%,transparent);outline-offset:-1.5px}
 .m-par .m-idioma:active{transform:scale(.98)}
 @media (hover:hover) and (pointer:fine){.m-par .m-idioma:hover{border:0}}
 
 /* ---- entrar (E2): lema, dos tarjetas de una línea, enlace y aviso (E-2, E-4) ---- */
 .c-entrar-c{gap:var(--e5)}
 .c-lema .c-entrar-c{gap:var(--e5)}
-.c-entrar-h,.c-entrar .campo-e,.c-entrar-err{font-weight:700}
+.c-entrar .campo-e,.c-entrar-err{font-weight:700}
 .c-papel{min-height:var(--fila-1);padding:var(--e2) var(--e4)}
 .c-cuenta,.c-papel .c-cuenta-t{font:700 var(--f-cuerpo)/1.2 var(--body)}
 .c-papel-chev{color:var(--port-t2)}

@@ -6,7 +6,7 @@
 :root{--oro:var(--top-acento);--oro-trazo:color-mix(in srgb,var(--top-acento) 62%,transparent);--oro-suave:var(--av-ic-b);--v-pista:color-mix(in srgb,var(--t1) 14%,transparent)}
 
 /* 1 · Oro: trazo de rotulador bajo la frase que prueba algo. Con varias líneas se dibuja seguido, una tras otra */
-.v-oro{background:linear-gradient(transparent 60%,var(--oro-trazo) 60%,var(--oro-trazo) 93%,transparent 93%) no-repeat 0 0/100% 100%;border-radius:2px;transition:background-size var(--t-largo) var(--c-estandar) var(--v-ret,260ms)}
+.v-oro{background:linear-gradient(transparent 60%,var(--oro-trazo) 60%,var(--oro-trazo) 93%,transparent 93%) no-repeat 0 0/100% 100%;border-radius:var(--r-pill);transition:background-size var(--t-largo) var(--c-estandar) var(--v-ret,260ms)}
 .v-oro.v-antes{background-size:0% 100%}
 .hoja .v-oro{--v-ret:420ms}
 .v-pastilla{display:inline-flex;align-items:center;gap:6px;min-height:28px;padding:2px var(--e3);border-radius:var(--r-pill);background:var(--s2);color:var(--t2);font:700 var(--f-apoyo)/1.2 var(--body);white-space:nowrap}
@@ -61,7 +61,7 @@ html[data-mov=reducido] .v-halo{background:var(--oro)}
 /* 10 · Aviso con deshacer: anillo de cuenta atrás; al deshacer, el aviso enseña lo que Veta ha entendido */
 .aviso-d{gap:6px}
 .aviso-an{width:22px;height:22px;flex:none;transform:rotate(-90deg)}
-.aviso-an circle{fill:none;stroke:currentColor;stroke-width:2.6}
+.aviso-an circle{fill:none;stroke:currentColor;stroke-width:1.6;vector-effect:non-scaling-stroke}
 .aviso-an circle:first-child{opacity:.28}
 .aviso-an circle:last-child{stroke-dasharray:1;animation:v-atras var(--v-ms,5000ms) linear both}
 @keyframes v-atras{to{stroke-dashoffset:1}}
@@ -69,7 +69,7 @@ html[data-mov=reducido] .v-halo{background:var(--oro)}
 .aviso.ensena .aviso-t::before{content:"";flex:none;width:8px;height:8px;border-radius:50%;background:var(--top-acento)}
 
 /* 11 · «De dónde sale» (H01): la frase literal subrayada y su fecha en una pastilla */
-.burbuja.v-clave{max-width:92%;box-shadow:inset 0 0 0 1px var(--oro)}
+.burbuja.v-clave{max-width:92%;outline:1px solid var(--oro);outline-offset:-1px}
 .burbuja.v-clave .v-pastilla{align-self:flex-start;margin-top:var(--e1);background:var(--s1);color:var(--t1)}
 .v-h01-pie{display:flex;gap:var(--e2);align-items:flex-start;font:500 var(--f-apoyo)/1.4 var(--body);color:var(--t2)}
 .v-h01-pie .ic{color:var(--oro);flex:none;margin-top:1px}

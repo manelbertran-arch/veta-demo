@@ -3,24 +3,24 @@
 /* los componentes ya traen su margen de 16: los días salen al borde de la columna (un solo margen, como Clientes y Pisos) */
 .vi-dia{margin:0 calc(-1*var(--margen))}
 .pant-A21 .v-dias{padding:16px 0 0}   /* la tira de días ocupa la columna de 16 a 16, como las tarjetas de debajo */
-.vi-et{margin:22px 20px 10px;font:700 15px/1.2 var(--body);letter-spacing:.04em;text-transform:uppercase;color:var(--t2)}
+.vi-et{margin:22px 20px 10px;font:700 var(--f-apoyo)/1.2 var(--body);letter-spacing:.04em;text-transform:uppercase;color:var(--t2)}
 .vi-dia>.vi-et:first-child{margin-top:18px}
 .vi-h{cursor:pointer;margin-bottom:12px}
-/* velo uniforme y sobrio sobre la foto: texto blanco sobre fondo ≥ 6:1 aunque el piso sea claro */
-.vi-h .v-hero::after{background:rgba(12,8,5,.66)}
+/* ola premium A · el velo ya no es una losa: un degradado que oscurece abajo (el nombre) y apenas arriba (la hora); en medio, la foto */
+.vi-h .v-hero::after{background:radial-gradient(150% 36% at 18% 12%,rgba(12,8,5,.62),rgba(12,8,5,.50) 55%,rgba(12,8,5,0) 100%),linear-gradient(180deg,rgba(12,8,5,.10) 0%,rgba(12,8,5,.06) 40%,rgba(12,8,5,.78) 58%,rgba(12,8,5,.88) 100%)}
 .vi-h .v-hero-sf::after{background:rgba(12,8,5,.30)}
 .vi-h .v-hero{min-height:300px}
 /* los días: un punto discreto donde hay visita; el rojo solo si toca ya */
 .v-dia.v-hoy u{background:transparent;box-shadow:none}
-.v-dia.v-hoy.vi-pend u,.v-dia.v-hoy.v-pasa u{box-shadow:0 0 0 2px var(--t1)}
+.v-dia.v-hoy.vi-pend u,.v-dia.v-hoy.v-pasa u{outline:2px solid var(--t1);outline-offset:0}
 .v-dia.vi-pend u{background:var(--urg-s)}
 .v-dia.v-hoy.v-pasa u{background:var(--hecho-s)}
 /* filas «Con el acta enviada» */
 .vi-lista{display:flex;flex-direction:column;gap:12px}
 .vi-fila{display:flex;align-items:center;gap:14px;margin:0 16px;padding:10px 14px 10px 10px;min-height:88px;width:calc(100% - 32px);text-align:left;color:var(--t1);background:var(--s1);border:1px solid var(--borde);border-radius:var(--v-radio-card);box-shadow:var(--sombra);cursor:pointer}
-.vi-mini{width:76px;height:68px;border-radius:14px;flex:none;background:var(--v-img) 50% 80%/cover}
+.vi-mini{width:76px;height:68px;border-radius:var(--r-1);flex:none;background:var(--v-img) 50% 80%/cover}
 .vi-mini-sf{background:var(--s2)}
 .vi-tx{flex:1;min-width:0;display:flex;flex-direction:column;align-items:flex-start}
-.vi-nom{font:600 19px/1.15 var(--display)}
-.vi-cuando{font:500 16px/1.3 var(--body);color:var(--t2);margin:2px 0 6px}
-.vi-est{font:600 15px/1.3 var(--body);color:var(--t2)}
+.vi-nom{font:500 var(--f-hoja)/1.15 var(--display)}
+.vi-cuando{font:500 var(--f-apoyo)/1.3 var(--body);color:var(--t2);margin:2px 0 6px}
+.vi-est{font:700 var(--f-apoyo)/1.3 var(--body);color:var(--t2)}

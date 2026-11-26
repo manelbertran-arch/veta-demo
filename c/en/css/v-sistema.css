@@ -1,21 +1,21 @@
 /* Veta demo · tanda V · carril 0 · v-sistema.css
    Los componentes del rediseño (maqueta C2 + los tres ajustes de C3). Prefijo v-. Todo con las variables de temas.css (claro y oscuro) y el
    ambiente de base.css (data-sitio). Las funciones que los pintan están en js/nucleo/v.js (VETA.v.*). Manual: analisis/PARTE_V0.md.
-   Medidas que se ajustan en un solo sitio: --v-car-ancho, --v-tj-alto, --v-cara-max (tope de las caras: 64). */
-:root{--v-tj-alto:316px;--v-car-gap:12px;--v-car-margen:16px;--v-cara-max:64px;--v-radio-tj:28px;--v-radio-card:24px}
+   Medidas que se ajustan en un solo sitio: --v-car-ancho, --v-cara-max (tope de las caras: 64). */
+:root{--v-car-gap:12px;--v-car-margen:16px;--v-cara-max:64px;--v-radio-tj:var(--r-5);--v-radio-card:var(--r-3)}
 
 /* ---------- botones ---------- */
-.v-btn{display:flex;align-items:center;justify-content:center;gap:10px;height:54px;padding:0 20px;border-radius:27px;font:700 17px/1 var(--body);border:0;width:100%;cursor:pointer;text-align:center}
+.v-btn{display:flex;align-items:center;justify-content:center;gap:10px;height:54px;padding:0 20px;border-radius:var(--r-pill);font:700 var(--f-cuerpo)/1 var(--body);border:0;width:100%;cursor:pointer;text-align:center}
 .v-btn .ic{width:22px;height:22px}
 .v-btn-claro{background:#FFFDFA;color:#0A0906}                                   /* sobre tarjeta de color o foto */
 .v-btn-oscuro{background:var(--t1);color:var(--fondo)}
 .v-btn-oro{background:var(--oro);color:var(--sobre-oro)}   /* dorado claro, sobre tablero oscuro */
 .v-btn-contorno{background:transparent;color:var(--oro-2);border:2px solid var(--oro)}      /* «Enséñale algo a Veta» */
-html[data-modo=claro] :is(.app,.col):not([data-sitio=veta]):not([data-sitio=oficina]) .v-btn-contorno{color:var(--veta)}
+html[data-modo=claro] .v-btn-contorno{color:var(--veta)}
 .v-btn:active{transform:scale(.98)}
 
 /* ---------- chapas de estado y sello ---------- */
-.v-chapa{display:inline-flex;align-items:center;gap:6px;height:30px;padding:0 12px;border-radius:15px;font:700 15px/1 var(--body);white-space:nowrap;flex:none}
+.v-chapa{display:inline-flex;align-items:center;gap:6px;height:30px;padding:0 12px;border-radius:var(--r-pill);font:700 var(--f-apoyo)/1 var(--body);white-space:nowrap;flex:none}
 .v-chapa .ic{width:16px;height:16px}
 .v-chapa-urg{background:var(--urg-b);color:var(--urg)}.v-chapa-esp{background:var(--esp-b);color:var(--esp)}
 .v-chapa-hecho{background:var(--hecho-b);color:var(--hecho)}.v-chapa-veta{background:var(--veta-b);color:var(--veta)}
@@ -23,13 +23,13 @@ html[data-modo=claro] :is(.app,.col):not([data-sitio=veta]):not([data-sitio=ofic
 .v-chapa.v-sol.v-chapa-urg{background:var(--urg-s);color:var(--sobre-urg)}.v-chapa.v-sol.v-chapa-esp{background:var(--esp-s);color:var(--sobre-esp)}
 .v-chapa.v-sol.v-chapa-hecho{background:var(--hecho-s);color:var(--sobre-hecho)}.v-chapa.v-sol.v-chapa-veta{background:var(--oro);color:var(--sobre-oro)}
 .v-chapa.v-sol.v-chapa-neutro{background:#E9E2D8;color:#2A251E}
-.v-sello{display:inline-flex;align-items:center;gap:5px;border:2px solid var(--hecho);color:var(--hecho);border-radius:10px;padding:2px 8px;font:700 15px/1.3 var(--body);transform:rotate(-2deg);transform-origin:left center;white-space:nowrap;background:var(--hecho-b)}
-.v-sello .ic{width:16px;height:16px;stroke-width:2.6}
+.v-sello{display:inline-flex;align-items:center;gap:5px;border:2px solid var(--hecho);color:var(--hecho);border-radius:var(--r-1);padding:2px 8px;font:700 var(--f-apoyo)/1.3 var(--body);transform:rotate(-2deg);transform-origin:left center;white-space:nowrap;background:var(--hecho-b)}
+.v-sello .ic{width:16px;height:16px}
 
 /* ---------- caras (jamás más de 64) y tarjeta de ambiente ---------- */
 .v-cara{border-radius:50%;object-fit:cover;display:block;flex:none;background:var(--s2);max-width:var(--v-cara-max);max-height:var(--v-cara-max)}
-.v-ini{border-radius:50%;display:grid;place-items:center;flex:none;font:600 22px/1 var(--display);color:#fff;letter-spacing:.01em;background:linear-gradient(150deg,var(--ta),var(--tb));max-width:var(--v-cara-max);max-height:var(--v-cara-max)}
-.v-aro{border:3px solid #fff;box-shadow:0 4px 14px rgba(0,0,0,.35)}
+.v-ini{border-radius:50%;display:grid;place-items:center;flex:none;font:500 var(--f-hoja)/1 var(--display);color:#fff;letter-spacing:.01em;background:linear-gradient(150deg,var(--ta),var(--tb));max-width:var(--v-cara-max);max-height:var(--v-cara-max)}
+.v-aro{border:3px solid #fff;box-shadow:none}
 .v-t1{--ta:#B5573F;--tb:#6B2A1E}.v-t2{--ta:#3E7885;--tb:#1B3A44}.v-t3{--ta:#7D7C3A;--tb:#3B3B16}
 .v-t4{--ta:#8E4F7C;--tb:#42203A}.v-t5{--ta:#B58427;--tb:#5A3E0C}.v-t6{--ta:#5C6C93;--tb:#242C47}
 /* tarjeta de ambiente: la foto de la persona, desenfocada y oscurecida, de fondo; delante, su cara nítida. Sin foto: degradado de su tono + iniciales */
@@ -51,71 +51,26 @@ html[data-modo=claro] :is(.app,.col):not([data-sitio=veta]):not([data-sitio=ofic
 .v-car>.v-car-it.v-sale{opacity:0;transform:translateY(-34px) scale(.96)}
 .v-car>.v-car-it.v-cierra{flex-basis:0;margin-right:calc(-1*var(--v-car-gap));overflow:hidden}
 .v-car>.v-car-it.v-cierra>*{display:none}
-.v-ind{display:flex;justify-content:center;align-items:center;gap:6px;margin:10px 0 0;min-height:20px;font:600 15px/1 var(--body);color:var(--t3)}
+.v-ind{display:flex;justify-content:center;align-items:center;gap:6px;margin:10px 0 0;min-height:20px;font:700 var(--f-apoyo)/1 var(--body);color:var(--t3)}
 .v-ind i{width:7px;height:7px;border-radius:50%;background:var(--pista);transition:width .2s ease,background .2s ease}
-.v-ind i.on{width:20px;border-radius:4px;background:var(--t2)}
+.v-ind i.on{width:20px;border-radius:var(--r-pill);background:var(--acento)}
 .v-ind-n{margin-left:6px}
-:is(.app,.col)[data-sitio=veta] .v-ind i.on,:is(.app,.col)[data-sitio=oficina] .v-ind i.on{background:var(--oro)}
 
-/* ---------- tarjeta de tarea (C3): degradado del tono de su tipo, foto de la persona desenfocada al 17 %, icono enorme al 13 %, rótulo del tipo arriba ---------- */
-.v-tipo-contestar{--v-a:var(--v-tipo-contestar-a);--v-b:var(--v-tipo-contestar-b);--v-ct:var(--v-tipo-contestar-t)}
-.v-tipo-visita{--v-a:var(--v-tipo-visita-a);--v-b:var(--v-tipo-visita-b);--v-ct:var(--v-tipo-visita-t)}
-.v-tipo-informe{--v-a:var(--v-tipo-informe-a);--v-b:var(--v-tipo-informe-b);--v-ct:var(--v-tipo-informe-t)}
-.v-tipo-oportunidad{--v-a:var(--v-tipo-oportunidad-a);--v-b:var(--v-tipo-oportunidad-b);--v-ct:var(--v-tipo-oportunidad-t)}
-.v-tipo-promesa{--v-a:var(--v-tipo-promesa-a);--v-b:var(--v-tipo-promesa-b);--v-ct:var(--v-tipo-promesa-t)}
-.v-tipo-bloqueada{--v-a:var(--v-tipo-bloqueada-a);--v-b:var(--v-tipo-bloqueada-b);--v-ct:var(--v-tipo-bloqueada-t)}
-.v-tj{position:relative;min-height:var(--v-tj-alto);border-radius:var(--v-radio-tj);padding:16px;display:flex;flex-direction:column;gap:12px;color:var(--v-ct,#fff);box-shadow:var(--sombra);isolation:isolate;overflow:hidden;
-  background:linear-gradient(160deg,var(--v-a,var(--neutro)),var(--v-b,var(--neutro)))}
-.v-tj::before{content:"";position:absolute;inset:-40px;z-index:-2;background:var(--v-img) center 30%/cover;filter:blur(26px) saturate(1.1);opacity:.17;transform:scale(1.1)}
-.v-tj-marca{position:absolute;right:-34px;top:-14px;width:230px;height:230px;z-index:-1;color:var(--v-ct);opacity:.08;pointer-events:none}
-.v-tj-marca .ic{width:100%;height:100%;stroke-width:1.1}
-.v-tj-arr{display:flex;align-items:center;gap:12px;justify-content:space-between}
-.v-tj-tp{display:flex;align-items:center;gap:12px;font:600 26px/1 var(--display);letter-spacing:-.01em;min-width:0}
-.v-tj-ic{width:58px;height:58px;border-radius:50%;display:grid;place-items:center;flex:none;background:color-mix(in srgb,var(--v-ct) 20%,transparent);box-shadow:inset 0 0 0 1.5px color-mix(in srgb,var(--v-ct) 30%,transparent)}
-.v-tj-ic .ic{width:32px;height:32px;stroke-width:1.9}
-.v-tj-quien{display:flex;gap:12px;align-items:center;margin:auto 0 12px}
-.v-tj-quien .v-cara,.v-tj-quien .v-ini{width:52px;height:52px}
-.v-tj-quien .v-aro{border-width:2px}
-.v-tj-nom{font:600 22px/1.05 var(--display);overflow-wrap:anywhere}
-.v-tj-frase{font:500 18px/1.22 var(--body);margin-top:3px}
-.v-tj-piso{display:flex;align-items:center;gap:10px;margin:0 0 12px;font:500 16px/1.25 var(--body)}
-.v-tj-piso img{width:60px;height:44px;border-radius:10px;object-fit:cover;border:2px solid rgba(255,255,255,.85)}
-.v-tj .v-btn{flex:none;background:#FFFDFA;color:#0A0906}
-.v-tj .v-chapa.v-sol.v-chapa-urg{background:#fff;color:#8A1F10}
-/* tarjeta que cierra el día */
-.v-tj-fin{background:linear-gradient(150deg,var(--hecho-b),var(--s1));color:var(--t1);border:1px solid var(--borde);align-items:center;justify-content:center;text-align:center}
-.v-tj-fin .v-ok{width:72px;height:72px;border-radius:50%;background:var(--hecho-s);color:var(--sobre-hecho);display:grid;place-items:center}
-.v-tj-fin .v-ok .ic{width:38px;height:38px;stroke-width:2.6}
-.v-tj-fin h2{font-size:28px}.v-tj-fin p{font-size:18px;color:var(--t2)}
-.v-tj-fin .v-btn{background:var(--t1);color:var(--fondo);margin-top:8px}
-
-/* ---------- tira del día: una pieza por tarea con el degradado de su tipo; la actual lleva aro y, debajo, el rótulo de su tipo con pico; la hecha, verde con ✓ ---------- */
-.v-tira-w{margin:12px 0 0;padding:0 16px}
-.v-tira{display:flex;align-items:center;gap:4px;padding:4px 0 0;flex-wrap:nowrap}
-.v-pz{position:relative;width:42px;height:42px;border-radius:50%;display:grid;place-items:center;border:0;padding:0;flex:none;cursor:pointer;color:var(--v-ct,#fff);background:linear-gradient(150deg,var(--v-a,var(--neutro)),var(--v-b,var(--neutro)));transition:background .3s,color .3s,transform .3s}
-.v-pz .ic{width:22px;height:22px}
-.v-pz.v-actual{box-shadow:0 0 0 2px var(--fondo),0 0 0 4.5px var(--t1);transform:scale(1.06)}
-.v-pz.v-hecha{background:var(--hecho-s);color:var(--sobre-hecho)}
-.v-pz.v-hecha .ic{stroke-width:2.8}
-.v-tira-cuenta{margin-left:auto;font:700 16px/1 var(--body);color:var(--t1);white-space:nowrap;padding-left:4px}
-.v-tira-rot{position:relative;height:30px;margin-top:8px}
-.v-tira-rot span{position:absolute;top:0;left:0;height:28px;padding:0 12px;border-radius:14px;display:inline-flex;align-items:center;font:700 15px/1 var(--body);white-space:nowrap;color:var(--v-ct,#fff);background:linear-gradient(150deg,var(--v-a),var(--v-b));transition:left .25s ease}
-.v-tira-rot span::before{content:"";position:absolute;left:var(--pico,50%);top:-5px;width:10px;height:10px;margin-left:-5px;background:var(--v-a);transform:rotate(45deg);border-radius:2px}
 
 /* ---------- conmutador de dos pastillas ---------- */
-.v-conm{display:grid;grid-template-columns:1fr 1fr;gap:4px;margin:16px 16px 14px;padding:4px;border-radius:26px;background:var(--s2)}
-.v-conm button{height:48px;min-width:44px;border-radius:22px;border:0;background:transparent;color:var(--t2);font:700 17px/1 var(--body);cursor:pointer;text-align:center}
+.v-conm{display:grid;grid-template-columns:1fr 1fr;gap:4px;margin:16px 16px 14px;padding:4px;border-radius:var(--r-pill);background:var(--s2)}
+.v-conm button{height:48px;min-width:44px;border-radius:var(--r-pill);border:0;background:transparent;color:var(--t2);font:700 var(--f-cuerpo)/1 var(--body);cursor:pointer;text-align:center}
 .v-conm button em{font-style:normal;font-weight:700;margin-left:6px;opacity:.8}
 .v-conm button[aria-selected=true]{background:var(--t1);color:var(--fondo)}
 
 /* ---------- tira de días de calendario ---------- */
 .v-dias{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;padding:16px 10px 0}
-.v-dia{height:80px;min-width:44px;border-radius:22px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;font:600 15px/1 var(--body);color:var(--t2);border:0;background:transparent;padding:0;cursor:pointer}
-.v-dia b{font:600 22px/1 var(--display);color:var(--t1)}
+.v-dia{height:80px;min-width:44px;border-radius:var(--r-pill);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;font:700 var(--f-apoyo)/1 var(--body);color:var(--t2);border:0;background:transparent;padding:0;cursor:pointer}
+.v-dia b{font:500 var(--f-hoja)/1 var(--display);color:var(--t1)}
 .v-dia u{width:9px;height:9px;border-radius:50%;background:transparent;text-decoration:none;margin-top:2px}
 .v-dia.v-pasa u{background:var(--hecho-s)}
-.v-dia.v-sel:not(.v-hoy){background:var(--s1);box-shadow:inset 0 0 0 2px var(--t1)}
-.v-dia.v-hoy{background:var(--t1);color:var(--fondo)}.v-dia.v-hoy b{color:var(--fondo)}.v-dia.v-hoy u{background:var(--urg-s);box-shadow:0 0 0 2px var(--t1)}
+.v-dia.v-sel:not(.v-hoy){background:var(--s1);outline:2px solid var(--t1);outline-offset:-2px}
+.v-dia.v-hoy{background:var(--t1);color:var(--fondo)}.v-dia.v-hoy b{color:var(--fondo)}.v-dia.v-hoy u{background:var(--urg-s);outline:2px solid var(--t1);outline-offset:0}
 
 /* ---------- hero de visita: foto de piso con velo y la hora enorme (variante sin foto: degradado + casa grande) ---------- */
 .v-hero{position:relative;margin:0 16px;border-radius:var(--v-radio-tj);overflow:hidden;min-height:320px;color:#fff;isolation:isolate;display:flex;flex-direction:column;justify-content:space-between;padding:18px;box-shadow:var(--sombra)}
@@ -124,92 +79,92 @@ html[data-modo=claro] :is(.app,.col):not([data-sitio=veta]):not([data-sitio=ofic
 .v-hero-sf::before{background:linear-gradient(150deg,#46625F 0%,#27403F 55%,#16282A 100%)}
 .v-hero-sf::after{background:linear-gradient(180deg,rgba(12,8,5,.18),rgba(12,8,5,.6))}
 .v-hero-casa{position:absolute;right:-26px;top:70px;width:210px;height:210px;color:rgba(255,255,255,.14);z-index:-1}
-.v-hero-casa .ic{width:100%;height:100%;stroke-width:1.2}
+.v-hero-casa .ic{width:100%;height:100%}
 .v-hero-arr{display:flex;justify-content:space-between;align-items:flex-start;gap:8px}
-.v-hora{font:600 78px/.85 var(--display);letter-spacing:-.03em;text-shadow:0 2px 18px rgba(0,0,0,.4)}
-.v-hero-pas .v-hora{font-size:70px}
+.v-hora{font:700 var(--f-cifra)/.85 var(--display);letter-spacing:-.03em;text-shadow:0 2px 18px rgba(0,0,0,.4)}
+.v-hero-pas .v-hora{font-size:var(--f-cifra)}
 .v-hero-gente{display:flex;align-items:center;gap:14px;margin-bottom:14px}
 .v-hero-gente .v-cara,.v-hero-gente .v-ini{width:60px;height:60px}
-.v-hero h2{font:600 28px/1.1 var(--display)}.v-hero-donde{font:500 17px/1.3 var(--body);color:#F8F1E8;margin-top:2px}
+.v-hero h2{font:500 var(--f-titulo)/1.1 var(--display)}.v-hero-donde{font:500 var(--f-cuerpo)/1.3 var(--body);color:#F8F1E8;margin-top:2px}
 .v-hero .v-sello{align-self:flex-start;margin-bottom:12px;background:rgba(255,255,255,.95)}
 
 /* ---------- franja «Veta ha hecho hoy»: oscura y dorada, con tres datos ---------- */
 .v-franja-veta{display:block;margin:16px 16px 0;border-radius:var(--v-radio-card);background:#17140F;color:#F2EDE6;padding:18px 18px 16px;position:relative;overflow:hidden;border:1px solid rgba(196,162,103,.3);text-align:left;width:calc(100% - 32px)}
-.v-franja-cab{display:flex;align-items:center;gap:10px;font:600 20px/1.1 var(--display);color:#E6D3A8;position:relative;z-index:1}
+.v-franja-cab{display:flex;align-items:center;gap:10px;font:500 var(--f-hoja)/1.1 var(--display);color:#E6D3A8;position:relative;z-index:1}
 .v-franja-cab .ic{width:24px;height:24px}
 .v-franja-datos{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:14px;position:relative;z-index:1}
-.v-franja-datos div{border-top:1px solid rgba(196,162,103,.45);padding-top:8px;font:500 15px/1.25 var(--body);color:#DCD5CA}
-.v-franja-datos b{display:block;font:600 36px/1 var(--display);color:#E6D3A8}
+.v-franja-datos div{border-top:1px solid rgba(196,162,103,.45);padding-top:8px;font:500 var(--f-apoyo)/1.25 var(--body);color:#DCD5CA}
+.v-franja-datos b{display:block;font:500 var(--f-cifra)/1 var(--display);color:#E6D3A8}
 
 /* ---------- tarjeta de sugerencia («Te lo propongo»): símbolo de Veta, nombre, evidencia dibujada y un botón dorado claro dentro ---------- */
 .v-car-prop>.v-car-it{flex-basis:calc(100% - 44px)}
-.v-prop{display:flex;flex-direction:column;padding:20px 18px 16px;border-radius:var(--v-radio-tj);background:#17140F;border:1px solid rgba(196,162,103,.35);color:#F8F2E8}
-.v-prop-sim{width:40px;height:40px;border-radius:50%;display:grid;place-items:center;background:rgba(196,162,103,.18);box-shadow:0 0 0 1.5px rgba(196,162,103,.5)}
-.v-prop-sim img{width:24px;height:auto}
-.v-prop h3{font:600 24px/1.1 var(--display);color:#F8F2E8;min-height:54px;margin-top:10px}
+.v-prop{display:flex;flex-direction:column;padding:20px 18px 16px;border-radius:var(--v-radio-tj);background:var(--s1);border:1px solid var(--borde);box-shadow:var(--sombra);color:var(--t1)}
+.v-prop-sim{width:40px;height:40px;border-radius:50%;display:grid;place-items:center;background:color-mix(in srgb,var(--oro) 16%,var(--s1));outline:1.5px solid rgba(196,162,103,.5);outline-offset:0}
+.v-prop-sim{color:var(--acento)}.v-prop-sim .ic{width:24px;height:24px}
+.v-prop h3{font:500 var(--f-hoja)/1.1 var(--display);color:var(--t1);min-height:54px;margin-top:10px}
 .v-marcas{display:flex;flex-wrap:wrap;gap:4px;margin:10px 0 8px}
-.v-marcas i{width:10px;height:20px;border-radius:4px;background:var(--oro);flex:none}
-.v-prop-vez{font:500 17px/1.3 var(--body);color:#CFC9BE}.v-prop-vez b{color:#E6D3A8;font-weight:700}
+.v-marcas i{width:10px;height:20px;border-radius:var(--r-pill);background:var(--oro);flex:none}
+.v-prop-vez{font:500 var(--f-cuerpo)/1.3 var(--body);color:var(--t2)}.v-prop-vez b{color:var(--veta);font-weight:700}
 .v-prop .v-btn{margin-top:14px;height:52px}
 
 /* ---------- baldosa de trabajo («Ya lo hago yo»): rejilla de 2, icono, nombre, medidor de cinco barras que sube, paso y pie ---------- */
 .v-baldosas{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:0 16px}
-.v-baldosa{display:flex;flex-direction:column;border-radius:24px;padding:14px 14px 13px;background:var(--s1);border:1px solid var(--borde);min-height:208px;text-align:left;color:var(--t1);cursor:pointer;min-width:0}
+.v-baldosa{display:flex;flex-direction:column;border-radius:var(--r-3);padding:14px 14px 13px;background:var(--s1);border:1px solid var(--borde);min-height:208px;text-align:left;color:var(--t1);cursor:pointer;min-width:0}
 .v-baldosa-ic{width:44px;height:44px;border-radius:50%;display:grid;place-items:center;background:var(--veta-b);color:var(--veta);flex:none}
 .v-baldosa-ic .ic{width:24px;height:24px}
-.v-baldosa-nom{font:700 17px/1.18 var(--body);margin-top:10px;min-height:40px;overflow-wrap:anywhere}
+.v-baldosa-nom{font:700 var(--f-cuerpo)/1.18 var(--body);margin-top:10px;min-height:40px;overflow-wrap:anywhere}
 .v-medidor{display:flex;align-items:flex-end;gap:4px;height:28px;margin-top:12px}
-.v-medidor i{flex:1;border-radius:3px;background:var(--pista)}
+.v-medidor i{flex:1;border-radius:var(--r-pill);background:var(--pista)}
 .v-medidor i:nth-child(1){height:9px}.v-medidor i:nth-child(2){height:14px}.v-medidor i:nth-child(3){height:19px}.v-medidor i:nth-child(4){height:24px}.v-medidor i:nth-child(5){height:28px}
 .v-medidor i.l{background:var(--oro)}
 .v-medidor i.c{background:transparent;border:1.5px dashed var(--oro)}
-.v-paso{font:700 15px/1.2 var(--body);color:var(--veta);margin-top:8px}
-.v-baldosa-pie{margin-top:auto;padding-top:8px;font:500 15px/1.25 var(--body);color:var(--t2)}
-.v-prog-b{display:flex;gap:2px;margin:0 0 5px}.v-prog-b i{flex:1;height:8px;border-radius:3px;background:var(--pista)}.v-prog-b i.l{background:var(--oro)}
-.v-prog{color:var(--veta);font-weight:600}
+.v-paso{font:700 var(--f-apoyo)/1.2 var(--body);color:var(--veta);margin-top:8px}
+.v-baldosa-pie{margin-top:auto;padding-top:8px;font:500 var(--f-apoyo)/1.25 var(--body);color:var(--t2)}
+.v-prog-b{display:flex;gap:2px;margin:0 0 5px}.v-prog-b i{flex:1;height:8px;border-radius:var(--r-pill);background:var(--pista)}.v-prog-b i.l{background:var(--oro)}
+.v-prog{color:var(--veta);font-weight:700}
 
 /* ---------- mosaico 2×2 («Cómo voy») ---------- */
 .v-mos{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:0 16px}
 .v-celda{border-radius:var(--v-radio-card);padding:16px;background:var(--s1);border:1px solid var(--borde);min-height:150px;display:flex;flex-direction:column;justify-content:space-between;color:var(--t1);text-align:left;cursor:pointer}
 .v-celda-ic{width:52px;height:52px;border-radius:50%;display:grid;place-items:center;background:var(--veta-b);color:var(--veta)}
 .v-celda-ic .ic{width:26px;height:26px}
-.v-celda h3{font:600 18px/1.2 var(--body);display:flex;justify-content:space-between;align-items:flex-end;gap:6px}
-.v-celda h3 .ic{width:20px;height:20px;color:var(--oro);margin-bottom:2px}
+.v-celda h3{font:700 var(--f-cuerpo)/1.2 var(--body);display:flex;justify-content:space-between;align-items:flex-end;gap:6px}
+.v-celda h3 .ic{width:20px;height:20px;color:var(--acento);margin-bottom:2px}
 .v-celda-oro{background:#C4A267;border:0;color:#1A1209}
 .v-celda-oro h3,.v-celda-oro h3 .ic{color:#1A1209}.v-celda-oro .v-celda-ic{background:rgba(10,9,6,.14);color:#0A0906}
-.v-celda-n{font:600 64px/.9 var(--display);color:#0A0906}
+.v-celda-n{font:500 var(--f-cifra)/.9 var(--display);color:#0A0906}
 
 /* ---------- fila compacta con ✓ (lo hecho) ---------- */
 .v-lista{margin:0 16px;background:var(--s1);border:1px solid var(--borde);border-radius:var(--v-radio-card);box-shadow:var(--sombra);overflow:hidden}
 .v-fila{display:flex;align-items:center;gap:12px;padding:12px 14px;min-height:64px;border-bottom:1px solid var(--borde);width:100%;text-align:left;color:var(--t1);background:none;border-left:0;border-right:0;border-top:0}
 .v-fila:last-child{border-bottom:0}
 .v-fila-ok{width:36px;height:36px;border-radius:50%;background:var(--hecho-s);color:var(--sobre-hecho);display:grid;place-items:center;flex:none}
-.v-fila-ok .ic{width:20px;height:20px;stroke-width:2.8}
-.v-fila-tx{flex:1;min-width:0;font:600 17px/1.25 var(--body)}
-.v-fila-hr{font:600 15px/1 var(--body);color:var(--t3);flex:none}
-.v-vacio{margin:0 16px;padding:26px 20px;text-align:center;color:var(--t2);font:500 17px/1.35 var(--body);border:1.5px dashed var(--borde);border-radius:var(--v-radio-card)}
+.v-fila-ok .ic{width:20px;height:20px}
+.v-fila-tx{flex:1;min-width:0;font:700 var(--f-cuerpo)/1.25 var(--body)}
+.v-fila-hr{font:700 var(--f-apoyo)/1 var(--body);color:var(--t3);flex:none}
+.v-vacio{margin:0 16px;padding:26px 20px;text-align:center;color:var(--t2);font:500 var(--f-cuerpo)/1.35 var(--body);border:1.5px dashed var(--borde);border-radius:var(--v-radio-card)}
 
 /* ---------- Clientes: tarjeta-retrato (cara a 64 px, como manda «caras ≤ 64»; ya no hay excepción), nombre, frase y chapa al pie; variante de iniciales ---------- */
 .v-car-rts>.v-car-it{flex:0 0 156px}.v-car-rts{gap:10px;scroll-snap-type:x proximity}
 .v-rt{position:relative;display:flex;flex-direction:column;align-items:flex-start;gap:10px;width:100%;padding:14px;border-radius:var(--v-radio-card);background:var(--s1);color:var(--t1);border:1px solid var(--borde);box-shadow:var(--sombra);text-align:left;cursor:pointer;font:inherit}
-.v-rt-ret{position:relative;display:block;width:64px;height:64px;border-radius:18px;overflow:hidden;background:var(--s2);flex:none}
+.v-rt-ret{position:relative;display:block;width:64px;height:64px;border-radius:var(--r-3);overflow:hidden;background:var(--s2);flex:none}
 .v-rt-foto{display:block;width:100%;height:100%;object-fit:cover;object-position:50% 28%;max-width:none}
 .v-rt .v-chapa{position:static;margin-top:auto;align-self:flex-start}
 .v-rt-pie{display:flex;flex-direction:column;gap:3px;min-width:0;width:100%}
-.v-rt-nom{font:600 19px/1.1 var(--display);color:var(--t1)}
-.v-rt-que{font:500 15px/1.25 var(--body);color:var(--t2);overflow:hidden;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical}
-.v-rt-ini{position:absolute;inset:0;display:grid;place-items:center;font:600 24px/1 var(--display);color:var(--t2);letter-spacing:.02em}
+.v-rt-nom{font:500 var(--f-hoja)/1.1 var(--display);color:var(--t1)}
+.v-rt-que{font:500 var(--f-apoyo)/1.25 var(--body);color:var(--t2);overflow:hidden;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical}
+.v-rt-ini{position:absolute;inset:0;display:grid;place-items:center;font:500 var(--f-hoja)/1 var(--display);color:var(--t2);letter-spacing:.02em}
 .v-rej{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:0 16px}
 @media (min-width:560px){.v-rej{grid-template-columns:repeat(auto-fill,156px);justify-content:start}}
 .v-rt .v-chapa.v-sol.v-chapa-neutro{background:#E9E2D8;color:#2A251E}
 
 /* ---------- Clientes: buscador grande y filtros en una sola fila que se desplaza ---------- */
-.v-busca{margin:14px 16px 0;height:68px;border-radius:34px;background:var(--s1);border:2px solid var(--t1);display:flex;align-items:center;gap:14px;padding:0 10px;color:var(--t2);font:500 19px/1.2 var(--body);box-shadow:var(--sombra);width:calc(100% - 32px);text-align:left;cursor:pointer}
+.v-busca{margin:14px 16px 0;height:68px;border-radius:var(--r-pill);background:var(--s1);border:2px solid var(--t1);display:flex;align-items:center;gap:14px;padding:0 10px;color:var(--t2);font:500 var(--f-hoja)/1.2 var(--body);box-shadow:var(--sombra);width:calc(100% - 32px);text-align:left;cursor:pointer}
 .v-busca-lupa{width:48px;height:48px;border-radius:50%;background:var(--t1);color:var(--fondo);display:grid;place-items:center;flex:none}
-.v-busca-lupa .ic{width:26px;height:26px;stroke-width:2.2}
+.v-busca-lupa .ic{width:26px;height:26px}
 .v-pastillas{display:flex;gap:8px;padding:14px 16px 2px;overflow-x:auto;scrollbar-width:none}
 .v-pastillas::-webkit-scrollbar{display:none}
-.v-pastillas button{flex:none;height:44px;border-radius:22px;padding:0 16px;display:flex;align-items:center;gap:8px;background:var(--s1);border:1px solid var(--borde);font:600 16px/1 var(--body);white-space:nowrap;color:var(--t1);cursor:pointer}
+.v-pastillas button{flex:none;height:44px;border-radius:var(--r-pill);padding:0 16px;display:flex;align-items:center;gap:8px;background:var(--s1);border:1px solid var(--borde);font:700 var(--f-apoyo)/1 var(--body);white-space:nowrap;color:var(--t1);cursor:pointer}
 .v-pastillas button em{font-style:normal;color:var(--t3)}
 .v-pastillas button u{width:11px;height:11px;border-radius:50%;background:var(--c,var(--neutro));text-decoration:none;flex:none}
 .v-pastillas button[aria-pressed=true]{background:var(--t1);color:var(--fondo);border-color:var(--t1)}.v-pastillas button[aria-pressed=true] em{color:var(--fondo);opacity:.8}
@@ -217,72 +172,75 @@ html[data-modo=claro] :is(.app,.col):not([data-sitio=veta]):not([data-sitio=ofic
 /* ---------- Pisos: una foto grande + una alta y dos apiladas (caras de 28) ---------- */
 .v-pg,.v-pa{position:relative;display:block;overflow:hidden;border-radius:var(--v-radio-tj);color:#fff;isolation:isolate;box-shadow:var(--sombra);background:var(--v-img) center/cover;border:0;padding:0;text-align:left;cursor:pointer;width:100%}
 .v-pg{margin:14px 16px 0;height:300px;width:calc(100% - 32px)}
-.v-pg::after,.v-pa::after{content:"";position:absolute;inset:0;z-index:0;background:linear-gradient(180deg,rgba(12,8,5,.05) 30%,rgba(12,8,5,.55) 58%,rgba(12,8,5,.92) 100%)}
+.v-pg::after,.v-pa::after{content:"";position:absolute;inset:0;z-index:0;background:linear-gradient(180deg,rgba(12,8,5,.05) 22%,rgba(12,8,5,.62) 50%,rgba(12,8,5,.92) 100%)}
 .v-pa::after{background:linear-gradient(180deg,rgba(12,8,5,.1) 12%,rgba(12,8,5,.7) 38%,rgba(12,8,5,.94) 100%)}   /* el velo de la baldosa pequeña sube más: la zona dorada lee AA aunque la pared sea clara */
 .v-pg .v-chapa,.v-pa .v-chapa{position:absolute;left:12px;top:12px;z-index:2}
-.v-pg-2{position:absolute;right:12px;top:12px;width:84px;height:62px;border-radius:14px;object-fit:cover;border:2px solid rgba(255,255,255,.85);z-index:2;max-width:none}
+.v-pg-2{position:absolute;right:12px;top:12px;width:84px;height:62px;border-radius:var(--r-1);object-fit:cover;border:2px solid rgba(255,255,255,.85);z-index:2;max-width:none}
 .v-pie{position:absolute;left:16px;right:14px;bottom:14px;z-index:2}
-.v-zona{font:700 15px/1.2 var(--body);color:#E6D3A8;letter-spacing:.02em;text-shadow:0 1px 6px rgba(12,8,5,.7)}
-.v-pg h2{font:600 30px/1.05 var(--display);margin-top:2px}
-.v-pg p{font:500 16px/1.25 var(--body);margin-top:4px;color:#F6EFE6}
-.v-enc{display:flex;align-items:center;gap:8px;margin-top:10px;font:600 15px/1.2 var(--body);color:#fff}
+.v-zona{font:700 var(--f-apoyo)/1.2 var(--body);color:#F6EAD0;letter-spacing:.02em;text-shadow:0 1px 6px rgba(12,8,5,.7)}
+.v-pg h2{font:500 var(--f-titulo)/1.05 var(--display);margin-top:2px}
+.v-pg p{font:500 var(--f-apoyo)/1.25 var(--body);margin-top:4px;color:#F6EFE6}
+.v-enc{display:flex;align-items:center;gap:8px;margin-top:10px;font:700 var(--f-apoyo)/1.2 var(--body);color:#fff}
 .v-mcs{display:inline-flex;flex:none}
-.v-mc{width:28px;height:28px;border-radius:50%;object-fit:cover;border:2px solid #fff;margin-left:-8px;display:grid;place-items:center;font:600 11px/1 var(--display);color:#fff;max-width:none}
+.v-mc{width:28px;height:28px;border-radius:50%;object-fit:cover;border:2px solid #fff;margin-left:-8px;display:grid;place-items:center;font:500 var(--f-apoyo)/1 var(--display);color:#fff;max-width:none}
 .v-mcs>.v-mc:first-child{margin-left:0}
 .v-mc.v-ini{background:linear-gradient(150deg,var(--ta),var(--tb))}
 .v-mos2{display:grid;grid-template-columns:1fr 1fr;grid-template-rows:140px 140px;gap:10px;padding:10px 16px 0}
 .v-pa{height:auto}.v-pa-alto{grid-row:1/3}
 .v-pa .v-pie{left:12px;right:10px;bottom:12px}
-.v-pa h3{font:600 20px/1.1 var(--display);margin-top:1px}
-.v-pa p{font:700 18px/1.2 var(--body);margin-top:3px;color:#fff}
+.v-pa h3{font:500 var(--f-hoja)/1.1 var(--display);margin-top:1px}
+.v-pa p{font:700 var(--f-cuerpo)/1.2 var(--body);margin-top:3px;color:#fff}
 .v-pa .v-enc{margin-top:6px;white-space:nowrap}.v-pa-alto .v-enc{white-space:normal;line-height:1.15}
-.v-pa-det{font:500 15px/1.2 var(--body);margin-top:2px;color:#F6EFE6}
+.v-pa-det{font:500 var(--f-apoyo)/1.2 var(--body);margin-top:2px;color:#F6EFE6}
 
 /* ---------- Operaciones: cada una, una línea de cinco pasos (hecho = lleno, aquí = ámbar con aro, pendiente = vacío) ---------- */
 .v-ops{display:flex;flex-direction:column;gap:12px;padding:14px 16px 0}
-.v-op{display:block;background:var(--s1);border:1px solid var(--borde);border-radius:24px;padding:14px;box-shadow:var(--sombra);width:100%;text-align:left;color:var(--t1);cursor:pointer}
+.v-op{display:block;background:var(--s1);border:1px solid var(--borde);border-radius:var(--r-3);padding:14px;box-shadow:var(--sombra);width:100%;text-align:left;color:var(--t1);cursor:pointer}
 .v-op-top{display:flex;align-items:center;gap:10px}
-.v-op-top .v-cara,.v-op-top .v-ini{width:32px;height:32px;font-size:12px;border-width:2px}
-.v-op-nom{font:600 19px/1.1 var(--display);flex:1;min-width:0}
-.v-op-tag{font:700 15px/1.2 var(--body);padding:3px 10px;border-radius:13px;border:1.5px solid var(--t1);color:var(--t1);white-space:nowrap}
-.v-op-venta .v-op-tag{background:var(--t1);color:var(--fondo)}
-.v-cinco{list-style:none;margin:16px 0 0;padding:0;display:grid;grid-template-columns:repeat(5,1fr);position:relative}
-.v-cinco li{position:relative;display:flex;flex-direction:column;align-items:center;gap:6px;padding:0 3px;min-width:0;font:500 14px/1.2 var(--body);color:var(--t3);text-align:center}
-.v-cinco li::before{content:"";position:absolute;top:10px;left:-50%;right:50%;height:4px;border-radius:2px;background:var(--pista)}
-.v-cinco li:first-child::before{display:none}
-.v-cinco li i{position:relative;z-index:1;width:22px;height:22px;border-radius:50%;background:var(--s1);border:3px solid var(--pista);display:block}
-.v-cinco li.v-hecho i{background:var(--t1);border-color:var(--t1)}
-.v-cinco li.v-hecho::before,.v-cinco li.v-aqui::before{background:var(--t1)}
-.v-cinco li.v-aqui i{width:28px;height:28px;margin:-3px 0 -3px;background:var(--oro);border:4px solid var(--t1);box-shadow:0 0 0 4px var(--tinte)}
-.v-cinco li.v-aqui{color:var(--t1);font-weight:700}
-.v-cinco li.v-hecho{color:var(--t2)}
-.v-op-sig{margin-top:12px;font:600 16px/1.25 var(--body);color:var(--t1);padding-top:10px;border-top:1px solid var(--borde)}
+.v-op-top .v-cara,.v-op-top .v-ini{width:32px;height:32px;font-size:var(--f-apoyo);border-width:2px}
+.v-op-nom{font:500 var(--f-hoja)/1.1 var(--display);flex:0 1 auto;min-width:0}
+.v-op-tag{font:500 var(--f-apoyo)/1.2 var(--body);color:var(--t3);white-space:nowrap}   /* «La compra» / «La venta»: texto discreto junto al nombre, no una pastilla */
+/* ola premium C · el avance de una operación: una barra fina de cinco tramos (4 px, extremos redondos, 4 px de hueco) y, debajo, una sola línea con la fase y su posición */
+.v-avance{margin:14px 0 0}
+.v-cinco{display:grid;grid-template-columns:repeat(5,1fr);gap:4px}
+.v-cinco i{display:block;height:4px;border-radius:var(--r-pill);background:color-mix(in srgb,var(--t1) 20%,transparent)}
+.v-cinco i.v-hecho{background:var(--t1)}
+.v-cinco i.v-aqui{background:var(--acento)}   /* en curso: el acento del sitio; en oscuro, al 78 % sobre la tarjeta para que se separe en luminosidad del «hecho» (tinta) */
+html[data-modo=oscuro] .v-cinco i.v-aqui{background:color-mix(in srgb,var(--acento) 78%,var(--s1))}
+.v-avance-t{margin:8px 0 0;font:500 var(--f-apoyo)/var(--l-fila) var(--body);color:var(--t2)}
+.v-fase{color:var(--acento);font-weight:700}
+.v-avance-l{margin:10px 0 0;display:flex;flex-direction:column;gap:6px}
+.v-avance-l li{display:flex;align-items:center;gap:10px;font:500 var(--f-apoyo)/var(--l-fila) var(--body);color:var(--t3)}
+.v-avance-l li::before{content:"";flex:none;width:8px;height:8px;border-radius:50%;box-shadow:none;outline:1.5px solid currentColor;outline-offset:-1.5px}
+.v-avance-l li.v-hecho{color:var(--t2)}.v-avance-l li.v-hecho::before{background:var(--t1);outline:0}
+.v-avance-l li.v-aqui{color:var(--t1);font-weight:700}.v-avance-l li.v-aqui::before{background:var(--acento);outline:0}
+.v-op-sig{margin-top:12px;font:700 var(--f-apoyo)/1.25 var(--body);color:var(--t1);padding-top:10px;border-top:1px solid var(--borde)}
 .v-op-cerrada{background:transparent;box-shadow:none;border-style:dashed}.v-op-cerrada .v-op-sig{color:var(--t2)}
 
 /* ---------- Veta: «Enséñale a Veta» (hero dorado con micro), presencia y cifras ---------- */
-.v-ensena{margin:6px 16px 0;border-radius:var(--v-radio-tj);padding:20px 18px 16px;background:#C4A267;color:#1A1209;box-shadow:0 10px 24px -16px rgba(10,9,6,.4)}
+.v-ensena{margin:6px 16px 0;border-radius:var(--v-radio-tj);padding:20px 18px 16px;background:var(--s1);color:var(--t1);border:1px solid var(--borde);box-shadow:var(--sombra)}
 .v-ensena-fl{display:flex;justify-content:space-between;gap:14px;align-items:flex-start}
-.v-ensena h2{font:600 32px/1.02 var(--display)}
-.v-ensena p{font:500 17px/1.28 var(--body);margin-top:8px;color:#2A1D0B}
-.v-ensena-mic{width:76px;height:76px;border-radius:50%;background:#14100A;color:#E6D3A8;display:grid;place-items:center;flex:none;box-shadow:0 0 0 6px rgba(20,16,10,.12)}
-.v-ensena-mic .ic{width:38px;height:38px;stroke-width:2}
-.v-ensena .v-btn{margin-top:16px;background:#14100A;color:#F4E8CC;height:56px;font-size:18px}
+.v-ensena h2{font:500 var(--f-titulo)/1.02 var(--display)}
+.v-ensena p{font:500 var(--f-cuerpo)/1.28 var(--body);margin-top:8px;color:var(--t2)}
+.v-ensena-mic{width:76px;height:76px;border-radius:50%;background:var(--oro);color:var(--sobre-oro);display:grid;place-items:center;flex:none;outline:6px solid color-mix(in srgb,var(--oro) 22%,transparent)}
+.v-ensena-mic .ic{width:38px;height:38px}
+.v-ensena .v-btn{margin-top:16px;background:var(--oro);color:var(--sobre-oro);height:56px;font-size:var(--f-cuerpo)}
 .v-pres{display:grid;grid-template-columns:auto 1fr;align-items:center;gap:16px;padding:6px 20px 0;margin-top:22px}
-.v-pres-sim{position:relative;width:78px;height:78px;border-radius:50%;display:grid;place-items:center;background:rgba(196,162,103,.1);box-shadow:0 0 0 1.5px rgba(196,162,103,.5)}
-.v-pres-sim img{width:56px;height:auto;display:block}
-.v-pres h1{font:600 22px/1.06 var(--display)}.v-pres h1 em{font-style:normal;color:var(--oro)}
-.v-pres p{margin-top:6px;color:var(--t2);font:500 15px/1.3 var(--body)}
-.v-cifras{display:grid;grid-template-columns:repeat(3,1fr);margin:14px 16px 0;border-radius:var(--v-radio-tj);background:#17140F;border:1px solid rgba(196,162,103,.3);padding:14px 0 13px;color:#DCD5CA}
-.v-cifras div{text-align:center;font:500 15px/1.25 var(--body);border-left:1px solid rgba(196,162,103,.28)}
+.v-pres-sim{position:relative;width:78px;height:78px;border-radius:50%;display:grid;place-items:center;background:color-mix(in srgb,var(--oro) 12%,var(--s1));outline:1.5px solid rgba(196,162,103,.5);outline-offset:0}
+.v-pres-sim{color:var(--acento)}.v-pres-sim .ic{width:48px;height:48px}
+.v-pres h1{font:500 var(--f-hoja)/1.06 var(--display)}.v-pres h1 em{font-style:normal;color:var(--veta)}
+.v-pres p{margin-top:6px;color:var(--t2);font:500 var(--f-apoyo)/1.3 var(--body)}
+.v-cifras{display:grid;grid-template-columns:repeat(3,1fr);margin:14px 16px 0;border-radius:var(--v-radio-tj);background:var(--s1);border:1px solid var(--borde);box-shadow:var(--sombra);padding:14px 0 13px;color:var(--t2)}
+.v-cifras div{text-align:center;font:500 var(--f-apoyo)/1.25 var(--body);border-left:1px solid var(--borde)}
 .v-cifras div:first-child{border-left:0}
-.v-cifras b{display:block;font:600 44px/1 var(--display);color:#E6D3A8;margin-bottom:3px}
-.v-sec-sub{margin:-6px 20px 12px;color:var(--t2);font:500 16px/1.3 var(--body)}
-.v-quienlo{display:inline-flex;align-items:center;gap:4px;height:44px;margin:4px 0 0 16px;padding:0 6px 0 4px;color:var(--veta);font:700 16px/1 var(--body);background:none;border:0;cursor:pointer}
-.v-quienlo .ic{width:20px;height:20px;color:var(--oro)}
+.v-cifras b{display:block;font:700 var(--f-cifra)/1 var(--display);color:var(--t1);margin-bottom:3px}
+.v-sec-sub{margin:-6px 20px 12px;color:var(--t2);font:500 var(--f-apoyo)/1.3 var(--body)}
+.v-quienlo{display:inline-flex;align-items:center;gap:4px;height:44px;margin:4px 0 0 16px;padding:0 6px 0 4px;color:var(--veta);font:700 var(--f-apoyo)/1 var(--body);background:none;border:0;cursor:pointer}
+.v-quienlo .ic{width:20px;height:20px;color:var(--acento)}
 
 /* ---------- movimiento reducido: sin transiciones ---------- */
-html[data-mov=reducido] :is(.v-car>.v-car-it,.v-pz,.v-ind i,.v-btn){transition:none}
-@media (prefers-reduced-motion:reduce){:is(.v-car>.v-car-it,.v-pz,.v-ind i,.v-btn){transition:none}}
+html[data-mov=reducido] :is(.v-car>.v-car-it,.v-ind i,.v-btn){transition:none}
+@media (prefers-reduced-motion:reduce){:is(.v-car>.v-car-it,.v-ind i,.v-btn){transition:none}}
 
 /* ---------- barra de seis sitios: ninguna columna por debajo de 44 px de toque (antes «Hoy» 39 y «Veta» 30), micro exactamente al centro ----------
    H = la mitad de lo que queda tras el micro. Izquierda: Hoy 44 + Visitas + Clientes = H. Derecha: Pisos 44 + Operaciones + Veta 44 = H. Las etiquetas (11 px) siguen cabiendo en su celda. */

@@ -4,21 +4,21 @@
    Solo variables (temas.css, base.css): ningún color a mano. Pesos 500 y 700. */
 
 /* ---------- G5b · Pasar sus clientes: qué cambia y cuánto ---------- */
-.d-confirma{display:flex;flex-direction:column;background:var(--s1);border-radius:var(--r-3);box-shadow:var(--somb),inset 0 0 0 1px var(--borde);overflow:hidden}
+.d-confirma{display:flex;flex-direction:column;background:var(--s1);border-radius:var(--r-3);box-shadow:var(--sombra);outline:1px solid var(--borde);outline-offset:-1px;overflow:hidden}
 .d-confirma>div{display:flex;flex-direction:column;gap:var(--e1);padding:var(--e4)}
-.d-confirma>div+div{box-shadow:inset 0 1px 0 var(--borde)}
+.d-confirma>div+div{border-top:1px solid var(--borde)}
 .d-confirma dt{font:700 var(--f-apoyo)/1.2 var(--body);color:var(--t3)}
 .d-confirma dd{margin:0;font:500 var(--f-cuerpo)/var(--l-lee) var(--body);color:var(--t1)}
 @media (max-width:899px){.d-confirma .d-solo-ancho{display:none}}
 
 /* el dibujo: de Teresa a quien los recibe, con el número que viaja */
-.d-traspaso{display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:var(--e3);padding:var(--e5) var(--e4);background:var(--s1);border-radius:var(--r-3);box-shadow:var(--somb),inset 0 0 0 1px var(--borde)}
+.d-traspaso{display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:var(--e3);padding:var(--e5) var(--e4);background:var(--s1);border-radius:var(--r-3);box-shadow:var(--sombra);outline:1px solid var(--borde);outline-offset:-1px}
 .d-tr-p{display:flex;flex-direction:column;align-items:center;gap:var(--e2);min-width:72px}
 .d-tr-p b{font:700 var(--f-apoyo)/1.2 var(--body);text-align:center}
 .d-tr-avs{display:flex}
-.d-tr-dos .d-tr-avs .av+.av{margin-left:-16px;box-shadow:0 0 0 2px var(--s1)}
+.d-tr-dos .d-tr-avs .av+.av{margin-left:-16px;outline:2px solid var(--s1);outline-offset:0}
 .d-tr-via{position:relative;height:40px;display:flex;align-items:center;justify-content:center}
-.d-tr-linea{position:absolute;left:0;right:0;top:50%;height:2px;margin-top:-1px;border-radius:2px;background:var(--top-acento);transform-origin:left center}
+.d-tr-linea{position:absolute;left:0;right:0;top:50%;height:2px;margin-top:-1px;border-radius:var(--r-pill);background:var(--top-acento);transform-origin:left center}
 .d-tr-linea::after{content:"";position:absolute;right:-1px;top:-5px;width:12px;height:12px;border-top:2px solid var(--top-acento);border-right:2px solid var(--top-acento);transform:rotate(45deg)}
 /* el número, sobre la línea: un dato, no una pastilla (solo hay pastillas rojas) */
 .d-tr-n{position:relative;padding:0 var(--e2);background:var(--s1);color:var(--t1);font:700 var(--f-cuerpo)/1.4 var(--body);font-variant-numeric:tabular-nums}
@@ -44,7 +44,7 @@
 /* ---------- hojas ---------- */
 /* d-tema: la cifra del tema */
 .d-dato{font:500 var(--f-cuerpo)/1.4 var(--body);color:var(--t2)}
-.d-dato b{font:700 var(--f-hoja)/1 var(--display);color:var(--t1);font-variant-numeric:tabular-nums;margin-right:var(--e1)}
+.d-dato b{font:500 var(--f-hoja)/1 var(--display);color:var(--t1);font-variant-numeric:tabular-nums;margin-right:var(--e1)}
 /* h34: elegir hasta tres temas */
 .d-tema-op{gap:var(--e3)}
 .d-tema-n{flex:none;font:700 var(--f-cuerpo)/1 var(--body);font-variant-numeric:tabular-nums;color:var(--t2)}
@@ -79,23 +79,23 @@ html:not([data-mov=reducido]) .d-tr-p:last-child{animation:d-llega calc(2 * var(
 
 /* ---------- Inicio de dirección: «lo primero» con peso y el resto como un orden del día ---------- */
 .r7-inicio[data-papel=direccion] .r7-hola{padding:var(--e4) var(--e1) var(--e3)}
-.r7-inicio[data-papel=direccion] .r7-hola-t{font-size:2.125rem;letter-spacing:-.025em}
+.r7-inicio[data-papel=direccion] .r7-hola-t{font-size:var(--f-titulo);letter-spacing:-.025em}
 .r7-inicio[data-papel=direccion] .r7-hola-f{margin-top:var(--e2);font-size:var(--f-hoja);line-height:1.25;color:var(--t1);font-family:var(--display);font-weight:500;text-wrap:balance}
 .r7-inicio[data-papel=direccion] .r7-primero{gap:var(--e4);padding:var(--e5) var(--e4) var(--e4);border-radius:var(--v-radio-tj)}
-.r7-inicio[data-papel=direccion] .r7-primero .r7-fila-n{font:700 var(--f-hoja)/1.15 var(--body)}
+.r7-inicio[data-papel=direccion] .r7-primero .r7-fila-n{font:700 var(--f-cuerpo)/1.2 var(--body)}
 .r7-inicio[data-papel=direccion] .r7-primero .r7-boton{background:var(--oro);color:var(--sobre-oro)}
 .r7-inicio[data-papel=direccion] .r7-lista{border-radius:var(--v-radio-card)}
-.r7-inicio[data-papel=direccion] .r7-rotulo{padding:var(--e5) var(--e1) var(--e1);color:var(--t2);font:600 var(--f-hoja)/1.15 var(--display)}
+.r7-inicio[data-papel=direccion] .r7-rotulo{padding:var(--e5) var(--e1) var(--e1);color:var(--t2);font:500 var(--f-hoja)/1.15 var(--display)}
 
 /* ---------- Equipo: una rejilla de dos columnas con la cara de cada persona ---------- */
 .dq-meta{margin:0;padding:0 var(--e1);color:var(--t3);font:500 var(--f-apoyo)/1.35 var(--body)}
 .dq-rej{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:var(--e3);margin-top:var(--e1)}
-.dq-p{display:flex;flex-direction:column;align-items:flex-start;gap:var(--e1);min-height:44px;padding:var(--e4);border-radius:var(--v-radio-card);background:var(--s1);color:var(--t1);text-align:left;box-shadow:var(--somb),inset 0 0 0 1px var(--borde);-webkit-tap-highlight-color:transparent;transition:transform var(--t-toque) var(--c-estandar)}
+.dq-p{display:flex;flex-direction:column;align-items:flex-start;gap:var(--e1);min-height:44px;padding:var(--e4);border-radius:var(--v-radio-card);background:var(--s1);color:var(--t1);text-align:left;box-shadow:var(--sombra);outline:1px solid var(--borde);outline-offset:-1px;-webkit-tap-highlight-color:transparent;transition:transform var(--t-toque) var(--c-estandar)}
 .dq-p:active{transform:scale(.98)}
 .dq-p .av{margin-bottom:var(--e2)}
 .dq-n{font:700 var(--f-cuerpo)/1.2 var(--body)}
 .dq-z{color:var(--t2);font:500 var(--f-apoyo)/1.3 var(--body);text-wrap:balance}
-.dq-baja{background:transparent;box-shadow:inset 0 0 0 1.5px var(--borde)}
+.dq-baja{background:transparent;outline:1.5px solid var(--borde);outline-offset:-1.5px}
 .dq-baja .av{opacity:.75}
 .pant-G1 .r7-lista{margin-top:var(--e2)}
 @media (min-width:900px){.dq-rej{grid-template-columns:repeat(3,minmax(0,1fr))}}
@@ -103,18 +103,19 @@ html:not([data-mov=reducido]) .d-tr-p:last-child{animation:d-llega calc(2 * var(
 /* ---------- Operaciones: cada operación, su propia tarjeta (no una lista de filas) ---------- */
 .pant-G17 .r7-filtros{margin-top:var(--e1)}
 .pant-G17 .r7-lista{background:none;box-shadow:none;overflow:visible;gap:var(--e2);border-radius:0}
-.pant-G17 .r7-lista>.r7-fila{background:var(--s1);border-radius:var(--v-radio-card);box-shadow:var(--somb),inset 0 0 0 1px var(--borde);padding-block:var(--e3)}
+.pant-G17 .r7-lista>.r7-fila{background:var(--s1);border-radius:var(--v-radio-card);box-shadow:var(--sombra);outline:1px solid var(--borde);outline-offset:-1px;padding-block:var(--e3)}
 .pant-G17 .r7-lista>.r7-fila::before{display:none}
 .pant-G17 .r7-lista>.r7-fila .r7-fila-p{font-size:var(--f-apoyo);color:var(--t2)}
-.pant-G17 .r7-rotulo{padding:var(--e5) var(--e1) 0;color:var(--t2);font:600 var(--f-hoja)/1.15 var(--display)}
+.pant-G17 .r7-rotulo{padding:var(--e5) var(--e1) 0;color:var(--t2);font:500 var(--f-hoja)/1.15 var(--display)}
 .pant-G17 .r7-rotulo+.r7-lista>.r7-fila{background:transparent;box-shadow:none;border-radius:0;border-top:1px solid var(--borde);min-height:56px}
 .pant-G17 .r7-rotulo+.r7-lista{gap:0}
 
-/* ---------- Veta de la oficina: tablero oscuro con una cifra grande y la propuesta en dorado ---------- */
+/* ---------- Veta de la oficina (champán, como el sitio Veta de la agente): una cifra grande y la propuesta en dorado ---------- */
 .pant-G21 .r7-cifra{padding:var(--e2) var(--e1) var(--e3)}
-.pant-G21 .r7-cifra-n{color:var(--oro-2);font-size:3.5rem;letter-spacing:-.04em}
+.pant-G21 .r7-cifra-n{color:var(--t1);font-weight:700;font-size:var(--f-cifra);letter-spacing:-.04em}
 .pant-G21 .r7-cifra-f{font-size:var(--f-cuerpo);color:var(--t2)}
-.pant-G21 .r7-primero{padding:var(--e5) var(--e4) var(--e4);border-radius:var(--v-radio-tj);box-shadow:inset 0 0 0 1.5px color-mix(in srgb,var(--oro) 55%,transparent)}
-.pant-G21 .r7-primero .r7-fila-n{font:700 var(--f-hoja)/1.15 var(--body)}
-.pant-G21 .r7-rotulo{padding:var(--e5) var(--e1) 0;color:var(--oro-2);font:600 var(--f-hoja)/1.15 var(--display)}
+.pant-G21 .r7-primero{padding:var(--e5) var(--e4) var(--e4);border-radius:var(--v-radio-tj);outline:1.5px solid color-mix(in srgb,var(--oro) 55%,transparent);outline-offset:-1.5px}
+.pant-G21 .r7-primero .r7-fila-n{font:700 var(--f-cuerpo)/1.2 var(--body)}
+.pant-G21 .r7-rotulo{padding:var(--e5) var(--e1) 0;color:var(--t1);font:500 var(--f-hoja)/1.15 var(--display)}
+.pant-G21 .r7-primero .r7-boton{background:var(--oro);color:var(--sobre-oro)}   /* el dorado del botón principal, como cuando el tablero era negro */
 .pant-G21 .r7-lista{border-radius:var(--v-radio-card)}

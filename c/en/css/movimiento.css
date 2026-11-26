@@ -75,7 +75,7 @@ html[data-dir=cambia]::view-transition-new(pantalla){animation:none}
   html:not([data-mov=reducido]) .cab-banda{animation:sombra-banda linear both;animation-timeline:--desp;animation-range:0 8px}
   html:not([data-mov=reducido]) .cab-det,html:not([data-mov=reducido]) .cab-panel{animation:linea-cab linear both;animation-timeline:--desp;animation-range:0 8px}
 }
-@keyframes sombra-banda{to{box-shadow:var(--sombra-banda)}}
+@keyframes sombra-banda{to{box-shadow:var(--flota)}}
 @keyframes linea-cab{to{box-shadow:0 1px 0 var(--borde)}}
 @supports not (animation-timeline:scroll()){
   .col.desplazado .cab-det,.col.desplazado .cab-panel{box-shadow:0 1px 0 var(--borde)}

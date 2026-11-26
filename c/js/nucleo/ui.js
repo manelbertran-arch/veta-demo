@@ -111,7 +111,7 @@
   UI.nota = o => `<p class="nota${o.caja ? ' nota-caja' : ''}${o.clase ? ' ' + o.clase : ''}">${o.icono ? ic(o.icono, 18) : ''}<span>${o.html || esc(o.texto)}</span></p>`;
 
   // ---- línea de hecho: sustituye a la tarjeta en su sitio ----
-  const visto = '<svg class="visto" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path pathLength="1" d="M5 12.5l4.5 4.5L19 7.5"/></svg>';
+  const visto = '<svg class="visto" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path pathLength="1" vector-effect="non-scaling-stroke" d="M5 12.5l4.5 4.5L19 7.5"/></svg>';
   UI.lineaHecho = o => {
     const txt = `${visto}<span class="hecho-txt">${esc(o.texto)}${o.hora ? ` <span class="hecho-h">· ${esc(o.hora)}</span>` : ''}</span>`;
     const izq = (o.hoja || o.ir) ? `<button type="button" class="hecho-a"${attrs({hoja: o.hoja, ir: o.ir, de: o.de})}>${txt}</button>` : `<div class="hecho-a">${txt}</div>`;

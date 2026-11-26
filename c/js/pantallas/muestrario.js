@@ -19,12 +19,9 @@
   };
 
   // tanda V · una tarjeta por tipo de trabajo (las seis de Inicio), su tira del día, un conmutador, chapas, una propuesta, la fila de caras y dos baldosas
-  const VT = ['mensaje', 'visita', 'informe', 'oportunidad', 'promesa', 'bloqueada'];
   const vMuestra = () => {
     const V = VETA.v, nom = ['Marta Puig', 'Elena Vives', 'Pere Soler', 'Núria Camps', 'Jordi Ferrer', 'Sergi Mas'], per = ['marta', 'elena', 'pere', 'nuria', 'jordi', 'sergi'];
-    return V.tiraDia({piezas: VT.map((t, i) => ({tipo: t, hecha: false, id: per[i]})), actual: 0}).replace('class="v-tira-w"', 'class="v-tira-w" id="mu-v-tira"') +
-      V.carrusel({id: 'mu-v-car', etiqueta: 'Tu día', tarjetas: VT.map((t, i) => V.tarea({tipo: t, persona: per[i], nombre: nom[i], frase: 'Quiere ver el piso', boton: 'Abrir', accion: 'toca'}))}) +
-      V.conmutador({opciones: [{id: 'p', texto: 'Pendiente', n: 6}, {id: 'h', texto: 'Hecho', n: 0}], valor: 'p'}) +
+    return V.conmutador({opciones: [{id: 'p', texto: 'Pendiente', n: 6}, {id: 'h', texto: 'Hecho', n: 0}], valor: 'p'}) +
       `<div class="mu-fila">${V.chapa('urg', 'Sin contestar')}${V.chapa('esp', 'Parado')}${V.chapa('hecho', 'Hecho')}${V.chapa('veta', 'Ocasión')}${V.sello()}</div>` +
       `<div class="v-rej">${per.slice(0, 4).map((p, i) => V.retrato(p, {nombre: nom[i], frase: 'Sin responder desde ayer', chapa: i < 2 ? {tono: 'urg', texto: 'Sin contestar'} : null, accion: 'toca'})).join('')}</div>` +
       V.lista([V.filaHecha({texto: 'Enviado a Marta', hora: '9:12'}), V.filaHecha({texto: 'Informe de la semana enviado a Pere', hora: '10:40'})]);
@@ -85,7 +82,6 @@
       pieza(24, '«Más»: lo frecuente, enseñar, y lo destructivo al final', R.lista([{nombre: 'Abrir «Más»', hoja: 'mu-mas'}, {nombre: 'Repetir el escalonado de entrada', accion: 'escalona'}])),
       pieza(25, 'Tanda V: carrusel, tira del día y tarjeta de tarea', vMuestra())
     ].join(''),
-    alMontar: pant => { const c = pant.querySelector('#mu-v-car'); if (c) { const v = VETA.v.carruselVivo(c, {alCambiar: i => VETA.v.tiraDiaMarca(pant.querySelector('#mu-v-tira'), {actual: i, rotulo: VETA.v.tipo(VT[i]).rotulo})}); const t = pant.querySelector('#mu-v-tira'); if (t) t.addEventListener('click', ev => { const b = ev.target.closest('[data-v-pz]'); if (b) v.irA(+b.dataset.vPz); }); } },
     botonFijo: () => R.botones({texto: 'Enviar', accion: 'toca'}, {texto: 'Ahora no', accion: 'toca'}),
     acciones: {
       toca() { VETA.aviso('Tocado.'); },

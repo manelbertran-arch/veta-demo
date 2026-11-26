@@ -198,15 +198,24 @@
   // «hoy» y «decidir» ya no son sitios (son el Inicio); sus nombres se quedan en SITIOS por si alguien los lee.
   const CAJAS = {agente: ['visitas', 'clientes', 'pisos', 'operaciones', 'veta'], direccion: ['equipo', 'operaciones', 'oficina']};
   const SITIOS = {inicio: {texto: 'Inicio', icono: 'casa'}, hoy: {texto: 'Te toca', largo: 'Te toca a ti', icono: 'hoy'}, visitas: {texto: 'Visitas', icono: 'cal'},
-    clientes: {texto: 'Clientes', icono: 'clientes'}, pisos: {texto: 'Pisos', icono: 'pin'}, veta: {texto: 'Veta', icono: 'aprende'}, decidir: {texto: 'Decidir', icono: 'check'},
-    equipo: {texto: 'Equipo', icono: 'equipo'}, operaciones: {texto: 'Operaciones', icono: 'caja'}, oficina: {texto: 'Veta', icono: 'aprende'}};
+    clientes: {texto: 'Clientes', icono: 'clientes'}, pisos: {texto: 'Pisos', icono: 'pin'}, veta: {texto: 'Veta', icono: 'marca'}, decidir: {texto: 'Decidir', icono: 'check'},
+    equipo: {texto: 'Equipo', icono: 'equipo'}, operaciones: {texto: 'Operaciones', icono: 'caja'}, oficina: {texto: 'Veta', icono: 'marca'}};
   // el sitio de inicio de la agente se rotula «Hoy»; el de dirección sigue siendo «Inicio»
   const rotulo = d => (d === INICIO && VETA.yo().papel !== 'direccion' ? 'Hoy' : SITIOS[d].texto);
   const cajas = () => CAJAS[VETA.yo().papel] || CAJAS.agente;
   const sitios = () => [INICIO].concat(cajas());
   VETA.SITIOS = SITIOS; VETA.cajas = cajas;
   // tanda V · el ambiente (data-sitio): el sitio del que cuelga la pantalla. Inicio y sus detalles (destino «hoy») = inicio; «decidir» = equipo; sin destino (portada, entrar, primer día) = ninguno
-  const sitioDe = e => { const d = (e && e.def && e.def.destino) || (e && e.ruta === INICIO ? INICIO : null); return d === 'hoy' ? 'inicio' : d === 'decidir' ? 'equipo' : d; };
+  // ola premium D · el tono de una pantalla es el del sitio cuya pestaña está ENCENDIDA en la barra (la misma fuente que destinoMarcado): detalle abierto desde Inicio = tono de Inicio;
+  // abierto desde una raíz = el de esa raíz; Dictar y las pantallas que no cuelgan de ningún sitio (Cuenta, Avisos…) = «neutro». Una copia que asoma al deslizar (peek) es una raíz: el suyo.
+  const sitioDe = (e, peek) => {
+    if (!e || !e.def) return null;
+    if (peek) return e.ruta === INICIO ? INICIO : esRaiz(e) ? e.def.destino : 'neutro';
+    const m = destinoMarcado();
+    if (m === 'dictar') return 'neutro';
+    if (m !== INICIO) return m;
+    return e.ruta === INICIO || e.def.destino ? INICIO : 'neutro';
+  };
   const AREA = {inicio: 'hoy', hoy: 'hoy', visitas: 'hoy', clientes: 'clientes', pisos: 'clientes', veta: 'aprende', equipo: 'direccion', decidir: 'direccion', operaciones: 'direccion', oficina: 'aprende'};
   // raíz = una pestaña de la barra de quien mira. «Clientes» es raíz para la agente y un detalle de Inicio para dirección; «Te toca a ti» ya no lo es
   const esRaiz = e => !!(e && e.def.destino && e.def.ruta === e.def.destino && cajas().includes(e.def.destino));
@@ -354,7 +363,7 @@
     const antes = col.dataset.ruta === e.ruta && col.dataset.pant === e.def.cod ? VETA.r7.clavesHecho(col) : null;
     col.className = 'col col-' + modo + (o.activa ? ' activa' : '');
     col.dataset.area = e.def.area || AREA[e.def.destino] || (e.def.completa ? 'voz' : 'yo');
-    { const st = sitioDe(e); if (st) col.dataset.sitio = st; else delete col.dataset.sitio; }
+    { const st = sitioDe(e, o.peek); if (st) col.dataset.sitio = st; else delete col.dataset.sitio; }
     col.dataset.ruta = e.ruta; col.dataset.pant = e.def.cod;
     col._entrada = e;
     let cuerpo;
@@ -635,7 +644,7 @@
     peek(ruta) {
       const e = resuelve(redirige(String(ruta), true)); if (!e) return null;
       const el = document.createElement('div');
-      try { monta(el, e, e.def.completa ? 'completa' : 'movil', {activa: false}); } catch (err) { return null; }
+      try { monta(el, e, e.def.completa ? 'completa' : 'movil', {activa: false, peek: true}); } catch (err) { return null; }
       el.classList.add('col-peek'); delete el.dataset.ruta; delete el.dataset.pant;
       el.setAttribute('aria-hidden', 'true'); el.inert = true;
       return el;

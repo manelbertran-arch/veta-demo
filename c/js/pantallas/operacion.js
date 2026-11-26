@@ -36,7 +36,7 @@
       const pasos = (VETA.datos.pasos || {})[o.tipo] || [], fase = o.estado === 'cerrado' ? 5 : o.fase;
       const fin = /Cerrada|Se cayó/.test(o.comoCorto);
       filas.push({nombre: 'Cómo va', pasa: fin ? o.comoCorto : `${pasos[fase - 1] || ''} · paso ${fase} de 5`,
-        abre: lista(pasos.map((x, k) => `<li${k + 1 === fase && !fin ? ' class="d2-aqui"' : ''}>${esc(x)}</li>`), 'd2-pasos')});
+        abre: fin ? lista(pasos.map(x => `<li>${esc(x)}</li>`), 'd2-pasos') : VETA.v.pasos(fase, pasos, {sinLinea: true, lista: true})});
       if (o.aviso && o.aviso.tipo === 'papel') { const t = o.aviso.texto.replace(/^Falta un papel: /, ''); filas.push({nombre: 'Papeles', pasa: 'Falta 1', abre: `<p>${esc(t.charAt(0).toUpperCase() + t.slice(1))}.</p>`}); }
       const hit = (o.hitos || []).slice().reverse();
       // lo último: la fecha a la cola (es un dato) y, en la segunda línea, qué pasó

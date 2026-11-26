@@ -11,12 +11,12 @@
 :root{
   --display:"Signos","Hueco","Clash","Satoshi",system-ui,sans-serif;
   --body:"Signos","Satoshi",system-ui,sans-serif;
-  /* cinco tamaños y ni uno más */
-  --f-apoyo:.9375rem; --f-cuerpo:1.0625rem; --f-hoja:1.25rem; --f-titulo:1.75rem; --f-cifra:2.5rem;
+  /* ola premium B · una sola escala de letra: 11 (solo la barra de abajo), 13, 15, 17, 20, 28, 40. Pesos: 500 (Satoshi; Clash en títulos, nombres y cifras grandes) y 700 (rótulos de botón y énfasis) */
+  --f-barra:11px; --f-mini:.8125rem; --f-apoyo:.9375rem; --f-cuerpo:1.0625rem; --f-hoja:1.25rem; --f-titulo:1.75rem; --f-cifra:2.5rem;
   /* espacio, rejilla de 4 */
   --e1:4px; --e2:8px; --e3:12px; --e4:16px; --e5:24px; --e6:32px; --e7:48px; --margen:16px;
-  /* ronda 8 · dos radios: 12 (botón, campo, foto) y 20 (tarjeta, lista, documento, hoja); más píldora y círculo */
-  --r-1:12px; --r-2:12px; --r-btn:12px; --r-3:20px; --r-4:20px; --r-pill:999px;
+  /* ola premium B · cuatro radios y ni uno más: 12 (botón, campo, foto), 20 (tarjeta, lista, documento, hoja), 28 (la tarjeta grande: foto de piso, hero) y la píldora; el círculo es una píldora cuadrada */
+  --r-1:12px; --r-2:12px; --r-btn:12px; --r-3:20px; --r-4:20px; --r-5:28px; --r-pill:999px;
   --banda:56px; --cab:56px; --cab-det:60px; --tab-h:60px; --btn:56px; --btn-2:48px; --toque:48px; --fila:72px; --fila-1:56px; --pie:80px;
   /* tres interlineados: titulares, filas y apoyo, lectura */
   --l-tit:1.1; --l-fila:1.3; --l-lee:1.45;
@@ -26,10 +26,8 @@
   --t-toque:100ms; --t-corto:200ms; --t-medio:300ms; --t-largo:300ms; --t-paso:40ms;
   --c-estandar:cubic-bezier(.2,0,0,1); --c-entra:cubic-bezier(.05,.7,.1,1); --c-sale:cubic-bezier(.4,0,1,1);
   --c-muelle:cubic-bezier(.16,1,.3,1);
-  /* sombras y velos (no son colores de paleta) */
+  /* sombras y velos (no son colores de paleta). Solo hay dos sombras: --sombra (tarjeta, en temas.css) y --flota (lo que flota: la hoja, el micro) */
   --velo:rgba(17,17,16,.4);
-  --sombra-banda:0 8px 18px -12px rgba(0,0,0,.55);
-  --sombra-mic:inset 0 0 0 1px var(--mic-borde,transparent),0 0 0 5px var(--tab-b),0 10px 22px -8px rgba(0,0,0,.45);
   --brillo:rgba(255,255,255,.45);
   --rojo-b:var(--urg-t); --rojo-t:var(--urg-b);
 }
@@ -50,12 +48,14 @@ button:disabled{cursor:default;opacity:.5}
 img{display:block;max-width:100%}
 input,textarea{font:500 var(--f-cuerpo)/1.4 var(--body);color:var(--t1)}
 :focus{outline:none}
-:focus-visible{outline:2px solid var(--acento);outline-offset:2px}
-.desplaza:focus-visible{outline:none}
+:focus-visible{outline:2px solid var(--acento)!important;outline-offset:2px!important}   /* el aro de teclado gana a los aros de reposo, que ahora son outline (ola premium B) */
+/* el contenedor que recibe el foco al cambiar de pantalla (tabindex=-1, no es un control) no lleva aro; los controles conservan el suyo */
+:is(.desplaza,[tabindex="-1"]):not(:is(button,a,input,textarea,select,summary,[role=button],[role=tab],[role=switch],[role=radio])):focus-visible{outline:none!important}
 .solo-lector{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 [hidden]{display:none!important}
-.ic{flex:none;display:block}
-mark{background:var(--tinte);color:inherit;border-radius:4px;padding:0 2px}
+.ic{flex:none;display:block;stroke-width:1.6}
+.ic :is(path,circle,line,rect,polyline,polygon,ellipse){vector-effect:non-scaling-stroke}   /* ola premium B · un solo grosor pintado (1,6 px) a cualquier tamaño de icono */
+mark{background:var(--tinte);color:inherit;border-radius:var(--r-pill);padding:0 2px}
 
 /* ---- armazón de móvil ---- */
 .app{position:fixed;inset:0;display:flex;flex-direction:column;background:var(--fondo);overflow:hidden}
@@ -73,20 +73,20 @@ mark{background:var(--tinte);color:inherit;border-radius:4px;padding:0 2px}
 /* ---- cabeceras (ronda 8 · pieza 1): raíz de 56 sin «volver», detalle de 60 con el nombre de donde vienes sobre el título ---- */
 .cab{flex:none;min-height:var(--cab);display:flex;align-items:center;gap:var(--e3);padding:0 var(--margen);position:relative;z-index:3;background:var(--fondo)}
 .col[data-sitio] .cab{background:transparent}   /* tanda V: la cabecera deja ver el halo del sitio */
-.cab-t{min-width:0;font:700 var(--f-hoja)/var(--l-tit) var(--display);letter-spacing:-.01em}
+.cab-t{min-width:0;font:500 var(--f-hoja)/var(--l-tit) var(--display);letter-spacing:-.01em}
 .cab-raiz{justify-content:space-between}
 .cab-raiz .cab-t,.cab-lista .cab-t{font-size:var(--f-titulo);letter-spacing:-.02em}
 .cab-det{min-height:var(--cab-det);display:grid;grid-template-columns:44px minmax(0,1fr) auto;gap:0;padding:0 var(--e2) 0 var(--e1)}
-.cab-atras{width:44px;height:44px;display:grid;place-items:center;border-radius:50%;color:var(--t1)}
+.cab-atras{width:44px;height:44px;display:grid;place-items:center;border-radius:50%;color:var(--acento)}
 .cab-c{min-width:0;display:flex;flex-direction:column;gap:2px;padding:var(--e2) 0}
-.cab-de{color:var(--t3);font:500 var(--f-apoyo)/1.2 var(--body);white-space:nowrap;overflow:hidden}
+.cab-de{color:var(--t2);font:500 var(--f-apoyo)/1.2 var(--body);white-space:nowrap;overflow:hidden}
 /* arriba a la derecha, una cosa o ninguna: la cara, el teléfono, «Más», «Saltar», los puntos de paso o «Imprimir» */
 .cab-der{flex:none;justify-self:end;display:flex;align-items:center;gap:var(--e1)}
-.cab-b{min-width:44px;height:44px;display:grid;place-items:center;border-radius:var(--r-pill);color:var(--t1)}
+.cab-b{min-width:44px;height:44px;display:grid;place-items:center;border-radius:var(--r-pill);color:var(--acento)}
 .cab-b-t{padding:0 var(--e2);font:700 var(--f-cuerpo)/1 var(--body)}
 .cab-raiz .cab-der{margin-right:calc(-1*var(--e2))}
 .cab-puntos{display:flex;align-items:center;gap:6px;height:44px;padding:0 var(--e2)}
-.cab-puntos i{display:block;width:8px;height:8px;border-radius:50%;background:var(--s2);box-shadow:inset 0 0 0 1px var(--borde)}
+.cab-puntos i{display:block;width:8px;height:8px;border-radius:50%;background:var(--s2);outline:1px solid var(--borde);outline-offset:-1px}
 .cab-puntos i.on{background:var(--t1);box-shadow:none}
 .cab-lista{min-height:0;padding:var(--e5) var(--margen) var(--e2)}
 
@@ -105,24 +105,24 @@ mark{background:var(--tinte);color:inherit;border-radius:4px;padding:0 2px}
 .barra{flex:none;position:relative;z-index:4;height:calc(var(--tab-h) + var(--barra-sube) + env(safe-area-inset-bottom,0px));padding:var(--barra-sube) var(--e2) env(safe-area-inset-bottom,0px);background:linear-gradient(to bottom,transparent var(--barra-sube),var(--tab-b) var(--barra-sube));pointer-events:none}
 .tabs{height:var(--tab-h);display:grid;grid-template-columns:1fr 1fr 64px 1fr 1fr;min-width:0;border-top:1px solid var(--borde);margin:0 calc(-1*var(--e2));padding:0 var(--e2);pointer-events:auto}
 .tabs[data-papel=direccion]{grid-template-columns:1fr 1fr 64px 1.3fr .8fr}
-.tab{position:relative;min-width:0;height:var(--tab-h);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;color:var(--t3);font:600 var(--f-apoyo)/var(--l-tit) var(--body)}
+.tab{position:relative;min-width:0;height:var(--tab-h);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;color:var(--t3);font:700 var(--f-apoyo)/var(--l-tit) var(--body)}
 .tab.on{color:var(--tab-on,var(--t1));font-weight:700}
-.tab-ic{position:relative;display:grid;place-items:center;width:54px;height:30px;border-radius:15px}
+.tab-ic{position:relative;display:grid;place-items:center;width:54px;height:30px;border-radius:var(--r-pill)}
 .tab.on .tab-ic{background:var(--tinte)}
 .tab-p{white-space:nowrap}
 /* seis sitios (tres + micro + tres): rótulo de 11 px en todos (el único texto de la app por debajo de 15: se leen los seis sin adivinar). Con cuatro, 15 px como hasta ahora */
 /* reparto de columnas con seis: el rótulo más largo («Operaciones», sin puntos suspensivos) pide su sitio; las dos mitades suman lo mismo (3,4 + 3,4) y el micro queda al centro de la pantalla. Sin el relleno lateral de la barra: 360 px útiles en vez de 328 */
 .tabs[data-n="6"]{grid-template-columns:.9fr 1.15fr 1.35fr 64px .95fr 1.75fr .7fr;padding:0}
-.tabs[data-n="6"] .tab{letter-spacing:-.01em;font-size:11px;font-weight:700;gap:1px;justify-content:flex-start;padding-top:4px}
+.tabs[data-n="6"] .tab{letter-spacing:-.01em;font-size:var(--f-barra);font-weight:700;gap:1px;justify-content:flex-start;padding-top:4px}
 .tabs[data-n="6"] .tab.on{font-weight:700}
-.tabs[data-n="6"] .tab-ic{width:min(46px,100%);height:34px;border-radius:17px}
+.tabs[data-n="6"] .tab-ic{width:min(46px,100%);height:34px;border-radius:var(--r-pill)}
 .tabs[data-n="6"] .tab-ic .ic{width:25px;height:25px}
 .tabs[data-n="6"] .tab-punto{right:5px}
-.tab-punto{position:absolute;top:1px;right:7px;width:9px;height:9px;border-radius:50%;background:var(--urg-s);box-shadow:0 0 0 2px var(--tab-b)}
+.tab-punto{position:absolute;top:1px;right:7px;width:9px;height:9px;border-radius:50%;background:var(--urg-s);outline:2px solid var(--tab-b);outline-offset:0}
 .tab-mic{align-self:start;justify-self:center;width:64px;height:64px;margin-top:calc(-1*var(--barra-sube) + 2px);display:grid;place-items:center;border-radius:50%}
-.tab-mic-c{width:64px;height:64px;display:grid;place-items:center;border-radius:50%;border:4px solid var(--fondo);color:#0A0906;background:#C4A267;box-shadow:0 6px 16px -10px rgba(10,9,6,.45)}
+.tab-mic-c{width:64px;height:64px;display:grid;place-items:center;border-radius:50%;border:4px solid var(--fondo);color:#0A0906;background:#C4A267;box-shadow:var(--flota)}
 .barra .tab-mic .tab-mic-c{background:#C4A267;color:#0A0906}
-.tab-mic.on .tab-mic-c{box-shadow:0 0 0 2px var(--oro)}
+.tab-mic.on .tab-mic-c{outline:2px solid var(--oro);outline-offset:0}
 /* el micro del menú de ordenador */
 .mic-c{width:44px;height:44px;border-radius:50%;display:grid;place-items:center;background:var(--mic-b);color:var(--top-acento)}
 
@@ -146,30 +146,11 @@ mark{background:var(--tinte);color:inherit;border-radius:4px;padding:0 2px}
   .app[data-vista=movil] .tarjeta{gap:var(--e2);padding:var(--e3) var(--e4)}
 }
 
-/* ================= tanda V · ambiente por sitio =================
+/* ================= ambiente por sitio (ola premium · ronda A) =================
    `data-sitio` lo pone rutas.js en #app (barra, hueco del móvil) y en cada columna (así también la copia que asoma al deslizar):
    inicio (= «Hoy») | visitas | clientes | pisos | operaciones | veta (agente) · equipo | operaciones | oficina (dirección). Las pantallas de detalle heredan el del sitio del que cuelgan (el destino del mapa de rutas).
-   Cambian: --fondo, --lavado (halo de arriba), --tinte (píldora de la barra), --tab-b (barra). Veta y Oficina son SIEMPRE tablero oscuro y dorado, también en modo claro. */
+   Los tokens de cada sitio (--lienzo, --lavado, --tinte, --acento, en claro y en oscuro) viven SOLO en temas.css. Aquí, la estructura:
+   el lienzo es el fondo; el lavado es un degradado de 240 px detrás de la cabecera que se funde con el lienzo; el acento tiñe lo pequeño. */
 :is(.app,.col)[data-sitio]{color:var(--t1);background-color:var(--fondo)}
-.col[data-sitio]{background:radial-gradient(130% 34% at 50% -4%,var(--lavado),transparent 70%) no-repeat,var(--fondo)}
-.app[data-sitio] .reloj{background:var(--fondo)}
-:is(.app,.col)[data-sitio=inicio]{--fondo:#F4EFE8;--lavado:rgba(170,110,80,.07);--tinte:#EBE3D8;--tab-b:rgba(255,253,250,.94)}
-:is(.app,.col)[data-sitio=visitas]{--fondo:#EDEFEE;--lavado:rgba(70,110,125,.07);--tinte:#DCE3E3;--tab-b:rgba(255,253,250,.94)}
-:is(.app,.col)[data-sitio=clientes]{--fondo:#F3EDEC;--lavado:rgba(150,95,110,.07);--tinte:#E8DCDC;--tab-b:rgba(255,253,250,.94)}
-/* pisos (lavanda piedra) y operaciones (arena) son los de C3 y los mismos para dirección; equipo = piedra azulada (decisión del carril 0) */
-:is(.app,.col)[data-sitio=equipo]{--fondo:#EEEFF0;--lavado:rgba(95,110,125,.07);--tinte:#DDE1E3;--tab-b:rgba(255,253,250,.94)}
-:is(.app,.col)[data-sitio=pisos]{--fondo:#EFEEF2;--lavado:rgba(105,100,150,.07);--tinte:#E0DEE8;--tab-b:rgba(255,253,250,.94)}
-:is(.app,.col)[data-sitio=operaciones]{--fondo:#F1EEE3;--lavado:rgba(150,130,70,.08);--tinte:#E6E0CC;--tab-b:rgba(255,253,250,.94)}
-html[data-modo=oscuro] :is(.app,.col)[data-sitio=inicio]{--fondo:#0F0D0B;--lavado:rgba(170,110,80,.1);--tinte:#2A221C;--tab-b:rgba(20,17,12,.94)}
-html[data-modo=oscuro] :is(.app,.col)[data-sitio=visitas]{--fondo:#0C0F10;--lavado:rgba(80,120,135,.1);--tinte:#1B2A2E;--tab-b:rgba(20,17,12,.94)}
-html[data-modo=oscuro] :is(.app,.col)[data-sitio=clientes]{--fondo:#100D0E;--lavado:rgba(160,100,115,.1);--tinte:#2C2024;--tab-b:rgba(20,17,12,.94)}
-html[data-modo=oscuro] :is(.app,.col)[data-sitio=equipo]{--fondo:#0D0F10;--lavado:rgba(120,135,150,.1);--tinte:#22282B;--tab-b:rgba(20,17,12,.94)}
-html[data-modo=oscuro] :is(.app,.col)[data-sitio=pisos]{--fondo:#0E0E12;--lavado:rgba(115,110,160,.1);--tinte:#25233A;--tab-b:rgba(20,17,12,.94)}
-html[data-modo=oscuro] :is(.app,.col)[data-sitio=operaciones]{--fondo:#100F0B;--lavado:rgba(160,140,80,.1);--tinte:#2E2A1B;--tab-b:rgba(20,17,12,.94)}
-/* Veta (agente) y Oficina (dirección): tablero oscuro y dorado, en los dos modos. Redefine todo lo que las piezas viejas leen */
-:is(.app,.col)[data-sitio=veta],:is(.app,.col)[data-sitio=oficina]{color-scheme:dark;--fondo:#0A0906;--lavado:rgba(196,162,103,.1);--tinte:#2A2315;--tab-b:rgba(17,15,11,.95);
-  --t1:#F4EFE8;--t2:#CFC9BE;--t3:#A59D91;--s1:#17140F;--s2:#221E17;--pista:#3A342A;--borde:rgba(242,237,230,.14);--sombra:none;--somb:none;
-  --urg:#FFB3A5;--urg-b:#43201A;--urg-t:#FFB3A5;--esp:#F5CE74;--esp-b:#3D2F10;--esp-t:#F5CE74;--hecho:#8FE0A9;--hecho-b:#15321F;--hecho-s:#3BA566;--sobre-hecho:#07230F;--opo-b:#15321F;--opo-t:#8FE0A9;
-  --veta:#E6D3A8;--veta-b:#2A2315;--neutro:#8B8377;--accion:#C4A267;--accion-t:#0A0906;--acento:#C4A267;--activo:#C4A267;--top-acento:#C4A267;--tab-on:#F4EFE8;--mic-borde:rgba(242,237,230,.14)}
-html[data-modo=oscuro] :is(.app,.col)[data-sitio=veta],html[data-modo=oscuro] :is(.app,.col)[data-sitio=oficina]{--fondo:#070605;--lavado:rgba(196,162,103,.12)}
-:is(.app,.col)[data-sitio=veta] .cab-raiz .cab-t,:is(.app,.col)[data-sitio=oficina] .cab-raiz .cab-t{color:var(--oro)}   /* el dorado, mate */
+.col[data-sitio]{background:linear-gradient(to bottom,var(--lavado) 0,color-mix(in srgb,var(--lavado) 72%,var(--lienzo)) 60px,color-mix(in srgb,var(--lavado) 38%,var(--lienzo)) 135px,color-mix(in srgb,var(--lavado) 12%,var(--lienzo)) 195px,var(--lienzo) 240px) no-repeat,var(--fondo)}
+.app[data-sitio] .reloj{background:var(--lavado)}

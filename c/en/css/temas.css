@@ -1,10 +1,10 @@
 /* Una sola paleta (la «veta», la de por defecto), claro y oscuro. Tanda V: se retiran las otras 11 y las muestras; este fichero ya no lo genera demo/temas_app_veta.py, se edita a mano. */
 html{--port-b:#0A0906;--port-t:#F2EDE6;--port-t2:#C3BFB8;--port-3:#C4A267;--port-btn-b:#F2EDE6;--port-btn-t:#0A0906;--port-sec:#F2EDE6}
-html[data-modo=claro]{color-scheme:light;--urg-b:#FDEBE7;--urg-t:#A12A1B;--esp-b:#FFF1CC;--esp-t:#7A5300;--opo-b:#DFF3E5;--opo-t:#14592F;--inf-b:#E4EEFC;--inf-t:#1D4E96;--veta:#7F6234;--mic-b:radial-gradient(130% 100% at 28% 18%,rgba(255,246,228,.42),rgba(255,246,228,0) 52%),linear-gradient(155deg,#E6D3A8 0%,#C4A267 44%,#7F6234 100%);--mic-t:#0A0906;--av-ic-b:#EFE5D2;--av-ic-t:#7A5A2B;--somb:0 1px 2px rgba(10,9,6,.05),0 10px 24px -14px rgba(10,9,6,.22);--flota:0 12px 32px -8px rgba(10,9,6,.28);--veta-g:linear-gradient(115deg,#E6D3A8 0%,#C4A267 45%,#7F6234 100%);--mic-borde:transparent}
-html[data-modo=oscuro]{color-scheme:dark;--urg-b:#3A1C17;--urg-t:#FFA898;--esp-b:#372B10;--esp-t:#F3C969;--opo-b:#132E1E;--opo-t:#86DDA2;--inf-b:#152843;--inf-t:#9CC2FA;--veta:#B08D57;--mic-b:radial-gradient(130% 100% at 28% 18%,rgba(255,246,228,.42),rgba(255,246,228,0) 52%),linear-gradient(155deg,#E6D3A8 0%,#C4A267 44%,#7F6234 100%);--mic-t:#0A0906;--av-ic-b:rgba(196,162,103,.16);--av-ic-t:#C4A267;--somb:none;--flota:0 12px 32px -8px rgba(0,0,0,.6);--veta-g:linear-gradient(115deg,#E6D3A8 0%,#C4A267 45%,#7F6234 100%);--mic-borde:transparent}
-html[data-color=veta][data-modo=claro]{--fondo:#F2EDE6;--s1:#FFFDFA;--s2:#E9E2D8;--t1:#0A0906;--tab-b:#FFFDFA;--t2:#4A453D;--t3:#6A6259;--borde:rgba(10,9,6,.11);--tinte:#EDE4D2;--top-b:#0A0906;--top-t:#F2EDE6;--top-t2:#D2CDC7;--top-t3:#B6B2AC;--top-acento:#C4A267;--accion:#0A0906;--accion-t:#F2EDE6;--acento:#7A5A2B;--activo:#7A5A2B;--mic-b:radial-gradient(120% 90% at 30% 16%,rgba(242,237,230,.10),rgba(242,237,230,0) 55%),linear-gradient(160deg,#3B3733 0%,#171513 100%);--mic-t:#F2EDE6;--mic-aro:#F2EDE6;--mic-borde:transparent;--tab-on:#0A0906;--tab-filete:#C4A267}
-html[data-color=veta][data-modo=claro] [data-area=marca]{--tinte:#E9E2D8;--top-b:transparent;--top-t:#0A0906;--top-t2:#4A453D;--top-t3:#6A6259;--accion:#0A0906;--accion-t:#F2EDE6;--acento:#7A5A2B;--top-acento:#7A5A2B;--activo:#7A5A2B}
-html[data-color=veta][data-modo=oscuro]{--fondo:#0A0906;--s1:#17140F;--s2:#221E17;--t1:#F2EDE6;--tab-b:#110F0B;--t2:#C3BFB8;--t3:#8F867B;--borde:rgba(242,237,230,.10);--tinte:#262017;--top-b:#1B1710;--top-t:#F2EDE6;--top-t2:#D4CFC8;--top-t3:#BAB5AE;--top-acento:#C4A267;--accion:#F2EDE6;--accion-t:#0A0906;--acento:#C4A267;--activo:#C4A267;--mic-b:radial-gradient(120% 90% at 30% 16%,rgba(242,237,230,.10),rgba(242,237,230,0) 55%),linear-gradient(160deg,#3B3733 0%,#171513 100%);--mic-t:#F2EDE6;--mic-aro:#0A0906;--mic-borde:rgba(242,237,230,.14);--tab-on:#F2EDE6;--tab-filete:#C4A267}
+html[data-modo=claro]{color-scheme:light;--urg-b:#FDEBE7;--urg-t:#A12A1B;--esp-b:#FFF1CC;--esp-t:#7A5300;--opo-b:#DFF3E5;--opo-t:#14592F;--inf-b:#E4EEFC;--inf-t:#1D4E96;--veta:#7F6234;--mic-b:radial-gradient(130% 100% at 28% 18%,rgba(255,246,228,.42),rgba(255,246,228,0) 52%),linear-gradient(155deg,#E6D3A8 0%,#C4A267 44%,#7F6234 100%);--mic-t:#0A0906;--av-ic-b:#EFE5D2;--av-ic-t:#7A5A2B;--flota:0 1px 2px rgba(10,9,6,.06),0 12px 28px -10px rgba(10,9,6,.28);--veta-g:linear-gradient(115deg,#E6D3A8 0%,#C4A267 45%,#7F6234 100%);--mic-borde:transparent}
+html[data-modo=oscuro]{color-scheme:dark;--urg-b:#3A1C17;--urg-t:#FFA898;--esp-b:#372B10;--esp-t:#F3C969;--opo-b:#132E1E;--opo-t:#86DDA2;--inf-b:#152843;--inf-t:#9CC2FA;--veta:#B08D57;--mic-b:radial-gradient(130% 100% at 28% 18%,rgba(255,246,228,.42),rgba(255,246,228,0) 52%),linear-gradient(155deg,#E6D3A8 0%,#C4A267 44%,#7F6234 100%);--mic-t:#0A0906;--av-ic-b:rgba(196,162,103,.16);--av-ic-t:#C4A267;--flota:0 12px 32px -8px rgba(0,0,0,.6);--veta-g:linear-gradient(115deg,#E6D3A8 0%,#C4A267 45%,#7F6234 100%);--mic-borde:transparent}
+html[data-color=veta][data-modo=claro]{--fondo:#F2EDE6;--s1:#FFFDFA;--s2:#E9E2D8;--t1:#0A0906;--tab-b:#FFFDFA;--t2:#4A453D;--t3:#6A6259;--borde:rgba(10,9,6,.11);--tinte:#EDE4D2;--top-b:#0A0906;--top-t:#F2EDE6;--top-t2:#D2CDC7;--top-t3:#B6B2AC;--top-acento:#C4A267;--accion:#C4A267;--accion-t:#0A0906;--acento:#7A5A2B;--activo:#7A5A2B;--mic-b:radial-gradient(120% 90% at 30% 16%,rgba(242,237,230,.10),rgba(242,237,230,0) 55%),linear-gradient(160deg,#3B3733 0%,#171513 100%);--mic-t:#F2EDE6;--mic-aro:#F2EDE6;--mic-borde:transparent;--tab-on:#0A0906;--tab-filete:#C4A267}
+html[data-color=veta][data-modo=claro] [data-area=marca]{--tinte:#E9E2D8;--top-b:transparent;--top-t:#0A0906;--top-t2:#4A453D;--top-t3:#6A6259;--accion:#C4A267;--accion-t:#0A0906;--acento:#7A5A2B;--top-acento:#7A5A2B;--activo:#7A5A2B}
+html[data-color=veta][data-modo=oscuro]{--fondo:#0A0906;--s1:#1E1A14;--s2:#221E17;--t1:#F2EDE6;--tab-b:#110F0B;--t2:#C3BFB8;--t3:#8F867B;--borde:rgba(242,237,230,.10);--tinte:#262017;--top-b:#1B1710;--top-t:#F2EDE6;--top-t2:#D4CFC8;--top-t3:#BAB5AE;--top-acento:#C4A267;--accion:#C4A267;--accion-t:#0A0906;--acento:#C4A267;--activo:#C4A267;--mic-b:radial-gradient(120% 90% at 30% 16%,rgba(242,237,230,.10),rgba(242,237,230,0) 55%),linear-gradient(160deg,#3B3733 0%,#171513 100%);--mic-t:#F2EDE6;--mic-aro:#0A0906;--mic-borde:rgba(242,237,230,.14);--tab-on:#F2EDE6;--tab-filete:#C4A267}
 html[data-color=veta][data-modo=oscuro] [data-area=marca]{--tinte:#221E17;--top-b:transparent;--top-t:#F2EDE6;--top-t2:#C3BFB8;--top-t3:#8F867B;--accion:#C4A267;--accion-t:#0A0906;--acento:#C4A267;--top-acento:#C4A267;--activo:#C4A267}
 
 /* ---- tanda V · color con significado (SISTEMA.md de la maqueta C2). Claro y oscuro; contraste AA medido texto sobre fondo (ver PARTE_V0.md).
@@ -12,11 +12,11 @@ html[data-color=veta][data-modo=oscuro] [data-area=marca]{--tinte:#221E17;--top-
 html[data-modo=claro]{--urg:#A12A1B;--urg-b:#FBE5E0;--urg-s:#B72D1B;--sobre-urg:#FFFFFF;--esp:#74500A;--esp-b:#FCEBC2;--esp-s:#F0B93A;--sobre-esp:#2E1F00;
   --hecho:#14592F;--hecho-b:#DAF0E1;--hecho-s:#1F7A45;--sobre-hecho:#FFFFFF;--veta:#6F5429;--veta-b:#EFE4CE;--oro:#C4A267;--oro-2:#E6D3A8;--sobre-oro:#0A0906;
   --neutro:#7C7468;--pista:#DDD4C7;--t1:#0A0906;--t2:#47423A;--t3:#665F55;--s1:#FFFDFA;--s2:#E9E2D8;--borde:rgba(10,9,6,.12);
-  --sombra:0 1px 2px rgba(10,9,6,.04),0 10px 24px -16px rgba(10,9,6,.2);
+  --sombra:0 1px 2px rgba(10,9,6,.07),0 10px 24px -12px rgba(10,9,6,.22);
   --urg-t:var(--urg);--esp-t:var(--esp);--opo-b:var(--hecho-b);--opo-t:var(--hecho)}
 html[data-modo=oscuro]{--urg:#FFB3A5;--urg-b:#43201A;--urg-s:#CC3822;--sobre-urg:#FFFFFF;--esp:#F5CE74;--esp-b:#3D2F10;--esp-s:#F0B93A;--sobre-esp:#2E1F00;
   --hecho:#8FE0A9;--hecho-b:#15321F;--hecho-s:#3BA566;--sobre-hecho:#07230F;--veta:#D9BE87;--veta-b:#2E2617;--oro:#C4A267;--oro-2:#E6D3A8;--sobre-oro:#0A0906;
-  --neutro:#8B8377;--pista:#3A342A;--t1:#F4EFE8;--t2:#CBC5BA;--t3:#A29A8E;--s1:#1B1712;--s2:#27221A;--borde:rgba(244,239,232,.14);--sombra:none;
+  --neutro:#8B8377;--pista:#3A342A;--t1:#F4EFE8;--t2:#CBC5BA;--t3:#A29A8E;--s1:#1E1A14;--s2:#27221A;--borde:rgba(244,239,232,.14);--sombra:none;
   --urg-t:var(--urg);--esp-t:var(--esp);--opo-b:var(--hecho-b);--opo-t:var(--hecho)}
 /* el tono de cada tipo de trabajo: gama corta, apagada y armónica (poca saturación, luminosidad parecida; el icono y el rótulo distinguen el tipo, no el color).
    Degradado a → b muy corto en la tarjeta y la pieza de la tira; -t = color del texto encima. Contraste del texto sobre el tramo más claro:
@@ -27,3 +27,30 @@ html[data-modo=claro]{--v-tipo-contestar-a:#9A5648;--v-tipo-contestar-b:#7E4235;
 html[data-modo=oscuro]{--v-tipo-contestar-a:#7E4437;--v-tipo-contestar-b:#5E3228;--v-tipo-visita-a:#2F505A;--v-tipo-visita-b:#233C44;--v-tipo-informe-a:#444E6B;--v-tipo-informe-b:#343C54;
   --v-tipo-oportunidad-a:#6A5733;--v-tipo-oportunidad-b:#524327;--v-tipo-promesa-a:#62465B;--v-tipo-promesa-b:#4A3445;--v-tipo-bloqueada-a:#58534B;--v-tipo-bloqueada-b:#403C36;
   --v-tipo-contestar-t:#F4EFE8;--v-tipo-visita-t:#F4EFE8;--v-tipo-informe-t:#F4EFE8;--v-tipo-oportunidad-t:#F4EFE8;--v-tipo-promesa-t:#F4EFE8;--v-tipo-bloqueada-t:#F4EFE8}
+
+/* ================= ola premium · el color de cada sitio (único sitio donde viven estos tokens) =================
+   El color vive ARRIBA: el lavado va a plena fuerza en el borde superior, detrás de la cabecera, y se funde del todo con el lienzo a los 240 px (base.css).
+   Por debajo, el lienzo es el MISMO blanco cálido casi neutro en los seis sitios (claro L .954 C .005; oscuro #100E0C, L .165 C .006, nunca negro).
+   La identidad de cada sitio la llevan el lavado, el tinte (píldora de la pestaña activa) y el acento (rótulo e icono de la pestaña activa, enlaces, iconos de cabecera, avance).
+   El tono de una pantalla es el del sitio cuya pestaña está encendida (rutas.js, sitioDe); lo que no cuelga de ningún sitio (Cuenta, Avisos, Dictar…) es «neutro»: lavado cálido casi imperceptible y acento en tinta.
+   Tonos (h, OKLCH → hex): Hoy 40 albaricoque · Visitas 215 agua · Clientes 343 rosa malva · Pisos 155 salvia · Operaciones 275 lavanda · Veta 98 champán (Oficina, la Veta de dirección, el mismo) · Equipo (solo dirección) 155.
+   Claro: lavado L .935 C .045, tinte L .900 C .060, acento L .500 C .100. Oscuro: lavado L .250 C .040, tinte L .300 C .050, acento L .800 C .100. Donde el croma se salía de sRGB se bajó hasta que entra (PARTE_D.md).
+   El dorado NO es de ningún sitio: es la marca (micro, botón principal) y queda igual en todos. */
+:is(.app,.col)[data-sitio]{--lienzo:#F1EFEC;--fondo:var(--lienzo);--activo:var(--acento);--tab-on:color-mix(in srgb,var(--acento) 80%,var(--t1));--tab-b:color-mix(in srgb,var(--lienzo) 94%,transparent)}
+html[data-modo=oscuro] :is(.app,.col)[data-sitio]{--lienzo:#100E0C}
+:is(.app,.col)[data-sitio=inicio]{--lavado:#FFE2D9;--tinte:#FFD3C3;--acento:#924D35}
+:is(.app,.col)[data-sitio=visitas]{--lavado:#C9F2FD;--tinte:#B1E9F7;--acento:#006F83}
+:is(.app,.col)[data-sitio=clientes]{--lavado:#FFDFF1;--tinte:#FCCFE9;--acento:#8A4A72}
+:is(.app,.col)[data-sitio=pisos]{--lavado:#D3F3DD;--tinte:#C0EACD;--acento:#2A7449}
+:is(.app,.col)[data-sitio=operaciones]{--lavado:#E3E8FF;--tinte:#D4DCFF;--acento:#535D9C}
+:is(.app,.col)[data-sitio=equipo]{--lavado:#D3F3DD;--tinte:#C0EACD;--acento:#2A7449}
+:is(.app,.col)[data-sitio=veta],:is(.app,.col)[data-sitio=oficina]{--lavado:#F1EAC9;--tinte:#E8DFB2;--acento:#73630A}
+:is(.app,.col)[data-sitio=neutro]{--lavado:#F0ECE5;--tinte:#E7E2DA;--acento:var(--t1)}
+html[data-modo=oscuro] :is(.app,.col)[data-sitio=inicio]{--lavado:#321B13;--tinte:#43251A;--acento:#F6A88D}
+html[data-modo=oscuro] :is(.app,.col)[data-sitio=visitas]{--lavado:#04262E;--tinte:#05343D;--acento:#69CEE6}
+html[data-modo=oscuro] :is(.app,.col)[data-sitio=clientes]{--lavado:#2F1A27;--tinte:#3F2334;--acento:#EBA4CF}
+html[data-modo=oscuro] :is(.app,.col)[data-sitio=pisos]{--lavado:#102719;--tinte:#173523;--acento:#88D1A2}
+html[data-modo=oscuro] :is(.app,.col)[data-sitio=operaciones]{--lavado:#1C2035;--tinte:#262C47;--acento:#ABB9FE}
+html[data-modo=oscuro] :is(.app,.col)[data-sitio=equipo]{--lavado:#102719;--tinte:#173523;--acento:#88D1A2}
+html[data-modo=oscuro] :is(.app,.col)[data-sitio=veta],html[data-modo=oscuro] :is(.app,.col)[data-sitio=oficina]{--lavado:#272209;--tinte:#342E0D;--acento:#CFBF71}
+html[data-modo=oscuro] :is(.app,.col)[data-sitio=neutro]{--lavado:#1C1916;--tinte:#2A2621;--acento:var(--t1)}

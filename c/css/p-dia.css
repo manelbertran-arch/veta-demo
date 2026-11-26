@@ -40,18 +40,18 @@
 .hy-pila .v-car>.v-car-it{flex-basis:calc(100% - var(--e4))}   /* la siguiente asoma lo justo para verse (21 px) sin enseñar su botón */
 
 /* la línea de estado de la cabecera: «Te quedan 5 cosas · 1 hecha» (la segunda parte es un enlace a lo hecho) */
-.hy-hechas{position:relative;display:inline;padding:0;color:var(--acento);font:inherit;font-weight:600;text-decoration:underline;text-decoration-color:color-mix(in srgb,var(--acento) 35%,transparent);text-underline-offset:3px;cursor:pointer}
+.hy-hechas{position:relative;display:inline;padding:0;color:var(--acento);font:inherit;font-weight:700;text-decoration:underline;text-decoration-color:color-mix(in srgb,var(--acento) 35%,transparent);text-underline-offset:3px;cursor:pointer}
 .hy-hechas::after{content:"";position:absolute;inset:-14px -10px}
 
 /* la tarjeta */
 .hy-tj{position:relative;padding:calc(var(--e4) + var(--e1));border-radius:var(--v-radio-tj);background:var(--s1);border:1px solid var(--borde);box-shadow:var(--sombra);display:flex;flex-direction:column;gap:var(--e4);color:var(--t1);cursor:pointer;text-align:left}
-.hy-tj-arr{display:flex;align-items:center;justify-content:space-between;gap:var(--e2);font:600 var(--f-apoyo)/var(--l-fila) var(--body)}
+.hy-tj-arr{display:flex;align-items:center;justify-content:space-between;gap:var(--e2);font:700 var(--f-apoyo)/var(--l-fila) var(--body)}
 .hy-tj-tipo{color:var(--t3);letter-spacing:.01em}
 .hy-tj-urg{display:inline-flex;align-items:center;gap:6px;color:var(--urg)}
 .hy-tj-urg i{width:8px;height:8px;border-radius:var(--r-pill);background:var(--urg-s);flex:none}
 .hy-tj-quien{display:flex;align-items:flex-start;gap:var(--e4);margin-bottom:var(--e1)}   /* 16 de gap + 4 = 20 hasta el botón */
 .hy-tj-tx{min-width:0}
-.hy-tj-nom{font:700 var(--f-hoja)/var(--l-tit) var(--display);letter-spacing:-.01em;overflow-wrap:anywhere}
+.hy-tj-nom{font:500 var(--f-hoja)/var(--l-tit) var(--display);letter-spacing:-.01em;overflow-wrap:anywhere}
 .hy-tj-pasa{font:500 var(--f-cuerpo)/var(--l-lee) var(--body);color:var(--t2);margin-top:var(--e1)}
 .hy-tj-btn{margin-top:auto}   /* todas las tarjetas miden lo que la más alta: el botón queda siempre abajo */
 
@@ -71,7 +71,7 @@
 /* lo hecho se va: se marca (✓), sube y se desvanece y el hueco se cierra; todo dentro de 300 ms. Sin movimiento no hay tarjeta que se vaya */
 .hy-ida{pointer-events:none}
 .hy-tj-ok{position:absolute;top:var(--e4);right:var(--e4);width:var(--e6);height:var(--e6);border-radius:var(--r-pill);display:grid;place-items:center;background:var(--hecho-s);color:var(--sobre-hecho);opacity:0}
-.hy-tj-ok .ic{width:20px;height:20px;stroke-width:2.8}
+.hy-tj-ok .ic{width:20px;height:20px}
 .v-car>.v-car-it.hy-sale{animation:hy-hueco 140ms var(--c-sale) 120ms forwards}
 .v-car>.v-car-it.hy-sale .hy-tj{animation:hy-sube 200ms var(--c-sale) 40ms forwards}
 .v-car>.v-car-it.hy-sale .hy-tj-ok{animation:hy-marca var(--t-toque) var(--c-entra) forwards}
@@ -91,7 +91,7 @@
 /* todo hecho */
 .hy-fin{min-height:240px;border-radius:var(--v-radio-tj);background:var(--s1);border:1px solid var(--borde);box-shadow:var(--sombra);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:var(--e2);text-align:center;padding:var(--e5) var(--e4)}
 .hy-fin-ok{width:64px;height:64px;border-radius:50%;display:grid;place-items:center;background:var(--hecho-b);color:var(--hecho);margin-bottom:var(--e2)}
-.hy-fin-ok .ic{stroke-width:2.6}
+.hy-fin-ok .ic{}
 .hy-fin p{font:500 var(--f-cuerpo)/var(--l-lee) var(--body);color:var(--t2)}
 .hy-hechas-fin{margin-top:var(--e2)}
 @media (prefers-reduced-motion:reduce){.hy-pt{transition:none}}

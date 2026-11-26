@@ -3,11 +3,11 @@
 /* ---- Pisos: la maqueta pone el aire; aquí solo se deja respirar el texto de las fotos pequeñas ---- */
 .pisos-sitio{padding-bottom:var(--v-relleno,40px);margin:0 calc(-1*var(--margen))}   /* los componentes ya traen su margen de 16: el sitio sale al borde de la columna (un solo margen) */
 .pisos-sitio .v-mos2{grid-template-rows:160px 160px}
-.pisos-sitio .v-pa h3{font-size:19px}
+.pisos-sitio .v-pa h3{font-size:var(--f-hoja)}
 .pisos-sitio .v-pa .v-enc{white-space:normal;line-height:1.2;align-items:center}
-.pisos-sitio .v-enc{display:flex;gap:8px;font:600 15px/1.2 var(--body)}
-.pisos-sitio .v-pa p{font:600 17px/1.2 var(--body)}
-.pisos-sitio .v-pg p:last-of-type{font-weight:600}
+.pisos-sitio .v-enc{display:flex;gap:8px;font:700 var(--f-apoyo)/1.2 var(--body)}
+.pisos-sitio .v-pa p{font:700 var(--f-cuerpo)/1.2 var(--body)}
+.pisos-sitio .v-pg p:last-of-type{font-weight:700}
 .pisos-sitio .v-pg{margin-top:4px}
 .pisos-sitio .v-vacio{margin-top:8px}
 
@@ -15,7 +15,7 @@
 .operaciones-mias{padding-bottom:var(--v-relleno,40px);margin:0 calc(-1*var(--margen))}
 .operaciones-mias .v-ops{padding-top:4px}
 .operaciones-mias .v-op-sig{display:flex!important;align-items:center;justify-content:space-between;gap:12px}
-.operaciones-mias .v-op-sig .ic{flex:none;width:20px;height:20px;color:var(--oro-2)}
+.operaciones-mias .v-op-sig .ic{flex:none;width:20px;height:20px;color:var(--acento)}
 .operaciones-mias .v-op-cerrada .v-op-sig .ic{color:var(--t3)}
 .operaciones-mias .v-vacio{margin-top:8px}
 @media (prefers-reduced-motion:reduce){.operaciones-mias .v-op,.pisos-sitio .v-pa,.pisos-sitio .v-pg{transition:none!important}}
