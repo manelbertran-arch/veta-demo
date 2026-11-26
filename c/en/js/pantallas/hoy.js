@@ -278,10 +278,10 @@
   }
   function controlPuntos(l, idAct) {
     const a = Math.max(0, l.findIndex(x => x.id === idAct));
-    // aria-disabled y no disabled: con el foco puesto en una zona, que se quede sin destino no le quita el foco al teclado
+    // la zona que no tiene adónde ir no se ofrece (hidden: ni se pinta ni recibe toques); si tenía el foco, antes pasa a la otra (montaAgente)
     return `<div class="hy-pts-d">${puntosDentro(l, idAct)}</div><span class="hy-pos solo-lector" aria-live="polite" aria-atomic="true"></span>` +
-      `<button type="button" class="hy-ir hy-ir-ant" data-hy-ir="-1" aria-label="${esc('Previous')}"${a < 1 ? ' aria-disabled="true"' : ''}></button>` +
-      `<button type="button" class="hy-ir hy-ir-sig" data-hy-ir="1" aria-label="${esc('Next')}"${a >= l.length - 1 ? ' aria-disabled="true"' : ''}></button>`;
+      `<button type="button" class="hy-ir hy-ir-ant" data-hy-ir="-1" aria-label="${esc('Previous')}"${a < 1 ? ' hidden' : ''}></button>` +
+      `<button type="button" class="hy-ir hy-ir-sig" data-hy-ir="1" aria-label="${esc('Next')}"${a >= l.length - 1 ? ' hidden' : ''}></button>`;
   }
   // lo que hay en la pila: las pendientes y lo que Veta cerró y has vuelto a abrir (las mismas tarjetas que cuentan los puntos)
   const enPila = q => pendientes(q).length + reabiertas(q).length;
@@ -333,8 +333,11 @@
       marcada = idDe(sig); pts.hidden = r.length < 2;
       const k = r.findIndex(x => x.id === marcada), ant = pts.querySelector('[data-hy-ir="-1"]'), sg = pts.querySelector('[data-hy-ir="1"]'), pos = pts.querySelector('.hy-pos');
       pts.querySelector('.hy-pts-d').innerHTML = puntosDentro(r, marcada);
-      const apaga = (b, off) => { if (!b) return; if (off) b.setAttribute('aria-disabled', 'true'); else b.removeAttribute('aria-disabled'); };
-      apaga(ant, k < 1); apaga(sg, k >= r.length - 1);
+      // primero se ofrece la que toca y después se retira la que no tiene destino; si esa tenía el foco, el foco pasa a la otra (nunca cae a <body>)
+      const offA = k < 1, offS = k >= r.length - 1;
+      if (ant && !offA) ant.hidden = false; if (sg && !offS) sg.hidden = false;
+      if (ant && offA) { if (document.activeElement === ant && sg && !sg.hidden) sg.focus(); ant.hidden = true; }
+      if (sg && offS) { if (document.activeElement === sg && ant && !ant.hidden) ant.focus(); sg.hidden = true; }
       if (anuncia && pos && k >= 0) pos.textContent = `${k + 1} of ${r.length}`;   // para el lector de pantalla: no se pinta
     };
     if (cajaCar) viva = V().carruselVivo(cajaCar, {indicador: false, alCambiar: i => {
@@ -347,7 +350,7 @@
     const ve = i => { HY.indice = i; destino = idDe(items()[i]); setTimeout(() => { destino = null; }, 900); marca(i, true); viva.irA(i); };
     // las dos zonas de debajo de los puntos: anterior y siguiente (entre las tarjetas que no se van)
     if (pts && viva) pts.addEventListener('click', ev => {
-      const b = ev.target.closest('[data-hy-ir]'); if (!b || b.getAttribute('aria-disabled') === 'true') return;
+      const b = ev.target.closest('[data-hy-ir]'); if (!b) return;
       const r = reales(), meta = r[r.findIndex(x => x.id === marcada) + (+b.dataset.hyIr)]; if (!meta) return;
       const i = items().findIndex(it => idDe(it) === meta.id); if (i >= 0) ve(i);
     });

@@ -65,7 +65,7 @@
 .hy-pt.hy-pt-peq{width:4px;height:4px}
 .hy-ir{position:absolute;top:0;bottom:0;width:50%;padding:0;border:0;background:none;cursor:pointer;-webkit-tap-highlight-color:transparent}
 .hy-ir-ant{left:0}.hy-ir-sig{right:0}
-.hy-ir[aria-disabled=true]{cursor:default}
+.hy-ir[hidden]{display:none}
 .hy-ir:focus-visible{outline-offset:-2px}
 
 /* lo hecho se va: se marca (✓), sube y se desvanece y el hueco se cierra; todo dentro de 300 ms. Sin movimiento no hay tarjeta que se vaya */
