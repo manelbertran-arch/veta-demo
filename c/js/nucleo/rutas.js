@@ -76,7 +76,10 @@
     ['A22', 'visita/:id', 'Una visita', 'visitas', 'A', 'visita.js', 'A21', 'visita/elena', {grupo: G.A}],
     ['A24', 'salida/:id', '¿Cómo ha ido?', 'visitas', 'A', 'visita.js', 'A22', 'salida/elena', {completa: true, grupo: G.A}],
     ['A23', 'toca/:id', 'Te toca a ti', 'hoy', 'A', 'hoy.js', 'A1', 'toca/c-marta', {grupo: G.A}],
-    ['G21', 'oficina', 'Veta', 'oficina', 'D', 'oficina.js', 'R0', null, {grupo: G.D}]
+    ['G21', 'oficina', 'Veta', 'oficina', 'D', 'oficina.js', 'R0', null, {grupo: G.D}],
+    // carril sitios · los dos sitios nuevos de la agente (esqueleto; el contenido lo pone otro carril). `soloPapel`: la ruta `operaciones` es de dirección (G17) y de la agente (S2); resuelve() elige por perfil
+    ['S1', 'pisos', 'Pisos', 'pisos', 'A', 'pisos.js', 'R0', null, {grupo: G.A, soloPapel: 'agente'}],
+    ['S2', 'operaciones', 'Operaciones', 'operaciones', 'A', 'operaciones-mias.js', 'R0', null, {grupo: G.A, soloPapel: 'agente'}]
   ];
   const MAPA = {};
   FILAS.forEach(([cod, ruta, titulo, destino, paq, archivo, padre, ejemplo, o]) => {
@@ -152,7 +155,9 @@
         if (pp[k][0] === ':') { p[pp[k].slice(1)] = decodeURIComponent(partes[k]); n++; }
         else if (pp[k] !== partes[k]) return;
       }
-      if (!mejor || n < mejor.n) mejor = {def, p, n};
+      // misma ruta en dos pantallas (operaciones: dirección y agente): gana la del perfil; la que no tiene `soloPapel` va en medio; la del otro perfil, la última (vedada() la cierra)
+      const rango = d => (d.soloPapel ? (d.soloPapel === VETA.yo().papel ? 2 : 0) : 1);
+      if (!mejor || n < mejor.n || (n === mejor.n && rango(def) > rango(mejor.def))) mejor = {def, p, n};
     });
     if (!mejor) return null;
     mejor.p.ruta = partes.join('/');
@@ -175,7 +180,7 @@
   // (dirección también vende: lo suyo —toca/m-…, mensaje/m-…— sí lo abre).
   const SOLO_QUIEN_LO_LLEVA = ['visitas'];
   const deOtra = e => {
-    if (SOLO_QUIEN_LO_LLEVA.includes(e.def.destino)) return true;
+    if (SOLO_QUIEN_LO_LLEVA.includes(e.def.destino) || e.def.soloPapel === 'agente') return true;   // los sitios propios de la agente (pisos, su operaciones) no los abre dirección
     if (e.def.cod !== 'A23' && e.def.cod !== 'A2') return false;   // toca/:id y mensaje/:id: de quién es la cosa
     const c = VETA.modelo.cosa(e.p.id);
     if (c) return !!(c.quien && c.quien !== VETA.yo().id);
@@ -186,19 +191,23 @@
   const ABRE_LA_AGENTE = ['G10', 'G14'];
   const vedada = ruta => {
     const e = resuelve(redirige(ruta, true)); if (!e || !e.def.destino) return false;
-    return VETA.yo().papel === 'direccion' ? deOtra(e) : (SOLO_DIRECCION.includes(e.def.destino) && !ABRE_LA_AGENTE.includes(e.def.cod));
+    return VETA.yo().papel === 'direccion' ? deOtra(e) : (SOLO_DIRECCION.includes(e.def.destino) && !ABRE_LA_AGENTE.includes(e.def.cod) && e.def.soloPapel !== 'agente');
   };
   VETA.vedada = vedada;   // «Cómo funciona Veta» (A19) filtra con esto las filas que cada papel no puede abrir
-  // ronda 8 · los cuatro sitios de la barra (y del menú de ordenador): Inicio y las tres raíces del papel; en el centro, el micro (Dictar).
+  // ronda 8 · los sitios de la barra (y del menú de ordenador): Inicio y las raíces del papel (agente: cinco más Hoy = seis; dirección: tres más Inicio); en el centro, el micro (Dictar).
   // «hoy» y «decidir» ya no son sitios (son el Inicio); sus nombres se quedan en SITIOS por si alguien los lee.
-  const CAJAS = {agente: ['visitas', 'clientes', 'veta'], direccion: ['equipo', 'operaciones', 'oficina']};
+  const CAJAS = {agente: ['visitas', 'clientes', 'pisos', 'operaciones', 'veta'], direccion: ['equipo', 'operaciones', 'oficina']};
   const SITIOS = {inicio: {texto: 'Inicio', icono: 'casa'}, hoy: {texto: 'Te toca', largo: 'Te toca a ti', icono: 'hoy'}, visitas: {texto: 'Visitas', icono: 'cal'},
-    clientes: {texto: 'Clientes', icono: 'clientes'}, veta: {texto: 'Veta', icono: 'aprende'}, decidir: {texto: 'Decidir', icono: 'check'},
+    clientes: {texto: 'Clientes', icono: 'clientes'}, pisos: {texto: 'Pisos', icono: 'pin'}, veta: {texto: 'Veta', icono: 'aprende'}, decidir: {texto: 'Decidir', icono: 'check'},
     equipo: {texto: 'Equipo', icono: 'equipo'}, operaciones: {texto: 'Operaciones', icono: 'caja'}, oficina: {texto: 'Veta', icono: 'aprende'}};
+  // el sitio de inicio de la agente se rotula «Hoy»; el de dirección sigue siendo «Inicio»
+  const rotulo = d => (d === INICIO && VETA.yo().papel !== 'direccion' ? 'Hoy' : SITIOS[d].texto);
   const cajas = () => CAJAS[VETA.yo().papel] || CAJAS.agente;
   const sitios = () => [INICIO].concat(cajas());
   VETA.SITIOS = SITIOS; VETA.cajas = cajas;
-  const AREA = {inicio: 'hoy', hoy: 'hoy', visitas: 'hoy', clientes: 'clientes', veta: 'aprende', equipo: 'direccion', decidir: 'direccion', operaciones: 'direccion', oficina: 'aprende'};
+  // tanda V · el ambiente (data-sitio): el sitio del que cuelga la pantalla. Inicio y sus detalles (destino «hoy») = inicio; «decidir» = equipo; sin destino (portada, entrar, primer día) = ninguno
+  const sitioDe = e => { const d = (e && e.def && e.def.destino) || (e && e.ruta === INICIO ? INICIO : null); return d === 'hoy' ? 'inicio' : d === 'decidir' ? 'equipo' : d; };
+  const AREA = {inicio: 'hoy', hoy: 'hoy', visitas: 'hoy', clientes: 'clientes', pisos: 'clientes', veta: 'aprende', equipo: 'direccion', decidir: 'direccion', operaciones: 'direccion', oficina: 'aprende'};
   // raíz = una pestaña de la barra de quien mira. «Clientes» es raíz para la agente y un detalle de Inicio para dirección; «Te toca a ti» ya no lo es
   const esRaiz = e => !!(e && e.def.destino && e.def.ruta === e.def.destino && cajas().includes(e.def.destino));
   // ---- ronda 8 · redirecciones (PLAN_R8.md, 2.2): las rutas que se funden con otra llevan a la que queda ----
@@ -229,6 +238,7 @@
   let cuenta = VETA.est.lee('serie', 0), serie = 0;   // cada entrada del historial lleva su número de serie: menor = está detrás
   const guardaPila = () => VETA.est.pon('pila', pila.map(x => ({ruta: x.ruta, titulo: x.titulo, scroll: x.scroll || 0})));
   let ignora = null;
+  let quieto = false, quietoHasta = 0, alQuieto = null;   // tanda S: el próximo pinta con dirección va sin transición y avisa a alQuieto
   const pon = (ruta, n, reemplaza) => {
     const h = history.state, url = '#/' + ruta;
     const st = {veta: true, n, s: reemplaza && h && h.veta && h.s ? h.s : ++cuenta};
@@ -344,6 +354,7 @@
     const antes = col.dataset.ruta === e.ruta && col.dataset.pant === e.def.cod ? VETA.r7.clavesHecho(col) : null;
     col.className = 'col col-' + modo + (o.activa ? ' activa' : '');
     col.dataset.area = e.def.area || AREA[e.def.destino] || (e.def.completa ? 'voz' : 'yo');
+    { const st = sitioDe(e); if (st) col.dataset.sitio = st; else delete col.dataset.sitio; }
     col.dataset.ruta = e.ruta; col.dataset.pant = e.def.cod;
     col._entrada = e;
     let cuerpo;
@@ -376,9 +387,12 @@
     actual = e;
     const app = document.getElementById('app'), a = document.getElementById('col-a'), b = document.getElementById('col-b');
     const ord = VETA.ordenador();
+    // tanda S · un cambio de sitio hecho con el dedo (o con la barra) lo anima movimiento.js: aquí se pinta sin transición ni cascada
+    const q = !!dir && quieto; if (dir && quieto) quieto = false;
     const cambio = () => {
       let donde;
       app.dataset.completa = e.def.completa ? 'si' : 'no';
+      { const st = sitioDe(e); if (st) app.dataset.sitio = st; else delete app.dataset.sitio; }
       if (!ord) {
         app.dataset.vista = 'movil';
         donde = monta(a, e, e.def.completa ? 'completa' : 'movil', {activa: true, scroll: soloRepinta || dir === 'atras' ? scrollDe(e.ruta) : 0});
@@ -416,7 +430,7 @@
       document.title = (e.def.cod === 'E1' ? 'Veta' : titulo(e) + ' · Veta');
       // la cascada arranca ya dentro del cambio, para que se vea durante la transición (solo al ir adelante o cambiar de pestaña)
       // en una raíz (y en Inicio) no suben los bloques: entran escalonadas sus seis primeras filas. En el resto, la cascada de siempre
-      if (!soloRepinta && (dir === 'adelante' || dir === 'pestana')) {
+      if (!soloRepinta && !q && (dir === 'adelante' || dir === 'pestana')) {
         const pant = donde && donde.querySelector ? donde.querySelector('.pant') : null;
         if (esRaiz(e) || e.ruta === INICIO) VETA.mov.escalona(pant); else VETA.mov.cascada(pant);
       }
@@ -429,6 +443,11 @@
       }
       guardaPila();
     };
+    if (q && Date.now() < quietoHasta) {
+      const donde = cambio(); fin(donde);
+      if (alQuieto) { const f = alQuieto; alQuieto = null; f(); }
+      return;
+    }
     if (dir) {
       let donde = null;
       VETA.mov.transiciona(() => (donde = cambio()), dir, foco).then(() => fin(donde), () => fin(donde));
@@ -578,9 +597,11 @@
     if (VETA.mov.ocupada()) { VETA.mov.alAcabar('barra', pintaBarra); return; }
     el.dataset.firma = firma;
     const tab = d => `<button type="button" class="tab${d === marcado ? ' on' : ''}" data-tab="${d}"${d === marcado ? ' aria-current="page"' : ''} style="view-transition-name:tab-${d}">` +
-      `<span class="tab-ic">${VETA.ic(SITIOS[d].icono, 24)}${d === INICIO ? puntoHtml(pendiente(), marcado) : ''}</span><span class="tab-p">${SITIOS[d].texto}</span></button>`;
+      `<span class="tab-ic">${VETA.ic(SITIOS[d].icono, 24)}${d === INICIO ? puntoHtml(pendiente(), marcado) : ''}</span><span class="tab-p">${rotulo(d)}</span></button>`;
     const l = sitios();
-    el.innerHTML = `<div class="tabs" data-papel="${VETA.yo().papel === 'direccion' ? 'direccion' : 'agente'}">${l.slice(0, 2).map(tab).join('')}${microHtml(marcado)}${l.slice(2).map(tab).join('')}</div>`;
+    // tanda V · N sitios y el micro en el centro: la mitad a cada lado (con 4: 2 + micro + 2; con 6: 3 + micro + 3; con un número impar, el lado izquierdo lleva uno más)
+    const k = Math.ceil(l.length / 2);
+    el.innerHTML = `<div class="tabs" data-papel="${VETA.yo().papel === 'direccion' ? 'direccion' : 'agente'}" data-n="${l.length}"${l.length === 4 || l.length === 6 ? '' : ` style="grid-template-columns:repeat(${k},1fr) 64px repeat(${l.length - k},1fr)"`}>${l.slice(0, k).map(tab).join('')}${microHtml(marcado)}${l.slice(k).map(tab).join('')}</div>`;
   }
   function pintaLateral() {
     const el = document.getElementById('lateral'); if (!el) return;
@@ -588,12 +609,42 @@
     if (el.dataset.firma === firma) return;
     el.dataset.firma = firma;
     el.innerHTML = `<div class="lat-marca"><img src="assets/veta-symbol-gold.png" alt="" width="30" height="24"><b>VETA</b></div>` +
-      `<div class="lat-dest">${sitios().map(d => `<button type="button" class="lat-d${d === marcado ? ' on' : ''}" data-tab="${d}"${d === marcado ? ' aria-current="page"' : ''}>${VETA.ic(SITIOS[d].icono, 22)}<span>${SITIOS[d].largo || SITIOS[d].texto}</span>${d === INICIO ? puntoHtml(pendiente(), marcado) : ''}</button>`).join('')}</div>` +
+      `<div class="lat-dest">${sitios().map(d => `<button type="button" class="lat-d${d === marcado ? ' on' : ''}" data-tab="${d}"${d === marcado ? ' aria-current="page"' : ''}>${VETA.ic(SITIOS[d].icono, 22)}<span>${SITIOS[d].largo || rotulo(d)}</span>${d === INICIO ? puntoHtml(pendiente(), marcado) : ''}</button>`).join('')}</div>` +
       `<button type="button" class="lat-mic${marcado === 'dictar' ? ' on' : ''}" data-ir="dictar/libre" data-mic><span class="mic-c">${VETA.ic('mic', 22)}</span><span>Dictar</span></button>` +
       `<button type="button" class="lat-yo" data-ir="cuenta">${VETA.av(yo.id, 40)}<span class="lat-yo-c"><span class="lat-yo-n">${esc(yo.nombre)}</span><span class="lat-yo-p">${esc(yo.papelTexto)}</span></span></button>`;
   }
   VETA.pintaBarra = () => { ['barra', 'lateral'].forEach(id => { const el = document.getElementById(id); if (el) delete el.dataset.firma; }); pintaBarra(); pintaLateral(); };
   VETA.modelo.al(() => { pintaBarra(); pintaLateral(); });
+
+  // ---- tanda S · lo que necesita movimiento.js para deslizar entre sitios (el gesto vive allí; aquí, el mapa y la navegación) ----
+  // info(): qué hay a cada lado de la pantalla abierta. En un sitio (Inicio y las raíces de la barra): izq/dcha son sus vecinos en el orden de
+  // la barra (el micro no cuenta: es una acción). En un detalle con flecha de volver: atras = a dónde lleva la flecha. Si no, null.
+  const colActiva = () => VETA.$('#marco .col.activa');
+  VETA.gestos = {
+    sitios,
+    marcado: destinoMarcado,
+    info() {
+      if (!actual || esPre(actual)) return null;
+      const ss = sitios(), i = ss.indexOf(actual.ruta);
+      if (i >= 0) return {tipo: 'sitio', izq: ss[i - 1] || null, dcha: ss[i + 1] || null};
+      const c = colActiva();
+      if (c && c.querySelector('[data-atras]')) return {tipo: 'detalle', atras: pila.length > 1 ? pila[pila.length - 2].ruta : padreDe(actual)};
+      return null;
+    },
+    // una copia pintada de la pantalla `ruta` para que asome mientras se arrastra: no toca la pila ni el historial
+    peek(ruta) {
+      const e = resuelve(redirige(String(ruta), true)); if (!e) return null;
+      const el = document.createElement('div');
+      try { monta(el, e, e.def.completa ? 'completa' : 'movil', {activa: false}); } catch (err) { return null; }
+      el.classList.add('col-peek'); delete el.dataset.ruta; delete el.dataset.pant;
+      el.setAttribute('aria-hidden', 'true'); el.inert = true;
+      return el;
+    },
+    // navegar sin transición: alPintado se llama cuando la pantalla nueva ya está pintada (o a los 900 ms si no llega a pintarse)
+    va(ruta, alPintado) { quieto = true; quietoHasta = Date.now() + 900; alQuieto = alPintado || null; VETA.ir(ruta, {pestana: true}); },
+    atras(alPintado) { quieto = true; quietoHasta = Date.now() + 900; alQuieto = alPintado || null; VETA.atras(); },
+    suelta() { quieto = false; if (alQuieto) { const f = alQuieto; alQuieto = null; f(); } }
+  };
 
   // ---- entrar con una cuenta (E2): la barra gana o pierde «Equipo», se abre el primer destino. No hay cambio de perfil dentro de la app ----
   VETA.cambiaPerfil = id => {
@@ -642,6 +693,7 @@
     if (el.hasAttribute('data-tab')) {
       const d = el.dataset.tab;
       if (actual && actual.ruta === d) { const s = VETA.$('.col.activa .desplaza') || VETA.$('#col-a .desplaza'); if (s) s.scrollTo({top: 0, behavior: VETA.reducido() ? 'auto' : 'smooth'}); return; }
+      if (VETA.mov.deslizaA && VETA.mov.deslizaA(d)) return;
       VETA.ir(d, {pestana: true}); return;
     }
     if (el.hasAttribute('data-accion')) { acciona(el.dataset.accion, ev, el); return; }

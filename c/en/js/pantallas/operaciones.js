@@ -15,7 +15,7 @@
 
   const minus = t => t.charAt(0).toLowerCase() + t.slice(1), mayus = t => t.charAt(0).toUpperCase() + t.slice(1);
   // lo que pasa, sin repetir lo que ya dice el filtro
-  const motivo = o => o.aviso ? o.aviso.texto.replace(/^No l[ao] lleva nadie · /, '').replace(/ · quien la lleva está de baja$/, '').replace(/^escribió( el)? /, 'desde ') : '';
+  const motivo = o => o.aviso ? o.aviso.texto.replace(/^No one has (?:her|him|it) · /, '').replace(/ · whoever handles it is on leave$/, '').replace(/^wrote( on)? /, 'since ') : '';
   // la hora exacta ya está en la operación; en la lista basta “desde ayer”, y “queja del propietario” es “queja” (un renglón, D17)
   const corto = t => t.replace(/, \d{1,2}:\d\d$/, '').replace(/^Owner complaint/, 'Complaint');
   // cómo va, corto y en gris a la derecha (12 caracteres como mucho)
@@ -45,6 +45,7 @@
 
   VETA.pantalla('G17', {
     titulo: 'Deals',
+    sub: 'Which deals to look at today, and which nobody is handling.',
     pinta: () => {
       const todas = X.ops(), c = r7.cuentas();
       const nadie = todas.filter(o => !o.lleva), teresa = todas.filter(o => o.deBaja);

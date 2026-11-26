@@ -23,7 +23,7 @@
         espera: [{id: 'e-marta', fechaISO: '2026-11-26', fecha: 'Thu 26', cliente: 'marta', titulo: 'Marta Puig', texto: 'Waiting for her reply'}],
         historia: [{cliente: 'marta', cuando: 'Today', tipo: 'You', texto: 'Message sent: proposal to see the flat on Saturday at 11:00'}]}},
     {id: 'c-elena', quien: 'laura', tipo: 'visita', cliente: 'elena', titulo: 'Elena Vives', corto: 'Elena', chat: 'elena',
-      momento: 'Viewing with Elena Vives · today, 9:00', piso: 'verdi', pisoTexto: 'Gràcia flat · c/ Verdi 42, 3.º 2.ª',
+      momento: 'Viewing with Elena Vives · today, 9:00', horaVisita: '9:00', piso: 'verdi', pisoTexto: 'Gràcia flat · c/ Verdi 42, 3.º 2.ª',
       saber: 'What you know about her: looking for 2 bright bedrooms. She\'s worried about street noise.', deSusChats: true,
       pie: 'When you come out, tell me how it went.', nota: false,
       boton: {texto: 'Tell me how it went', ir: 'visita/elena'}, secundarios: [{texto: 'See the profile', ir: 'cliente/elena'}, otra],

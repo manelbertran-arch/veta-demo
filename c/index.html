@@ -20,18 +20,21 @@
 (function(){var r=document.documentElement,p={},s={};try{p=JSON.parse(localStorage.getItem('veta_pref_v1')||'{}')||{}}catch(e){}
 try{s=JSON.parse(sessionStorage.getItem('veta_demo_v1')||'{}')||{}}catch(e){}
 var mm=function(q){return !!(window.matchMedia&&matchMedia(q).matches)};var m=p.modo||'auto';if(m==='auto')m=mm('(prefers-color-scheme: dark)')?'oscuro':'claro';
-r.setAttribute('data-modo',m==='oscuro'?'oscuro':'claro');r.setAttribute('data-color',p.color||'veta');
+r.setAttribute('data-modo',m==='oscuro'?'oscuro':'claro');r.setAttribute('data-color','veta');
 var red=p.mov==='reducido'||s.mov==='reducido'||/[?&]mov=reducido/.test(location.search)||mm('(prefers-reduced-motion: reduce)');r.setAttribute('data-mov',red?'reducido':'normal')})();
 </script>
 <link rel="stylesheet" href="css/base.css">
 <link rel="stylesheet" href="css/temas.css">
 <link rel="stylesheet" href="css/componentes.css">
+<link rel="stylesheet" href="css/v-sistema.css">
 <link rel="stylesheet" href="css/movimiento.css">
 <link rel="stylesheet" href="css/vivo.css">
 <link rel="stylesheet" href="css/ordenador.css">
 <link rel="stylesheet" href="css/p-dia.css">
 <link rel="stylesheet" href="css/p-clientes.css">
 <link rel="stylesheet" href="css/p-veta.css">
+<link rel="stylesheet" href="css/p-visitas.css">
+<link rel="stylesheet" href="css/p-pisos.css">
 <link rel="stylesheet" href="css/p-direccion.css">
 <!-- ronda 7: piezas comunes (N2) y una hoja de estilos por agente -->
 <link rel="stylesheet" href="css/r7.css">
@@ -66,6 +69,7 @@ var red=p.mov==='reducido'||s.mov==='reducido'||/[?&]mov=reducido/.test(location
 <script src="js/nucleo/tema.js"></script>
 <script src="js/nucleo/movimiento.js"></script>
 <script src="js/nucleo/ui.js"></script>
+<script src="js/nucleo/v.js"></script>
 <script src="js/nucleo/plantillas.js"></script>
 <script src="js/nucleo/hoja.js"></script>
 <script src="js/nucleo/aviso.js"></script>
@@ -137,6 +141,8 @@ var red=p.mov==='reducido'||s.mov==='reducido'||/[?&]mov=reducido/.test(location
 <!-- ronda 6 · D: operaciones, una operación, una persona -->
 <script src="js/pantallas/operaciones.js"></script>
 <script src="js/pantallas/operacion.js"></script>
+<script src="js/pantallas/pisos.js"></script>
+<script src="js/pantallas/operaciones-mias.js"></script>
 <script src="js/pantallas/persona.js"></script>
 <!-- ronda 7: Inicio (N2), visitas y visita (A2), decidir (D1), oficina (D2) -->
 <script src="js/pantallas/inicio.js"></script>

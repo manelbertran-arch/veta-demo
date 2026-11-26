@@ -45,6 +45,7 @@
 
   VETA.pantalla('G17', {
     titulo: 'Operaciones',
+    sub: 'Qué operaciones mirar hoy y cuáles no lleva nadie.',
     pinta: () => {
       const todas = X.ops(), c = r7.cuentas();
       const nadie = todas.filter(o => !o.lleva), teresa = todas.filter(o => o.deBaja);

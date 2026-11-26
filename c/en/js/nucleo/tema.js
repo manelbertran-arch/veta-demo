@@ -1,13 +1,13 @@
 /* Veta demo · núcleo · tema.js
-   Tres ejes en <html>: data-modo (claro | oscuro, ya resuelto), data-color (una de las 12 paletas de temas.css)
+   Tres ejes en <html>: data-modo (claro | oscuro, ya resuelto), data-color (siempre “veta”: una sola paleta desde la tanda V)
    y data-mov (normal | reducido). El guion del <head> de index.html los pone antes del primer pintado;
    aquí se cambian. Se guardan en localStorage (VETA.pref). “Reducir movimiento” se enciende también con
    prefers-reduced-motion o con ?mov=reducido. */
 (function () {
   'use strict';
   const raiz = document.documentElement;
-  const COLORES = ['veta', 'joya', 'medianoche', 'nube', 'lima', 'coral', 'lavanda', 'mocha', 'cobalto', 'zafiro', 'aurora', 'salvia'];
-  const NOMBRES = {veta: 'Veta', joya: 'Jewel', medianoche: 'Midnight', nube: 'Cloud', lima: 'Forest', coral: 'Coral', lavanda: 'Lavender', mocha: 'Mocha', cobalto: 'Cobalt', zafiro: 'Sapphire', aurora: 'Aurora', salvia: 'Sage'};
+  const COLORES = ['veta'];   // tanda V: una sola paleta (las otras once se retiraron)
+  const NOMBRES = {veta: 'Veta'};
   const MODOS = {claro: 'Light', oscuro: 'Dark', auto: 'Automatic'};
   const mm = q => !!(window.matchMedia && matchMedia(q).matches);
 

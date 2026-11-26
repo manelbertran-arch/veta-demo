@@ -18,6 +18,18 @@
     return `<div class="mu-barra"><div class="barra"><div class="tabs" data-papel="${papel}">${sitios.slice(0, 2).map(tab).join('')}<span class="tab-mic"><span class="tab-mic-c">${VETA.ic('mic', 24)}</span></span>${sitios.slice(2).map(tab).join('')}</div></div></div>`;
   };
 
+  // tanda V · una tarjeta por tipo de trabajo (las seis de Inicio), su tira del día, un conmutador, chapas, una propuesta, la fila de caras y dos baldosas
+  const VT = ['mensaje', 'visita', 'informe', 'oportunidad', 'promesa', 'bloqueada'];
+  const vMuestra = () => {
+    const V = VETA.v, nom = ['Marta Puig', 'Elena Vives', 'Pere Soler', 'Núria Camps', 'Jordi Ferrer', 'Sergi Mas'], per = ['marta', 'elena', 'pere', 'nuria', 'jordi', 'sergi'];
+    return V.tiraDia({piezas: VT.map((t, i) => ({tipo: t, hecha: false, id: per[i]})), actual: 0}).replace('class="v-tira-w"', 'class="v-tira-w" id="mu-v-tira"') +
+      V.carrusel({id: 'mu-v-car', etiqueta: 'Your day', tarjetas: VT.map((t, i) => V.tarea({tipo: t, persona: per[i], nombre: nom[i], frase: 'Wants to see the flat', boton: 'Open', accion: 'toca'}))}) +
+      V.conmutador({opciones: [{id: 'p', texto: 'To do', n: 6}, {id: 'h', texto: 'Done', n: 0}], valor: 'p'}) +
+      `<div class="mu-fila">${V.chapa('urg', 'No reply yet')}${V.chapa('esp', 'Stalled')}${V.chapa('hecho', 'Done')}${V.chapa('veta', 'Opportunity')}${V.sello()}</div>` +
+      `<div class="v-rej">${per.slice(0, 4).map((p, i) => V.retrato(p, {nombre: nom[i], frase: 'No reply since yesterday', chapa: i < 2 ? {tono: 'urg', texto: 'No reply yet'} : null, accion: 'toca'})).join('')}</div>` +
+      V.lista([V.filaHecha({texto: 'Sent to Marta', hora: '9:12'}), V.filaHecha({texto: 'Weekly report sent to Pere', hora: '10:40'})]);
+  };
+
   VETA.pantalla('muestrario', {
     ruta: 'muestrario', titulo: 'The 18 pieces', destino: null, grupo: 'Core',
     sub: 'The round 8 set of pieces. Tap whatever you want to try.',
@@ -70,8 +82,10 @@
       pieza(22, 'Figure: on one line only if it fits whole', R.cifra({valor: 38, frase: 'things done for you.'}) + R.cifra({valor: '12 h 45 min', frase: 'saved last week. It is an example.'}) + R.cifra({valor: 212, frase: 'of 301 contacts have something noted by someone in the office.'})),
       pieza(23, 'Dates and times: three forms', R.lista([{nombre: 'Short', dato: VETA.fecha.corta('2026-11-25')}, {nombre: 'Short, with time', dato: VETA.fecha.corta('2026-11-23T09:41')}, {nombre: 'Short, another month', dato: VETA.fecha.corta('2026-12-03')},
         {nombre: 'Long', pasa: VETA.fecha.larga('2026-11-26T10:00')}, {nombre: 'Time', dato: VETA.fecha.hora('09:05')}])),
-      pieza(24, '“More”: the frequent, teaching, and the destructive last', R.lista([{nombre: 'Open “More”', hoja: 'mu-mas'}, {nombre: 'Replay the entry stagger', accion: 'escalona'}]))
+      pieza(24, '“More”: the frequent, teaching, and the destructive last', R.lista([{nombre: 'Open “More”', hoja: 'mu-mas'}, {nombre: 'Replay the entry stagger', accion: 'escalona'}])),
+      pieza(25, 'Round V: carousel, day strip and task card', vMuestra())
     ].join(''),
+    alMontar: pant => { const c = pant.querySelector('#mu-v-car'); if (c) { const v = VETA.v.carruselVivo(c, {alCambiar: i => VETA.v.tiraDiaMarca(pant.querySelector('#mu-v-tira'), {actual: i, rotulo: VETA.v.tipo(VT[i]).rotulo})}); const t = pant.querySelector('#mu-v-tira'); if (t) t.addEventListener('click', ev => { const b = ev.target.closest('[data-v-pz]'); if (b) v.irA(+b.dataset.vPz); }); } },
     botonFijo: () => R.botones({texto: 'Send', accion: 'toca'}, {texto: 'Not now', accion: 'toca'}),
     acciones: {
       toca() { VETA.aviso('Tapped.'); },

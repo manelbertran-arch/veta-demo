@@ -52,7 +52,14 @@
     wifi: '<path d="M2.5 9a14 14 0 0 1 19 0M5.5 12.5a9.5 9.5 0 0 1 13 0M8.6 15.8a5 5 0 0 1 6.8 0"/><circle cx="12" cy="19" r="1" fill="currentColor"/>',
     sinred: '<path d="M2.5 9a14 14 0 0 1 19 0M5.5 12.5a9.5 9.5 0 0 1 13 0M8.6 15.8a5 5 0 0 1 6.8 0M3 3l18 18"/>',
     abajo: '<path d="M5 9l7 7 7-7"/>',
-    libro: '<path d="M4 4.5h6a2 2 0 0 1 2 2V20a2 2 0 0 0-2-2H4zM20 4.5h-6a2 2 0 0 0-2 2V20a2 2 0 0 1 2-2h6z"/>'
+    libro: '<path d="M4 4.5h6a2 2 0 0 1 2 2V20a2 2 0 0 0-2-2H4zM20 4.5h-6a2 2 0 0 0-2 2V20a2 2 0 0 1 2-2h6z"/>',
+    // ---- tanda V · un icono por tipo de trabajo (VETA.v.tipo) y la flecha de los botones ----
+    pin: '<path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11z"/><circle cx="12" cy="10" r="2.4"/>',
+    piso: '<path d="M5 21V5.5a1 1 0 0 1 1-1h8a1 1 0 0 1 1 1V21M15 10h3a1 1 0 0 1 1 1v10M3.5 21h17M8.5 8h3M8.5 12h3M8.5 16h3"/>',
+    prom: '<circle cx="12" cy="13.5" r="7"/><path d="M12 10v3.8l2.2 1.4M9.5 3h5M12 3v3.5"/>',
+    quita: '<circle cx="12" cy="12" r="9"/><path d="M8 12h8"/>',
+    ok: '<circle cx="12" cy="12" r="9"/><path d="M8 12.3l2.8 2.8L16 9.5"/>',
+    flecha: '<path d="M5 12h14M13 6l6 6-6 6"/>'
   };
   VETA.iconos = P;
   VETA.ic = (n, w) => `<svg class="ic" viewBox="0 0 24 24" ${w ? `width="${w}" height="${w}"` : ''} fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">${P[n] || ''}</svg>`;

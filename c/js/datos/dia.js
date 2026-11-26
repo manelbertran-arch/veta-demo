@@ -23,7 +23,7 @@
         espera: [{id: 'e-marta', fechaISO: '2026-11-26', fecha: 'Jue 26', cliente: 'marta', titulo: 'Marta Puig', texto: 'Esperas su respuesta'}],
         historia: [{cliente: 'marta', cuando: 'Hoy', tipo: 'Tú', texto: 'Mensaje enviado: propuesta para ver el piso el sábado a las 11:00'}]}},
     {id: 'c-elena', quien: 'laura', tipo: 'visita', cliente: 'elena', titulo: 'Elena Vives', corto: 'Elena', chat: 'elena',
-      momento: 'Visita con Elena Vives · hoy, 9:00', piso: 'verdi', pisoTexto: 'Piso de Gràcia · c/ Verdi 42, 3.º 2.ª',
+      momento: 'Visita con Elena Vives · hoy, 9:00', horaVisita: '9:00', piso: 'verdi', pisoTexto: 'Piso de Gràcia · c/ Verdi 42, 3.º 2.ª',
       saber: 'Lo que sabes de ella: busca 2 habitaciones con luz. Le preocupa el ruido de la calle.', deSusChats: true,
       pie: 'Cuando salgas, cuéntame cómo ha ido.', nota: false,
       boton: {texto: 'Cuéntame cómo ha ido', ir: 'visita/elena'}, secundarios: [{texto: 'Ver la ficha', ir: 'cliente/elena'}, otra],

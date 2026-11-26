@@ -96,18 +96,14 @@
 
   // ---- H26 · Cómo se ve (el título, igual que la fila de Cuenta que la abre) ----
   // D1c (segunda vuelta de la ronda 8; lo edita el carril C con permiso del núcleo): tres bloques y ningún botón, porque todo cambia
-  // al tocar. Las doce paletas siguen (las decide el dueño): cuatro por fila, la muestra arriba y el nombre debajo en una línea
-  // (css/r7-c.css, .r7c-paletas); la elegida, con aro. El interruptor va en su lista, como en el resto de la app.
+  // al tocar. Tanda V: una sola paleta, sin rejilla de colores. El interruptor va en su lista, como en el resto de la app.
   VETA.hojaDef('h26', {
     titulo: 'Cómo se ve',
     pinta: () => `<p class="hoja-x">Cambia al tocar.</p>` +
       UI.selector({etiqueta: 'Modo', opciones: Object.keys(VETA.tema.MODOS).map(k => ({id: k, texto: VETA.tema.MODOS[k]})), valor: VETA.tema.modo(), accion: 'modo'}) +
-      `<div class="r7c-paletas" role="group" aria-label="Colores">${VETA.tema.COLORES.map(c => `<button type="button" class="r7c-paleta" data-accion="color" data-color="${c}" aria-pressed="${c === VETA.tema.color()}">` +
-        `<span class="muestra" data-color="${c}" data-modo="${document.documentElement.dataset.modo}"><i></i><i></i><i></i></span><span class="r7c-paleta-n">${esc(VETA.tema.NOMBRES[c])}</span></button>`).join('')}</div>` +
       VETA.r7.lista([UI.interruptor({texto: 'Reducir movimiento', on: VETA.tema.reducido(), accion: 'mov'})]),
     acciones: {
       modo(ev, el) { VETA.tema.pon({modo: el.dataset.valor}); VETA.hoja('h26', {}); },
-      color(ev, el) { VETA.tema.pon({color: el.dataset.color}); VETA.hoja('h26', {}); },
       mov(ev, el) { VETA.tema.pon({mov: el.getAttribute('aria-checked') === 'true' ? 'reducido' : 'normal'}); }
     }
   });
