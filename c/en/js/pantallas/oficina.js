@@ -30,6 +30,7 @@
 
   VETA.pantalla('G21', {
     titulo: 'Veta',
+    sub: 'What Veta does for the office and what it suggests to you.',
     pinta: () => {
       const n = ensenado().length, R = VETA.datos.reglasOficina || {};
       const fases = Object.keys(R).map(id => ({id, r: R[id], e: VETA.d1.faseRegla(id)}));

@@ -19,7 +19,7 @@
     // un cliente: lo último que tengo de él, con su frase
     const c = M.cliente(id) || (D.b.preguntas[id] && M.cliente(D.b.preguntas[id].cliente));
     // dirección preguntando por el cliente de otra persona: no lee su chat
-    if (c && VETA.ajeno(c.id)) return {pregunta: (P[id] || D.b.preguntas[id] || {}).pregunta || `What do I know about ${c.nombre}?`, ajeno: true, cliente: c.id};
+    if (c && VETA.sinLiteral(c.id)) return {pregunta: (P[id] || D.b.preguntas[id] || {}).pregunta || `What do I know about ${c.nombre}?`, ajeno: true, cliente: c.id};
     if (c) {
       const sabe = B.sabe(c.id), h = B.historia(c.id)[0];
       if (!sabe.length && !h) return {pregunta: `What do I know about ${c.nombre}?`, nada: true, cliente: c.id};
@@ -29,7 +29,7 @@
     // dirección pregunta por el cliente de otra persona escribiéndolo (“¿Qué le prometí a Jordi?”): lo dice, sin leer su chat
     const nn = ' ' + n + ' ';
     const nombrado = Object.keys(D.clientes).map(M.cliente).find(x => x && (nn.includes(' ' + B.norm(x.nombre) + ' ') || nn.includes(' ' + B.norm(B.corto(x)) + ' ')));
-    if (nombrado && VETA.ajeno(nombrado.id)) return {pregunta: id, ajeno: true, cliente: nombrado.id};
+    if (nombrado && VETA.sinLiteral(nombrado.id)) return {pregunta: id, ajeno: true, cliente: nombrado.id};
     return {pregunta: id, nada: true};
   }
   // las otras preguntas preparadas: filas que cambian la pregunta en el sitio
@@ -42,7 +42,8 @@
   function respuesta(r) {
     if (r.ajeno) {
       const c = M.cliente(r.cliente) || {};
-      return veta(`${(M.persona(c.lleva) || {}).corto || 'another person'} looks after ${c.nombre}. From management, I do not read what they say in their chat.`) + otras({});
+      const lleva = (M.persona(c.lleva) || {}).corto;
+      return veta(lleva ? `${lleva} looks after ${c.nombre}. From management, I do not read what they say in their chat.` : `Nobody looks after ${c.nombre} yet. From management, I do not read what they write: I only tell you how things stand.`) + otras({});
     }
     if (r.nada) return veta('I cannot find it in your chats. I only answer with what is written.') + otras({});
     let texto = r.respuesta, filas = [];

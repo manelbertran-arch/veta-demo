@@ -8,9 +8,9 @@
 (function () {
   'use strict';
   const M = VETA.modelo, X = VETA.dir, r7 = VETA.r7;
-  const A = id => (VETA.datos.asuntos || {})[id] || VETA.datos.asuntos.carmen;
+  const A = id => (VETA.datos.asuntos || {})[id] || null;   // un id que no existe no se pinta con los datos de otro (estado vacío en la pantalla)
   const contacto = id => (VETA.datos.contactos || []).find(c => c.id === id) || {};
-  const nombre = id => (M.quien(id) || {}).nombre || contacto(id).nombre || id;
+  const nombre = id => (M.quien(id) || {}).nombre || contacto(id).nombre || '';   // nunca el id crudo
   const ELLA = {carmen: true, lucia: true};                       // “Dársela” / “Dárselo”: cada frase va entera (en inglés no hay “la” ni “lo”)
   const ella = id => !!ELLA[id];
 
@@ -28,12 +28,12 @@
 
   // ya decidido: asignado, aparcado (“Para luego”, “Descartarlo”) o, en la queja, pedido a Marc
   function resuelto(id) {
-    const a = A(id);
-    if (a.tipo === 'queja') { const c = M.cosa('d-joan'); return c && X.resuelta(c) ? {linea: (c.extra && c.extra.linea) || 'Asked Marc: call Joan Serra today', corto: (c.extra && c.extra.corto) || 'Asked Marc: call them today', hora: c.hora} : null; }
+    const a = A(id); if (!a) return null;
+    if (a.tipo === 'queja') { const c = M.cosa('d-joan'); return c && X.resuelta(c) ? {linea: (c.extra && c.extra.linea) || 'Asked Marc: call Joan Serra today', corto: (c.extra && c.extra.corto) || 'Asked Marc: call him today', hora: c.hora} : null; }
     return X.asignado(id) || X.aparcado(id);
   }
-  // lo que quiere, dicho por Veta: solo cuando el chat ya es de una agente (dirección no lo lee, 25-nov-2026): queda el hecho, sin hueco.
-  const QUIERE = {carmen: 'Looking for a 3-bedroom flat in Gràcia.', 'pau-rios': 'Asking about a place to rent in the Eixample.', lucia: 'Wants to sell their parents\' flat in Sant Gervasi.'};
+  // lo que quiere, dicho por Veta, SIEMPRE: dirección no lee el texto de ningún contacto, ni el de la oficina sin dueño (M-29, 25-nov-2026): queda el hecho, sin cita.
+  const QUIERE = {carmen: 'Looking for a 3-bedroom flat in Gràcia.', 'pau-rios': 'Asking about a place to rent in the Eixample.', lucia: 'Wants to sell her parents\' flat in Sant Gervasi.'};
   const dia = o => o.replace('Office WhatsApp · ', '').replace('WhatsApp · ', '');
   const elDia = t => /^(today|yesterday)/.test(t) ? t : 'on ' + t;      // “wrote yesterday, 19:10” · “wrote on Sat 21, 13:20”
   // tras decidir (aquí o en su hoja “Más”): la pantalla se repinta en el sitio con su “hecho”, y el punto de la barra se pone al día
@@ -45,27 +45,28 @@
   VETA.d1.asunto = {A, nombre, hecho, deshaz};
 
   VETA.pantalla('G2', {
-    titulo: p => nombre(p.id),
-    mas: p => resuelto(p.id) ? null : {hoja: 'd-asunto-mas', datos: {asunto: p.id}},
-    nota: p => resuelto(p.id) ? '' : A(p.id).tipo === 'queja' ? 'I say what I\'d do. You decide.' : ella(p.id) ? 'I\'ll tell you who I\'d give her to. You decide.' : 'I\'ll tell you who I\'d give him to. You decide.',
+    titulo: p => A(p.id) ? nombre(p.id) : 'Matter',   // un id que no existe no se pinta nunca en la cabecera
+    mas: p => !A(p.id) || resuelto(p.id) ? null : {hoja: 'd-asunto-mas', datos: {asunto: p.id}},
+    nota: p => !A(p.id) || resuelto(p.id) ? '' : A(p.id).tipo === 'queja' ? 'I say what I\'d do. You decide.' : ella(p.id) ? 'I\'ll tell you who I\'d give her to. You decide.' : 'I\'ll tell you who I\'d give him to. You decide.',
     // lo que se le enseña a Veta si se toca el micro desde aquí
-    casoDictado: p => ({de: 'asunto-' + p.id, quien: p.id, titulo: nombre(p.id), texto: propone(p.id).de + '. ' + propone(p.id).texto}),
+    casoDictado: p => !A(p.id) ? null : ({de: 'asunto-' + p.id, quien: p.id, titulo: nombre(p.id), texto: propone(p.id).de + '. ' + propone(p.id).texto}),
     pinta: p => {
-      const a = A(p.id), r = resuelto(p.id), corto = nombre(p.id).split(' ')[0];
+      const a = A(p.id);
+      if (!a) return r7.vacio('I can\'t find this matter.');   // estado vacío honesto; “volver” lo pone la cabecera
+      const r = resuelto(p.id), corto = nombre(p.id).split(' ')[0];
       // decidido: la fila de “hecho” arriba, con su “Deshacer”; debajo queda lo que escribió, sin la propuesta
       let h = r ? r7.hecho({texto: corta(r, nombre(p.id)), hora: r.hora ? VETA.fecha.hora(r.hora) : '', deshacer: 'deshacer-asunto', vt: 'asunto-' + p.id}) : '';
       // el cliente de otra persona (la queja de Joan, de Marc): dirección no lee su chat; lo sabe por su aviso
       h += a.tipo === 'queja' && VETA.ajeno(a.contacto)
-        ? r7.tarjeta({de: 'I know from your alert on ' + dia(a.pide.origen), texto: 'Ten days with no news about their home. They say they will go to another agency.', i: 0})
-        // el chat del WhatsApp de la OFICINA lo ve dirección con su cita; en cuanto el contacto pasa a una agente, el chat es suyo (VETA.ajeno) y queda el hecho, dicho por Veta
-        : VETA.ajeno(p.id) ? r7.tarjeta({de: corto + ' wrote ' + elDia(dia(a.pide.origen)), texto: QUIERE[p.id] || 'Wrote to the office\'s WhatsApp.', i: 0})
-        : VETA.UI.cita({texto: a.pide.texto, origen: corto + ' · ' + a.pide.origen, chat: p.id});
+        ? r7.tarjeta({de: 'I know from your alert on ' + dia(a.pide.origen), texto: 'Ten days with no news about his home. He says he will go to another agency.', i: 0})
+        // ni el contacto sin dueño ni el que ya es de una agente: dirección ve el estado (quién es, qué pide en resumen de Veta, desde cuándo espera), nunca el texto
+        : r7.tarjeta({de: corto + ' wrote ' + elDia(dia(a.pide.origen)), texto: (QUIERE[p.id] || 'Wrote to the office\'s WhatsApp.') + (r ? '' : ' No one has replied.'), i: 0});
       if (!r) h += r7.tarjeta(Object.assign({veta: true, i: 1}, propone(p.id)));
       h += r7.lista([{nombre: 'What has happened', dato: a.paso.length, hoja: 'd-pasos', datos: {asunto: p.id}}], {i: 2});
       return h;
     },
     botonFijo: p => {
-      const a = A(p.id);
+      const a = A(p.id); if (!a) return '';
       if (resuelto(p.id)) return r7.sigue(VETA.d1.siguiente());
       if (a.tipo === 'queja') return r7.botones({texto: 'Ask Marc to call him', accion: 'pedir'});
       return r7.botones({texto: ella(p.id) ? `Give her to ${X.persona(a.propone).corto}` : `Give him to ${X.persona(a.propone).corto}`, accion: 'asignar'});

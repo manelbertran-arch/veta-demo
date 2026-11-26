@@ -124,3 +124,9 @@ html[data-mov=reducido] ::view-transition-group(*),html[data-mov=reducido] ::vie
 
 /* la cabecera de raíz gana su línea al desplazar */
 .col.desplazado .cab-raiz{box-shadow:0 1px 0 var(--borde)}
+
+/* tanda S · deslizar entre sitios: el dedo mueve la columna; lo vertical sigue siendo del navegador (pan-y) y lo horizontal, nuestro */
+.col.activa,.col.activa .desplaza{touch-action:pan-y pinch-zoom}
+.marco.desliza{overflow:hidden}
+.col-peek,.col-vieja{position:absolute;top:0;left:0;width:100%;height:100%;z-index:0;pointer-events:none}
+.col-vieja{z-index:2}

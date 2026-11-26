@@ -62,7 +62,7 @@
   // ---- ronda 6 · d-preguntar y d-anotar (G18): lo que dirección le pregunta a quien la lleva o anota para sí ----
   VETA.hojaAcciones('d-preguntar', {
     titulo: d => { const o = X.op(d.op); return o && o.persona ? 'Ask ' + o.persona.corto : 'Ask'; },
-    texto: d => { const o = X.op(d.op); return o ? 'About ' + o.nombre + '. It reaches their Home, in their Veta. It doesn\'t go by WhatsApp.' : ''; },
+    texto: d => { const o = X.op(d.op); return o ? 'About ' + o.nombre + '. It reaches ' + (o.persona ? o.persona.corto + "'s Home" : 'the Home of whoever handles it') + ', in Veta. It doesn\'t go by WhatsApp.' : ''; },
     opciones: d => ['How is it going?', 'Do you need help with this one?', 'Can you call them today?'].map(t => ({texto: t, hace: () => {
       const o = X.op(d.op); X.pregunta(d.op, t); VETA.repinta();
       setTimeout(() => VETA.aviso('Question left for ' + (o && o.persona ? o.persona.corto : 'whoever handles it') + '.'), 60);
@@ -184,7 +184,7 @@
     opciones: d => {
       const id = d.asunto;
       if (AS().A(id).tipo === 'queja') return [
-        {texto: 'I\'ll call him', hace: () => joan('quitada', 'Joan Serra · you call him', 'You call them')},
+        {texto: 'I\'ll call him', hace: () => joan('quitada', 'Joan Serra · you call him', 'You call him')},
         {texto: 'For later', hace: () => joan('para-manana', 'For later · Joan Serra', 'For later')},
         {texto: 'Dismiss the complaint', peligro: true, hace: () => joan('quitada', 'Dismissed · complaint from Joan Serra', 'Complaint dismissed')}];
       return [
@@ -230,7 +230,9 @@
       const R = (D.reglasOficina || {})[d.regla] || {}, n = VETA.d1.pasoRegla ? VETA.d1.pasoRegla(d.regla) : 1;
       return [{texto: `${R.corto || R.titulo || 'This job'}, for the whole team. I move up a step when you say yes.`},
         {lista: VETA.vivo.niveles().map(x => `${x.nombre}${x.n === n ? ' · now' : ''}${x.n === n || x.cerrado ? '. ' + x.texto : ''}`)}];
-    }
+    },
+    // el mismo botón que A10b le da a dirección: sube el paso de ESTE trabajo para todo el equipo (h22 pide la confirmación)
+    boton: d => (VETA.d1.sigPaso && VETA.d1.sigPaso(d.regla) ? {texto: 'One step up for everyone', hoja: 'h22', de: d.regla} : null)
   });
 
   // ---------------- “Más” de un trabajo en marcha (G2b): dar un paso más ----------------

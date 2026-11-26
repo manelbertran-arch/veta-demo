@@ -45,7 +45,7 @@
 
   // ---- G2b · reglas y prácticas de la oficina (dossier es del plan; las otras dos frases, inventadas por D) ----
   pon('reglasOficina', {
-    dossier: {titulo: 'Informe del piso al día siguiente', corto: 'Informe del piso', decision: 'd-regla', get propone() { return VETA.dir.proponeRegla(); },
+    dossier: {titulo: 'Informe del piso al día siguiente', corto: 'Informe del piso', decision: 'd-regla', casosDe: 'r-valoraciones', get propone() { return VETA.dir.proponeRegla(); },
       frase: 'Cuando alguien pide una valoración, preparo el informe del piso al día siguiente y el agente lo envía.',
       desde: '23 peticiones de valoración.'},
     'mismo-dia': {titulo: 'Responder el mismo día', corto: 'Responder el mismo día', propone: 'Ya venía conmigo', estado: 'a-prueba', dia: 9,

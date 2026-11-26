@@ -79,23 +79,54 @@
     ];
   };
 
-  // ---- A8 · Veta: tres listas con rótulo. Cada trabajo abre su pantalla (regla/:id). Sin botón fijo (D2): el micro de la barra ya
-  // enseña, y la puerta escrita es el enlace del final. La cola no lleva «9 veces»: lo dice la segunda línea («Lo has hecho 9 veces») ----
+  // ---- A8 · Veta: el tablero. «Enséñale a Veta» de protagonista, lo que hace por ti (cifras con su título), «Te lo propongo» en carrusel con la
+  // evidencia dibujada, «Ya lo hago yo» en baldosas con su medidor de cinco pasos y «Cómo voy» en piezas. Cada trabajo abre su pantalla (regla/:id).
+  // Sin botón fijo (D2). Nada sube de peldaño aquí: subir se decide dentro de cada trabajo, con sus casos delante ----
+  const V = () => VETA.v, esc = VETA.esc;
+  const ICONO = {'r-visitas': 'cal', 'r-cancelaciones': 'cal', 'r-actas': 'doc', 'r-promesas': 'prom', 'r-informes': 'doc', 'r-valoraciones': 'doc', 'r-contestado': 'chat', 'r-firmas': 'campana', 'r-recordatorios': 'campana'};
+  const et = t => `<h2 class="pv-et">${esc(t)}</h2>`;
+  const pasoNombre = n => { const x = (D().niveles || []).find(k => k.n === n); return x ? x.nombre : ''; };
+  // lo que Veta ha hecho hoy: las mismas tres cifras que la fila «Veta ha hecho hoy» del Inicio; solo salen las que tienen dato
+  const cifrasHoy = () => {
+    const A = VETA.A, q = VETA.yo().id, l = [];
+    if (!A) return l;
+    const nc = A.cerradas(q).length, nv = A.esperaPend(q).length, nl = ((M.lectura() || {}).hoy || {}).chats || 0;
+    if (nc) l.push({n: nc, texto: nc === 1 ? 'Cerrada por Veta' : 'Cerradas por Veta'});
+    if (nv) l.push({n: nv, texto: nv === 1 ? 'Espera vigilada' : 'Esperas vigiladas'});
+    if (nl) l.push({n: nl, texto: nl === 1 ? 'Chat leído' : 'Chats leídos'});
+    return l;
+  };
+  const cifrasHtml = l => l.length ? `<div class="v-cifras pv-cifras" style="grid-template-columns:repeat(${l.length},1fr)" role="group" aria-label="Lo que Veta ha hecho hoy">${l.map(d => `<div><b>${esc(d.n)}</b>${esc(d.texto)}</div>`).join('')}</div>` : '';
+  const celda = (o, oro) => `<button type="button" class="v-celda${oro ? ' v-celda-oro' : ''}" ${VETA.UI.attrs({ir: o.ir})}><span class="v-celda-ic">${VETA.ic(o.icono, 26)}</span><span class="pv-celda-pie">${o.n != null ? `<span class="pv-celda-n">${esc(o.n)}</span>` : ''}<span class="pv-celda-t"><span class="pv-celda-nom">${esc(o.nombre)}</span>${o.sub ? `<span class="pv-celda-sub">${esc(o.sub)}</span>` : ''}</span><span class="pv-celda-ch">${VETA.ic('chev', 20)}</span></span></button>`;
+  const baldosaDe = x => {
+    const r = x.id === 'r-visitas' ? null : M.regla(x.id), n = C.paso(x.id), v = V();
+    const o = {icono: ICONO[x.id] || 'tarea', nombre: C.corto(x.id), paso: n, pasoNombre: pasoNombre(n), ir: 'regla/' + x.id};
+    if (r && r.estado === 'a-prueba') o.progreso = {texto: x.prueba, valor: (r.dia || 1) / (r.pruebaDias || 14)};
+    else if (x.prueba) o.pie = x.prueba;
+    else if (r && r.desde) o.pie = 'Desde ' + r.desde;
+    return v.baldosa(o);
+  };
   VETA.pantalla('A8', {
     titulo: 'Veta',
+    sub: 'Lo que Veta te propone, lo que ya hace por ti y cómo aprende.',
     pinta: () => {
-      const pr = C.propuestas(), hago = C.hago(), fuera = C.noHago(), apr = C.aprendidoN();
-      const yaNo = fuera.length ? [{nombre: 'Lo que ya no hago', dato: fuera.length, hoja: 'c-nohago'}] : [];
-      return (pr.length ? R7().lista(pr.map(x => ({nombre: C.corto(x.id), pasa: `Lo has hecho ${vecesTexto(x.veces)}`, ir: 'regla/' + x.id})), {rotulo: 'Te lo propongo', i: 0}) : '') +
-        (hago.length || yaNo.length ? R7().lista(hago.map(x => ({nombre: C.corto(x.id), pasa: x.prueba || null, ir: 'regla/' + x.id})).concat(yaNo), {rotulo: 'Ya lo hago yo', i: 1}) : '') +
-        R7().lista([
-          {nombre: 'Lo he aprendido de ti', dato: apr || null, ir: 'aprendido'},
-          {nombre: 'Tu semana', ir: 'semana'},
-          {nombre: 'Antes y ahora', ir: 'antes-ahora'},
-          {nombre: 'La semana pasada', ir: 'reglas/semana-pasada'}
-        ], {rotulo: 'Cómo voy', i: 2}) +
-        R7().enlace({texto: 'Enséñale algo a Veta', ir: 'dictar/orden', i: 3});
-    }
+      const v = V(), pr = C.propuestas(), hago = C.hago(), fuera = C.noHago(), apr = C.aprendidoN(), cf = cifrasHoy();
+      const props = pr.map(x => v.propuesta({titulo: C.corto(x.id), n: x.veces, vez: `Lo has hecho <b>${vecesTexto(x.veces)}</b>`, boton: 'Ver este trabajo', ir: 'regla/' + x.id}));
+      const w = C.semanaDe();
+      return '<div class="pv-veta">' +
+        v.ensena({titulo: 'Enséñale a Veta', texto: 'Cuéntame algo que haces siempre. Aprendo a hacerlo yo.', boton: 'Toca y dímelo', ir: 'dictar/orden'}) +
+        `<section class="pv-sec pv-pres">${v.presencia({titulo: 'Lo que <em>Veta</em> hace por ti', texto: 'Te propone, lo hace ella cuando tú dices y te cuenta cómo va.'})}${cifrasHtml(cf)}</section>` +
+        (pr.length ? `<section class="pv-sec">${et('Te lo propongo')}${v.carrusel({id: 'pv-prop', tarjetas: props, etiqueta: 'Te lo propongo', clase: 'v-car-prop'})}</section>` : '') +
+        (hago.length ? `<section class="pv-sec">${et('Ya lo hago yo')}${v.subSeccion('Las barras dicen quién lo hace. La última, todavía no: nada sale sin ti.')}<div class="v-baldosas">${hago.map(baldosaDe).join('')}</div></section>` : '') +
+        (fuera.length ? `<button type="button" class="pv-nohago" ${VETA.UI.attrs({hoja: 'c-nohago'})}><span>Lo que ya no hago</span><span class="pv-nohago-n">${fuera.length}</span>${VETA.ic('chev', 20)}</button>` : '') +
+        `<section class="pv-sec">${et('Cómo voy')}<div class="v-mos">` +
+        celda({icono: 'aprende', nombre: 'Lo he aprendido de ti', n: apr || null, ir: 'aprendido'}, true) +
+        celda({icono: 'grafica', nombre: 'Tu semana', n: w.preparados + w.actas + w.promesas, sub: 'cosas listas', ir: 'semana'}) +
+        celda({icono: 'cambiar', nombre: 'Antes y ahora', ir: 'antes-ahora'}) +
+        celda({icono: 'reloj', nombre: 'La semana pasada', ir: 'reglas/semana-pasada'}) +
+        '</div></section></div>';
+    },
+    alMontar: el => { const c = el.querySelector('#pv-prop'); if (c) VETA.v.carruselVivo(c); }
   });
 
   // ---- A8b · Lo que Veta hace por ti · #/veta/mia: lo mismo que A8 para dirección, que también es agente (Montse lleva clientes). Su pestaña

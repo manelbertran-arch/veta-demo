@@ -16,12 +16,4 @@
 .r7c-pasos .r7c-otro .r7-fila-n{color:var(--t2);font-weight:500}
 .r7c-pasos .r7c-aqui .r7-dato{color:var(--t1);font-weight:700}
 
-/* «Cómo se ve» (h26): las doce paletas, cuatro por fila. La muestra arriba y el nombre debajo, en una línea; la elegida, con aro.
-   Sin caja ni borde alrededor de cada una: lo único que se ve es el color y su nombre. */
-.r7c-paletas{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:var(--e4) var(--e2)}
-.r7c-paleta{display:flex;flex-direction:column;align-items:stretch;gap:var(--e1);min-height:var(--toque);padding:0;background:none;color:var(--t2);font:500 var(--f-apoyo)/1.2 var(--body);text-align:center;-webkit-tap-highlight-color:transparent}
-.r7c-paleta .muestra{width:auto;height:40px;border-radius:var(--r-1,10px)}
-.r7c-paleta-n{white-space:nowrap}
-.r7c-paleta[aria-pressed=true]{color:var(--t1);font-weight:700}
-.r7c-paleta[aria-pressed=true] .muestra{outline:2px solid var(--t1);outline-offset:2px}
-.r7c-paleta:active{opacity:.6}
+/* «Cómo se ve» (h26): tanda V, una sola paleta; ya no hay rejilla de colores. */

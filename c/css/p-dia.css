@@ -31,3 +31,42 @@
 .a-dia-h{flex:none;width:44px;font:500 var(--f-apoyo)/var(--l-fila) var(--body);color:var(--t3);font-variant-numeric:tabular-nums}
 .a-dia-t{min-width:0;font:500 var(--f-apoyo)/var(--l-fila) var(--body);color:var(--t1)}
 .a-dia-t b{font-weight:700}
+
+/* ---- Hoy · tanda V · tu día: tira, conmutador y carrusel de tareas. Gama corta: superficie del sistema, el tipo lo dicen icono y rótulo, el acento es el dorado ---- */
+.r7-inicio .hy-sec[hidden]{display:none}
+.hy-tira-w{margin:4px 0 0}
+.hy-tira{display:flex;align-items:center;gap:6px;padding:4px 0 0}
+.hy-pz{position:relative;width:44px;height:44px;border-radius:50%;display:grid;place-items:center;flex:none;padding:0;cursor:pointer;color:var(--t2);background:var(--s2);border:1px solid var(--borde);transition:box-shadow .2s ease,transform .2s ease}
+.hy-pz .ic{width:22px;height:22px}
+.hy-pz.hy-actual{color:var(--t1);background:var(--s1);box-shadow:0 0 0 2px var(--fondo),0 0 0 4px var(--oro)}
+.hy-pz.hy-hecha{background:var(--hecho-b);color:var(--hecho);border-color:transparent}
+.hy-pz.hy-hecha .ic{stroke-width:2.8}
+.hy-cuenta{margin-left:auto;font:700 var(--f-apoyo)/1.2 var(--body);color:var(--t2);text-align:right;padding-left:var(--e2)}
+.r7-inicio .v-conm{margin:var(--e3) 0 var(--e1)}
+.r7-inicio .v-car-w{margin:0 calc(-1*var(--e4))}
+.r7-inicio .v-car{padding-top:6px}
+.r7-inicio .v-car-w .v-ind{color:var(--t3)}
+.r7-inicio .v-car-w .v-ind i.on{background:var(--oro)}
+.r7-inicio .v-franja-veta,.r7-inicio .v-lista{margin-left:0;margin-right:0}
+.r7-inicio .v-franja-veta{width:100%}
+
+.hy-tj{position:relative;min-height:0;padding:var(--e4);border-radius:var(--v-radio-tj);background:var(--s1);border:1px solid var(--borde);box-shadow:var(--sombra);display:flex;flex-direction:column;gap:var(--e3);color:var(--t1);cursor:pointer;text-align:left}
+.hy-tj-arr{display:flex;align-items:center;justify-content:space-between;gap:var(--e2);min-height:40px}
+.hy-tj-tipo{display:inline-flex;align-items:center;gap:var(--e3);font:600 20px/1.1 var(--display);letter-spacing:-.01em;min-width:0}
+.hy-tj-ic{width:44px;height:44px;border-radius:50%;display:grid;place-items:center;flex:none;background:var(--s2);color:var(--acento);border:1px solid var(--borde)}
+.hy-tj-quien{display:flex;align-items:center;gap:var(--e3);margin:var(--e2) 0 0}
+.hy-tj-tx{min-width:0}
+.hy-tj-nom{font:600 22px/1.1 var(--display);overflow-wrap:anywhere}
+.hy-tj-pasa{font:500 var(--f-cuerpo)/var(--l-lee) var(--body);color:var(--t2);margin-top:2px}
+.hy-tj-piso{display:flex;align-items:center;gap:var(--e2);font:500 var(--f-apoyo)/var(--l-fila) var(--body);color:var(--t2)}
+.hy-tj-piso .ic{flex:none;color:var(--acento)}
+.hy-tj-btn{margin-top:auto}
+.hy-fin{min-height:200px;border-radius:var(--v-radio-tj);background:var(--s1);border:1px solid var(--borde);box-shadow:var(--sombra);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:var(--e2);text-align:center;padding:var(--e5) var(--e4)}
+.hy-fin-ok{width:64px;height:64px;border-radius:50%;display:grid;place-items:center;background:var(--hecho-b);color:var(--hecho)}
+.hy-fin-ok .ic{stroke-width:2.6}
+.hy-fin h2{font:600 24px/1.15 var(--display)}
+.hy-fin p{font:500 var(--f-cuerpo)/var(--l-lee) var(--body);color:var(--t2)}
+.hy-vacio{padding:var(--e5) var(--e4);text-align:center;font:500 var(--f-cuerpo)/var(--l-lee) var(--body);color:var(--t2)}
+.hy-ida{pointer-events:none}
+html[data-mov=reducido] .hy-pz{transition:none}
+@media (prefers-reduced-motion:reduce){.hy-pz{transition:none}}

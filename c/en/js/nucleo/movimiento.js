@@ -154,5 +154,165 @@
     scroller.addEventListener('scroll', mira, {passive: true}); mira();
   }
 
-  VETA.mov = {hayVT, transiciona, cascada, escalona, seVa, entraSinVT, vigilaDesplazamiento, nombra, ocupada, alAcabar};
+  // ---- tanda S · deslizar entre los sitios de la barra y volver con el dedo ----
+  // En un sitio (Inicio y las raíces de la barra, en su orden; el micro es una acción y no cuenta): izquierda = el siguiente, derecha = el anterior.
+  // En un detalle con flecha de volver: derecha = volver. La pantalla sigue al dedo y asoma la vecina; al soltar pasado el 28 % del ancho (o
+  // con un gesto rápido) la vecina entra; si no, vuelve. Tocar la barra hace la misma transición lateral. No es nuestro (y no se llama a
+  // preventDefault): lo vertical (ángulo en los primeros 10 px), lo que ya se desplaza en horizontal, una hoja abierta, un campo de texto,
+  // los 24 px de cada borde (gesto del navegador). Con “Reducir movimiento” cambia de sitio sin animar. Estado, historial y hash: los mismos
+  // que al tocar la barra (VETA.gestos.va / atras, que pasan por VETA.ir / VETA.atras).
+  const CAMPO = 'input,textarea,select,[contenteditable]:not([contenteditable=false])';
+  const UMBRAL = 0.28, BORDE = 24, MS = 220, CURVA = 'cubic-bezier(.2,.8,.2,1)';
+  let g = null;
+  const ancho = () => window.innerWidth || document.documentElement.clientWidth;
+  const marco = () => document.getElementById('marco');
+  const hayHoja = () => !!(VETA.hojaActual && VETA.hojaActual());
+  // el contenedor con desplazamiento horizontal real más cercano al toque (hasta la columna), o null
+  function desplazaLado(el, tope) {
+    for (; el && el !== tope && el.nodeType === 1; el = el.parentElement) {
+      if (el.scrollWidth > el.clientWidth + 1) { const o = getComputedStyle(el).overflowX; if (o === 'auto' || o === 'scroll') return el; }
+    }
+    return null;
+  }
+  function copiaDe(col) {   // lo que se ve ahora, congelado, para que se vaya mientras entra lo nuevo
+    const ov = col.cloneNode(true);
+    ov.classList.remove('activa'); ov.classList.add('col-vieja');
+    delete ov.dataset.ruta; delete ov.dataset.pant;
+    ov.setAttribute('aria-hidden', 'true'); ov.inert = true; ov.style.transform = ''; ov.style.willChange = ''; ov.style.zIndex = '';
+    ov.style.viewTransitionName = 'none';
+    ov.querySelectorAll('[style*="view-transition"]').forEach(x => { x.style.viewTransitionName = ''; x.style.viewTransitionClass = ''; });
+    ov.querySelectorAll('[id]').forEach(x => x.removeAttribute('id'));
+    ov.querySelectorAll('[data-foco],[data-vt]').forEach(x => { x.removeAttribute('data-foco'); x.removeAttribute('data-vt'); });
+    return ov;
+  }
+  const sueltaMarco = () => { const m = marco(); if (m && !m.querySelector('.col-vieja,.col-peek')) m.classList.remove('desliza'); };
+  // la vieja sale hacia `signo` desde `dx`; la nueva entra desde el otro lado (o, al volver, desde un poco atrás de la vieja)
+  function animaCambio(col, vieja, dx, signo, atras) {
+    const w = ancho();
+    let n = 0; const fin = () => { if (++n < 2) return; vieja.remove(); sueltaMarco(); };
+    const a = vieja.animate([{transform: 'translateX(' + dx + 'px)'}, {transform: 'translateX(' + signo * w + 'px)'}], {duration: MS, easing: CURVA, fill: 'forwards'});
+    const desde = atras ? (-0.3 * w + dx * 0.3) : (-signo * w + dx);
+    const b = col.animate([{transform: 'translateX(' + desde + 'px)', willChange: 'transform'}, {transform: 'translateX(0)'}], {duration: MS, easing: CURVA});
+    a.finished.then(fin, fin); b.finished.then(fin, fin);
+  }
+  // cambia de sitio (o vuelve) con la copia vieja encima. accion(alPintado) navega sin transición
+  function cambiaCon(col, dx, signo, atras, accion) {
+    const m = marco(), G = VETA.gestos;
+    if (!m || !G || typeof col.animate !== 'function') { accion(null); return; }
+    m.querySelectorAll('.col-vieja').forEach(v => v.remove());   // una sola copia vieja a la vez (tocar la barra durante otra animación)
+    const vieja = copiaDe(col);
+    const sd = col.querySelector('.desplaza'), vd = vieja.querySelector('.desplaza');
+    m.classList.add('desliza'); m.appendChild(vieja); if (sd && vd) vd.scrollTop = sd.scrollTop;
+    let hecho = false;
+    const entra = () => { if (hecho) return; hecho = true; clearTimeout(t); const c = VETA.$('#marco .col.activa') || col; animaCambio(c, vieja, dx, signo, atras); };
+    const t = setTimeout(() => { G.suelta(); entra(); }, 900);
+    accion(entra);
+  }
+  function quita(g0) {
+    if (!g0) return;
+    document.removeEventListener('touchmove', alMover);
+    if (g0.peek) g0.peek.remove();
+    if (g0.col) { g0.col.style.transform = ''; g0.col.style.willChange = ''; g0.col.style.zIndex = ''; g0.col.style.touchAction = ''; }
+    sueltaMarco();
+  }
+  // la animación de “vuelve a su sitio” en curso (si la hay): un gesto nuevo la corta y la limpia antes de empezar
+  let vuelta = null;
+  function limpiaVuelta() { const v = vuelta; vuelta = null; if (!v) return; try { v.a.cancel(); } catch (e) {} quita(v.g0); }
+  // LA ÚNICA salida limpia: más de un dedo, touchcancel, ángulo que no es nuestro, soltar sin llegar… todo pasa por aquí.
+  // Deja pantalla, peek, estilos y escucha como si el gesto no hubiera existido, sin cambiar de sitio.
+  function cancela() {
+    const g0 = g; g = null;
+    document.removeEventListener('touchmove', alMover);
+    limpiaVuelta();
+    if (g0) quita(g0);
+  }
+  function alEmpezar(ev) {
+    if (ev.touches && ev.touches.length > 1) { cancela(); return; }   // un segundo dedo: el gesto se cancela entero
+    cancela();
+    const G = VETA.gestos; if (!G || !ev.touches || ev.touches.length !== 1) return;
+    if (VETA.ordenador && VETA.ordenador()) return;
+    const t = ev.touches[0], w = ancho();
+    if (t.clientX < BORDE || t.clientX > w - BORDE) return;   // el gesto del borde del navegador es suyo
+    if (hayHoja()) return;
+    const col = VETA.$('#marco .col.activa'), el = ev.target;
+    if (!col || !el || !col.contains || !col.contains(el) || (el.closest && el.closest('[inert]'))) return;
+    if (el.closest && el.closest(CAMPO)) return;
+    const lado = desplazaLado(el, col);   // relevo en el borde: es del contenedor mientras pueda moverse hacia donde se arrastra (se decide al empezar el gesto)
+    const info = G.info(); if (!info) return;
+    g = {x0: t.clientX, y0: t.clientY, lado: lado ? {sl: lado.scrollLeft, max: lado.scrollWidth - lado.clientWidth} : null, m: [[Date.now(), t.clientX]], vx: 0, col, info, estado: 'espera', signo: 0, objetivo: null, peek: null, dx: 0};
+    document.addEventListener('touchmove', alMover, {passive: false});
+  }
+  function alMover(ev) {
+    if (!g || !ev.touches || ev.touches.length !== 1) { cancela(); return; }
+    const t = ev.touches[0], dx0 = t.clientX - g.x0, dy0 = t.clientY - g.y0, ahora = Date.now();
+    // velocidad: sobre las muestras de los últimos 100 ms (una sola muestra pegada a otra no vale)
+    g.m.push([ahora, t.clientX]); while (g.m.length > 2 && ahora - g.m[0][0] > 100) g.m.shift();
+    { const o = g.m[0], dt = Math.max(ahora - o[0], 16); g.vx = (t.clientX - o[1]) / dt; }
+    if (g.estado === 'espera') {
+      if (Math.max(Math.abs(dx0), Math.abs(dy0)) < 10) return;
+      // por ángulo: si no es claramente horizontal (menos de ~30° sobre el eje), el gesto no es nuestro
+      if (Math.abs(dy0) > Math.abs(dx0) * 0.58) { cancela(); return; }
+      const signo = dx0 < 0 ? -1 : 1, i = g.info;
+      if (g.lado && (signo > 0 ? g.lado.sl > 2 : g.lado.sl < g.lado.max - 2)) { cancela(); return; }   // el contenedor aún puede desplazarse: el gesto es suyo
+      const objetivo = i.tipo === 'sitio' ? (signo < 0 ? i.dcha : i.izq) : (signo > 0 ? i.atras : null);
+      if (i.tipo === 'detalle' && signo < 0) { cancela(); return; }   // en un detalle, a la izquierda no hay nada
+      g.signo = signo; g.objetivo = objetivo; g.estado = 'arrastra'; g.x0 = t.clientX - dx0;
+      if (!VETA.reducido()) {
+        const m = marco(); m.classList.add('desliza');
+        g.col.style.willChange = 'transform'; g.col.style.zIndex = '1';
+        if (objetivo) {
+          g.peek = VETA.gestos.peek(objetivo);
+          if (g.peek) { g.peek.style.willChange = 'transform'; g.peek.style.transform = 'translateX(' + (i.tipo === 'sitio' ? -signo * ancho() : -0.3 * ancho()) + 'px)'; m.appendChild(g.peek); }
+        }
+      }
+    }
+    if (g.estado !== 'arrastra') return;
+    if (ev.cancelable) ev.preventDefault();   // ya es nuestro
+    let dx = t.clientX - g.x0; dx = g.signo * Math.max(0, g.signo * dx);
+    g.dx = dx;
+    if (VETA.reducido()) return;
+    const w = ancho();
+    if (!g.objetivo) { const r = g.signo * Math.min(40, Math.abs(dx) * 0.3); g.col.style.transform = 'translateX(' + r + 'px)'; return; }   // en el extremo: resistencia elástica
+    g.col.style.transform = 'translateX(' + dx + 'px)';
+    if (g.peek) g.peek.style.transform = 'translateX(' + (g.info.tipo === 'sitio' ? -g.signo * w + dx : -0.3 * w * (1 - Math.abs(dx) / w)) + 'px)';
+  }
+  function alSoltar(cancelado) {
+    const g0 = g; g = null;
+    document.removeEventListener('touchmove', alMover);
+    if (!g0 || g0.estado !== 'arrastra') { if (g0) quita(g0); return; }
+    const w = ancho(), dx = g0.dx, pasa = !cancelado && g0.objetivo && (Math.abs(dx) > UMBRAL * w || (Math.abs(g0.vx) > 0.35 && Math.abs(dx) > 35 && Math.sign(g0.vx) === g0.signo));
+    const col = g0.col;
+    if (!pasa) {   // vuelve a su sitio
+      if (cancelado || VETA.reducido() || typeof col.animate !== 'function') { quita(g0); return; }
+      const actual = col.style.transform || 'translateX(0px)';
+      col.style.transform = ''; col.style.willChange = '';
+      const a = col.animate([{transform: actual}, {transform: 'translateX(0)'}], {duration: 180, easing: CURVA});
+      const v = vuelta = {a, g0}; const fin = () => { if (vuelta === v) { vuelta = null; quita(g0); } }; a.finished.then(fin, fin);
+      return;
+    }
+    const G = VETA.gestos, objetivo = g0.objetivo, atras = g0.info.tipo === 'detalle';
+    if (VETA.reducido()) { quita(g0); if (atras) G.atras(); else G.va(objetivo); return; }
+    // la copia de lo que se ve (con el dedo donde estaba) se va; la pantalla de verdad se recoloca y entra
+    const m = marco();
+    col.style.transform = ''; col.style.willChange = ''; col.style.zIndex = '';
+    if (g0.peek) g0.peek.remove();
+    cambiaCon(col, dx, g0.signo, atras, entra => { if (atras) G.atras(entra); else G.va(objetivo, entra); });
+    if (m) sueltaMarco();
+  }
+  document.addEventListener('touchstart', alEmpezar, {passive: true});
+  // levantar un dedo con otro aún apoyado no es soltar: se cancela (no cambia de sitio). Solo el último dedo suelta.
+  document.addEventListener('touchend', ev => { if (ev.touches && ev.touches.length > 0) cancela(); else alSoltar(false); }, {passive: true});
+  document.addEventListener('touchcancel', () => cancela(), {passive: true});
+
+  // tocar un sitio de la barra: misma transición lateral, hacia el lado en que está el sitio en la barra. Devuelve true si la ha hecho él
+  function deslizaA(d) {
+    const G = VETA.gestos; if (!G || VETA.reducido() || document.hidden || (VETA.ordenador && VETA.ordenador())) return false;
+    const col = VETA.$('#marco .col.activa'); if (!col) return false;
+    const ss = G.sitios(), a = ss.indexOf(G.marcado()), b = ss.indexOf(d);
+    if (a < 0 || b < 0 || a === b) return false;
+    cambiaCon(col, 0, b > a ? -1 : 1, false, entra => G.va(d, entra));
+    return true;
+  }
+
+  VETA.mov = {hayVT, transiciona, cascada, escalona, seVa, entraSinVT, vigilaDesplazamiento, nombra, ocupada, alAcabar, deslizaA};
 })();

@@ -89,3 +89,28 @@ html:not([data-mov=reducido]) .c-busca-l.hecho-l .c-busca-m{animation:c-late var
 /* en las hojas, una lista que solo informa no lleva marco de tarjeta: así no parece tocable */
 #hoja .lista:not(:has(button,a,[role=switch],[data-ir],[data-hoja],[data-accion])),#hoja .a-canales{background:none;border:0;border-radius:0;box-shadow:none;padding-left:0;padding-right:0}
 #hoja .lista:not(:has(button,a,[role=switch],[data-ir],[data-hoja],[data-accion]))>.fila{padding-left:0;padding-right:0}
+
+/* ---- A8 · Veta: el tablero oscuro y dorado (siempre, también con el tema claro: lo fija data-sitio=veta en base.css). Las piezas son las de v-sistema.css; aquí solo el ritmo ---- */
+.pv-veta{display:flex;flex-direction:column;padding-bottom:var(--e4);margin:0 calc(-1*var(--margen))}
+.pv-sec{margin-top:var(--e7,32px)}
+.pv-pres{margin-top:0}
+.pv-et{padding:0 20px var(--e3,12px);color:var(--oro-2);font:600 22px/1.1 var(--display);letter-spacing:-.01em}
+.pv-cifras div{padding:0 6px}
+.pv-nohago{display:flex;align-items:center;gap:var(--e2,8px);min-height:48px;margin:var(--e4,16px) 16px 0;padding:0 var(--e2,8px) 0 var(--e4,16px);border-radius:var(--v-radio-card);background:var(--s1);border:1px solid var(--borde);color:var(--t1);font:600 16px/1.2 var(--body);text-align:left;cursor:pointer}
+.pv-nohago>span:first-child{flex:1}
+.pv-nohago-n{color:var(--t2);font-weight:700}
+.pv-nohago .ic{color:var(--oro);flex:none}
+.pv-veta .v-mos .v-celda{min-height:152px}
+.pv-veta .v-mos{grid-template-columns:repeat(2,minmax(0,1fr))}
+.pv-celda-pie{display:flex;flex-direction:column;align-items:stretch;gap:var(--e1,4px);width:100%;margin-top:var(--e3,12px);position:relative}
+.pv-celda-ch{position:absolute;right:0;bottom:2px}
+.pv-celda-n{font:600 44px/.9 var(--display);color:var(--oro-2)}
+.v-celda-oro .pv-celda-n{color:#0A0906}
+.pv-celda-t{min-width:0;display:flex;flex-direction:column;gap:2px;padding-right:24px}
+.pv-celda-nom{font:600 18px/1.2 var(--body)}
+.pv-celda-sub{font:500 15px/1.2 var(--body);color:var(--t2)}
+.v-celda-oro .pv-celda-sub{color:#2A1D0B}
+.pv-celda-ch{flex:none;display:flex;color:var(--oro)}
+.v-celda-oro .pv-celda-ch{color:#1A1209}
+.v-celda-oro .pv-celda-nom{color:#1A1209}
+.v-celda:focus-visible,.pv-nohago:focus-visible{outline:2px solid var(--oro-2);outline-offset:2px}

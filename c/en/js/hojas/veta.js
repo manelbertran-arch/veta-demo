@@ -19,6 +19,10 @@
   const mayus = t => String(t || '').replace(/^./, c => c.toUpperCase());
   // una cita: tarjeta con comillas y de dónde sale
   const cita = (texto, origen) => R7().tarjeta({de: origen, texto: `“${texto}”`});
+  // dirección abre estas hojas desde G2b (un trabajo de la oficina): ve los casos como hechos de la oficina, nunca el texto de un cliente de una agente
+  // (la cita pasa por la puerta de siempre, UI.cita) y sin “lo hiciste”; las excepciones y el “con él, no” son de quien lleva a ese cliente
+  const dirige = () => VETA.yo().papel === 'direccion';
+  const deOficina = id => !!(VETA.datos.reglasOficina || {})[id];
 
   // ---- h18 · Un caso ----
   const caso = d => {
@@ -33,9 +37,11 @@
       const k = caso(d); if (!k.x) return [{texto: 'This case is no longer here.'}];
       if (k.tipo === 'prueba') return [{html: cita(k.x.cita, k.x.origen)}, {texto: `${k.x.propone}. This is the message I would have left you:`},
         {html: R7().tarjeta({veta: true, de: 'I didn\'t send it: I\'m trying it', texto: k.x.borrador})}];
+      if (dirige()) return [{html: VETA.verLiteral(d.caso) ? UI.cita({chat: d.caso, texto: k.x.texto, origen: k.extra.origen || ''})
+        : `<p class="cita cita-ajena">${VETA.ic('candado', 18)}<span>Management does not read each person's chats.</span></p>`}, {texto: k.extra.habriaOf || ''}];   // sin nombre de agente: nada por persona
       return [{html: cita(k.x.texto, k.extra.origen || '')}, {texto: k.extra.habria || ''}, yaExcepto(d) ? {texto: `With ${cortoDe(k)} I don't do it any more.`} : null];
     },
-    boton: d => { const k = caso(d); return k.x && k.tipo !== 'prueba' && !yaExcepto(d) ? {texto: `With ${cortoDe(k)}, don't do it`, accion: 'excepcion'} : null; },
+    boton: d => { const k = caso(d); return k.x && k.tipo !== 'prueba' && !yaExcepto(d) && !dirige() ? {texto: `With ${cortoDe(k)}, don't do it`, accion: 'excepcion'} : null; },
     acciones: {
       excepcion(ev, el, d) {
         C.ponExcepcion(d.regla, d.caso); VETA.cierraHoja({foco: false}); VETA.repinta();
@@ -56,10 +62,10 @@
 
   // ---- c-veces · Las veces que lo hiciste distinto, una a una (h18). Las iguales (h19) y los casos de la prueba se abren desde la pantalla ----
   VETA.hojaAcciones('c-veces', {
-    titulo: d => `${((((M.regla(d.regla) || {}).casos || {}).distinto) || []).length} times you did it differently`,
+    titulo: d => { const n = ((((M.regla(d.regla) || {}).casos || {}).distinto) || []).length; return dirige() ? `${n} times it was done differently` : `${n} times you did it differently`; },
     opciones: d => {
       const k = (M.regla(d.regla) || {}).casos || {}, ex = C.excepciones(d.regla);
-      return (k.distinto || []).map(c => ({cara: c.cliente, texto: `${c.nombre} · ${c.cuando}`, sub: ((D().distinto[c.cliente] || {}).motivo || 'You did it differently') + (ex.includes(c.cliente) ? ' · not with him' : ''), hoja: 'h18', datos: {caso: c.cliente}}));
+      return (k.distinto || []).map(c => ({cara: c.cliente, texto: `${c.nombre} · ${c.cuando}`, sub: dirige() ? ((D().distinto[c.cliente] || {}).motivoOf || 'It was done differently') : ((D().distinto[c.cliente] || {}).motivo || 'You did it differently') + (ex.includes(c.cliente) ? ' · not with him' : ''), hoja: 'h18', datos: {caso: c.cliente}}));
     }
   });
 
@@ -70,6 +76,7 @@
     titulo: 'Change something',
     ensena: 'Put it another way',
     opciones: d => {
+      if (deOficina(d.de)) return [{texto: 'Not with one client', hoja: 'c-excepto'}];   // un trabajo de la oficina (G2b): lo demás —“Para luego”, “Descartarlo”— está en su “Más”
       const r = M.regla(d.de) || {}, activa = r.estado === 'activa', ofi = C.lee('aOficina', {})[d.de];
       return [
         r.estado === 'a-prueba' ? {texto: 'Make it do it now, without waiting for 7 Dec', hace: () => C.cambiaRegla(d.de, 'activa', 'I already do it · I\'ll leave it in Home')} : null,
@@ -100,11 +107,19 @@
   // ---- h22 · Subir un paso (dirección) ----
   VETA.hojaTexto('h22', {
     titulo: 'Go up one step',
-    bloques: d => [{titulo: 'Who it\'s for', texto: 'For the whole team.'},
-      {titulo: 'What changes', texto: `“${C.nombre(d.de)}” goes from “I write it for you” to “I note it down”: I note, mark and save. I send nothing.`}],
-    boton: {texto: 'Yes, go up one step', accion: 'subir'},
+    bloques: d => {
+      if (deOficina(d.de)) {   // un trabajo de la oficina (G2b): sus pasos son los de la pantalla, no los de una agente
+        const s = VETA.d1.sigPaso(d.de), r = VETA.datos.reglasOficina[d.de];
+        return [{titulo: 'Who it\'s for', texto: 'For the whole team.'},
+          s ? {titulo: 'What changes', texto: `“${r.corto || r.titulo}” goes from “${s.de.nombre}” to “${s.a.nombre}”. ${s.a.texto}`} : null];
+      }
+      return [{titulo: 'Who it\'s for', texto: 'For the whole team.'},
+        {titulo: 'What changes', texto: `“${C.nombre(d.de)}” goes from “I write it for you” to “I note it down”: I note, mark and save. I send nothing.`}];
+    },
+    boton: d => (deOficina(d.de) && !VETA.d1.sigPaso(d.de) ? null : {texto: 'Yes, go up one step', accion: 'subir'}),
     acciones: {
       subir(ev, el, d) {
+        if (deOficina(d.de)) { VETA.cierraHoja({foco: false}); VETA.d1.subePaso(d.de); return; }
         const antes = C.nivel(d.de); C.ponNivel(d.de, 3);
         C.pon('nivelLinea', {id: d.de, texto: 'I note it down · from today', hora: VETA.ahora(), subido: antes});
         VETA.cierraHoja({foco: false}); VETA.repinta({hecho: 'c-nivel'});

@@ -32,8 +32,10 @@
   // lo que le pareció es el texto del acta de quien lo lleva y no sale
   const conActa = c => B.historia(c.id).some(h => /^(notes?|viewing notes?)\b/i.test(h.tipo || '') && h.tipo !== 'Voice note');
   // el teléfono no se parte entre dos líneas (espacios duros), y el punto de antes se va con él
-  const quienEs = c => VETA.ajeno(c.id) ? (conActa(c) ? String(c.quienEs || '').split(';')[0] : c.quienEs || '')
-    : [c.quienEs, c.tel && c.tel.replace(/ /g, '\u00a0')].filter(Boolean).join(' ·\u00a0');
+  // dirección no lee lo que escribió un contacto que no es suyo, y los euros que él dijo (“hasta 450.000 €”) tampoco
+  const sinSuyo = c => t => VETA.sinLiteral(c.id) ? String(t || '').replace(/,?\s*(?:hasta|up to)\s+(?:€\s?[\d.,]+|[\d.,]+\s?€)/i, '') : t;
+  const quienEs = c => sinSuyo(c)(VETA.ajeno(c.id) ? (conActa(c) ? String(c.quienEs || '').split(';')[0] : c.quienEs || '')
+    : [c.quienEs, c.tel && c.tel.replace(/ /g, '\u00a0')].filter(Boolean).join(' ·\u00a0'));
 
   // ---- “Qué toca ahora”: {toca, negro, otro, de, nota, hecho} según en qué punto está. `hecho`: lo que acabas de hacer aquí (r7.hecho) ----
   function ahora(c) {
@@ -202,8 +204,8 @@
       const c = M.cliente(d.de) || {}, e = c.encajan || {};
       let h = '';
       if (e.pisos) h += e.pisos.map(id => { const pi = M.piso(id) || {}; return UI.tarjeta(UI.foto(id, {tam: 'ancha', ampliar: true}) +
-        `<p class="b-paso-t">${esc(pi.nombre || '')}</p><p class="hoja-x tenue">${esc([pi.datos, pi.precio ? VETA.euros(pi.precio) : ''].filter(Boolean).join(' · '))}</p>` +
-        (c.chat && M.chat(c.chat) && !VETA.ajeno(c.id) ? UI.cita({texto: M.chat(c.chat).mensajes.find(m => !m.tu).texto, origen: `${B.corto(c)} · ${M.chat(c.chat).mensajes.find(m => !m.tu).cuando}`, chat: c.chat}) : '') +
+        `<p class="b-paso-t">${esc(pi.nombre || '')}</p><p class="hoja-x tenue">${esc([pi.datos, pi.precio && VETA.verLiteral(c.id) ? VETA.euros(pi.precio) : ''].filter(Boolean).join(' · '))}</p>` +
+        (c.chat && M.chat(c.chat) && VETA.verLiteral(c.id) ? UI.cita({texto: M.chat(c.chat).mensajes.find(m => !m.tu).texto, origen: `${B.corto(c)} · ${M.chat(c.chat).mensajes.find(m => !m.tu).cuando}`, chat: c.chat}) : '') +
         (pi.nota ? UI.nota({texto: pi.nota, icono: 'info'}) : ''), {clase: 'b-cruce-c'}); }).join('');
       if (e.clientes) h += VETA.r7.lista(e.clientes.map(id => { const x = M.cliente(id) || {}; return {cara: id, nombre: x.nombre, pasa: x.quienEs, ir: 'cliente/' + id}; }));
       return `<p class="hoja-x tenue">I look for it in what your clients ask for in their chats.</p>${h}`;

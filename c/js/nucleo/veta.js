@@ -63,6 +63,21 @@
     const lleva = c && (c.lleva || (asig && asig.a));
     return !!(lleva && lleva !== yo.id);
   };
+  // ¿puede quien mira leer el literal (cita, burbuja) de este contacto? Una sola puerta para todo lo que pinta texto de un contacto.
+  // Agente: sí. Dirección: solo si el contacto es SUYO; el que no tiene dueño o lo lleva otra persona enseña el estado, nunca el texto.
+  VETA.verLiteral = id => {
+    const yo = VETA.yo && VETA.yo(); if (!yo || yo.papel !== 'direccion') return true;
+    return VETA.esSuyo(id);
+  };
+  VETA.esSuyo = id => {
+    const yo = VETA.yo && VETA.yo(); if (!yo) return false;
+    const c = (VETA.datos.clientes || {})[id]; if (!c) return false;
+    const asig = !c.lleva && VETA.dir && VETA.dir.asignado ? VETA.dir.asignado(id) : null;
+    return (c.lleva || (asig && asig.a)) === yo.id;
+  };
+  VETA.sinLiteral = id => !VETA.verLiteral(id);
+  // lo mismo para quien PUEDE no saber de quién es el chat (duenoDe da null): para dirección, sin dueño conocido se cierra por defecto; la agente lee siempre
+  VETA.literalCerrado = dueno => (dueno ? VETA.sinLiteral(dueno) : !!(VETA.yo && VETA.yo() && VETA.yo().papel === 'direccion'));
   // el cliente dueño de un chat («pere-voz» → pere) o de una cosa de la cola («c-marta» → marta)
   VETA.duenoDe = ({chat, de} = {}) => {
     const cl = VETA.datos.clientes || {};
@@ -76,7 +91,9 @@
   };
   // «Está en el chat de Laura con Jordi»: la frase que sustituye a una cita ajena
   VETA.chatAjenoTexto = id => {
-    const c = (VETA.datos.clientes || {})[id] || {}, p = (VETA.datos.personas || {})[c.lleva] || {};
+    const c = (VETA.datos.clientes || {})[id] || {}, asig = !c.lleva && VETA.dir && VETA.dir.asignado ? VETA.dir.asignado(id) : null;
+    const p = (VETA.datos.personas || {})[c.lleva || (asig && asig.a)];
+    if (!p) return 'Todavía no lo lleva nadie. Dirección no lee lo que escriben los contactos: solo ve el estado.';
     return `Está en el chat de ${p.corto || 'otra persona'} con ${c.corto || c.nombre || 'su cliente'}. Dirección no lee los chats de cada persona.`;
   };
 

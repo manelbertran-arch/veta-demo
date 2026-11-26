@@ -5,9 +5,19 @@
 (function () {
   'use strict';
   const M = VETA.modelo, r7 = VETA.r7, esc = VETA.esc;
-  const def = p => ((VETA.datos.diaA || {}).entendido || {})[p.id] || ((VETA.datos.diaA || {}).entendido || {}).tarea;
+  const def0 = p => ((VETA.datos.diaA || {}).entendido || {})[p.id] || ((VETA.datos.diaA || {}).entendido || {}).tarea;
+  // dirección no ve el guion de la agente (Jordi, Pere): lo entendido es SIEMPRE lo que dictó ella misma, con su cliente si es suyo
+  const def = p => {
+    if (VETA.yo().papel !== 'direccion') return def0(p);
+    const u = VETA.est.lee('a.ultimoDictado', null) || {}, tipo = p.id === 'nota' ? 'nota' : 'tarea', c = u.cliente && VETA.esSuyo(u.cliente) ? M.cliente(u.cliente) : null;
+    const corto = c ? (c.corto || c.nombre) : '';
+    return {tipo, que: String(u.texto || ''), texto: String(u.texto || ''), cliente: c ? c.id : '', dias: [], propio: true,
+      pie: tipo === 'tarea' ? 'La vigilo yo. Te la pongo en el calendario si me lo pides.' : c ? 'Queda en su Historia.' : 'Queda en tus notas.',
+      linea: tipo === 'tarea' ? 'Guardada · Tu tarea' : c ? 'Guardada · Nota en la ficha de ' + corto : 'Guardada · Nota tuya'};
+  };
   const idLocal = e => 'a-' + e.tipo + '-' + e.cliente;
-  const diaElegido = e => { const d = VETA.est.lee('a.dia.' + e.cliente, 'jue'); return (e.dias || []).find(x => x.id === d) || (e.dias || [])[0]; };
+  const diaElegido = e => {
+    if (e.propio) return null; const d = VETA.est.lee('a.dia.' + e.cliente, 'jue'); return (e.dias || []).find(x => x.id === d) || (e.dias || [])[0]; };
   // el día y la hora de la tarea, con el formato de toda la app («Jueves 26 de noviembre, 10:00»)
   const HORA = '10:00';
   const cuando = d => VETA.fecha.larga(d.fechaISO + 'T' + HORA);
@@ -24,11 +34,11 @@
       const dijo = {nombre: 'Lo que dijiste', hoja: 'h07', datos: {guion: e.tipo}};
       if (tarea) {
         const d = diaElegido(e);
-        return hecho + r7.tarjeta({i: 1, de: 'Una tarea', html: `<p>${esc(e.que)}</p>` + (g ? `<p>${esc(cuando(d))}</p>` : '')}) +
-          r7.lista([g ? null : {nombre: 'Cuándo', pasa: cuando(d), hoja: 'a-dia', datos: {cliente: e.cliente}}, dijo], {i: 2});
+        return hecho + r7.tarjeta({i: 1, de: 'Una tarea', html: `<p>${esc(e.que)}</p>` + (g && d ? `<p>${esc(cuando(d))}</p>` : '')}) +
+          r7.lista([g || !d ? null : {nombre: 'Cuándo', pasa: cuando(d), hoja: 'a-dia', datos: {cliente: e.cliente}}, dijo], {i: 2});
       }
       return hecho + r7.tarjeta({i: 1, de: 'Una nota', texto: e.texto}) +
-        r7.lista([{cara: e.cliente, nombre: (M.quien(e.cliente) || {}).nombre || '', ir: 'cliente/' + e.cliente}, dijo], {i: 2});
+        r7.lista([e.cliente ? {cara: e.cliente, nombre: (M.quien(e.cliente) || {}).nombre || '', ir: 'cliente/' + e.cliente} : null, dijo], {i: 2});
     },
     botonFijo: p => {
       const e = def(p);
@@ -38,7 +48,8 @@
       guardar(ev, el, p) {
         const e = def(p), id = idLocal(e);
         const t = {id, tipo: e.tipo, hecha: true, linea: e.linea, cliente: e.cliente};
-        if (e.tipo === 'tarea') { const d = diaElegido(e); Object.assign(t, {fecha: VETA.fecha.corta(d.fechaISO), fechaISO: d.fechaISO, titulo: 'Llamar a Jordi', texto: 'Tarea tuya · ' + HORA}); }
+        if (e.propio && e.tipo === 'tarea') { const iso = VETA.datos.fecha.hoyISO; Object.assign(t, {fecha: VETA.fecha.corta(iso), fechaISO: iso, titulo: e.que.length > 60 ? e.que.slice(0, 57) + '…' : e.que, texto: 'Tarea tuya'}); }
+        else if (e.tipo === 'tarea') { const d = diaElegido(e); Object.assign(t, {fecha: VETA.fecha.corta(d.fechaISO), fechaISO: d.fechaISO, titulo: 'Llamar a Jordi', texto: 'Tarea tuya · ' + HORA}); }
         VETA.A.ponLocal(t);
         VETA.repinta({hecho: true});   // el final se ve aquí: ✓ + «Deshacer» arriba e «Ir a Inicio» en el pie
       },

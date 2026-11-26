@@ -230,7 +230,9 @@
       const R = (D.reglasOficina || {})[d.regla] || {}, n = VETA.d1.pasoRegla ? VETA.d1.pasoRegla(d.regla) : 1;
       return [{texto: `${R.corto || R.titulo || 'Este trabajo'}, para todo el equipo. Voy subiendo de paso cuando me dices que sí.`},
         {lista: VETA.vivo.niveles().map(x => `${x.nombre}${x.n === n ? ' · ahora' : ''}${x.n === n || x.cerrado ? '. ' + x.texto : ''}`)}];
-    }
+    },
+    // el mismo botón que A10b le da a dirección: sube el paso de ESTE trabajo para todo el equipo (h22 pide la confirmación)
+    boton: d => (VETA.d1.sigPaso && VETA.d1.sigPaso(d.regla) ? {texto: 'Subir un paso para todos', hoja: 'h22', de: d.regla} : null)
   });
 
   // ---------------- «Más» de un trabajo en marcha (G2b): dar un paso más ----------------

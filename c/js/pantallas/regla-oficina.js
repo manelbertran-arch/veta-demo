@@ -5,7 +5,7 @@
    (a quién, qué cambia, desde cuándo) → «En marcha · la usa todo el equipo · Deshacer». Ya en marcha, pregunta si da un paso más. */
 (function () {
   'use strict';
-  const M = VETA.modelo, X = VETA.dir, r7 = VETA.r7;
+  const M = VETA.modelo, X = VETA.dir, r7 = VETA.r7, C = () => VETA.c;
   const R = id => (VETA.datos.reglasOficina || {})[id] || VETA.datos.reglasOficina.dossier;
   let confirmando = null;                                        // id de la regla que enseña su confirmación
   let recien = null;                                             // id de la regla recién decidida: mientras siga abierta, el pie dice lo siguiente
@@ -41,6 +41,23 @@
   VETA.d1.decideRegla = id => { recien = id; VETA.repinta({hecho: 'regla-' + id}); VETA.d1.numeros(); };   // lo llama «Más» (d-regla-otra)
   VETA.d1.pasoRegla = id => nivel(id, fase(id));   // en qué paso de «¿Quién lo hace?» va este trabajo de la OFICINA (lo lee la hoja d-escalera-of)
   VETA.d1.faseRegla = id => ((VETA.datos.reglasOficina || {})[id] ? fase(id) : null);
+  // «Subir un paso para todos» (hoja h22, desde «¿Quién lo hace?»): el paso siguiente de ESTE trabajo y hacerlo. Es el mismo recorrido de la pantalla:
+  // propuesta → a prueba («Pruébalo») → en marcha («Extenderla a todo el equipo») → «Ya no pido permiso». null si no hay otro paso que dar.
+  const probar = id => { M.marca(R(id).decision, 'hecha', {fase: 'a-prueba', linea: hasta()}); recien = id; VETA.repinta({hecho: 'regla-' + id}); VETA.d1.numeros(); };
+  const extender = id => { confirmando = null; recien = id; const t = X.lee('practicas', {}); t[id] = {hora: VETA.ahora()}; X.guarda('practicas', t); VETA.repinta({hecho: 'regla-' + id}); VETA.d1.numeros(); };
+  VETA.d1.sigPaso = id => {
+    if (!(VETA.datos.reglasOficina || {})[id]) return null;
+    const e = fase(id); if (['descartada', 'luego'].includes(e.f) || subido(id)) return null;
+    // solo hay paso que subir donde la pantalla lo da de verdad: probar una propuesta, extender lo que está a prueba (si no depende de una decisión: el dossier espera
+    // a que acabe la prueba, «Al acabar, te pregunto») y dejar de pedir permiso a lo que ya está en marcha. Lo demás, sin botón: ni se ofrece ni se promete
+    const hay = e.f === 'propuesta' ? !!R(id).decision : e.f === 'a-prueba' ? extiende(id, e) : e.f === 'en-marcha' ? puedeSubir(id, e) : false;
+    const n = nivel(id, e), niv = VETA.vivo.niveles(); return hay && n < 4 ? {de: niv[n - 1], a: niv[n]} : null;
+  };
+  VETA.d1.subePaso = id => {
+    const e = fase(id);
+    if (!VETA.d1.sigPaso(id)) return;
+    if (e.f === 'propuesta') { if (R(id).decision) probar(id); } else if (e.f === 'a-prueba') extender(id); else if (e.f === 'en-marcha') sube(id);
+  };
 
   VETA.pantalla('G2b', {
     titulo: p => R(p.id).corto || R(p.id).titulo,
@@ -70,6 +87,11 @@
       else if (e.f === 'a-prueba') { const dia = r.dia || 1; filas.push({nombre: `A prueba · día ${dia} de 14`,
         pasa: dia >= 9 ? 'El equipo lo habría dejado igual 9 de cada 10 veces.' : `Hasta el ${VETA.fecha.corta(FIN, {frase: true})}. Al acabar, te pregunto.`}); }
       else if (e.f === 'en-marcha') filas.push({nombre: 'En marcha', pasa: e.propio ? 'La usa todo el equipo' : 'La usan ' + (r.usan || '4 de 6') + ' personas del equipo'});
+      // lo mismo que le abre A10 a una agente: las veces que se hizo distinto (cada una, su caso) y «Cambiar algo» (No con un cliente…)
+      const k = r.casosDe && e.f === 'propuesta' && (M.regla(r.casosDe) || {}).casos, ex = C().excepciones(p.id);
+      if (k && k.distinto) filas.push({nombre: `${k.distinto.length} veces se hizo distinto`, hoja: 'c-veces', datos: {regla: r.casosDe}});
+      if (!['descartada', 'luego'].includes(e.f)) filas.push({nombre: 'Cambiar algo', hoja: 'h20', datos: {de: p.id}});
+      if (ex.length) filas.push({nombre: 'No con un cliente', pasa: ex.length === 1 ? `Con ${(M.quien(ex[0]) || {}).nombre || ex[0]}, no` : `Con ${ex.length} clientes, no`});
       filas.push({nombre: 'Desde que empezamos', pasa: r.desde.replace(/( desde que empezamos)?\.$/, '')});
       h += r7.lista(filas, {i: 2});
       return h;
@@ -85,20 +107,12 @@
       return '';
     },
     acciones: {
-      probar(ev, el, p) {
-        const r = R(p.id);
-        M.marca(r.decision, 'hecha', {fase: 'a-prueba', linea: hasta()}); recien = p.id;
-        VETA.repinta({hecho: 'regla-' + p.id}); VETA.d1.numeros();   // el punto de Inicio se pone al día
-      },
+      probar(ev, el, p) { probar(p.id); },   // el punto de Inicio se pone al día
       confirmar(ev, el, p) { confirmando = p.id; VETA.repinta(); },
       cancelar() { confirmando = null; VETA.repinta(); },
       'subir-of'(ev, el, p) { sube(p.id); },
       'bajar-of'(ev, el, p) { const t = X.lee('nivelOf', {}); delete t[p.id]; X.guarda('nivelOf', t); recien = null; VETA.repinta({hecho: 'regla-' + p.id}); },
-      extender(ev, el, p) {
-        confirmando = null; recien = p.id;
-        const t = X.lee('practicas', {}); t[p.id] = {hora: VETA.ahora()}; X.guarda('practicas', t);
-        VETA.repinta({hecho: 'regla-' + p.id}); VETA.d1.numeros();
-      },
+      extender(ev, el, p) { extender(p.id); },
       'deshacer-regla'(ev, el, p) {
         const r = R(p.id);
         if (r.decision) M.deshaz(r.decision);

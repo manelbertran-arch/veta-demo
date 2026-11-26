@@ -68,3 +68,53 @@ html:not([data-mov=reducido]) .d-tr-p:last-child{animation:d-llega calc(2 * var(
   .d-traspaso{padding:var(--e6)}
   .col-panel .pant-G2 .pant-cuerpo,.col-panel .pant-G2b .pant-cuerpo{max-width:640px}
 }
+
+/* =====================================================================================================================
+   TANDA V · los sitios de dirección con el sistema de la agente. Solo presentación: los datos y los destinos son los de antes.
+   Ambiente de sitio (base.css), tipografía y aire; un solo acento (el dorado mate), sin color por persona ni por tipo.
+   ===================================================================================================================== */
+
+/* la línea bajo el título («qué puedes hacer aquí»): más aire y más legible que un subtítulo suelto */
+:is(.pant-G1,.pant-G17,.pant-G21)>.r7-sub:first-child,.pant-G1 .r7-sub,.pant-G17 .r7-sub,.pant-G21 .r7-sub{padding:0 var(--e1) var(--e2);color:var(--t2);font:500 var(--f-cuerpo)/1.4 var(--body);text-wrap:balance}
+
+/* ---------- Inicio de dirección: «lo primero» con peso y el resto como un orden del día ---------- */
+.r7-inicio[data-papel=direccion] .r7-hola{padding:var(--e4) var(--e1) var(--e3)}
+.r7-inicio[data-papel=direccion] .r7-hola-t{font-size:2.125rem;letter-spacing:-.025em}
+.r7-inicio[data-papel=direccion] .r7-hola-f{margin-top:var(--e2);font-size:var(--f-hoja);line-height:1.25;color:var(--t1);font-family:var(--display);font-weight:500;text-wrap:balance}
+.r7-inicio[data-papel=direccion] .r7-primero{gap:var(--e4);padding:var(--e5) var(--e4) var(--e4);border-radius:var(--v-radio-tj)}
+.r7-inicio[data-papel=direccion] .r7-primero .r7-fila-n{font:700 var(--f-hoja)/1.15 var(--body)}
+.r7-inicio[data-papel=direccion] .r7-primero .r7-boton{background:var(--oro);color:var(--sobre-oro)}
+.r7-inicio[data-papel=direccion] .r7-lista{border-radius:var(--v-radio-card)}
+.r7-inicio[data-papel=direccion] .r7-rotulo{padding:var(--e5) var(--e1) var(--e1);color:var(--t2);font:600 var(--f-hoja)/1.15 var(--display)}
+
+/* ---------- Equipo: una rejilla de dos columnas con la cara de cada persona ---------- */
+.dq-meta{margin:0;padding:0 var(--e1);color:var(--t3);font:500 var(--f-apoyo)/1.35 var(--body)}
+.dq-rej{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:var(--e3);margin-top:var(--e1)}
+.dq-p{display:flex;flex-direction:column;align-items:flex-start;gap:var(--e1);min-height:44px;padding:var(--e4);border-radius:var(--v-radio-card);background:var(--s1);color:var(--t1);text-align:left;box-shadow:var(--somb),inset 0 0 0 1px var(--borde);-webkit-tap-highlight-color:transparent;transition:transform var(--t-toque) var(--c-estandar)}
+.dq-p:active{transform:scale(.98)}
+.dq-p .av{margin-bottom:var(--e2)}
+.dq-n{font:700 var(--f-cuerpo)/1.2 var(--body)}
+.dq-z{color:var(--t2);font:500 var(--f-apoyo)/1.3 var(--body);text-wrap:balance}
+.dq-baja{background:transparent;box-shadow:inset 0 0 0 1.5px var(--borde)}
+.dq-baja .av{opacity:.75}
+.pant-G1 .r7-lista{margin-top:var(--e2)}
+@media (min-width:900px){.dq-rej{grid-template-columns:repeat(3,minmax(0,1fr))}}
+
+/* ---------- Operaciones: cada operación, su propia tarjeta (no una lista de filas) ---------- */
+.pant-G17 .r7-filtros{margin-top:var(--e1)}
+.pant-G17 .r7-lista{background:none;box-shadow:none;overflow:visible;gap:var(--e2);border-radius:0}
+.pant-G17 .r7-lista>.r7-fila{background:var(--s1);border-radius:var(--v-radio-card);box-shadow:var(--somb),inset 0 0 0 1px var(--borde);padding-block:var(--e3)}
+.pant-G17 .r7-lista>.r7-fila::before{display:none}
+.pant-G17 .r7-lista>.r7-fila .r7-fila-p{font-size:var(--f-apoyo);color:var(--t2)}
+.pant-G17 .r7-rotulo{padding:var(--e5) var(--e1) 0;color:var(--t2);font:600 var(--f-hoja)/1.15 var(--display)}
+.pant-G17 .r7-rotulo+.r7-lista>.r7-fila{background:transparent;box-shadow:none;border-radius:0;border-top:1px solid var(--borde);min-height:56px}
+.pant-G17 .r7-rotulo+.r7-lista{gap:0}
+
+/* ---------- Veta de la oficina: tablero oscuro con una cifra grande y la propuesta en dorado ---------- */
+.pant-G21 .r7-cifra{padding:var(--e2) var(--e1) var(--e3)}
+.pant-G21 .r7-cifra-n{color:var(--oro-2);font-size:3.5rem;letter-spacing:-.04em}
+.pant-G21 .r7-cifra-f{font-size:var(--f-cuerpo);color:var(--t2)}
+.pant-G21 .r7-primero{padding:var(--e5) var(--e4) var(--e4);border-radius:var(--v-radio-tj);box-shadow:inset 0 0 0 1.5px color-mix(in srgb,var(--oro) 55%,transparent)}
+.pant-G21 .r7-primero .r7-fila-n{font:700 var(--f-hoja)/1.15 var(--body)}
+.pant-G21 .r7-rotulo{padding:var(--e5) var(--e1) 0;color:var(--oro-2);font:600 var(--f-hoja)/1.15 var(--display)}
+.pant-G21 .r7-lista{border-radius:var(--v-radio-card)}

@@ -30,7 +30,7 @@
   // 6.7 · pisos y fotos (assets/pisos/<foto>.webp)
   D.pisos = {
     verdi: {id: 'verdi', nombre: 'Verdi 42, 3.º 2.ª', zona: 'Gràcia', corto: 'Piso de Gràcia · c/ Verdi 42, 3.º 2.ª', datos: '3 habitaciones · terraza · cocina reformada · sin ascensor', precio: 395000, de: 'pere', fotos: ['gracia', 'gracia_balcon']},
-    santantoni: {id: 'santantoni', nombre: 'Sant Antoni', zona: 'Sant Antoni', corto: 'Sant Antoni · 2 habitaciones · balcón · 289.000 €', datos: '2 habitaciones · balcón', precio: 289000, nota: 'Entró ayer en la cartera de la oficina; lo captó Anna', fotos: ['poblenou']},
+    santantoni: {id: 'santantoni', nombre: 'Sant Antoni', zona: 'Sant Antoni', corto: 'Sant Antoni · 2 habitaciones · balcón · 289.000 €', datos: '2 habitaciones · balcón', precio: 289000, entro: 'ayer', nota: 'Entró ayer en la cartera de la oficina; lo captó Anna', fotos: ['poblenou']},
     olzinelles: {id: 'olzinelles', nombre: 'Olzinelles, Sants', zona: 'Sants', corto: 'Piso de Sants · c/ Olzinelles', datos: '', fotos: ['sants']},
     atico: {id: 'atico', nombre: 'Ático de Sant Gervasi', zona: 'Sant Gervasi', corto: 'Ático de Sant Gervasi', datos: '', precio: 545000, de: 'ruben', fotos: ['santgervasi']},
     local: {id: 'local', nombre: 'Local del Eixample', zona: 'Eixample', corto: 'Local del Eixample · en alquiler', datos: 'En alquiler', fotos: ['local']},

@@ -15,17 +15,22 @@
     return {cara: x.id, nombre: soy ? x.p.corto + ' (tú)' : x.p.nombre, pasa, ir: 'persona/' + x.id};
   }
 
+  // tanda V · la forma de Equipo: una rejilla de dos columnas, cada persona con su cara de 64 y debajo dónde trabaja (o su baja). Mismos datos y destinos
+  // que antes (persona/:id); el resumen de la oficina, que antes era el subtítulo, pasa a una línea quieta sobre la rejilla.
+  const ficha = f => `<button type="button" class="dq-p${f.baja ? ' dq-baja' : ''}"${VETA.UI.attrs({ir: f.ir})}>${r7.cara(f.cara, 64, {nombre: f.nombre})}` +
+    `<span class="dq-n">${VETA.esc(f.nombre)}</span><span class="dq-z">${VETA.esc(f.pasa)}</span></button>`;
+
   VETA.pantalla('G1', {
     titulo: 'Equipo',
-    sub: () => {
-      const todas = X.ops(), sin = todas.filter(o => o.mirar && o.aviso && o.aviso.tipo === 'sin-contestar').length;
-      return `${todas.length} operaciones en la oficina` + (sin ? ` · ${sin} sin contestar` : '') + '.';
-    },
+    sub: 'Quién está en la oficina y a quién pasarle clientes.',
     pinta: () => {
       const e = X.equipoOps(), yo = VETA.yo().id;
+      const todas = X.ops(), sin = todas.filter(o => o.mirar && o.aviso && o.aviso.tipo === 'sin-contestar').length;
+      const resumen = `${todas.length} operaciones en la oficina` + (sin ? ` · ${sin} sin contestar` : '') + '.';
       const orden = e.todos.filter(x => !x.p.baja).sort((a, b) => (a.id === yo) - (b.id === yo)).concat(e.todos.filter(x => x.p.baja));
-      return r7.lista(orden.map(x => fila(x, yo)), {i: 0}) +
-        r7.lista([{nombre: 'Pasar clientes a otra persona', ir: 'reparto'}], {i: 1});
+      return `<p class="dq-meta" data-i="0">${VETA.esc(resumen)}</p>` +
+        `<div class="dq-rej" data-i="1">${orden.map(x => { const f = fila(x, yo); f.baja = !!x.p.baja; return ficha(f); }).join('')}</div>` +
+        r7.lista([{nombre: 'Pasar clientes a otra persona', ir: 'reparto'}], {i: 2});
     }
   });
 })();
