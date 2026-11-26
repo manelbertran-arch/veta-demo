@@ -5,6 +5,7 @@
      VETA.inicioDe.direccion = yo => ({html, frase, pie, nota, acciones, alMontar})      // carril D (decidir.js)
    - html      lo que va bajo el saludo: “lo primero” (VETA.r7.primero), la lista del resto y lo demás. Obligatorio (vale devolver solo el texto).
    - frase     la frase de arriba. Si falta, la del núcleo: “Hoy te tocan 6 cosas.” / “6 cosas esperan tu decisión.”
+   - fraseHtml la misma línea con un enlace dentro (HTML ya escapado por quien lo pone); manda sobre `frase`. Hoy de la agente: “Te quedan 5 cosas · 1 hecha”.
    - pie       el botón del pie (VETA.r7.botones(…)); solo si hace falta (“Cerrar el día” con 0 cosas). nota: la nota sobre él.
    - acciones  {nombre(ev, el, p) {}} de lo que se toca dentro · alMontar(el, p)
    Los dos papeles tienen ya su gancho; si uno fallara, Inicio se queda con la cabecera y la frase. */
@@ -38,7 +39,7 @@
       const yo = VETA.yo(), p = papel(), d = dentro(), c = R.cuentas();
       const frase = d.frase || FRASE[p](p === 'direccion' ? c.decidir : c.hoy);
       const hola = `<header class="r7-hola" data-i="0"><div class="r7-hola-c"><p class="r7-hola-d">${esc(VETA.fecha.larga((VETA.datos.fecha || {}).hoyISO) || mayus((VETA.datos.fecha || {}).hoyTexto))}</p>` +
-        `<h1 class="r7-hola-t">Hello, ${esc(yo.corto || yo.nombre)}.</h1><p class="r7-hola-f">${esc(frase)}</p></div>` +
+        `<h1 class="r7-hola-t">Hello, ${esc(yo.corto || yo.nombre)}.</h1><p class="r7-hola-f">${d.fraseHtml != null ? d.fraseHtml : esc(frase)}</p></div>` +
         `<button type="button" class="r7-yo" data-ir="cuenta" aria-label="Your account, ${esc(yo.nombre)}">${VETA.av(yo.id, 40)}</button></header>`;
       return `<div class="r7-inicio" data-papel="${p}">${hola}${d.html || ''}</div>`;
     },

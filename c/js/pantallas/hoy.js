@@ -238,101 +238,149 @@
     }, 420);
   }
 
-  // ---- Hoy (Inicio de la agente): «tu día», el to-do. Tira del día, conmutador Pendiente/Hecho y un carrusel de tarjetas de tarea ----
+  // ---- Hoy (Inicio de la agente): «tu día», una pila de tarjetas que se recorre deslizando, una cosa cada vez ----
   // Cada tarjeta lleva el botón que ya tenía esa cosa (su ruta). Completar es lo de siempre: se resuelve en su pantalla (M.marca) y, al volver,
-  // la tarjeta se va (hy-ida + carruselVivo.quitar) y la cosa pasa a «Hecho». No hay estado nuevo salvo la pestaña elegida y el índice (de sesión).
-  const HY = {vista: 'pend', indice: 0};
+  // la tarjeta se marca, sube y se va (hy-ida + hy-sale) y la cosa pasa a lo hecho (hoja h05, con su «Deshacer»). El único indicador son los puntos de
+  // debajo de la tarjeta; el número de lo que queda y el enlace a lo hecho viven en una sola línea de la cabecera. No hay estado nuevo salvo el índice (de sesión).
+  const HY = {indice: 0};
   const V = () => VETA.v, UA = VETA.UI.attrs;
   const personaDe = x => (x.cliente ? x.cliente : {id: x.id, nombre: x.nombre});
+  // la única línea de la tarjeta; la visita dice la hora y la calle («Visita hoy, 9:00 · Verdi 42»), que es lo que se mira yendo a ella
+  function pasaTarjeta(c, pasa) {
+    const calle = String(c.pisoTexto || '').split(' · ').pop().split(',')[0].replace(/^c\/\s*/, '').trim();
+    return c.tipo === 'visita' && c.horaVisita && calle ? `Visita hoy, ${c.horaVisita} · ${calle}` : pasa;
+  }
   // lo que se pinta de una cosa: de la lista (c) o de lo que Veta cerró y has vuelto a abrir (x-…)
   function datosTarjeta(c, ida) {
     if (c.reabierta) {
       const nom = c.cliente ? ((M.quien(c.cliente) || {}).nombre || c.titulo) : c.titulo;
-      return {id: c.id, tipo: null, icono: 'aprende', rotulo: 'Veta', persona: personaDe({cliente: c.cliente, id: c.id, nombre: nom}), nombre: nom, pasa: 'Lo vuelves a llevar tú', ir: 'toca/' + c.id, boton: 'Abrir', ida};
+      return {id: c.id, rotulo: 'Veta', persona: personaDe({cliente: c.cliente, id: c.id, nombre: nom}), nombre: nom, pasa: 'Lo vuelves a llevar tú', ir: 'toca/' + c.id, boton: 'Abrir', ida};
     }
     const f = filaCosa(c), t = V().tipo(c.tipo);
-    return {id: c.id, tipo: c.tipo, icono: t.icono, rotulo: t.rotulo, persona: personaDe({cliente: c.cliente, id: c.id, nombre: c.titulo}), nombre: c.titulo, pasa: f.pasa, chapa: f.pastilla, ir: f.ir, boton: f.boton,
-      piso: c.tipo === 'visita' ? c.pisoTexto : '', ida};
+    return {id: c.id, rotulo: t.rotulo, persona: personaDe({cliente: c.cliente, id: c.id, nombre: c.titulo}), nombre: c.titulo, pasa: pasaTarjeta(c, f.pasa), urgente: f.pastilla, ir: f.ir, boton: f.boton, ida};
   }
+  // la tarjeta: el verbo en pequeño (y, si urge, su punto rojo), la persona con lo que quiere y el botón. Nada más
   function tarjetaHoy(d) {
     const ic = VETA.ic;
     return `<article class="hy-tj${d.ida ? ' hy-ida' : ''}" data-hy-id="${esc(d.id)}"${d.ida ? '' : UA({ir: d.ir})}>` +
-      `<div class="hy-tj-arr"><span class="hy-tj-tipo"><span class="hy-tj-ic" aria-hidden="true">${ic(d.icono, 24)}</span>${esc(d.rotulo)}</span>${d.chapa ? V().chapa('urg', d.chapa, {solida: true}) : ''}</div>` +
+      `<div class="hy-tj-arr"><span class="hy-tj-tipo">${esc(d.rotulo)}</span>${d.urgente ? `<span class="hy-tj-urg"><i aria-hidden="true"></i>${esc(d.urgente)}</span>` : ''}</div>` +
       `<div class="hy-tj-quien">${V().cara(d.persona, {tam: 56, aro: false})}<div class="hy-tj-tx"><h2 class="hy-tj-nom">${esc(d.nombre)}</h2><p class="hy-tj-pasa">${esc(d.pasa)}</p></div></div>` +
-      (d.piso ? `<p class="hy-tj-piso">${ic('pin', 18)}<span>${esc(d.piso)}</span></p>` : '') +
-      `<button type="button" class="v-btn v-btn-oro hy-tj-btn"${d.ida ? ' tabindex="-1" aria-hidden="true"' : UA({ir: d.ir})}><span>${esc(d.boton)}</span>${ic('flecha', 22)}</button></article>`;
+      `<button type="button" class="v-btn v-btn-oro hy-tj-btn"${d.ida ? ' tabindex="-1" aria-hidden="true"' : UA({ir: d.ir})}><span>${esc(d.boton)}</span>${ic('flecha', 22)}</button>` +
+      (d.ida ? `<span class="hy-tj-ok" aria-hidden="true">${ic('check', 28)}</span>` : '') + '</article>';
   }
-  function piezaHoy(d, hecha, actual) {
-    const t = d.tipo ? V().tipo(d.tipo) : {icono: d.icono, rotulo: d.rotulo};
-    return `<button type="button" class="hy-pz${hecha ? ' hy-hecha' : ''}${actual ? ' hy-actual' : ''}" data-hy-pz="${esc(d.id)}" aria-label="${esc(hecha ? t.rotulo + ' · Hecho' : t.rotulo)}"${actual ? ' aria-current="true"' : ''}>${VETA.ic(hecha ? 'check' : t.icono, 22)}</button>`;
+  // el único indicador: puntos juntos, como el control de páginas de iOS (el actual, una píldora; con más de 7, solo hay 7 y los de los extremos se hacen pequeños).
+  // Los puntos no se tocan uno a uno: debajo van dos zonas invisibles de 44 × 44 como mínimo, la mitad izquierda = anterior y la derecha = siguiente
+  function puntosDentro(l, idAct) {
+    const n = l.length, a = Math.max(0, l.findIndex(x => x.id === idAct));
+    const ini = n > 7 ? Math.max(0, Math.min(a - 3, n - 7)) : 0, fin = n > 7 ? ini + 7 : n;
+    return l.slice(ini, fin).map((x, k) => { const j = ini + k, peq = (j === ini && ini > 0) || (j === fin - 1 && fin < n);
+      return `<i class="hy-pt${peq ? ' hy-pt-peq' : ''}" role="img" aria-label="${esc(x.nombre)}"${j === a ? ' aria-current="true"' : ''}></i>`; }).join('');
+  }
+  function controlPuntos(l, idAct) {
+    const a = Math.max(0, l.findIndex(x => x.id === idAct));
+    // aria-disabled y no disabled: con el foco puesto en una zona, que se quede sin destino no le quita el foco al teclado
+    return `<div class="hy-pts-d">${puntosDentro(l, idAct)}</div><span class="hy-pos solo-lector" aria-live="polite" aria-atomic="true"></span>` +
+      `<button type="button" class="hy-ir hy-ir-ant" data-hy-ir="-1" aria-label="${esc('Anterior')}"${a < 1 ? ' aria-disabled="true"' : ''}></button>` +
+      `<button type="button" class="hy-ir hy-ir-sig" data-hy-ir="1" aria-label="${esc('Siguiente')}"${a >= l.length - 1 ? ' aria-disabled="true"' : ''}></button>`;
+  }
+  // lo que hay en la pila: las pendientes y lo que Veta cerró y has vuelto a abrir (las mismas tarjetas que cuentan los puntos)
+  const enPila = q => pendientes(q).length + reabiertas(q).length;
+  // la línea de la cabecera: lo que queda (tantas cosas como tarjetas) y, a un toque, lo hecho (con su «Deshacer»). Es la única que dice cuántas quedan
+  function lineaHoy(q) {
+    const n = enPila(q), h = A.hechas(q).length;
+    if (!n) return esc(cerrado() ? 'Día cerrado. Mañana a las 8:00, lista nueva.' : h ? 'Todo hecho por hoy.' : 'Hoy ya no te toca nada.');
+    const quedan = n === 1 ? 'Te queda 1 cosa' : `Te quedan ${n} cosas`;
+    const hechas = h ? ' · ' + `<button type="button" class="hy-hechas"${UA({hoja: 'h05'})}>${esc(h === 1 ? '1 hecha' : `${h} hechas`)}</button>` : '';
+    return esc(quedan) + hechas;
+  }
+  // «Veta ha hecho hoy»: una fila tranquila, de una línea, con lo que cerró y lo que vigila; sigue abriendo su hoja (de ahí: lo cerrado con «Deshacer», lo que vigila y los chats leídos)
+  function filaVeta(q) {
+    const nc = A.cerradas(q).length, nv = A.esperaPend(q).length, t = [];
+    if (nc) t.push(`ha cerrado ${nc}`);
+    if (nv) t.push(`vigila ${nv}`);
+    const dice = !t.length ? 'Veta ha hecho hoy' : t.length === 1 ? `Veta ${t[0]}` : `Veta ${t[0]} y ${t[1]}`;
+    return `<button type="button" class="hy-veta"${UA({hoja: 'r8-hoy'})}><span class="hy-veta-ic" aria-hidden="true">${VETA.ic('aprende', 20)}</span><span class="hy-veta-tx">${esc(dice)}</span><span class="hy-veta-ir" aria-hidden="true">${VETA.ic('flecha', 20)}</span></button>`;
   }
   function cuerpoAgente(q) {
     const cola = M.cola(q), pend = pendientes(q), ids = pend.map(c => c.id), idas = idasDe(q, ids), reab = reabiertas(q);
-    const hechasL = A.hechas(q), idsHechas = hechasL.filter(h => h.cosa).map(h => h.id);
-    if (idas.length) HY.vista = 'pend';
     // tarjetas pendientes en el orden de la lista (las que se van, en el sitio que tenían), y al final lo que Veta cerró y has vuelto a abrir
     const tarjetas = cola.filter(c => ids.includes(c.id) || idas.includes(c.id)).map(c => datosTarjeta(c, !ids.includes(c.id)))
       .concat(reab.map(x => datosTarjeta(cosaDe(x.id), false)));
     const reales = tarjetas.filter(t => !t.ida);
-    const piezas = cola.filter(c => ids.includes(c.id) || idsHechas.includes(c.id)).map(c => ({d: datosTarjeta(c, false), hecha: !ids.includes(c.id)}))
-      .concat(reab.map(x => ({d: datosTarjeta(cosaDe(x.id), false), hecha: false})));
-    const actual = Math.min(HY.indice, Math.max(0, tarjetas.length - 1)), idAct = (tarjetas[actual] || {}).id;
-    const nHechas = piezas.filter(p => p.hecha).length;
-    const tira = piezas.length ? `<div class="hy-tira-w"><div class="hy-tira" role="group" aria-label="Tu día">${piezas.map(p => piezaHoy(p.d, p.hecha, p.d.id === idAct)).join('')}` +
-      `<span class="hy-cuenta">${`${nHechas} de ${piezas.length} hechas`}</span></div></div>` : '';
-    const conm = V().conmutador({id: 'hy-conm', opciones: [{id: 'pend', texto: 'Pendiente', n: reales.length}, {id: 'hecho', texto: 'Hecho', n: nHechas}], valor: HY.vista});
-    const fin = `<article class="hy-fin"><span class="hy-fin-ok" aria-hidden="true">${VETA.ic('check', 34)}</span><h2>Hoy ya no te toca nada.</h2>` +
-      (cerrado() ? `<p>${esc('Día cerrado. Mañana a las 8:00, lista nueva.')}</p>` : nadaQueda(q) ? '<p>Puedes cerrar el día.</p>' : '') + '</article>';
-    const pendHtml = tarjetas.length ? V().carrusel({id: 'hy-car', tarjetas: tarjetas.map(tarjetaHoy), indice: actual, etiqueta: 'Tu día'}) : fin;
-    const hechoHtml = hechasL.length ? V().lista(hechasL.map(h => V().filaHecha({texto: h.texto, hora: h.hora, hoja: 'h05'}))) : '<p class="hy-vacio">Todavía no has cerrado nada hoy.</p>';
-    const franja = V().franjaVeta(Object.assign(vetaHoy(q), {hoja: 'r8-hoy'}));
-    const oc = ocasionales(q);
-    return tira + conm + `<section class="hy-sec" id="hy-pend"${HY.vista === 'pend' ? '' : ' hidden'}>${pendHtml}</section>` +
-      `<section class="hy-sec" id="hy-hecho"${HY.vista === 'hecho' ? '' : ' hidden'}>${hechoHtml}</section>` + franja + (oc.length ? R7.lista(oc, {i: 2}) : '');
-  }
-  // «Veta ha hecho hoy»: las tres cifras de la fila de siempre, que sigue abriendo su hoja
-  function vetaHoy(q) {
-    const nc = A.cerradas(q).length, nv = A.esperaPend(q).length, nl = ((M.lectura() || {}).hoy || {}).chats || 0;
-    return {titulo: 'Veta ha hecho hoy', datos: [{n: nc, texto: cuantas(nc, 'cerrada', 'cerradas')}, {n: nv, texto: cuantas(nv, 'vigilada', 'vigiladas')}, {n: nl, texto: cuantas(nl, 'chat leído', 'chats leídos')}]};
+    const actual = Math.min(HY.indice, Math.max(0, tarjetas.length - 1)), idAct = (reales.find((t, i) => tarjetas.indexOf(t) >= actual) || reales[reales.length - 1] || {}).id;
+    const fin = `<article class="hy-fin"><span class="hy-fin-ok" aria-hidden="true">${VETA.ic('check', 34)}</span>` + (cerrado() ? '' : `<p>${esc('Si entra algo, te lo pongo aquí.')}</p>`) +
+      (A.hechas(q).length ? `<button type="button" class="hy-hechas hy-hechas-fin"${UA({hoja: 'h05'})}>Ver lo hecho</button>` : '') + '</article>';
+    const car = tarjetas.length ? V().carrusel({id: 'hy-car', tarjetas: tarjetas.map(tarjetaHoy), indice: actual, etiqueta: 'Tu día', indicador: false}) +
+      `<div class="hy-pts" role="group" aria-label="${esc('Posición')}"${reales.length < 2 ? ' hidden' : ''}>${controlPuntos(reales.map(t => ({id: t.id, nombre: t.nombre})), idAct)}</div>` : fin;
+    // lo que haya debajo: solo lo que ocurre. «Lo que has hecho hoy» ya no repite fila: es el enlace «N hechas» de la cabecera
+    const oc = ocasionales(q).filter(f => f.hoja !== 'h05');
+    return `<section class="hy-pila">${car}</section>` + filaVeta(q) + (oc.length ? R7.lista(oc, {i: 2}) : '');
   }
   function montaAgente(el) {
     if (alDia()) { VETA.repinta(); return; }
     const q = A.q(), ids = pendientes(q).map(c => c.id), raiz = el && el.querySelector ? el : document;
-    const cajaCar = raiz.querySelector('#hy-car'), conm = raiz.querySelector('#hy-conm'), tira = raiz.querySelector('.hy-tira-w');
-    const pend = raiz.querySelector('#hy-pend'), hecho = raiz.querySelector('#hy-hecho');
+    const cajaCar = raiz.querySelector('#hy-car'), pts = raiz.querySelector('.hy-pts');
+    const items = () => (cajaCar ? Array.from(cajaCar.querySelectorAll('.v-car-it:not(.v-cierra)')) : []);
     const idDe = it => { const a = it && it.querySelector('[data-hy-id]'); return a ? a.dataset.hyId : null; };
-    const marca = id => { if (tira) Array.from(tira.querySelectorAll('.hy-pz')).forEach(b => { const on = b.dataset.hyPz === id; b.classList.toggle('hy-actual', on); if (on) b.setAttribute('aria-current', 'true'); else b.removeAttribute('aria-current'); }); };
-    const vista = v => {
-      HY.vista = v; if (pend) pend.hidden = v !== 'pend'; if (hecho) hecho.hidden = v !== 'hecho';
-      if (v === 'pend' && viva) setTimeout(() => viva.irA(HY.indice, {rapido: true}), 0);
+    const esIda = it => !!(it && it.querySelector('.hy-ida'));
+    const reales = () => items().filter(it => !esIda(it)).map(it => ({id: idDe(it), nombre: (it.querySelector('.hy-tj-nom') || {}).textContent || ''}));
+    // la tarjeta marcada: la actual o, si esa se está yendo, la que ocupará su sitio. Solo la marcada se abre al tocarla; las demás, al tocarlas, se acercan
+    let viva = null, destino = null, marcada = null;
+    const sigReal = i => { const l = items(); return l.slice(i).find(it => !esIda(it)) || l.slice(0, i).reverse().find(it => !esIda(it)); };
+    const marca = (i, anuncia) => {
+      const sig = sigReal(i); items().forEach(it => it.classList.toggle('hy-act', it === sig));
+      if (!pts) return; const r = reales(); if (!r.length) { pts.hidden = true; return; }
+      marcada = idDe(sig); pts.hidden = r.length < 2;
+      const k = r.findIndex(x => x.id === marcada), ant = pts.querySelector('[data-hy-ir="-1"]'), sg = pts.querySelector('[data-hy-ir="1"]'), pos = pts.querySelector('.hy-pos');
+      pts.querySelector('.hy-pts-d').innerHTML = puntosDentro(r, marcada);
+      const apaga = (b, off) => { if (!b) return; if (off) b.setAttribute('aria-disabled', 'true'); else b.removeAttribute('aria-disabled'); };
+      apaga(ant, k < 1); apaga(sg, k >= r.length - 1);
+      if (anuncia && pos && k >= 0) pos.textContent = `${k + 1} de ${r.length}`;   // para el lector de pantalla: no se pinta
     };
-    let viva = null;
-    if (cajaCar) viva = V().carruselVivo(cajaCar, {alCambiar: i => { const it = Array.from(cajaCar.querySelectorAll('.v-car-it:not(.v-cierra)'))[i]; if (it && !it.querySelector('.hy-ida')) { HY.indice = i; } marca(idDe(it)); }});
-    if (conm) V().conmutadorVivo(conm, {alCambiar: vista});
-    if (tira) tira.addEventListener('click', ev => {
-      const b = ev.target.closest('[data-hy-pz]'); if (!b) return;
-      const hecha = b.classList.contains('hy-hecha'), quiere = hecha ? 'hecho' : 'pend', conmBtn = conm && conm.querySelector(`[data-v-op="${quiere}"]`);
-      // el índice se fija ANTES de cambiar de vista: el salto rápido que hace `vista('pend')` va a ese índice y no deshace el desplazamiento suave
-      let i = -1;
-      if (!hecha && viva) { const l = Array.from(cajaCar.querySelectorAll('.v-car-it:not(.v-cierra)')); i = l.findIndex(it => idDe(it) === b.dataset.hyPz); if (i >= 0) HY.indice = i; }
-      if (conmBtn && HY.vista !== quiere) conmBtn.click();
-      if (i >= 0) viva.irA(i);
+    if (cajaCar) viva = V().carruselVivo(cajaCar, {indicador: false, alCambiar: i => {
+      const it = items()[i]; if (!it) return;
+      if (destino) { if (idDe(it) !== destino) return; destino = null; }   // yendo a donde se ha tocado: no se enseñan las tarjetas de por medio
+      if (!esIda(it)) HY.indice = i;
+      marca(i, !esIda(it));
+    }});
+    if (viva) marca(viva.indice(), false);
+    const ve = i => { HY.indice = i; destino = idDe(items()[i]); setTimeout(() => { destino = null; }, 900); marca(i, true); viva.irA(i); };
+    // las dos zonas de debajo de los puntos: anterior y siguiente (entre las tarjetas que no se van)
+    if (pts && viva) pts.addEventListener('click', ev => {
+      const b = ev.target.closest('[data-hy-ir]'); if (!b || b.getAttribute('aria-disabled') === 'true') return;
+      const r = reales(), meta = r[r.findIndex(x => x.id === marcada) + (+b.dataset.hyIr)]; if (!meta) return;
+      const i = items().findIndex(it => idDe(it) === meta.id); if (i >= 0) ve(i);
+    });
+    // tocar lo que asoma de la tarjeta siguiente la acerca, no abre una cosa que no se ha visto
+    if (cajaCar && viva) cajaCar.addEventListener('click', ev => {
+      const it = ev.target.closest('.v-car-it'); if (!it || it.classList.contains('hy-act') || esIda(it)) return;
+      const i = items().indexOf(it); if (i >= 0) ve(i);
     });
     const idas = Array.prototype.slice.call(raiz.querySelectorAll('.hy-ida'));
     if (!idas.length) { vistas[q] = ids; return; }
-    // un momento para que se vea lo que había, y fuera: la tarjeta sale y las demás se acercan; sin movimiento, sin pausa
-    setTimeout(() => {
-      vistas[q] = pendientes(q).map(c => c.id);
-      if (!viva) return;
-      const sale = () => { const it = idas[0] && idas[0].closest('.v-car-it'); if (!it) { VETA.repinta(); return; } const l = Array.from(cajaCar.querySelectorAll('.v-car-it')); viva.quitar(l.indexOf(it)).then(() => { if (cajaCar.isConnected) { if (idas.length > 1 && idas.shift()) sale(); else if (!viva.total()) VETA.repinta(); } }); };
-      sale();
-    }, VETA.reducido() ? 0 : 420);
+    // lo hecho se marca, sube y se va (< 300 ms, en CSS: .hy-sale); las demás ocupan su sitio, el punto desaparece y la línea de la cabecera ya dice lo que queda.
+    // Sin movimiento no hay tarjetas que se vayan (idasDe), así que aquí siempre hay animación.
+    vistas[q] = pendientes(q).map(c => c.id);
+    if (!viva) return;
+    const sale = () => {
+      const it = idas[0] && idas[0].closest('.v-car-it'); if (!it) { VETA.repinta(); return; }
+      cajaCar.querySelector('.v-car').classList.add('v-car-quitando'); it.classList.add('hy-sale');
+      setTimeout(() => {
+        if (!cajaCar.isConnected) return;
+        const i = items().indexOf(it); it.remove(); cajaCar.querySelector('.v-car').classList.remove('v-car-quitando');
+        const n = items().length; idas.shift();
+        if (!n) { VETA.repinta(); return; }
+        const j = Math.min(Math.max(i, 0), n - 1); viva.irA(j, {rapido: true}); HY.indice = j; marca(j, true);
+        if (idas.length) sale();
+      }, 255);   // lo que dura .hy-sale (260 ms) menos un fotograma: el conjunto queda dentro de 300 ms aun con la máquina cargada
+    };
+    requestAnimationFrame(sale);
   }
 
   // el Inicio de la agente (la cáscara, la fecha y el saludo son de js/pantallas/inicio.js)
   VETA.inicioDe.agente = yo => ({
     html: cuerpoAgente(yo.id),
-    frase: cerrado() || nadaQueda(yo.id) ? fraseDia() : '',
+    fraseHtml: lineaHoy(yo.id),
     pie: pieDia(yo.id),
     acciones: accionesDia,
     alMontar: montaAgente

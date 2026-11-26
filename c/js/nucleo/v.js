@@ -70,7 +70,7 @@
   const indicador = (n, i) => n < 1 ? '<div class="v-ind" hidden></div>' : `<div class="v-ind" aria-live="polite">${Array.from({length: n}, (_, k) => `<i${k === i ? ' class="on"' : ''}></i>`).join('')}<span class="v-ind-n">${`${i + 1} de ${n}`}</span></div>`;
   V.indicador = indicador;
 
-  // VETA.v.carruselVivo(el, {alCambiar(i, n)}) → {irA(i), quitar(i) → Promise, indice(), total(), actualiza()}
+  // VETA.v.carruselVivo(el, {alCambiar(i, n), indicador: false}) → {irA(i), quitar(i) → Promise, indice(), total(), actualiza()}
   V.carruselVivo = (el, o) => {
     o = o || {};
     const car = el.classList.contains('v-car') ? el : el.querySelector('.v-car'), caja = car.parentNode;
@@ -85,6 +85,7 @@
       return mejor;
     };
     const pinta = i => {
+      if (o.indicador === false) return;   // quien pinta su propio indicador (Hoy) no quiere el de siempre
       const n = items().length; let ind = caja.querySelector('.v-ind');
       if (!ind) { ind = document.createElement('div'); ind.className = 'v-ind'; caja.appendChild(ind); }
       ind.hidden = n < 1; ind.outerHTML = indicador(n, i);

@@ -32,41 +32,67 @@
 .a-dia-t{min-width:0;font:500 var(--f-apoyo)/var(--l-fila) var(--body);color:var(--t1)}
 .a-dia-t b{font-weight:700}
 
-/* ---- Hoy · tanda V · tu día: tira, conmutador y carrusel de tareas. Gama corta: superficie del sistema, el tipo lo dicen icono y rótulo, el acento es el dorado ---- */
-.r7-inicio .hy-sec[hidden]{display:none}
-.hy-tira-w{margin:4px 0 0}
-.hy-tira{display:flex;align-items:center;gap:6px;padding:4px 0 0}
-.hy-pz{position:relative;width:44px;height:44px;border-radius:50%;display:grid;place-items:center;flex:none;padding:0;cursor:pointer;color:var(--t2);background:var(--s2);border:1px solid var(--borde);transition:box-shadow .2s ease,transform .2s ease}
-.hy-pz .ic{width:22px;height:22px}
-.hy-pz.hy-actual{color:var(--t1);background:var(--s1);box-shadow:0 0 0 2px var(--fondo),0 0 0 4px var(--oro)}
-.hy-pz.hy-hecha{background:var(--hecho-b);color:var(--hecho);border-color:transparent}
-.hy-pz.hy-hecha .ic{stroke-width:2.8}
-.hy-cuenta{margin-left:auto;font:700 var(--f-apoyo)/1.2 var(--body);color:var(--t2);text-align:right;padding-left:var(--e2)}
-.r7-inicio .v-conm{margin:var(--e3) 0 var(--e1)}
-.r7-inicio .v-car-w{margin:0 calc(-1*var(--e4))}
-.r7-inicio .v-car{padding-top:6px}
-.r7-inicio .v-car-w .v-ind{color:var(--t3)}
-.r7-inicio .v-car-w .v-ind i.on{background:var(--oro)}
-.r7-inicio .v-franja-veta,.r7-inicio .v-lista{margin-left:0;margin-right:0}
-.r7-inicio .v-franja-veta{width:100%}
+/* ---- Hoy · tu día: una pila de tarjetas (una cosa cada vez), un solo indicador debajo y una fila de Veta. Solo tokens del sistema; el dorado es el botón ---- */
+.r7-inicio .v-car-w{margin:var(--e2) calc(-1*var(--e4)) 0}
+.r7-inicio .v-car{padding-top:var(--e1)}
+.r7-inicio .hy-pila{display:block}
+.hy-pila .v-car>.v-car-it:not(.hy-act) .hy-tj{pointer-events:none}   /* lo que asoma de la siguiente no abre nada: al tocarlo se acerca */
+.hy-pila .v-car>.v-car-it{flex-basis:calc(100% - var(--e4))}   /* la siguiente asoma lo justo para verse (21 px) sin enseñar su botón */
 
-.hy-tj{position:relative;min-height:0;padding:var(--e4);border-radius:var(--v-radio-tj);background:var(--s1);border:1px solid var(--borde);box-shadow:var(--sombra);display:flex;flex-direction:column;gap:var(--e3);color:var(--t1);cursor:pointer;text-align:left}
-.hy-tj-arr{display:flex;align-items:center;justify-content:space-between;gap:var(--e2);min-height:40px}
-.hy-tj-tipo{display:inline-flex;align-items:center;gap:var(--e3);font:600 20px/1.1 var(--display);letter-spacing:-.01em;min-width:0}
-.hy-tj-ic{width:44px;height:44px;border-radius:50%;display:grid;place-items:center;flex:none;background:var(--s2);color:var(--acento);border:1px solid var(--borde)}
-.hy-tj-quien{display:flex;align-items:center;gap:var(--e3);margin:var(--e2) 0 0}
+/* la línea de estado de la cabecera: «Te quedan 5 cosas · 1 hecha» (la segunda parte es un enlace a lo hecho) */
+.hy-hechas{position:relative;display:inline;padding:0;color:var(--acento);font:inherit;font-weight:600;text-decoration:underline;text-decoration-color:color-mix(in srgb,var(--acento) 35%,transparent);text-underline-offset:3px;cursor:pointer}
+.hy-hechas::after{content:"";position:absolute;inset:-14px -10px}
+
+/* la tarjeta */
+.hy-tj{position:relative;padding:calc(var(--e4) + var(--e1));border-radius:var(--v-radio-tj);background:var(--s1);border:1px solid var(--borde);box-shadow:var(--sombra);display:flex;flex-direction:column;gap:var(--e4);color:var(--t1);cursor:pointer;text-align:left}
+.hy-tj-arr{display:flex;align-items:center;justify-content:space-between;gap:var(--e2);font:600 var(--f-apoyo)/var(--l-fila) var(--body)}
+.hy-tj-tipo{color:var(--t3);letter-spacing:.01em}
+.hy-tj-urg{display:inline-flex;align-items:center;gap:6px;color:var(--urg)}
+.hy-tj-urg i{width:8px;height:8px;border-radius:var(--r-pill);background:var(--urg-s);flex:none}
+.hy-tj-quien{display:flex;align-items:flex-start;gap:var(--e4);margin-bottom:var(--e1)}   /* 16 de gap + 4 = 20 hasta el botón */
 .hy-tj-tx{min-width:0}
-.hy-tj-nom{font:600 22px/1.1 var(--display);overflow-wrap:anywhere}
-.hy-tj-pasa{font:500 var(--f-cuerpo)/var(--l-lee) var(--body);color:var(--t2);margin-top:2px}
-.hy-tj-piso{display:flex;align-items:center;gap:var(--e2);font:500 var(--f-apoyo)/var(--l-fila) var(--body);color:var(--t2)}
-.hy-tj-piso .ic{flex:none;color:var(--acento)}
-.hy-tj-btn{margin-top:auto}
-.hy-fin{min-height:200px;border-radius:var(--v-radio-tj);background:var(--s1);border:1px solid var(--borde);box-shadow:var(--sombra);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:var(--e2);text-align:center;padding:var(--e5) var(--e4)}
-.hy-fin-ok{width:64px;height:64px;border-radius:50%;display:grid;place-items:center;background:var(--hecho-b);color:var(--hecho)}
-.hy-fin-ok .ic{stroke-width:2.6}
-.hy-fin h2{font:600 24px/1.15 var(--display)}
-.hy-fin p{font:500 var(--f-cuerpo)/var(--l-lee) var(--body);color:var(--t2)}
-.hy-vacio{padding:var(--e5) var(--e4);text-align:center;font:500 var(--f-cuerpo)/var(--l-lee) var(--body);color:var(--t2)}
+.hy-tj-nom{font:700 var(--f-hoja)/var(--l-tit) var(--display);letter-spacing:-.01em;overflow-wrap:anywhere}
+.hy-tj-pasa{font:500 var(--f-cuerpo)/var(--l-lee) var(--body);color:var(--t2);margin-top:var(--e1)}
+.hy-tj-btn{margin-top:auto}   /* todas las tarjetas miden lo que la más alta: el botón queda siempre abajo */
+
+/* el único indicador: puntos juntos como el control de páginas de iOS (6 px, 8 de hueco; el actual, una píldora de 20 × 6). No se tocan uno a uno:
+   encima va un par de zonas invisibles, la mitad izquierda = anterior y la derecha = siguiente (cada una mide la mitad del ancho × --toque) */
+.hy-pts{position:relative;display:flex;justify-content:center;align-items:center;min-height:var(--toque);margin-top:var(--e1)}
+.hy-pts[hidden]{display:none}
+.hy-pts-d{display:flex;align-items:center;gap:var(--e2);pointer-events:none}
+.hy-pt{display:block;flex:none;width:6px;height:6px;border-radius:var(--r-pill);background:var(--neutro);transition:width var(--t-corto) var(--c-estandar),height var(--t-corto) var(--c-estandar),background-color var(--t-corto) var(--c-estandar)}
+.hy-pt[aria-current]{width:20px;background:var(--t1)}
+.hy-pt.hy-pt-peq{width:4px;height:4px}
+.hy-ir{position:absolute;top:0;bottom:0;width:50%;padding:0;border:0;background:none;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.hy-ir-ant{left:0}.hy-ir-sig{right:0}
+.hy-ir[aria-disabled=true]{cursor:default}
+.hy-ir:focus-visible{outline-offset:-2px}
+
+/* lo hecho se va: se marca (✓), sube y se desvanece y el hueco se cierra; todo dentro de 300 ms. Sin movimiento no hay tarjeta que se vaya */
 .hy-ida{pointer-events:none}
-html[data-mov=reducido] .hy-pz{transition:none}
-@media (prefers-reduced-motion:reduce){.hy-pz{transition:none}}
+.hy-tj-ok{position:absolute;top:var(--e4);right:var(--e4);width:var(--e6);height:var(--e6);border-radius:var(--r-pill);display:grid;place-items:center;background:var(--hecho-s);color:var(--sobre-hecho);opacity:0}
+.hy-tj-ok .ic{width:20px;height:20px;stroke-width:2.8}
+.v-car>.v-car-it.hy-sale{animation:hy-hueco 140ms var(--c-sale) 120ms forwards}
+.v-car>.v-car-it.hy-sale .hy-tj{animation:hy-sube 200ms var(--c-sale) 40ms forwards}
+.v-car>.v-car-it.hy-sale .hy-tj-ok{animation:hy-marca var(--t-toque) var(--c-entra) forwards}
+@keyframes hy-marca{from{opacity:0;transform:scale(.6)}to{opacity:1;transform:none}}
+@keyframes hy-sube{from{opacity:1;transform:none}to{opacity:0;transform:translateY(calc(-1*var(--e5)))}}
+@keyframes hy-hueco{to{flex-basis:0;margin-right:calc(-1*var(--v-car-gap))}}
+
+/* Veta ha hecho hoy: una fila tranquila, sin cifras grandes */
+.hy-veta{display:flex;align-items:center;gap:var(--e3);width:100%;min-height:var(--fila-1);margin-top:var(--e2);padding:var(--e3) var(--e4);border-radius:var(--r-3);background:var(--s1);border:1px solid var(--borde);color:var(--t2);text-align:left;cursor:pointer;font:500 var(--f-apoyo)/var(--l-fila) var(--body)}
+.hy-veta-ic{flex:none;display:grid;place-items:center;color:var(--oro)}
+.hy-veta-tx{flex:1;min-width:0;text-wrap:balance}   /* a 390 px cabe en una línea; en pantallas más estrechas pasa a dos, nunca se recorta */
+.hy-veta-ir{flex:none;display:grid;place-items:center;color:var(--t3)}
+.hy-veta-ir .ic{width:18px;height:18px}
+.hy-veta:active{background:var(--tinte)}
+.hy-veta+.r7-lista{margin-top:var(--e4)}
+
+/* todo hecho */
+.hy-fin{min-height:240px;border-radius:var(--v-radio-tj);background:var(--s1);border:1px solid var(--borde);box-shadow:var(--sombra);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:var(--e2);text-align:center;padding:var(--e5) var(--e4)}
+.hy-fin-ok{width:64px;height:64px;border-radius:50%;display:grid;place-items:center;background:var(--hecho-b);color:var(--hecho);margin-bottom:var(--e2)}
+.hy-fin-ok .ic{stroke-width:2.6}
+.hy-fin p{font:500 var(--f-cuerpo)/var(--l-lee) var(--body);color:var(--t2)}
+.hy-hechas-fin{margin-top:var(--e2)}
+@media (prefers-reduced-motion:reduce){.hy-pt{transition:none}}
+html[data-mov=reducido] .hy-pt{transition:none}
