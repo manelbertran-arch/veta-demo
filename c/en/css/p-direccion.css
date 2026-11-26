@@ -111,7 +111,7 @@ html:not([data-mov=reducido]) .d-tr-p:last-child{animation:d-llega calc(2 * var(
 .pant-G17 .r7-rotulo+.r7-lista{gap:0}
 
 /* ---------- Veta de la oficina (champán, como el sitio Veta de la agente): una cifra grande y la propuesta en dorado ---------- */
-.pant-G21 .r7-cifra{padding:var(--e2) var(--e1) var(--e3)}
+.pant-G21 .r7-cifra{padding:var(--e4) var(--e1) var(--e4)}
 .pant-G21 .r7-cifra-n{color:var(--t1);font-weight:700;font-size:var(--f-cifra);letter-spacing:-.04em}
 .pant-G21 .r7-cifra-f{font-size:var(--f-cuerpo);color:var(--t2)}
 .pant-G21 .r7-primero{padding:var(--e5) var(--e4) var(--e4);border-radius:var(--v-radio-tj);outline:1.5px solid color-mix(in srgb,var(--oro) 55%,transparent);outline-offset:-1.5px}

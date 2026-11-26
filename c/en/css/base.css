@@ -77,12 +77,12 @@ mark{background:var(--tinte);color:inherit;border-radius:var(--r-pill);padding:0
 .cab-raiz{justify-content:space-between}
 .cab-raiz .cab-t,.cab-lista .cab-t{font-size:var(--f-titulo);letter-spacing:-.02em}
 .cab-det{min-height:var(--cab-det);display:grid;grid-template-columns:44px minmax(0,1fr) auto;gap:0;padding:0 var(--e2) 0 var(--e1)}
-.cab-atras{width:44px;height:44px;display:grid;place-items:center;border-radius:50%;color:var(--acento)}
+.cab-atras{width:44px;height:44px;display:grid;place-items:center;border-radius:50%;color:var(--t1)}
 .cab-c{min-width:0;display:flex;flex-direction:column;gap:2px;padding:var(--e2) 0}
 .cab-de{color:var(--t2);font:500 var(--f-apoyo)/1.2 var(--body);white-space:nowrap;overflow:hidden}
 /* arriba a la derecha, una cosa o ninguna: la cara, el teléfono, «Más», «Saltar», los puntos de paso o «Imprimir» */
 .cab-der{flex:none;justify-self:end;display:flex;align-items:center;gap:var(--e1)}
-.cab-b{min-width:44px;height:44px;display:grid;place-items:center;border-radius:var(--r-pill);color:var(--acento)}
+.cab-b{min-width:44px;height:44px;display:grid;place-items:center;border-radius:var(--r-pill);color:var(--t1)}
 .cab-b-t{padding:0 var(--e2);font:700 var(--f-cuerpo)/1 var(--body)}
 .cab-raiz .cab-der{margin-right:calc(-1*var(--e2))}
 .cab-puntos{display:flex;align-items:center;gap:6px;height:44px;padding:0 var(--e2)}

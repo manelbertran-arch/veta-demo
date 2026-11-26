@@ -53,7 +53,7 @@ html[data-modo=claro] .v-btn-contorno{color:var(--veta)}
 .v-car>.v-car-it.v-cierra>*{display:none}
 .v-ind{display:flex;justify-content:center;align-items:center;gap:6px;margin:10px 0 0;min-height:20px;font:700 var(--f-apoyo)/1 var(--body);color:var(--t3)}
 .v-ind i{width:7px;height:7px;border-radius:50%;background:var(--pista);transition:width .2s ease,background .2s ease}
-.v-ind i.on{width:20px;border-radius:var(--r-pill);background:var(--acento)}
+.v-ind i.on{width:20px;border-radius:var(--r-pill);background:var(--t2)}
 .v-ind-n{margin-left:6px}
 
 
@@ -194,14 +194,14 @@ html[data-modo=claro] .v-btn-contorno{color:var(--veta)}
 .v-pa-det{font:500 var(--f-apoyo)/1.2 var(--body);margin-top:2px;color:#F6EFE6}
 
 /* ---------- Operaciones: cada una, una línea de cinco pasos (hecho = lleno, aquí = ámbar con aro, pendiente = vacío) ---------- */
-.v-ops{display:flex;flex-direction:column;gap:12px;padding:14px 16px 0}
-.v-op{display:block;background:var(--s1);border:1px solid var(--borde);border-radius:var(--r-3);padding:14px;box-shadow:var(--sombra);width:100%;text-align:left;color:var(--t1);cursor:pointer}
+.v-ops{display:flex;flex-direction:column;gap:20px;padding:14px 16px 0}
+.v-op{display:block;background:var(--s1);border:1px solid var(--borde);border-radius:var(--r-3);padding:20px 18px;box-shadow:var(--sombra);width:100%;text-align:left;color:var(--t1);cursor:pointer}
 .v-op-top{display:flex;align-items:center;gap:10px}
 .v-op-top .v-cara,.v-op-top .v-ini{width:32px;height:32px;font-size:var(--f-apoyo);border-width:2px}
 .v-op-nom{font:500 var(--f-hoja)/1.1 var(--display);flex:0 1 auto;min-width:0}
 .v-op-tag{font:500 var(--f-apoyo)/1.2 var(--body);color:var(--t3);white-space:nowrap}   /* «La compra» / «La venta»: texto discreto junto al nombre, no una pastilla */
 /* ola premium C · el avance de una operación: una barra fina de cinco tramos (4 px, extremos redondos, 4 px de hueco) y, debajo, una sola línea con la fase y su posición */
-.v-avance{margin:14px 0 0}
+.v-avance{margin:18px 0 0}
 .v-cinco{display:grid;grid-template-columns:repeat(5,1fr);gap:4px}
 .v-cinco i{display:block;height:4px;border-radius:var(--r-pill);background:color-mix(in srgb,var(--t1) 20%,transparent)}
 .v-cinco i.v-hecho{background:var(--t1)}
@@ -214,7 +214,7 @@ html[data-modo=oscuro] .v-cinco i.v-aqui{background:color-mix(in srgb,var(--acen
 .v-avance-l li::before{content:"";flex:none;width:8px;height:8px;border-radius:50%;box-shadow:none;outline:1.5px solid currentColor;outline-offset:-1.5px}
 .v-avance-l li.v-hecho{color:var(--t2)}.v-avance-l li.v-hecho::before{background:var(--t1);outline:0}
 .v-avance-l li.v-aqui{color:var(--t1);font-weight:700}.v-avance-l li.v-aqui::before{background:var(--acento);outline:0}
-.v-op-sig{margin-top:12px;font:700 var(--f-apoyo)/1.25 var(--body);color:var(--t1);padding-top:10px;border-top:1px solid var(--borde)}
+.v-op-sig{margin-top:16px;font:700 var(--f-apoyo)/1.25 var(--body);color:var(--t1);padding-top:10px;border-top:1px solid var(--borde)}
 .v-op-cerrada{background:transparent;box-shadow:none;border-style:dashed}.v-op-cerrada .v-op-sig{color:var(--t2)}
 
 /* ---------- Veta: «Enséñale a Veta» (hero dorado con micro), presencia y cifras ---------- */
